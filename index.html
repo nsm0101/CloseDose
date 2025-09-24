@@ -1,0 +1,1214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CloseDose – Pediatric Medication Dosing Calculator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --teal-400: #24a687;
+      --teal-500: #1f8f7b;
+      --teal-600: #123a37;
+      --ink-900: #0f2c2a;
+      --ink-700: #124643;
+      --bg: #f5f9f9;
+      --white: #ffffff;
+      --card-bg: rgba(255, 255, 255, 0.92);
+      --card-border: 3px solid var(--ink-900);
+      --card-radius: 26px;
+      --inner-radius: 18px;
+      --shadow-card: 0 6px 0 rgba(15, 44, 42, 0.18);
+      --shadow-btn: 0 4px 0 rgba(15, 44, 42, 0.25);
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Nunito", system-ui, -apple-system, "Segoe UI", sans-serif;
+      background: var(--bg) url("images/light-bg.png") repeat;
+      background-size: 520px auto;
+      color: var(--ink-900);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .visually-hidden {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0 0 0 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    select[hidden] {
+      display: none !important;
+    }
+
+    .skip-link {
+      position: absolute;
+      left: -9999px;
+      top: auto;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+    }
+
+    .skip-link:focus {
+      position: fixed;
+      left: 16px;
+      top: 16px;
+      z-index: 200;
+      width: auto;
+      height: auto;
+      padding: 10px 16px;
+      border-radius: 999px;
+      background: none;
+      border: 3px solid var(--ink-900);
+    }
+
+    .wrap {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    header {
+      position: relative;
+      top: 0;
+      z-index: 1000;
+      display: flex;
+      align-items: flex-start;
+      justify-content: flex-start;
+      gap: clamp(14px, 3vw, 24px);
+      padding: clamp(14px, 3vw, 26px) clamp(18px, 5vw, 48px) clamp(6px, 2vw, 14px);
+      margin-bottom: 0;
+    }
+
+    .brand {
+      display: flex;
+      align-items: stretch;
+      justify-content: flex-start;
+      flex: 1;
+      flex-wrap: nowrap;
+      gap: clamp(12px, 2.6vw, 22px);
+      min-width: 0;
+    }
+
+    .brand img {
+      display: block;
+      height: auto;
+      min-height: 58px;
+    }
+
+    .brand .logo {
+      width: clamp(128px, 22vw, 204px);
+      max-width: 100%;
+      flex-shrink: 0;
+    }
+
+    .brand .wordmark {
+      flex: 1 1 auto;
+      width: 100%;
+      max-width: none;
+      min-width: 160px;
+      min-height: 58px;
+      height: auto;
+      object-fit: contain;
+      aspect-ratio: 520 / 69;
+      display: block;
+    }
+
+
+    .menu-btn {
+      appearance: none;
+      border: var(--card-border);
+      border-radius: 999px;
+      background: var(--white);
+      color: var(--ink-900);
+      font-weight: 900;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      padding: 12px 20px;
+      font-size: 0.95rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+      box-shadow: var(--shadow-btn);
+      transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
+      position: relative;
+      z-index: 1200;
+      margin-left: auto;
+    }
+
+    .menu-btn .hamburger {
+      width: 24px;
+      height: 16px;
+      position: relative;
+    }
+
+    .menu-btn .hamburger span {
+      position: absolute;
+      left: 0;
+      right: 0;
+      height: 3px;
+      border-radius: 999px;
+      background: var(--ink-900);
+      transition: background 0.12s ease;
+    }
+
+    .menu-btn .hamburger span:nth-child(1) { top: 0; }
+    .menu-btn .hamburger span:nth-child(2) { top: 6px; }
+    .menu-btn .hamburger span:nth-child(3) { top: 12px; }
+
+    .menu-btn:hover,
+    .menu-btn:focus-visible {
+      background: #f0faf6;
+      box-shadow: 0 5px 0 rgba(15, 44, 42, 0.35);
+      outline: none;
+    }
+
+    .menu-btn:active {
+      transform: translateY(2px);
+      box-shadow: inset 0 4px 8px rgba(15, 44, 42, 0.25);
+    }
+
+    @media (max-width: 960px) {
+      header {
+        padding-inline: clamp(16px, 5vw, 32px);
+      }
+      .menu-btn {
+        position: fixed;
+        bottom: clamp(20px, 6vw, 40px);
+        right: clamp(20px, 6vw, 40px);
+        box-shadow: 0 8px 0 rgba(15, 44, 42, 0.35);
+      }
+    }
+
+    @media (max-width: 640px) {
+      header {
+        align-items: flex-start;
+        gap: 10px;
+        background: transparent !important;
+        padding: clamp(10px, 3vw, 18px) clamp(16px, 6vw, 28px) clamp(4px, 2vw, 12px);
+      }
+      .menu-btn {
+        padding: 12px;
+        width: 64px;
+        height: 64px;
+        justify-content: center;
+        border-radius: 50%;
+        font-size: 0;
+      }
+      .menu-btn .label {
+        display: none;
+      }
+      .brand {
+        flex-direction: column;
+        gap: clamp(8px, 4vw, 16px);
+      }
+      .brand .logo {
+        width: clamp(120px, 42vw, 180px);
+      }
+      .brand .wordmark {
+        width: 100%;
+        min-width: 0;
+        max-width: none;
+        min-height: 54px;
+      }
+    }
+
+    main {
+      flex: 1;
+      width: 100%;
+      padding: 0 clamp(18px, 5vw, 52px) clamp(48px, 8vw, 80px);
+      box-sizing: border-box;
+    }
+
+    .layout {
+      width: min(1100px, 100%);
+      margin: 0 auto;
+      display: grid;
+      gap: clamp(24px, 4vw, 40px);
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      align-items: start;
+      justify-items: stretch;
+    }
+
+    @media (max-width: 960px) {
+      .layout {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: clamp(20px, 5vw, 32px);
+      }
+      .card {
+        width: clamp(60vw, 78vw, 95vw);
+        max-width: 95vw;
+      }
+      .hero-card {
+        width: clamp(70vw, 85vw, 95vw);
+      }
+      .card.disclaimer-pill {
+        width: auto;
+        max-width: min(92vw, 560px);
+        margin-left: auto;
+        margin-right: auto;
+      }
+      .card.disclaimer-pill.is-expanded {
+        width: 100%;
+      }
+      .menu-btn {
+        margin-left: 0;
+      }
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: var(--card-border);
+      border-radius: var(--card-radius);
+      box-shadow: var(--shadow-card);
+      padding: clamp(24px, 4vw, 36px);
+      width: 100%;
+      max-width: 100%;
+      margin: 0 auto;
+    }
+
+    .hero-card {
+      display: grid;
+      gap: clamp(20px, 3vw, 30px);
+    }
+
+    .card.disclaimer-pill {
+      border-radius: 999px;
+      padding: clamp(14px, 3vw, 22px) clamp(32px, 6vw, 44px);
+      background: rgba(255, 255, 255, 0.96);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      text-align: center;
+      width: fit-content;
+      max-width: 100%;
+      margin: clamp(32px, 8vw, 64px) auto 0;
+      transition: border-radius 0.3s ease, background 0.3s ease, box-shadow 0.3s ease, color 0.3s ease, padding 0.3s ease,
+        width 0.3s ease;
+      overflow: hidden;
+    }
+
+    .disclaimer-pill h2 {
+      margin: 0;
+      font-size: clamp(1rem, 2.4vw, 1.25rem);
+      font-weight: 900;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--teal-600);
+      white-space: nowrap;
+    }
+
+    .disclaimer-pill .disclaimer-content {
+      display: grid;
+      gap: 14px;
+      text-align: left;
+      width: 100%;
+    }
+
+    .disclaimer-pill p {
+      margin: 0;
+      font-size: 0.98rem;
+      line-height: 1.55;
+      color: var(--teal-600);
+    }
+
+    .disclaimer-pill .disclaimer-updated {
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--ink-700);
+    }
+
+    .disclaimer-pill.is-expanded {
+      border-radius: var(--card-radius);
+      background: linear-gradient(140deg, rgba(15, 44, 42, 0.92), rgba(18, 70, 67, 0.96));
+      color: var(--white);
+      box-shadow: 0 10px 0 rgba(15, 44, 42, 0.42);
+      flex-direction: column;
+      align-items: stretch;
+      text-align: left;
+      width: min(860px, 100%);
+      padding: clamp(24px, 4vw, 36px);
+      gap: 18px;
+    }
+
+    .disclaimer-pill.is-expanded h2 {
+      color: #ffffff;
+      white-space: normal;
+      letter-spacing: 0.08em;
+    }
+
+    .disclaimer-pill.is-expanded .disclaimer-updated {
+      color: rgba(255, 255, 255, 0.86);
+    }
+
+    .disclaimer-pill.is-expanded p {
+      color: rgba(255, 255, 255, 0.92);
+    }
+
+    .disclaimer-pill .disclaimer-seek-care {
+      font-weight: 700;
+      letter-spacing: 0.04em;
+    }
+
+    .hero-card h1 {
+      margin: 0;
+      font-size: clamp(2rem, 4vw, 2.85rem);
+      font-weight: 900;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .hero-card p {
+      margin: 0;
+      font-size: 1.05rem;
+      line-height: 1.6;
+    }
+
+    .hero-card .mission-text {
+      font-weight: 800;
+      color: var(--teal-600);
+    }
+
+    .hero-card .mission-support {
+      color: var(--teal-600);
+    }
+
+    .cta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .pill-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 22px;
+      border-radius: 999px;
+      border: var(--card-border);
+      background: var(--teal-400);
+      color: var(--white);
+      text-decoration: none;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      box-shadow: var(--shadow-btn);
+      transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
+    }
+
+    .pill-link:hover,
+    .pill-link:focus-visible {
+      outline: none;
+      background: var(--teal-500);
+      box-shadow: 0 5px 0 rgba(15, 44, 42, 0.3);
+    }
+
+    .pill-link:active {
+      transform: translateY(2px);
+      box-shadow: inset 0 4px 8px rgba(15, 44, 42, 0.3);
+    }
+
+    .feature-grid {
+      display: grid;
+      gap: 14px;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    }
+
+    .feature-card {
+      background: #e4f4f0;
+      border: 2px solid var(--ink-900);
+      border-radius: 20px;
+      box-shadow: 0 4px 0 rgba(15, 44, 42, 0.18);
+      padding: 16px 18px;
+      display: grid;
+      gap: 6px;
+    }
+
+    .feature-card h2 {
+      margin: 0;
+      font-size: 1.1rem;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .feature-card p {
+      margin: 0;
+      font-size: 0.95rem;
+    }
+
+    .card--calculator {
+      display: grid;
+      gap: clamp(20px, 3vw, 30px);
+    }
+
+    .calculator-header {
+      text-align: center;
+      display: grid;
+      gap: 8px;
+      justify-items: center;
+    }
+
+    .calculator-header img {
+      width: clamp(86px, 12vw, 120px);
+      height: auto;
+    }
+
+    .calculator-header .brand-name {
+      font-size: clamp(1.8rem, 3.8vw, 2.8rem);
+      font-weight: 900;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    form {
+      display: grid;
+      gap: clamp(20px, 3vw, 28px);
+    }
+
+    .form-group {
+      background: #f0faf6;
+      border: 3px solid var(--ink-900);
+      border-radius: var(--inner-radius);
+      padding: clamp(22px, 4vw, 30px);
+      display: grid;
+      gap: 18px;
+    }
+
+    .form-title {
+      font-weight: 800;
+      font-size: clamp(1.1rem, 2.8vw, 1.4rem);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .segmented {
+      display: grid;
+      gap: 16px;
+    }
+
+    .segmented-buttons {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .segmented button {
+      border: 3px solid var(--ink-900);
+      border-radius: 18px;
+      background: var(--white);
+      font-weight: 800;
+      font-size: clamp(0.85rem, 2.6vw, 1.05rem);
+      letter-spacing: 0.05em;
+      padding: 14px 12px;
+      text-transform: uppercase;
+      transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
+      box-shadow: 0 6px 0 rgba(15, 44, 42, 0.6);
+      cursor: pointer;
+    }
+
+    .segmented button[aria-pressed="true"] {
+      background: var(--teal-400);
+      color: var(--white);
+      transform: translateY(2px);
+      box-shadow: 0 4px 0 rgba(15, 44, 42, 0.7);
+    }
+
+    .segmented button:focus-visible,
+    .unit-toggle button:focus-visible,
+    .action button:focus-visible {
+      outline: 3px solid #222;
+      outline-offset: 3px;
+    }
+
+    .hello-box {
+      background: var(--white);
+      border: 3px solid var(--ink-900);
+      border-radius: 18px;
+      padding: 18px;
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-align: center;
+      color: var(--teal-600);
+    }
+
+    .unit-row {
+      display: grid;
+      gap: 16px;
+    }
+
+    .weight-input {
+      display: flex;
+      justify-content: center;
+    }
+
+    .weight-input input[type="number"] {
+      width: min(100%, 220px);
+      border: 3px solid var(--ink-900);
+      border-radius: 18px;
+      padding: 14px 18px;
+      font-size: 1.1rem;
+      font-weight: 700;
+      text-align: center;
+      font-family: "Nunito", sans-serif;
+      box-shadow: 0 6px 0 rgba(15, 44, 42, 0.6);
+      background: var(--white);
+      color: var(--ink-900);
+      -moz-appearance: textfield;
+    }
+
+    .weight-input input::-webkit-outer-spin-button,
+    .weight-input input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    .unit-toggle {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .unit-toggle button {
+      border: 3px solid var(--ink-900);
+      border-radius: 18px;
+      background: var(--white);
+      font-weight: 800;
+      font-size: 1rem;
+      padding: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      box-shadow: 0 5px 0 rgba(15, 44, 42, 0.55);
+      transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
+      cursor: pointer;
+    }
+
+    .unit-toggle button[aria-pressed="true"] {
+      background: var(--teal-400);
+      color: var(--white);
+      transform: translateY(2px);
+      box-shadow: 0 3px 0 rgba(15, 44, 42, 0.7);
+    }
+
+    .action button {
+      width: 100%;
+      border: 3px solid var(--ink-900);
+      border-radius: 18px;
+      background: var(--teal-500);
+      color: var(--white);
+      font-weight: 900;
+      font-size: clamp(1.05rem, 3.4vw, 1.4rem);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      padding: 18px;
+      box-shadow: 0 8px 0 rgba(15, 44, 42, 0.75);
+      transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
+      cursor: pointer;
+    }
+
+    .action button:hover:not(:disabled) {
+      background: var(--teal-400);
+    }
+
+    .action button:disabled {
+      background: #aacdc6;
+      cursor: not-allowed;
+      box-shadow: 0 6px 0 rgba(15, 44, 42, 0.5);
+    }
+
+    .action button:not(:disabled):active {
+      transform: translateY(2px);
+      box-shadow: 0 4px 0 rgba(15, 44, 42, 0.7);
+    }
+
+    .alert {
+      margin: 0;
+      border-radius: 18px;
+      border: 3px solid var(--ink-900);
+      padding: 18px 20px;
+      font-weight: 600;
+      line-height: 1.6;
+      text-align: left;
+      background: rgba(255, 255, 255, 0.96);
+      color: var(--teal-600);
+      box-shadow: var(--shadow-card);
+    }
+
+    .alert[hidden] {
+      display: none;
+    }
+
+    .alert:not([hidden]) {
+      display: block;
+    }
+
+    .alert--critical {
+      background: rgba(220, 38, 38, 0.16);
+      border-color: rgba(220, 38, 38, 0.45);
+      color: #8b1111;
+      box-shadow: 0 8px 0 rgba(139, 17, 17, 0.25);
+    }
+
+    #results {
+      text-align: left;
+      display: grid;
+      gap: 18px;
+    }
+
+    #results .result-weight {
+      margin: 0;
+      font-size: 1rem;
+      font-weight: 700;
+      color: #6f807c;
+      background: rgba(18, 58, 55, 0.06);
+      border-radius: 18px;
+      border: 2px solid rgba(18, 58, 55, 0.18);
+      padding: 16px 18px;
+      line-height: 1.6;
+      letter-spacing: 0.01em;
+    }
+
+    #results .result-weight strong {
+      color: var(--ink-900);
+      display: inline-block;
+      margin-top: 6px;
+      font-size: 1.05rem;
+    }
+
+    #results .result-weight span {
+      display: inline-block;
+      font-size: 0.85rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(18, 58, 55, 0.8);
+    }
+
+    #results .result-group {
+      display: grid;
+      gap: 16px;
+    }
+
+    .result-card {
+      background: rgba(255, 255, 255, 0.96);
+      border: var(--card-border);
+      border-radius: 22px;
+      box-shadow: var(--shadow-card);
+      padding: 20px 22px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .result-card h3 {
+      margin: 0;
+      font-size: 1.05rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--teal-600);
+    }
+
+    .result-card p {
+      margin: 0;
+      color: var(--ink-900);
+      line-height: 1.5;
+    }
+
+    .result-card p strong {
+      color: var(--teal-600);
+    }
+
+    .result-card .dose-note {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--ink-700);
+    }
+
+    .warning-card {
+      border-radius: 20px;
+      padding: 16px 20px;
+      font-weight: 700;
+      border: 3px solid transparent;
+      box-shadow: 0 6px 0 rgba(15, 44, 42, 0.28);
+      background: rgba(31, 143, 123, 0.12);
+      color: var(--teal-600);
+      line-height: 1.5;
+    }
+
+    .warning-card strong {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .warning-card--orange {
+      background: rgba(255, 149, 0, 0.18);
+      border-color: rgba(255, 149, 0, 0.45);
+      color: #b35a00;
+    }
+
+    .warning-card--red-strong {
+      background: rgba(220, 38, 38, 0.2);
+      border-color: rgba(220, 38, 38, 0.55);
+      color: #8b1111;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .warning-card--red-strong strong {
+      margin-bottom: 8px;
+    }
+
+    .warning-card--red-soft {
+      background: rgba(220, 38, 38, 0.12);
+      border-color: rgba(220, 38, 38, 0.28);
+      color: #a12a2a;
+      font-style: italic;
+      font-weight: 600;
+      box-shadow: 0 4px 0 rgba(161, 42, 42, 0.2);
+    }
+
+    .warning-card--teal {
+      background: rgba(31, 143, 123, 0.16);
+      border-color: rgba(18, 58, 55, 0.45);
+      color: var(--teal-600);
+    }
+
+    footer {
+      padding: 24px clamp(18px, 5vw, 52px) 48px;
+      font-size: 0.9rem;
+      line-height: 1.5;
+      text-align: center;
+      color: var(--teal-600);
+    }
+
+    footer small {
+      display: block;
+      max-width: 960px;
+      margin: 0 auto;
+      font-size: 0.78rem;
+      letter-spacing: 0.02em;
+      color: var(--teal-500);
+    }
+
+    /* Overlay menu */
+    .menu-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      background: rgba(245, 249, 249, 0.96);
+      backdrop-filter: blur(3px) saturate(1.02);
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.18s ease;
+    }
+
+    .menu-overlay.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .menu-panel {
+      width: min(420px, 92vw);
+      background: #fff;
+      border: var(--card-border);
+      border-radius: 24px;
+      box-shadow: 0 6px 0 var(--ink-900);
+      padding: 30px 28px;
+      transform: translateY(8px);
+      transition: transform 0.18s ease;
+      display: grid;
+      gap: 18px;
+    }
+
+    .menu-overlay.open .menu-panel {
+      transform: translateY(0);
+    }
+
+    .menu-links {
+      display: grid;
+      gap: 16px;
+    }
+
+    .menu-links a {
+      text-decoration: none;
+      color: var(--ink-900);
+      font-weight: 900;
+      letter-spacing: 0.06em;
+      text-align: center;
+      font-size: clamp(1.2rem, 2.8vw, 1.6rem);
+      padding: 10px 4px;
+      border-radius: 16px;
+      transition: background 0.12s ease, color 0.12s ease;
+    }
+
+    .menu-links a[aria-current="page"] {
+      background: #e4f4f0;
+      border: 2px solid var(--ink-900);
+    }
+
+    .close-menu {
+      justify-self: center;
+      padding: 10px 20px;
+      border-radius: 999px;
+      border: var(--card-border);
+      background: var(--teal-400);
+      color: #fff;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      cursor: pointer;
+      box-shadow: var(--shadow-btn);
+    }
+
+    .close-menu:focus-visible {
+      outline: 3px solid #222;
+      outline-offset: 3px;
+    }
+
+    @media (max-width: 720px) {
+      .segmented-buttons {
+        grid-template-columns: 1fr;
+      }
+      .layout {
+        gap: 28px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#calculator">Skip to calculator</a>
+  <div class="wrap">
+    <header>
+      <div class="brand">
+        <img src="images/logo-hex2tone.png" class="logo" alt="CloseDose logo" />
+        <img src="images/name.png" class="wordmark" alt="CloseDose wordmark" />
+      </div>
+      <button class="menu-btn" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="siteMenu" aria-label="Open menu">
+        <span class="label">Menu</span>
+        <span class="hamburger" aria-hidden="true"><span></span><span></span><span></span></span>
+      </button>
+    </header>
+
+    <main>
+      <div class="layout">
+        <section class="card hero-card">
+          <h1>Pediatric dosing made simple</h1>
+          <p>
+            CloseDose helps caregivers calculate safe acetaminophen and ibuprofen doses for infants and children. Select an age range,
+            enter weight, and receive easy-to-follow guidance—backed by pediatric expertise.
+          </p>
+          <p class="mission-text">
+            Our goal is to provide simple, accurate, individualized, pediatric, weight-based dosing calculators for common over-the-counter medications.
+          </p>
+          <p class="mission-support">
+            CloseDose is the solution to inaccurate dosing due to unclear medication guidance. Too busy trying to keep a sibling under control at your child's doctor's appointment and forget the ibuprofen dose recommended when you get home? Confused by range-based dosing tables provided on medication boxes or tired of searching for outdated handouts on old discharge paperwork? All you need to enter is the patient's age and weight and you can determine their personalized dosing options in seconds.
+          </p>
+          <div class="cta-row">
+            <a class="pill-link" href="#calculator">Open Calculator</a>
+            <a class="pill-link" href="medication-guides.html">Medication Guides</a>
+          </div>
+          <div class="feature-grid">
+            <article class="feature-card">
+              <h2>Quick Age Cards</h2>
+              <p>Tap the age buttons to see tailored dosing instructions, warnings, and next steps.</p>
+            </article>
+            <article class="feature-card">
+              <h2>Weight-Based</h2>
+              <p>Enter pounds or kilograms—CloseDose converts automatically and applies safety caps.</p>
+            </article>
+            <article class="feature-card">
+              <h2>Caregiver Tips</h2>
+              <p>Review practical reminders on alternating medications, logging doses, and red flags.</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="card card--calculator" aria-labelledby="calculator-title">
+          <div class="calculator-header">
+            <img src="images/logo-hex2tone.png" alt="CloseDose badge" />
+            <div class="brand-name" id="calculator-title">Dose Calculator</div>
+          </div>
+          <form id="calculator" novalidate>
+            <div class="form-group" aria-live="polite">
+              <div class="form-title">Patient Age</div>
+              <div class="segmented">
+                <div class="segmented-buttons" role="group" aria-label="Select patient age">
+                  <button type="button" class="age-option" data-age="0-2" aria-pressed="false">0-2 Months</button>
+                  <button type="button" class="age-option" data-age="2-6" aria-pressed="false">2-6 Months</button>
+                  <button type="button" class="age-option" data-age="6+" aria-pressed="false">6+ Months</button>
+                </div>
+                <p class="hello-box">Welcome! Choose an age group to begin.</p>
+              </div>
+              <select id="age" name="age" aria-hidden="true" tabindex="-1" hidden>
+                <option value="">Select age</option>
+                <option value="0-2">0-2 Months</option>
+                <option value="2-6">2-6 Months</option>
+                <option value="6+">6+ Months</option>
+              </select>
+              <p id="message" class="alert" hidden></p>
+            </div>
+
+            <div class="form-group">
+              <div class="form-title">Patient Weight</div>
+              <div class="unit-row">
+                <div class="weight-input">
+                  <label for="weight" class="visually-hidden">Enter weight</label>
+                  <input type="number" id="weight" name="weight" inputmode="decimal" placeholder="Enter weight" min="0" step="0.1" />
+                </div>
+                <div class="unit-toggle" role="group" aria-label="Select weight unit">
+                  <button type="button" class="unit-option" data-unit="lbs" aria-pressed="true">lbs</button>
+                  <button type="button" class="unit-option" data-unit="kg" aria-pressed="false">kg</button>
+                </div>
+              </div>
+              <select id="weight-unit" name="weight-unit" aria-hidden="true" tabindex="-1" hidden>
+                <option value="lbs" selected>lbs</option>
+                <option value="kg">kg</option>
+              </select>
+            </div>
+
+            <div class="action">
+              <button type="submit">Calculate</button>
+            </div>
+            <div id="results" aria-live="polite"></div>
+          </form>
+        </section>
+      </div>
+      <section class="card disclaimer-pill" aria-labelledby="disclaimer-heading" aria-expanded="false">
+        <h2 id="disclaimer-heading">Disclaimer</h2>
+        <div class="disclaimer-content" hidden>
+          <p>
+            This calculator is for educational support only and does not replace guidance from your pediatrician or pharmacist.
+            Always confirm dosing before administering medication.
+          </p>
+          <p>
+            CloseDose was created with the intention of providing dosing information of common over-the-counter medications for generally healthy children.
+          </p>
+          <p>
+            If your child is 0-2 months of age, has any complex past medical history or past surgical history, any previous reactions to administered medications, history of allergic reaction, or has significant personal or family history of liver/kidney disease please consult with your medical care team prior to use of CloseDose pediatric medication dosing calculator.
+          </p>
+          <p class="disclaimer-seek-care"><strong>When to seek care:</strong> ***</p>
+          <p class="disclaimer-updated">Updated 9.22.2025 • Nickolas Mancini, MD, MBA</p>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="menu-overlay" id="siteMenu" hidden>
+    <div class="menu-panel" role="dialog" aria-modal="true" aria-labelledby="menuHeading">
+      <h2 id="menuHeading" class="visually-hidden">Site menu</h2>
+      <nav class="menu-links">
+        <a href="index.html" aria-current="page">Calculator</a>
+        <a href="medication-guides.html">Medication Guides</a>
+      </nav>
+      <button class="close-menu" type="button">Close</button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+  <script>
+    (function () {
+      const menuButton = document.querySelector('.menu-btn');
+      const overlay = document.getElementById('siteMenu');
+      const closeButton = overlay.querySelector('.close-menu');
+      const focusableSelector = 'a, button, [tabindex]:not([tabindex="-1"])';
+
+      function openMenu() {
+        overlay.hidden = false;
+        requestAnimationFrame(() => overlay.classList.add('open'));
+        menuButton.setAttribute('aria-expanded', 'true');
+        menuButton.setAttribute('aria-label', 'Close menu');
+        closeButton.focus();
+      }
+
+      function closeMenu() {
+        overlay.classList.remove('open');
+        overlay.hidden = true;
+        menuButton.setAttribute('aria-expanded', 'false');
+        menuButton.setAttribute('aria-label', 'Open menu');
+        menuButton.focus();
+      }
+
+      menuButton.addEventListener('click', () => {
+        if (overlay.classList.contains('open')) {
+          closeMenu();
+        } else {
+          openMenu();
+        }
+      });
+
+      closeButton.addEventListener('click', closeMenu);
+
+      overlay.addEventListener('click', (event) => {
+        if (event.target === overlay) {
+          closeMenu();
+        }
+      });
+
+      overlay.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') {
+          closeMenu();
+          return;
+        }
+        if (event.key !== 'Tab' || !overlay.classList.contains('open')) {
+          return;
+        }
+        const focusable = Array.from(overlay.querySelectorAll(focusableSelector));
+        if (!focusable.length) {
+          return;
+        }
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (event.shiftKey && document.activeElement === first) {
+          event.preventDefault();
+          last.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault();
+          first.focus();
+        }
+      });
+    })();
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const ageSelect = document.getElementById('age');
+      const ageButtons = document.querySelectorAll('.age-option');
+      const unitSelect = document.getElementById('weight-unit');
+      const unitButtons = document.querySelectorAll('.unit-option');
+      const calculateButton = document.querySelector('.action button');
+
+      function setAge(value) {
+        if (ageSelect) {
+          ageSelect.value = value;
+          ageSelect.dispatchEvent(new Event('change'));
+        }
+        updateAgeButtons();
+        if (typeof updateForm === 'function') {
+          updateForm();
+        }
+      }
+
+      function updateAgeButtons() {
+        const currentValue = ageSelect ? ageSelect.value : '';
+        ageButtons.forEach((button) => {
+          const isActive = button.dataset.age === currentValue;
+          button.setAttribute('aria-pressed', String(isActive));
+        });
+      }
+
+      ageButtons.forEach((button) => {
+        button.addEventListener('click', () => {
+          const value = button.dataset.age || '';
+          setAge(value);
+        });
+      });
+
+      if (ageSelect) {
+        ageSelect.addEventListener('change', () => {
+          updateAgeButtons();
+          if (typeof updateForm === 'function') {
+            updateForm();
+          }
+        });
+      }
+
+      function setUnit(value) {
+        if (unitSelect) {
+          unitSelect.value = value;
+          unitSelect.dispatchEvent(new Event('change'));
+        }
+        const currentValue = unitSelect ? unitSelect.value : '';
+        unitButtons.forEach((button) => {
+          const isActive = button.dataset.unit === currentValue;
+          button.setAttribute('aria-pressed', String(isActive));
+        });
+      }
+
+      unitButtons.forEach((button) => {
+        button.addEventListener('click', () => {
+          const value = button.dataset.unit || 'lbs';
+          setUnit(value);
+        });
+      });
+
+      if (unitSelect) {
+        unitSelect.addEventListener('change', () => {
+          const currentValue = unitSelect.value;
+          unitButtons.forEach((button) => {
+            const isActive = button.dataset.unit === currentValue;
+            button.setAttribute('aria-pressed', String(isActive));
+          });
+        });
+      }
+
+      if (calculateButton) {
+        calculateButton.addEventListener('click', () => {
+          if (typeof updateForm === 'function') {
+            updateForm();
+          }
+        });
+      }
+
+      updateAgeButtons();
+      if (unitSelect) {
+        setUnit(unitSelect.value || 'lbs');
+      }
+
+      const disclaimerPill = document.querySelector('.disclaimer-pill');
+      const disclaimerContent = disclaimerPill ? disclaimerPill.querySelector('.disclaimer-content') : null;
+      const rootElement = document.documentElement;
+
+      const setDisclaimerState = (expanded) => {
+        if (!disclaimerPill) {
+          return;
+        }
+        disclaimerPill.classList.toggle('is-expanded', expanded);
+        disclaimerPill.setAttribute('aria-expanded', String(expanded));
+        if (disclaimerContent) {
+          disclaimerContent.hidden = !expanded;
+        }
+      };
+
+      const updateDisclaimerState = () => {
+        if (!disclaimerPill) {
+          return;
+        }
+        const reachedBottom = window.innerHeight + window.scrollY >= rootElement.scrollHeight - 2;
+        setDisclaimerState(reachedBottom);
+      };
+
+      updateDisclaimerState();
+      window.addEventListener('scroll', updateDisclaimerState, { passive: true });
+      window.addEventListener('resize', updateDisclaimerState);
+    });
+  </script>
+</body>
+</html>

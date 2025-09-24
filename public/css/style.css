@@ -1,0 +1,45 @@
+/* Background styling */
+body {
+    background-image: url('https://nsm0101.github.io/nsm/images/bg2.jpg'); /* Replace with your image path */
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    font-family: Arial, sans-serif;
+    color: #fff; /* Makes text readable on dark backgrounds */
+    margin: 0;
+    padding: 0;
+}
+
+/* Styling for message, form, and results */
+#message, #form, #results {
+    background-color: rgba(0, 0, 0, 0.7); /* Transparent black background */
+    padding: 20px;
+    border-radius: 8px;
+    max-width: 600px;
+    margin: 20px auto;
+    color: #fff;
+}
+
+/* Input and select styling */
+select, input {
+    margin: 10px 0;
+    padding: 11px;
+    width: 20%;
+    border: none;
+    border-radius: 10px;
+}
+
+/* Button styling */
+button {
+    padding: 10px;
+    border: none;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+    border-radius: 4px;
+    width: 50%;
+}
+
+button:hover {
+    background-color: #0056b3;
+}

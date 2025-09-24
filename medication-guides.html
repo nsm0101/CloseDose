@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="color-scheme" content="light dark" />
+  <title>CloseDose – Medication Guides</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="CloseDose – Medication Guides" />
+  <meta property="og:description" content="Browse pediatric acetaminophen and ibuprofen products, concentrations, and safety tips." />
+  <meta property="og:image" content="images/og-2400.png" />
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="CloseDose – Medication Guides" />
+  <meta name="twitter:description" content="Browse pediatric acetaminophen/ibuprofen products, concentrations, and safety tips." />
+  <meta name="twitter:image" content="images/og-2400.png" />
+
+  <link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="images/favicon-192.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="images/logo-teal.png" media="(prefers-color-scheme: light)">
+  <link rel="apple-touch-icon" sizes="180x180" href="images/logo-dark.png" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#24a687" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0f2c2a" media="(prefers-color-scheme: dark)">
+
+  <style>
+    :root {
+      --teal-300: #3ec0ab;
+      --teal-400: #24a687;
+      --teal-500: #1f8f7b;
+      --teal-600: #123a37;
+      --ink-900: #0f2c2a;
+      --ink-700: #124643;
+      --bg: #f5f9f9;
+      --white: #ffffff;
+      --card-bg: rgba(255, 255, 255, 0.92);
+      --card-border: 3px solid var(--ink-900);
+      --card-radius: 26px;
+      --shadow-card: 0 6px 0 rgba(15, 44, 42, 0.18);
+      --shadow-btn: 0 4px 0 rgba(15, 44, 42, 0.25);
+      --shadow-pill: var(--shadow-btn);
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Nunito", system-ui, -apple-system, "Segoe UI", sans-serif;
+      background: var(--bg) url("images/light-bg.png") repeat;
+      background-size: 520px auto;
+      color: var(--ink-900);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .visually-hidden {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0 0 0 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    .skip-link {
+      position: absolute;
+      left: -9999px;
+      top: auto;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+    }
+
+    .skip-link:focus {
+      position: fixed;
+      left: 16px;
+      top: 16px;
+      z-index: 200;
+      width: auto;
+      height: auto;
+      padding: 10px 16px;
+      border-radius: 999px;
+      background: var(--white);
+      border: 3px solid var(--ink-900);
+      box-shadow: var(--shadow-card);
+    }
+
+    .wrap {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    header {
+      position: relative;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      align-items: flex-start;
+      justify-content: flex-start;
+      gap: clamp(14px, 3vw, 24px);
+      padding: clamp(14px, 3vw, 26px) clamp(18px, 5vw, 48px) clamp(6px, 2vw, 14px);
+      margin-bottom: 0;
+    }
+
+    .brand {
+      display: flex;
+      align-items: stretch;
+      justify-content: flex-start;
+      flex: 1;
+      flex-wrap: nowrap;
+      gap: clamp(12px, 2.6vw, 22px);
+      min-width: 0;
+    }
+
+    .brand img {
+      display: block;
+      height: auto;
+      min-height: 58px;
+    }
+
+    .brand .logo {
+      width: clamp(128px, 22vw, 204px);
+      max-width: 100%;
+      flex-shrink: 0;
+    }
+
+    .brand .wordmark {
+      flex: 1 1 auto;
+      width: 100%;
+      max-width: none;
+      min-width: 180px;
+      min-height: 58px;
+      height: auto;
+      object-fit: contain;
+      overflow: visible;
+    }
+
+    .menu-btn {
+      appearance: none;
+      border: var(--card-border);
+      border-radius: 999px;
+      background: var(--white);
+      color: var(--ink-900);
+      font-weight: 900;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      padding: 12px 20px;
+      font-size: 0.95rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+      box-shadow: var(--shadow-btn);
+      transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
+      position: relative;
+      z-index: 1200;
+      margin-left: auto;
+    }
+
+    .menu-btn .hamburger {
+      width: 24px;
+      height: 16px;
+      position: relative;
+    }
+
+    .menu-btn .hamburger span {
+      position: absolute;
+      left: 0;
+      right: 0;
+      height: 3px;
+      border-radius: 999px;
+      background: var(--ink-900);
+    }
+
+    .menu-btn .hamburger span:nth-child(1) { top: 0; }
+    .menu-btn .hamburger span:nth-child(2) { top: 6px; }
+    .menu-btn .hamburger span:nth-child(3) { top: 12px; }
+
+    .menu-btn:hover,
+    .menu-btn:focus-visible {
+      background: #f0faf6;
+      box-shadow: 0 5px 0 rgba(15, 44, 42, 0.35);
+      outline: none;
+    }
+
+    .menu-btn:active {
+      transform: translateY(2px);
+      box-shadow: inset 0 4px 8px rgba(15, 44, 42, 0.25);
+    }
+
+    @media (max-width: 960px) {
+      header {
+        padding-inline: clamp(16px, 5vw, 32px);
+      }
+      .menu-btn {
+        position: fixed;
+        bottom: clamp(20px, 6vw, 40px);
+        right: clamp(20px, 6vw, 40px);
+        box-shadow: 0 8px 0 rgba(15, 44, 42, 0.35);
+        margin-left: 0;
+      }
+    }
+
+    @media (max-width: 640px) {
+      header {
+        align-items: flex-start;
+        gap: 10px;
+        padding: clamp(10px, 3vw, 18px) clamp(16px, 6vw, 28px) clamp(4px, 2vw, 12px);
+        background: transparent !important;
+      }
+      .menu-btn {
+        padding: 12px;
+        width: 64px;
+        height: 64px;
+        justify-content: center;
+        border-radius: 50%;
+        font-size: 0;
+      }
+      .menu-btn .label {
+        display: none;
+      }
+      .brand {
+        flex-direction: column;
+        gap: clamp(8px, 4vw, 16px);
+      }
+      .brand .logo {
+        width: clamp(120px, 42vw, 180px);
+      }
+      .brand .wordmark {
+        width: 100%;
+        min-width: 0;
+        max-width: none;
+        min-height: 54px;
+      }
+    }
+
+    main {
+      flex: 1;
+      width: 100%;
+      padding: 0 clamp(18px, 5vw, 52px) clamp(48px, 8vw, 80px);
+      box-sizing: border-box;
+    }
+
+    .page-content {
+      width: min(1100px, 100%);
+      margin: 0 auto;
+      display: grid;
+      gap: clamp(24px, 4vw, 36px);
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: var(--card-border);
+      border-radius: var(--card-radius);
+      box-shadow: var(--shadow-card);
+      padding: clamp(24px, 4vw, 36px);
+    }
+
+    .hero {
+      display: grid;
+      gap: clamp(20px, 3vw, 28px);
+    }
+
+    .hero-header {
+      display: flex;
+      align-items: center;
+      gap: clamp(18px, 4vw, 28px);
+      flex-wrap: wrap;
+    }
+
+    .hero-header img {
+      display: block;
+      height: auto;
+    }
+
+    .hero-header .hero-logo {
+      width: clamp(150px, 20vw, 220px);
+    }
+
+    .hero-header .hero-wordmark {
+  flex: 1 1 clamp(320px, 60vw, 620px);
+  width: min(100%, clamp(320px, 60vw, 620px));
+  min-height: 69px;
+  height: auto;
+  object-fit: contain;
+  overflow: visible;
+    }
+
+    @media (max-width: 640px) {
+      .hero-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .hero-header .hero-wordmark {
+        width: 100%;
+      }
+    }
+
+    .hero h1 {
+      margin: 0;
+      font-size: clamp(2rem, 4vw, 2.8rem);
+      font-weight: 900;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .hero p {
+      margin: 0;
+      font-size: 1.05rem;
+      line-height: 1.6;
+      color: var(--teal-600);
+    }
+
+    .tab-stack {
+      display: flex;
+      gap: 6px;
+    }
+
+    .tab-stack span {
+      display: inline-block;
+      height: 12px;
+      background: var(--teal-400);
+      border: 3px solid var(--ink-900);
+      border-radius: 999px;
+      box-shadow: 0 2px 0 rgba(15, 44, 42, 0.18);
+    }
+
+    .tab-stack span:nth-child(1) { width: 42%; }
+    .tab-stack span:nth-child(2) { width: 32%; }
+    .tab-stack span:nth-child(3) { width: 26%; }
+
+    .guide-intro h2 {
+      margin: 0 0 8px;
+      font-size: clamp(1.6rem, 3vw, 2rem);
+      font-weight: 900;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .guide-intro p {
+      margin: 0 0 10px;
+      font-size: 1rem;
+    }
+
+    .guide-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: clamp(18px, 3vw, 26px);
+    }
+
+    @media (min-width: 860px) {
+      .guide-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    .guide-card {
+      background: #ffffff;
+      border: 3px solid var(--ink-900);
+      border-radius: 18px;
+      box-shadow: 0 4px 0 rgba(15, 44, 42, 0.12);
+      padding: clamp(18px, 3vw, 26px);
+      display: grid;
+      gap: 16px;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      body {
+        background: #07201d;
+        color: #e6f3f1;
+      }
+      .card {
+        background: rgba(8, 32, 29, 0.8);
+      }
+      .guide-card {
+        background: rgba(8, 32, 29, 0.7);
+      }
+      .menu-overlay,
+      .translation-overlay {
+        background: rgba(7, 32, 29, 0.94);
+      }
+    }
+
+    .carousel-track {
+      position: relative;
+      overflow: hidden;
+      border-radius: 22px;
+      background: rgba(255, 255, 255, 0.96);
+      border: var(--card-border);
+      box-shadow: var(--shadow-card);
+      min-height: clamp(260px, 52vw, 520px);
+      display: grid;
+    }
+
+    [data-carousel] .carousel-slide {
+      display: none;
+      gap: 12px;
+      justify-items: center;
+      padding: clamp(18px, 4vw, 28px);
+      text-align: center;
+    }
+
+    [data-carousel] .carousel-slide:first-child {
+      display: grid;
+    }
+
+    [data-carousel].carousel-ready .carousel-slide {
+      display: none;
+    }
+
+    [data-carousel].carousel-ready .carousel-slide.is-active {
+      display: grid;
+    }
+
+    .carousel-slide img {
+      width: 100%;
+      max-width: 100%;
+      height: auto;
+      max-height: clamp(220px, 60vw, 520px);
+      object-fit: contain;
+      border-radius: 20px;
+      border: 3px solid var(--ink-900);
+      background: var(--white);
+      box-shadow: 0 10px 0 rgba(15, 44, 42, 0.2);
+    }
+
+    .carousel-slide figcaption {
+      font-weight: 700;
+      text-align: center;
+      color: var(--teal-600);
+    }
+
+    .carousel-controls {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-top: 16px;
+    }
+
+    .carousel-controls button {
+      appearance: none;
+      border: 3px solid var(--ink-900);
+      border-radius: 999px;
+      background: var(--teal-400);
+      color: #fff;
+      font-weight: 800;
+      padding: 10px 18px;
+      cursor: pointer;
+      box-shadow: var(--shadow-pill);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
+    }
+
+    .carousel-controls button:hover,
+    .carousel-controls button:focus-visible {
+      background: var(--teal-500);
+      box-shadow: 0 8px 0 rgba(15, 44, 42, 0.35);
+      outline: none;
+    }
+
+    .carousel-controls button:disabled {
+      background: #aacdc6;
+      cursor: not-allowed;
+      box-shadow: 0 6px 0 rgba(15, 44, 42, 0.28);
+    }
+
+    .carousel-dots {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .carousel-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      border: 2px solid var(--teal-500);
+      background: rgba(36, 166, 135, 0.2);
+      padding: 0;
+      cursor: pointer;
+      transition: background 0.18s ease, transform 0.18s ease;
+    }
+
+    .carousel-dot.is-active {
+      background: var(--teal-500);
+      transform: scale(1.15);
+    }
+
+    .carousel-dot:focus-visible {
+      outline: 3px solid var(--ink-900);
+      outline-offset: 2px;
+    }
+
+    .guide-card h2 {
+      margin: 0;
+      font-size: 1.3rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .guide-card .medication-concentration {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--ink-700);
+    }
+
+    .guide-card ul {
+      margin: 0;
+      padding-left: 20px;
+      display: grid;
+      gap: 6px;
+    }
+
+    footer {
+      padding: 24px clamp(18px, 5vw, 52px) 48px;
+      font-size: 0.9rem;
+      line-height: 1.5;
+      text-align: center;
+      color: var(--teal-600);
+    }
+
+    footer small {
+      display: block;
+      max-width: 960px;
+      margin: 0 auto;
+      font-size: 0.78rem;
+      letter-spacing: 0.02em;
+      color: var(--teal-500);
+    }
+
+    /* Overlay menu */
+    .menu-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      background: rgba(245, 249, 249, 0.96);
+      backdrop-filter: blur(3px) saturate(1.02);
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.18s ease;
+    }
+
+    .menu-overlay.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .menu-panel {
+      width: min(420px, 92vw);
+      background: #fff;
+      border: var(--card-border);
+      border-radius: 24px;
+      box-shadow: 0 6px 0 var(--ink-900);
+      padding: 30px 28px;
+      transform: translateY(8px);
+      transition: transform 0.18s ease;
+      display: grid;
+      gap: 18px;
+    }
+
+    .menu-overlay.open .menu-panel {
+      transform: translateY(0);
+    }
+
+    .menu-links {
+      display: grid;
+      gap: 16px;
+    }
+
+    .menu-links a {
+      text-decoration: none;
+      color: var(--ink-900);
+      font-weight: 900;
+      letter-spacing: 0.06em;
+      text-align: center;
+      font-size: clamp(1.2rem, 2.8vw, 1.6rem);
+      padding: 10px 4px;
+      border-radius: 16px;
+      transition: background 0.12s ease, color 0.12s ease;
+    }
+
+    .menu-links a[aria-current="page"] {
+      background: #e4f4f0;
+      border: 2px solid var(--ink-900);
+    }
+
+    .close-menu {
+      justify-self: center;
+      padding: 10px 20px;
+      border-radius: 999px;
+      border: var(--card-border);
+      background: var(--teal-400);
+      color: #fff;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      cursor: pointer;
+      box-shadow: var(--shadow-pill);
+    }
+
+    .close-menu:focus-visible {
+      outline: 3px solid #222;
+      outline-offset: 3px;
+    }
+
+    /* Translation overlay */
+    .translation-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 110;
+      background: rgba(245, 249, 249, 0.96);
+      backdrop-filter: blur(3px) saturate(1.02);
+      display: none;
+      place-items: center;
+      padding: 24px;
+    }
+
+    .translation-overlay.open {
+      display: grid;
+    }
+
+    .translation-modal {
+      width: min(420px, 92vw);
+      background: #fff;
+      border: var(--card-border);
+      border-radius: 24px;
+      box-shadow: 0 6px 0 var(--ink-900);
+      padding: 30px 28px;
+      display: grid;
+      gap: 18px;
+    }
+
+    .translation-close {
+      appearance: none;
+      border: 3px solid var(--ink-900);
+      border-radius: 999px;
+      padding: 6px 12px;
+      background: #fff;
+      cursor: pointer;
+      justify-self: end;
+    }
+
+    .translation-options {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: grid;
+      gap: 12px;
+    }
+
+    .translation-option {
+      appearance: none;
+      border: 3px solid var(--ink-900);
+      border-radius: 999px;
+      background: var(--teal-400);
+      color: #fff;
+      font-weight: 800;
+      padding: 12px 18px;
+      cursor: pointer;
+      box-shadow: var(--shadow-pill);
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#guides">Skip to medication guides</a>
+  <div class="wrap">
+    <header>
+      <div class="brand">
+        <img class="logo" src="images/logo-hex2tone.png" alt="CloseDose logo">
+        <img class="wordmark" src="images/name.png" alt="CloseDose wordmark">
+      </div>
+      <button class="menu-btn" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="menuOverlay" aria-label="Open menu">
+        <span class="label">Menu</span>
+        <span class="hamburger" aria-hidden="true"><span></span><span></span><span></span></span>
+      </button>
+    </header>
+
+    <main>
+      <div class="page-content">
+        <section class="card hero">
+          <div class="hero-header">
+            <img class="hero-logo" src="images/logo-hex2tone.png" alt="CloseDose logo">
+            <img class="hero-wordmark" src="images/name.png" alt="CloseDose wordmark">
+          </div>
+          <div class="tab-stack" aria-hidden="true"><span></span><span></span><span></span></div>
+          <h1>Fever &amp; Pain Medication Guides</h1>
+          <p>Use these quick references to view common acetaminophen and ibuprofen products for infants and children. Double-check concentrations and dosing with your pediatrician or pharmacist.</p>
+        </section>
+
+        <section class="card guide-section" id="guides">
+          <div class="guide-intro">
+            <h2>Product comparisons</h2>
+            <p>Swipe through brand-name and generic options, then review dosing reminders tailored to your patient.</p>
+          </div>
+
+          <div class="guide-grid">
+            <article class="guide-card" id="acetaminophen" data-carousel>
+              <h2>Acetaminophen <span class="medication-concentration">[160 mg / 5 mL]</span></h2>
+              <div class="carousel-track">
+                <figure class="carousel-slide">
+                  <img src="images/Acetaminophen/Tylenol acetaminophen iso.png" alt="Tylenol children's acetaminophen suspension 160 mg per 5 mL">
+                  <figcaption>Tylenol® Children's Oral Suspension</figcaption>
+                </figure>
+                <figure class="carousel-slide">
+                  <img src="images/Acetaminophen/amazon acetaminophen iso.png" alt="Amazon Basics children's acetaminophen 160 mg per 5 mL">
+                  <figcaption>Amazon Basics® Children's Acetaminophen</figcaption>
+                </figure>
+                <figure class="carousel-slide">
+                  <img src="images/Acetaminophen/Target acetaminophen iso.png" alt="Target up & up children's acetaminophen 160 mg per 5 mL">
+                  <figcaption>up &amp; up® Children's Acetaminophen</figcaption>
+                </figure>
+                <figure class="carousel-slide">
+                  <img src="images/Acetaminophen/Equate acetaminophen iso.png" alt="Walmart Equate children's acetaminophen 160 mg per 5 mL">
+                  <figcaption>Equate® Children's Acetaminophen</figcaption>
+                </figure>
+              </div>
+              <div class="carousel-controls">
+                <button type="button" data-carousel-prev aria-label="Show previous acetaminophen product">←</button>
+                <div class="carousel-dots"></div>
+                <button type="button" data-carousel-next aria-label="Show next acetaminophen product">→</button>
+              </div>
+              <div class="acetaminophen-safety">
+                <h3>Safety Tips</h3>
+                <ul>
+                  <li>Do not exceed 6 doses in 24 hours.</li>
+                  <li>&lt;6 months: dose every 4 hours as needed.</li>
+                  <li>&gt;6 months: dose every 6 hours as needed.</li>
+                  <li>Alternate acetaminophen and ibuprofen (every 6 hours) to allow dosing every 3 hours.</li>
+                  <li>Seek care for infants under 2 months with fever or fever lasting longer than 3 days.</li>
+                  <li>Keep a log of medication, time, and dose to avoid repeat dosing.</li>
+                </ul>
+              </div>
+            </article>
+
+            <article class="guide-card" id="ibuprofen-children" data-carousel>
+              <h2>Children's Ibuprofen <span class="medication-concentration">[100 mg / 5 mL]</span></h2>
+              <div class="carousel-track">
+                <figure class="carousel-slide">
+                  <img src="images/Ibuprofen/Children/Motrin Children ibuprofen iso.png" alt="Motrin Children's ibuprofen 100 mg per 5 mL">
+                  <figcaption>Motrin® Children's Suspension</figcaption>
+                </figure>
+                <figure class="carousel-slide">
+                  <img src="images/Ibuprofen/Children/Advil Children Ibuprofen iso.png" alt="Advil Children's ibuprofen 100 mg per 5 mL">
+                  <figcaption>Advil® Children's Suspension</figcaption>
+                </figure>
+                <figure class="carousel-slide">
+                  <img src="images/Ibuprofen/Children/Amazon Children ibuprofen iso.png" alt="Amazon Basics Children's ibuprofen 100 mg per 5 mL">
+                  <figcaption>Amazon Basics® Children's Ibuprofen</figcaption>
+                </figure>
+                <figure class="carousel-slide">
+                  <img src="images/Ibuprofen/Children/Target Children ibuprofen iso.png" alt="Target up &amp; up Children's ibuprofen 100 mg per 5 mL">
+                  <figcaption>up &amp; up® Children's Ibuprofen</figcaption>
+                </figure>
+                <figure class="carousel-slide">
+                  <img src="images/Ibuprofen/Children/Equate Children ibuprofen iso.png" alt="Equate Children's ibuprofen 100 mg per 5 mL">
+                  <figcaption>Equate® Children's Ibuprofen</figcaption>
+                </figure>
+              </div>
+              <div class="carousel-controls">
+                <button type="button" data-carousel-prev aria-label="Show previous children's ibuprofen product">←</button>
+                <div class="carousel-dots"></div>
+                <button type="button" data-carousel-next aria-label="Show next children's ibuprofen product">→</button>
+              </div>
+              <p>Standard children's suspension dosed using an oral syringe or medicine cup. Verify strength before dosing.</p>
+            </article>
+
+            <article class="guide-card" id="ibuprofen-infant" data-carousel>
+              <h2>Infant Ibuprofen <span class="medication-concentration">[50 mg / 1.25 mL]</span></h2>
+              <div class="carousel-track">
+                <figure class="carousel-slide">
+                  <img src="images/Ibuprofen/Infants/Motrin Infant ibuprofen iso.png" alt="Infant's Motrin concentrated ibuprofen 50 mg per 1.25 mL">
+                  <figcaption>Infant's Motrin® Concentrated Drops</figcaption>
+                </figure>
+                <figure class="carousel-slide">
+                  <img src="images/Ibuprofen/Infants/Advil Infant Ibuprofen iso.png" alt="Infants' Advil concentrated ibuprofen 50 mg per 1.25 mL">
+                  <figcaption>Infants' Advil® Concentrated Drops</figcaption>
+                </figure>
+                <figure class="carousel-slide">
+                  <img src="images/Ibuprofen/Infants/Amazon Infant ibuprofen iso.png" alt="Amazon Basics infant ibuprofen 50 mg per 1.25 mL">
+                  <figcaption>Amazon Basics® Infant Ibuprofen</figcaption>
+                </figure>
+                <figure class="carousel-slide">
+                  <img src="images/Ibuprofen/Infants/Target Infant ibuprofen iso.png" alt="Target up &amp; up infant ibuprofen 50 mg per 1.25 mL">
+                  <figcaption>up &amp; up® Infant Ibuprofen</figcaption>
+                </figure>
+                <figure class="carousel-slide">
+                  <img src="images/Ibuprofen/Infants/Equate Infant ibuprofen iso.png" alt="Equate infant ibuprofen 50 mg per 1.25 mL">
+                  <figcaption>Equate® Infant Ibuprofen</figcaption>
+                </figure>
+              </div>
+              <div class="carousel-controls">
+                <button type="button" data-carousel-prev aria-label="Show previous infant ibuprofen product">←</button>
+                <div class="carousel-dots"></div>
+                <button type="button" data-carousel-next aria-label="Show next infant ibuprofen product">→</button>
+              </div>
+              <h3>Safety Tips</h3>
+              <ul>
+                <li>Do not give to infants &lt;6 months unless directed by a doctor.</li>
+                <li>Allow at least 6 hours between doses.</li>
+                <li>Do not exceed 4 doses in 24 hours.</li>
+                <li>Give with food or milk to lessen stomach upset.</li>
+              </ul>
+            </article>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <div class="menu-overlay" id="menuOverlay" hidden>
+    <div class="menu-panel" role="dialog" aria-modal="true" aria-labelledby="menuHeading">
+      <h2 id="menuHeading" class="visually-hidden">Site menu</h2>
+      <nav class="menu-links">
+        <a href="index.html">Calculator</a>
+        <a href="medication-guides.html" aria-current="page">Medication Guides</a>
+        <a href="#" aria-disabled="true">Translate</a>
+        <a href="#" aria-disabled="true">Donate</a>
+      </nav>
+      <button class="close-menu" type="button">Close</button>
+    </div>
+  </div>
+
+  <footer>
+    <small>
+      Disclaimer: This tool is for educational purposes only and is not a substitute for professional medical advice. Always confirm dosing with your pediatrician or pharmacist before administering medication.
+      <br />Updated 9.22.2025 • Nickolas Mancini, MD, MBA
+    </small>
+  </footer>
+
+  <div class="translation-overlay" id="translationOverlay" hidden aria-hidden="true">
+    <div class="translation-modal" role="dialog" aria-modal="true" aria-labelledby="translationHeading">
+      <button type="button" class="translation-close" data-close-translations aria-label="Close translation options">&times;</button>
+      <div class="translation-hero">
+        <h2 id="translationHeading">Ver esta página en Español</h2>
+        <p>Abra una versión traducida de esta página en una nueva pestaña mediante Google Translate.</p>
+      </div>
+      <ul class="translation-options">
+        <li><button type="button" class="translation-option" data-translate="es" data-lang-name="Español">Español</button></li>
+      </ul>
+      <p class="translation-status" data-selection-status aria-live="polite"></p>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+  <script>
+    (function(){
+      const menuBtn = document.querySelector('.menu-btn');
+      const overlay = document.getElementById('menuOverlay');
+      const closeBtn = overlay.querySelector('.close-menu');
+      const focusableSelector = 'a, button, [tabindex]:not([tabindex="-1"])';
+
+      function openMenu(){
+        overlay.hidden = false;
+        requestAnimationFrame(() => overlay.classList.add('open'));
+        menuBtn.setAttribute('aria-expanded', 'true');
+        menuBtn.setAttribute('aria-label', 'Close menu');
+        closeBtn.focus();
+      }
+
+      function closeMenu(){
+        overlay.classList.remove('open');
+        overlay.hidden = true;
+        menuBtn.setAttribute('aria-expanded', 'false');
+        menuBtn.setAttribute('aria-label', 'Open menu');
+        menuBtn.focus();
+      }
+
+      menuBtn.addEventListener('click', () => {
+        if (overlay.classList.contains('open')) {
+          closeMenu();
+        } else {
+          openMenu();
+        }
+      });
+
+      closeBtn.addEventListener('click', closeMenu);
+
+      overlay.addEventListener('click', (event) => {
+        if (event.target === overlay) {
+          closeMenu();
+        }
+      });
+
+      overlay.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') {
+          closeMenu();
+          return;
+        }
+        if (event.key !== 'Tab' || !overlay.classList.contains('open')) {
+          return;
+        }
+        const focusable = Array.from(overlay.querySelectorAll(focusableSelector));
+        if (!focusable.length) {
+          return;
+        }
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (event.shiftKey && document.activeElement === first) {
+          event.preventDefault();
+          last.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault();
+          first.focus();
+        }
+      });
+    })();
+
+  </script>
+</body>
+</html>
