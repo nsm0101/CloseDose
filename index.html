@@ -92,9 +92,18 @@
       z-index: 1000;
       display: flex;
       align-items: center;
-      justify-content: flex-end;
+      justify-content: flex-start;
+      gap: clamp(12px, 3vw, 32px);
       padding: clamp(14px, 3vw, 26px) clamp(18px, 5vw, 48px) clamp(6px, 2vw, 14px);
       margin-bottom: 0;
+    }
+
+
+    .header-wordmark {
+      display: block;
+      width: min(650px, 60vw);
+      max-width: 100%;
+      height: auto;
     }
 
 
@@ -989,6 +998,7 @@
   <a class="skip-link" href="#calculator">Skip to calculator</a>
   <div class="wrap">
     <header>
+      <img src="images/CloseDose_ExtendedLogo.svg" alt="CloseDose" class="hero-wordmark header-wordmark" />
       <button class="menu-btn" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="siteMenu" aria-label="Open menu">
         <span class="label">Menu</span>
         <span class="hamburger" aria-hidden="true"><span></span><span></span><span></span></span>
