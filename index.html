@@ -23,6 +23,8 @@
       --inner-radius: 18px;
       --shadow-card: 0 6px 0 rgba(15, 44, 42, 0.18);
       --shadow-btn: 0 4px 0 rgba(15, 44, 42, 0.25);
+      --pill-max-width: 720px;
+      --disclaimer-footer-height: 0px;
     }
 
     *,
@@ -41,6 +43,10 @@
       min-height: 100vh;
       display: flex;
       flex-direction: column;
+    }
+
+    body.has-disclaimer-footer {
+      padding-bottom: var(--disclaimer-footer-height, 0px);
     }
 
     .visually-hidden {
@@ -195,6 +201,16 @@
       .menu-btn .label {
         display: none;
       }
+      .menu-btn.is-expanded {
+        width: auto;
+        height: auto;
+        padding: 12px 20px;
+        border-radius: 999px;
+        font-size: 0.95rem;
+      }
+      .menu-btn.is-expanded .label {
+        display: inline;
+      }
     }
 
     main {
@@ -228,14 +244,11 @@
       .hero-card {
         width: clamp(70vw, 85vw, 95vw);
       }
-      .card.disclaimer-pill {
-        width: auto;
-        max-width: min(92vw, 560px);
-        margin-left: auto;
-        margin-right: auto;
+      .pill-card {
+        max-width: min(var(--pill-max-width, 720px), 95vw);
       }
-      .card.disclaimer-pill.is-expanded {
-        width: 100%;
+      .pill-card.is-expanded {
+        max-width: min(var(--pill-max-width, 860px), 100vw);
       }
       .menu-btn {
         margin-left: 0;
@@ -276,8 +289,8 @@
       justify-content: center;
       gap: 14px;
       text-align: center;
-      width: fit-content;
-      max-width: 100%;
+      width: 100%;
+      max-width: var(--pill-max-width, 720px);
       margin: clamp(32px, 8vw, 64px) auto 0;
       transition: border-radius 0.3s ease, background 0.3s ease, box-shadow 0.3s ease, color 0.3s ease, padding 0.3s ease,
         width 0.3s ease;
@@ -315,7 +328,8 @@
       flex-direction: column;
       align-items: stretch;
       text-align: left;
-      width: min(860px, 100%);
+      width: 100%;
+      max-width: var(--pill-max-width, 860px);
       padding: clamp(24px, 4vw, 36px);
       gap: 18px;
     }
@@ -342,12 +356,26 @@
     .disclaimer-pill.is-expanded {
       background: linear-gradient(140deg, rgba(15, 44, 42, 0.92), rgba(18, 70, 67, 0.96));
       color: var(--white);
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      width: 100%;
+      max-width: none;
+      margin: 0;
+      border-radius: 0;
+      padding: clamp(28px, 5vw, 40px) clamp(24px, 5vw, 48px);
+      box-shadow: 0 -8px 0 rgba(15, 44, 42, 0.35);
+      z-index: 90;
     }
 
     .disclaimer-pill.is-expanded h2 {
       color: #ffffff;
       white-space: normal;
       letter-spacing: 0.08em;
+      max-width: min(1100px, 96vw);
+      margin-left: auto;
+      margin-right: auto;
     }
 
     .disclaimer-pill.is-expanded .disclaimer-updated {
@@ -358,6 +386,11 @@
       color: rgba(255, 255, 255, 0.92);
     }
 
+    .disclaimer-pill .disclaimer-content {
+      max-width: min(1100px, 96vw);
+      margin: 0 auto;
+    }
+
     .disclaimer-pill .disclaimer-seek-care {
       font-weight: 700;
       letter-spacing: 0.04em;
@@ -365,7 +398,6 @@
 
     .donate-pill {
       margin-top: clamp(20px, 6vw, 36px);
-      width: min(640px, 100%);
     }
 
     .donate-pill .pill-toggle {
@@ -450,7 +482,6 @@
     .donate-pill.is-expanded {
       background: linear-gradient(145deg, rgba(36, 166, 135, 0.94), rgba(18, 70, 67, 0.96));
       color: #ffffff;
-      width: min(720px, 100%);
     }
 
     .donate-pill.is-expanded .pill-toggle {
@@ -1095,23 +1126,6 @@
           </form>
         </section>
       </div>
-      <section class="card pill-card disclaimer-pill" aria-labelledby="disclaimer-heading" aria-expanded="false">
-        <h2 id="disclaimer-heading">Disclaimer</h2>
-        <div class="disclaimer-content" hidden>
-          <p>
-            This calculator is for educational support only and does not replace guidance from your pediatrician or pharmacist.
-            Always confirm dosing before administering medication.
-          </p>
-          <p>
-            CloseDose was created with the intention of providing dosing information of common over-the-counter medications for generally healthy children.
-          </p>
-          <p>
-            If your child is 0-2 months of age, has any complex past medical history or past surgical history, any previous reactions to administered medications, history of allergic reaction, or has significant personal or family history of liver/kidney disease please consult with your medical care team prior to use of CloseDose pediatric medication dosing calculator.
-          </p>
-          <p class="disclaimer-seek-care"><strong>When to seek care:</strong> ***</p>
-          <p class="disclaimer-updated">Updated 9.22.2025 • Nickolas Mancini, MD, MBA</p>
-        </div>
-      </section>
       <section class="card pill-card donate-pill" aria-labelledby="donate-heading" aria-expanded="false">
         <button type="button" class="pill-toggle" aria-expanded="false" aria-controls="donate-content">
           <span role="heading" aria-level="2" class="pill-title" id="donate-heading">Donate!</span>
@@ -1142,6 +1156,23 @@
           </ul>
         </div>
       </section>
+      <section class="card pill-card disclaimer-pill" aria-labelledby="disclaimer-heading" aria-expanded="false">
+        <h2 id="disclaimer-heading">Disclaimer</h2>
+        <div class="disclaimer-content" hidden>
+          <p>
+            This calculator is for educational support only and does not replace guidance from your pediatrician or pharmacist.
+            Always confirm dosing before administering medication.
+          </p>
+          <p>
+            CloseDose was created with the intention of providing dosing information of common over-the-counter medications for generally healthy children.
+          </p>
+          <p>
+            If your child is 0-2 months of age, has any complex past medical history or past surgical history, any previous reactions to administered medications, history of allergic reaction, or has significant personal or family history of liver/kidney disease please consult with your medical care team prior to use of CloseDose pediatric medication dosing calculator.
+          </p>
+          <p class="disclaimer-seek-care"><strong>When to seek care:</strong> ***</p>
+          <p class="disclaimer-updated">Updated 9.22.2025 • Nickolas Mancini, MD, MBA</p>
+        </div>
+      </section>
     </main>
   </div>
 
@@ -1161,8 +1192,27 @@
     (function () {
       const menuButton = document.querySelector('.menu-btn');
       const overlay = document.getElementById('siteMenu');
+      if (!menuButton || !overlay) {
+        return;
+      }
       const closeButton = overlay.querySelector('.close-menu');
+      if (!closeButton) {
+        return;
+      }
       const focusableSelector = 'a, button, [tabindex]:not([tabindex="-1"])';
+      const mobileQuery = window.matchMedia('(max-width: 640px)');
+
+      const updateMenuPresentation = () => {
+        if (!menuButton) {
+          return;
+        }
+        if (!mobileQuery.matches) {
+          menuButton.classList.add('is-expanded');
+          return;
+        }
+        const atTop = window.scrollY <= 6;
+        menuButton.classList.toggle('is-expanded', atTop);
+      };
 
       function openMenu() {
         overlay.hidden = false;
@@ -1218,6 +1268,15 @@
           first.focus();
         }
       });
+
+      updateMenuPresentation();
+      window.addEventListener('scroll', updateMenuPresentation, { passive: true });
+      window.addEventListener('resize', updateMenuPresentation);
+      if (typeof mobileQuery.addEventListener === 'function') {
+        mobileQuery.addEventListener('change', updateMenuPresentation);
+      } else if (typeof mobileQuery.addListener === 'function') {
+        mobileQuery.addListener(updateMenuPresentation);
+      }
     })();
 
     document.addEventListener('DOMContentLoaded', () => {
@@ -1310,6 +1369,19 @@
       const donatePill = document.querySelector('.donate-pill');
       const donateToggle = donatePill ? donatePill.querySelector('.pill-toggle') : null;
       const donateContent = donatePill ? donatePill.querySelector('.donate-content') : null;
+      const heroCard = document.querySelector('.hero-card');
+      const calculatorCard = document.querySelector('.card--calculator');
+
+      const updatePillMaxWidth = () => {
+        const heroWidth = heroCard ? heroCard.offsetWidth : 0;
+        const calculatorWidth = calculatorCard ? calculatorCard.offsetWidth : 0;
+        const targetWidth = Math.max(heroWidth, calculatorWidth);
+        if (targetWidth > 0) {
+          rootElement.style.setProperty('--pill-max-width', `${targetWidth}px`);
+        } else {
+          rootElement.style.removeProperty('--pill-max-width');
+        }
+      };
 
       const setDisclaimerState = (expanded) => {
         if (!disclaimerPill) {
@@ -1319,6 +1391,18 @@
         disclaimerPill.setAttribute('aria-expanded', String(expanded));
         if (disclaimerContent) {
           disclaimerContent.hidden = !expanded;
+        }
+        if (expanded) {
+          document.body.classList.add('has-disclaimer-footer');
+          requestAnimationFrame(() => {
+            if (!disclaimerPill.classList.contains('is-expanded')) {
+              return;
+            }
+            document.body.style.setProperty('--disclaimer-footer-height', `${disclaimerPill.offsetHeight}px`);
+          });
+        } else {
+          document.body.classList.remove('has-disclaimer-footer');
+          document.body.style.removeProperty('--disclaimer-footer-height');
         }
       };
 
@@ -1340,9 +1424,17 @@
         setDisclaimerState(reachedBottom);
       };
 
+      updatePillMaxWidth();
       updateDisclaimerState();
       window.addEventListener('scroll', updateDisclaimerState, { passive: true });
-      window.addEventListener('resize', updateDisclaimerState);
+      window.addEventListener('resize', () => {
+        updatePillMaxWidth();
+        updateDisclaimerState();
+      });
+      window.addEventListener('load', () => {
+        updatePillMaxWidth();
+        updateDisclaimerState();
+      });
 
       if (donateToggle && donateContent) {
         setDonateState(false);
