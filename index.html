@@ -34,7 +34,9 @@
     body {
       margin: 0;
       font-family: "Nunito", system-ui, -apple-system, "Segoe UI", sans-serif;
-      background: var(--bg) url("images/bg4k.png") auto;
+      background: var(--bg) url("/images/bg4k.png");
+      background-size: cover;
+      background-attachment: fixed;
       color: var(--ink-900);
       min-height: 100vh;
       display: flex;
@@ -672,6 +674,7 @@
       box-shadow: 0 6px 0 rgba(15, 44, 42, 0.6);
       background: var(--white);
       color: var(--ink-900);
+      appearance: textfield;
       -moz-appearance: textfield;
     }
 
