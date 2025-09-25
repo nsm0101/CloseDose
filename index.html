@@ -92,7 +92,7 @@
       z-index: 1000;
       display: flex;
       align-items: center;
-      justify-content: flex-start;
+      justify-content: center;
       gap: clamp(12px, 3vw, 32px);
       padding: clamp(14px, 3vw, 26px) clamp(18px, 5vw, 48px) clamp(6px, 2vw, 14px);
       margin-bottom: 0;
@@ -104,6 +104,7 @@
       width: min(650px, 60vw);
       max-width: 100%;
       height: auto;
+      margin: 0 auto;
     }
 
 
@@ -124,9 +125,11 @@
       cursor: pointer;
       box-shadow: var(--shadow-btn);
       transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
-      position: relative;
+      position: absolute;
+      top: 50%;
+      right: clamp(18px, 5vw, 48px);
+      transform: translateY(-50%);
       z-index: 1200;
-      margin-left: auto;
     }
 
     .menu-btn .hamburger {
@@ -170,6 +173,7 @@
         bottom: clamp(20px, 6vw, 40px);
         right: clamp(20px, 6vw, 40px);
         box-shadow: 0 8px 0 rgba(15, 44, 42, 0.35);
+        transform: none;
       }
     }
 
@@ -1008,7 +1012,6 @@
     <main>
       <div class="layout">
         <section class="card hero-card">
-          <img src="images/CloseDose_ExtendedLogo.svg" alt="CloseDose" class="hero-wordmark" />
           <h1>Pediatric dosing made simple</h1>
           <p>
             CloseDose helps caregivers calculate safe acetaminophen and ibuprofen doses for infants and children. Select an age range,
