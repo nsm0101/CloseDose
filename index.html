@@ -119,25 +119,37 @@
     .menu-btn {
       appearance: none;
       border: var(--card-border);
-      border-radius: 999px;
+      border-radius: 50%;
       background: var(--white);
       color: var(--ink-900);
       font-weight: 900;
       letter-spacing: 0.14em;
       text-transform: uppercase;
-      padding: 12px 20px;
-      font-size: 0.95rem;
+      padding: 12px;
+      font-size: 0;
       display: inline-flex;
       align-items: center;
+      justify-content: center;
       gap: 12px;
       cursor: pointer;
       box-shadow: var(--shadow-btn);
-      transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
-      position: absolute;
-      top: 50%;
+      transition:
+        transform 0.12s ease,
+        box-shadow 0.12s ease,
+        background 0.12s ease,
+        width 0.18s ease,
+        padding 0.18s ease,
+        border-radius 0.18s ease;
+      position: fixed;
+      top: clamp(16px, 3vw, 32px);
       right: clamp(18px, 5vw, 48px);
-      transform: translateY(-50%);
       z-index: 1200;
+      width: 64px;
+      height: 64px;
+    }
+
+    .menu-btn .label {
+      display: none;
     }
 
     .menu-btn .hamburger {
@@ -172,16 +184,27 @@
       box-shadow: inset 0 4px 8px rgba(15, 44, 42, 0.25);
     }
 
+    .menu-btn.is-expanded {
+      width: auto;
+      height: auto;
+      padding: 12px 20px;
+      border-radius: 999px;
+      font-size: 0.95rem;
+    }
+
+    .menu-btn.is-expanded .label {
+      display: inline;
+    }
+
     @media (max-width: 960px) {
       header {
         padding-inline: clamp(16px, 5vw, 32px);
       }
       .menu-btn {
-        position: fixed;
+        top: auto;
         bottom: clamp(20px, 6vw, 40px);
         right: clamp(20px, 6vw, 40px);
         box-shadow: 0 8px 0 rgba(15, 44, 42, 0.35);
-        transform: none;
       }
     }
 
@@ -189,27 +212,6 @@
       header {
         background: transparent !important;
         padding: clamp(10px, 3vw, 18px) clamp(16px, 6vw, 28px) clamp(4px, 2vw, 12px);
-      }
-      .menu-btn {
-        padding: 12px;
-        width: 64px;
-        height: 64px;
-        justify-content: center;
-        border-radius: 50%;
-        font-size: 0;
-      }
-      .menu-btn .label {
-        display: none;
-      }
-      .menu-btn.is-expanded {
-        width: auto;
-        height: auto;
-        padding: 12px 20px;
-        border-radius: 999px;
-        font-size: 0.95rem;
-      }
-      .menu-btn.is-expanded .label {
-        display: inline;
       }
     }
 
@@ -1204,10 +1206,6 @@
 
       const updateMenuPresentation = () => {
         if (!menuButton) {
-          return;
-        }
-        if (!mobileQuery.matches) {
-          menuButton.classList.add('is-expanded');
           return;
         }
         const atTop = window.scrollY <= 6;
