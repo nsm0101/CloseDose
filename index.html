@@ -24,7 +24,6 @@
       --shadow-card: 0 6px 0 rgba(15, 44, 42, 0.18);
       --shadow-btn: 0 4px 0 rgba(15, 44, 42, 0.25);
       --pill-max-width: 720px;
-      --disclaimer-footer-height: 0px;
     }
 
     *,
@@ -45,8 +44,8 @@
       flex-direction: column;
     }
 
-    body.has-disclaimer-footer {
-      padding-bottom: var(--disclaimer-footer-height, 0px);
+    body.is-disclaimer-open {
+      overflow: hidden;
     }
 
     .visually-hidden {
@@ -336,18 +335,83 @@
       gap: 18px;
     }
 
-    .disclaimer-pill {
-      background: rgba(255, 255, 255, 0.96);
+    .card--disclaimer {
+      margin: clamp(32px, 8vw, 64px) auto 0;
+      display: grid;
+      gap: 18px;
+      position: relative;
+      overflow: hidden;
     }
 
-    .disclaimer-pill .disclaimer-content {
+    .card--disclaimer:focus-visible {
+      outline: 3px solid rgba(18, 70, 67, 0.45);
+      outline-offset: 8px;
+    }
+
+    .card--disclaimer h2 {
+      margin: 0;
+      font-size: clamp(1rem, 2.4vw, 1.25rem);
+      font-weight: 900;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--teal-600);
+    }
+
+    .card--disclaimer .disclaimer-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      width: min(960px, 100%);
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .card--disclaimer .disclaimer-close {
+      appearance: none;
+      border: none;
+      background: rgba(18, 70, 67, 0.08);
+      color: var(--teal-600);
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      padding: 8px 18px;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+      display: none;
+      white-space: nowrap;
+    }
+
+    .card--disclaimer .disclaimer-close:hover,
+    .card--disclaimer .disclaimer-close:focus-visible {
+      background: rgba(18, 70, 67, 0.16);
+      outline: none;
+      box-shadow: 0 4px 0 rgba(15, 44, 42, 0.25);
+    }
+
+    .card--disclaimer .disclaimer-close:active {
+      transform: translateY(1px);
+      box-shadow: inset 0 4px 8px rgba(15, 44, 42, 0.18);
+    }
+
+    .card--disclaimer .disclaimer-content {
       display: grid;
       gap: 14px;
       text-align: left;
-      width: 100%;
+      width: min(960px, 100%);
+      margin-left: auto;
+      margin-right: auto;
     }
 
-    .disclaimer-pill .disclaimer-updated {
+    .card--disclaimer p {
+      margin: 0;
+      font-size: 0.98rem;
+      line-height: 1.55;
+      color: var(--ink-900);
+    }
+
+    .card--disclaimer .disclaimer-updated {
       font-size: 0.85rem;
       font-weight: 700;
       letter-spacing: 0.06em;
@@ -355,23 +419,42 @@
       color: var(--ink-700);
     }
 
-    .disclaimer-pill.is-expanded {
-      background: linear-gradient(140deg, rgba(15, 44, 42, 0.92), rgba(18, 70, 67, 0.96));
-      color: var(--white);
-      position: fixed;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      width: 100%;
-      max-width: none;
-      margin: 0;
-      border-radius: 0;
-      padding: clamp(28px, 5vw, 40px) clamp(24px, 5vw, 48px);
-      box-shadow: 0 -8px 0 rgba(15, 44, 42, 0.35);
-      z-index: 90;
+    .card--disclaimer .disclaimer-seek-care {
+      font-weight: 700;
+      letter-spacing: 0.04em;
     }
 
-    .disclaimer-pill.is-expanded h2 {
+    .card--disclaimer.is-expanded {
+      background: linear-gradient(140deg, rgba(15, 44, 42, 0.95), rgba(18, 70, 67, 0.98));
+      color: var(--white);
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      max-width: none;
+      height: 100vh;
+      margin: 0;
+      border-radius: 0;
+      padding: clamp(32px, 6vw, 64px) clamp(24px, 6vw, 80px);
+      box-shadow: 0 18px 48px rgba(15, 44, 42, 0.5);
+      z-index: 1100;
+      display: flex;
+      flex-direction: column;
+      gap: clamp(24px, 4vw, 36px);
+      overflow-y: auto;
+    }
+
+    .card--disclaimer.is-expanded .disclaimer-header,
+    .card--disclaimer.is-expanded .disclaimer-content {
+      width: min(960px, 100%);
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .card--disclaimer.is-expanded .disclaimer-header {
+      align-items: flex-start;
+    }
+
+    .card--disclaimer.is-expanded h2 {
       color: #ffffff;
       white-space: normal;
       letter-spacing: 0.08em;
@@ -380,22 +463,30 @@
       margin-right: auto;
     }
 
-    .disclaimer-pill.is-expanded .disclaimer-updated {
+    .card--disclaimer.is-expanded .disclaimer-close {
+      display: inline-flex;
+      align-self: flex-start;
+      background: rgba(255, 255, 255, 0.14);
+      color: #ffffff;
+      box-shadow: 0 6px 20px rgba(15, 44, 42, 0.35);
+    }
+
+    .card--disclaimer.is-expanded .disclaimer-close:hover,
+    .card--disclaimer.is-expanded .disclaimer-close:focus-visible {
+      background: rgba(255, 255, 255, 0.22);
+      box-shadow: 0 8px 24px rgba(15, 44, 42, 0.4);
+    }
+
+    .card--disclaimer.is-expanded .disclaimer-close:active {
+      box-shadow: inset 0 4px 8px rgba(15, 44, 42, 0.3);
+    }
+
+    .card--disclaimer.is-expanded .disclaimer-updated {
       color: rgba(255, 255, 255, 0.86);
     }
 
-    .disclaimer-pill.is-expanded p {
+    .card--disclaimer.is-expanded p {
       color: rgba(255, 255, 255, 0.92);
-    }
-
-    .disclaimer-pill .disclaimer-content {
-      max-width: min(1100px, 96vw);
-      margin: 0 auto;
-    }
-
-    .disclaimer-pill .disclaimer-seek-care {
-      font-weight: 700;
-      letter-spacing: 0.04em;
     }
 
     .donate-pill {
@@ -1160,8 +1251,13 @@
           </ul>
         </div>
       </section>
-      <section class="card pill-card disclaimer-pill" aria-labelledby="disclaimer-heading" aria-expanded="false">
-        <h2 id="disclaimer-heading">Disclaimer</h2>
+      <section class="card card--disclaimer" aria-labelledby="disclaimer-heading" aria-expanded="false" tabindex="-1">
+        <div class="disclaimer-header">
+          <h2 id="disclaimer-heading">Disclaimer</h2>
+          <button type="button" class="disclaimer-close" aria-label="Close disclaimer">
+            Close
+          </button>
+        </div>
         <div class="disclaimer-content" hidden>
           <p>
             This calculator is for educational support only and does not replace guidance from your pediatrician or pharmacist.
@@ -1364,8 +1460,9 @@
         setUnit(unitSelect.value || 'lbs');
       }
 
-      const disclaimerPill = document.querySelector('.disclaimer-pill');
-      const disclaimerContent = disclaimerPill ? disclaimerPill.querySelector('.disclaimer-content') : null;
+      const disclaimerCard = document.querySelector('.card--disclaimer');
+      const disclaimerContent = disclaimerCard ? disclaimerCard.querySelector('.disclaimer-content') : null;
+      const disclaimerClose = disclaimerCard ? disclaimerCard.querySelector('.disclaimer-close') : null;
       const rootElement = document.documentElement;
       const donatePill = document.querySelector('.donate-pill');
       const donateToggle = donatePill ? donatePill.querySelector('.pill-toggle') : null;
@@ -1384,26 +1481,38 @@
         }
       };
 
-      const setDisclaimerState = (expanded) => {
-        if (!disclaimerPill) {
+      let disclaimerDismissedManually = false;
+
+      const setDisclaimerState = (expanded, { manual = false } = {}) => {
+        if (!disclaimerCard) {
           return;
         }
-        disclaimerPill.classList.toggle('is-expanded', expanded);
-        disclaimerPill.setAttribute('aria-expanded', String(expanded));
+        disclaimerCard.classList.toggle('is-expanded', expanded);
+        disclaimerCard.setAttribute('aria-expanded', String(expanded));
         if (disclaimerContent) {
           disclaimerContent.hidden = !expanded;
         }
         if (expanded) {
-          document.body.classList.add('has-disclaimer-footer');
-          requestAnimationFrame(() => {
-            if (!disclaimerPill.classList.contains('is-expanded')) {
-              return;
-            }
-            document.body.style.setProperty('--disclaimer-footer-height', `${disclaimerPill.offsetHeight}px`);
-          });
+          disclaimerDismissedManually = false;
+          document.body.classList.add('is-disclaimer-open');
+          if (disclaimerClose) {
+            requestAnimationFrame(() => {
+              if (disclaimerCard.classList.contains('is-expanded')) {
+                disclaimerClose.focus({ preventScroll: true });
+              }
+            });
+          }
         } else {
-          document.body.classList.remove('has-disclaimer-footer');
-          document.body.style.removeProperty('--disclaimer-footer-height');
+          document.body.classList.remove('is-disclaimer-open');
+          const shouldRestoreFocus = manual || document.activeElement === disclaimerClose;
+          if (manual) {
+            disclaimerDismissedManually = true;
+          }
+          if (shouldRestoreFocus) {
+            requestAnimationFrame(() => {
+              disclaimerCard.focus({ preventScroll: true });
+            });
+          }
         }
       };
 
@@ -1418,11 +1527,19 @@
       };
 
       const updateDisclaimerState = () => {
-        if (!disclaimerPill) {
+        if (!disclaimerCard) {
           return;
         }
         const reachedBottom = window.innerHeight + window.scrollY >= rootElement.scrollHeight - 2;
-        setDisclaimerState(reachedBottom);
+        const isExpanded = disclaimerCard.classList.contains('is-expanded');
+        if (reachedBottom && !isExpanded && !disclaimerDismissedManually) {
+          setDisclaimerState(true);
+        } else if (!reachedBottom && isExpanded) {
+          setDisclaimerState(false);
+        }
+        if (!reachedBottom && disclaimerDismissedManually) {
+          disclaimerDismissedManually = false;
+        }
       };
 
       updatePillMaxWidth();
@@ -1444,6 +1561,18 @@
           setDonateState(!isExpanded);
         });
       }
+
+      if (disclaimerClose) {
+        disclaimerClose.addEventListener('click', () => {
+          setDisclaimerState(false, { manual: true });
+        });
+      }
+
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && disclaimerCard && disclaimerCard.classList.contains('is-expanded')) {
+          setDisclaimerState(false, { manual: true });
+        }
+      });
     });
   </script>
 </body>
