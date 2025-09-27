@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="color-scheme" content="light dark" />
+  <meta name="color-scheme" content="light" />
   <title>CloseDose – Medication Guides</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -20,13 +20,12 @@
   <meta name="twitter:description" content="Browse pediatric acetaminophen/ibuprofen products, concentrations, and safety tips." />
   <meta name="twitter:image" content="images/og-2400.png" />
 
-  <link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32.png">
-  <link rel="icon" type="image/png" sizes="192x192" href="images/favicon-192.png">
-  <link rel="apple-touch-icon" sizes="180x180" href="images/logo-teal.png" media="(prefers-color-scheme: light)">
-  <link rel="apple-touch-icon" sizes="180x180" href="images/logo-dark.png" media="(prefers-color-scheme: dark)">
-  <meta name="theme-color" content="#24a687" media="(prefers-color-scheme: light)">
-  <meta name="theme-color" content="#0f2c2a" media="(prefers-color-scheme: dark)">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png">
+  <link rel="apple-touch-icon" href="/logo-light.svg">
+  <link rel="apple-touch-icon" href="/logo-dark.svg" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#24a687">
 
   <style>
     :root {
@@ -55,8 +54,9 @@
     body {
       margin: 0;
       font-family: "Nunito", system-ui, -apple-system, "Segoe UI", sans-serif;
-      background: var(--bg) url("images/light-bg.png") repeat;
-      background-size: 520px auto;
+      background: var(--bg) url("images/bg4k.png");
+      background-size: cover;
+      background-attachment: fixed;
       color: var(--ink-900);
       min-height: 100vh;
       display: flex;
@@ -391,23 +391,6 @@
       padding: clamp(18px, 3vw, 26px);
       display: grid;
       gap: 16px;
-    }
-
-    @media (prefers-color-scheme: dark) {
-      body {
-        background: #07201d;
-        color: #e6f3f1;
-      }
-      .card {
-        background: rgba(8, 32, 29, 0.8);
-      }
-      .guide-card {
-        background: rgba(8, 32, 29, 0.7);
-      }
-      .menu-overlay,
-      .translation-overlay {
-        background: rgba(7, 32, 29, 0.94);
-      }
     }
 
     .carousel-track {
