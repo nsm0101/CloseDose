@@ -7,7 +7,14 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
-  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png">
+  <link rel="apple-touch-icon" href="/logo-light.svg">
+  <link rel="apple-touch-icon" href="/logo-dark.svg" media="(prefers-color-scheme: dark)">
+  <meta property="og:image" content="/images/OG-image.png">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:alt" content="CloseDose pediatric dosing calculator preview">
   <style>
     :root {
       --teal-400: #24a687;
@@ -213,37 +220,19 @@
     main {
       flex: 1;
       width: 100%;
+      display: flex;
+      justify-content: center;
       padding: 0 clamp(18px, 5vw, 52px) clamp(48px, 8vw, 80px);
       box-sizing: border-box;
     }
 
     .layout {
-      width: min(1100px, 100%);
+      width: min(820px, 100%);
       margin: 0 auto;
-      display: grid;
-      gap: clamp(24px, 4vw, 40px);
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      align-items: start;
-      justify-items: stretch;
-    }
-
-    @media (max-width: 960px) {
-      .layout {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: clamp(20px, 5vw, 32px);
-      }
-      .card {
-        width: clamp(60vw, 78vw, 95vw);
-        max-width: 95vw;
-      }
-      .hero-card {
-        width: clamp(70vw, 85vw, 95vw);
-      }
-      .menu-btn {
-        margin-left: 0;
-      }
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: clamp(32px, 6vw, 48px);
     }
 
     .card {
@@ -253,26 +242,17 @@
       box-shadow: var(--shadow-card);
       padding: clamp(24px, 4vw, 36px);
       width: 100%;
-      max-width: 100%;
-      margin: 0 auto;
+      max-width: min(760px, 100%);
+      margin: 0;
     }
 
-    .hero-card {
-      display: grid;
-      gap: clamp(20px, 3vw, 30px);
-      position: relative;
-    }
-
-    .hero-card .hero-wordmark {
-      justify-self: center;
-      align-self: start;
-      width: min(320px, 60%);
-      max-width: 100%;
-      height: auto;
+    .card.card--calculator,
+    .donate-card,
+    .card--disclaimer {
+      align-self: stretch;
     }
 
     .donate-card {
-      margin: clamp(32px, 8vw, 64px) auto 0;
       background: linear-gradient(145deg, rgba(36, 166, 135, 0.94), rgba(18, 70, 67, 0.96));
       color: #ffffff;
       border-color: rgba(255, 255, 255, 0.65);
@@ -351,11 +331,27 @@
     }
 
     .card--disclaimer {
-      margin: clamp(32px, 8vw, 64px) auto 0;
       display: grid;
       gap: 18px;
       position: relative;
       overflow: hidden;
+    }
+
+    .card--disclaimer > *:not(.trust-and-safety_background__A22kJ) {
+      position: relative;
+      z-index: 1;
+    }
+
+    .card--disclaimer .trust-and-safety_background__A22kJ {
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(circle at bottom, rgba(18, 70, 67, 0.94), rgba(15, 44, 42, 0.98));
+      opacity: 0;
+      transform: translate3d(0, 10%, 0);
+      transition: opacity 0.35s ease, transform 0.35s ease;
+      pointer-events: none;
+      z-index: 0;
+      visibility: hidden;
     }
 
     .card--disclaimer:focus-visible {
@@ -460,6 +456,12 @@
       overflow-y: auto;
     }
 
+    .card--disclaimer.is-expanded .trust-and-safety_background__A22kJ {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+      visibility: visible;
+    }
+
     .card--disclaimer.is-expanded .disclaimer-header,
     .card--disclaimer.is-expanded .disclaimer-content {
       width: min(960px, 100%);
@@ -504,94 +506,6 @@
 
     .card--disclaimer.is-expanded p {
       color: rgba(255, 255, 255, 0.92);
-    }
-
-    .hero-card h1 {
-      margin: 0;
-      font-size: clamp(2rem, 4vw, 2.85rem);
-      font-weight: 900;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      font-family: "Gotham", "Nunito", system-ui, -apple-system, "Segoe UI", sans-serif;
-    }
-
-    .hero-card p {
-      margin: 0;
-      font-size: 1.05rem;
-      line-height: 1.6;
-    }
-
-    .hero-card .mission-text {
-      font-weight: 800;
-      color: var(--teal-600);
-    }
-
-    .hero-card .mission-support {
-      color: var(--teal-600);
-    }
-
-    .cta-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-    }
-
-    .pill-link {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      padding: 12px 22px;
-      border-radius: 999px;
-      border: var(--card-border);
-      background: var(--teal-400);
-      color: var(--white);
-      text-decoration: none;
-      font-weight: 800;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      box-shadow: var(--shadow-btn);
-      transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
-    }
-
-    .pill-link:hover,
-    .pill-link:focus-visible {
-      outline: none;
-      background: var(--teal-500);
-      box-shadow: 0 5px 0 rgba(15, 44, 42, 0.3);
-    }
-
-    .pill-link:active {
-      transform: translateY(2px);
-      box-shadow: inset 0 4px 8px rgba(15, 44, 42, 0.3);
-    }
-
-    .feature-grid {
-      display: grid;
-      gap: 14px;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    }
-
-    .feature-card {
-      background: #e4f4f0;
-      border: 2px solid var(--ink-900);
-      border-radius: 20px;
-      box-shadow: 0 4px 0 rgba(15, 44, 42, 0.18);
-      padding: 16px 18px;
-      display: grid;
-      gap: 6px;
-    }
-
-    .feature-card h2 {
-      margin: 0;
-      font-size: 1.1rem;
-      font-weight: 800;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-    }
-
-    .feature-card p {
-      margin: 0;
-      font-size: 0.95rem;
     }
 
     .card--calculator {
@@ -1039,7 +953,7 @@
   <a class="skip-link" href="#calculator">Skip to calculator</a>
   <div class="wrap">
     <header>
-      <img src="images/CloseDose_ExtendedLogo.svg" alt="CloseDose" class="hero-wordmark header-wordmark" />
+      <img src="images/CloseDose_ExtendedLogo.svg" alt="CloseDose" class="header-wordmark" />
       <button class="menu-btn" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="siteMenu" aria-label="Open menu">
         <span class="label">Menu</span>
         <span class="hamburger" aria-hidden="true"><span></span><span></span><span></span></span>
@@ -1048,38 +962,6 @@
 
     <main>
       <div class="layout">
-        <section class="card hero-card">
-          <h1>Pediatric Dosing made simple</h1>
-          <p>
-            CloseDose helps caregivers calculate safe acetaminophen and ibuprofen doses for infants and children. Select an age range,
-            enter weight, and receive easy-to-follow guidance—backed by pediatric expertise.
-          </p>
-          <p class="mission-text">
-            Our goal is to provide simple, accurate, individualized, pediatric, weight-based dosing calculators for common over-the-counter medications.
-          </p>
-          <p class="mission-support">
-            CloseDose is the solution to inaccurate dosing due to unclear medication guidance. Too busy trying to keep a sibling under control at your child's doctor's appointment and forget the ibuprofen dose recommended when you get home? Confused by range-based dosing tables provided on medication boxes or tired of searching for outdated handouts on old discharge paperwork? All you need to enter is the patient's age and weight and you can determine their personalized dosing options in seconds.
-          </p>
-          <div class="cta-row">
-            <a class="pill-link" href="#calculator">Open Calculator</a>
-            <a class="pill-link" href="medication-guides.html">Medication Guides</a>
-          </div>
-          <div class="feature-grid">
-            <article class="feature-card">
-              <h2>Quick Age Cards</h2>
-              <p>Tap the age buttons to see tailored dosing instructions, warnings, and next steps.</p>
-            </article>
-            <article class="feature-card">
-              <h2>Weight-Based</h2>
-              <p>Enter pounds or kilograms—CloseDose converts automatically and applies safety caps.</p>
-            </article>
-            <article class="feature-card">
-              <h2>Caregiver Tips</h2>
-              <p>Review practical reminders on alternating medications, logging doses, and red flags.</p>
-            </article>
-          </div>
-        </section>
-
         <section class="card card--calculator" aria-labelledby="calculator-title">
           <div class="calculator-header">
             <div class="brand-name" id="calculator-title">Fever/Pain Medication Calculator</div>
@@ -1128,13 +1010,12 @@
             <div id="results" aria-live="polite"></div>
           </form>
         </section>
-      </div>
-      <section class="card donate-card" aria-labelledby="donate-heading">
-        <div class="donate-header">
-          <h2 id="donate-heading">Donate!</h2>
-          <p class="donate-subtitle">Help keep CloseDose free for families.</p>
-        </div>
-        <div class="donate-content">
+        <section class="card donate-card" aria-labelledby="donate-heading">
+          <div class="donate-header">
+            <h2 id="donate-heading">Donate!</h2>
+            <p class="donate-subtitle">Help keep CloseDose free for families.</p>
+          </div>
+          <div class="donate-content">
           <p class="donate-intro">
             CloseDose remains a free resource thanks to support from our community. If you are able, please consider donating
             through one of the options below—every contribution helps us maintain and expand trusted pediatric dosing tools.
@@ -1157,15 +1038,16 @@
             </li>
           </ul>
         </div>
-      </section>
-      <section class="card card--disclaimer" aria-labelledby="disclaimer-heading" aria-expanded="false" tabindex="-1">
-        <div class="disclaimer-header">
-          <h2 id="disclaimer-heading">Disclaimer</h2>
-          <button type="button" class="disclaimer-close" aria-label="Close disclaimer">
-            Close
-          </button>
-        </div>
-        <div class="disclaimer-content" hidden>
+        </section>
+        <section class="card card--disclaimer" aria-labelledby="disclaimer-heading" aria-expanded="false" tabindex="-1">
+          <div class="trust-and-safety_background__A22kJ" data-testid="value-prop" aria-hidden="true"></div>
+          <div class="disclaimer-header">
+            <h2 id="disclaimer-heading">Disclaimer</h2>
+            <button type="button" class="disclaimer-close" aria-label="Close disclaimer">
+              Close
+            </button>
+          </div>
+          <div class="disclaimer-content" hidden>
           <p>
             This calculator is for educational support only and does not replace guidance from your pediatrician or pharmacist.
             Always confirm dosing before administering medication.
@@ -1179,7 +1061,8 @@
           <p class="disclaimer-seek-care"><strong>When to seek care:</strong> ***</p>
           <p class="disclaimer-updated">Updated 9.22.2025 • Nickolas Mancini, MD, MBA</p>
         </div>
-      </section>
+        </section>
+      </div>
     </main>
   </div>
 
@@ -1370,6 +1253,9 @@
       const disclaimerCard = document.querySelector('.card--disclaimer');
       const disclaimerContent = disclaimerCard ? disclaimerCard.querySelector('.disclaimer-content') : null;
       const disclaimerClose = disclaimerCard ? disclaimerCard.querySelector('.disclaimer-close') : null;
+      const disclaimerOverlay = disclaimerCard
+        ? disclaimerCard.querySelector('.trust-and-safety_background__A22kJ')
+        : null;
       const rootElement = document.documentElement;
       const donateCard = document.querySelector('.donate-card');
 
@@ -1399,6 +1285,9 @@
         disclaimerCard.setAttribute('aria-expanded', String(expanded));
         if (disclaimerContent) {
           disclaimerContent.hidden = !expanded;
+        }
+        if (disclaimerOverlay) {
+          disclaimerOverlay.setAttribute('aria-hidden', String(!expanded));
         }
         if (expanded) {
           disclaimerDismissedManually = false;
