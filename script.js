@@ -143,7 +143,11 @@ function calculateDose() {
       <article class="result-card">
         <h3>Acetaminophen (160 mg / 5 mL)</h3>
         <p>Give ${acetaMl.toFixed(1)} mL (${acetaMg.toFixed(0)} mg) every 6 hours as needed for fever/pain.</p>
-        <p class="dose-note">Maximum single dose for this age group is ${ACETA_MAX_SINGLE_DOSE_MG} mg of acetaminophen every 6 hours.</p>
+        ${renderWarning(
+          '',
+          'Maximum single dose for this age group is 1000 mg of acetaminophen every 6 hours.',
+          'warning-card--orange'
+        )}
         ${
           acetaCapped
             ? renderWarning(
@@ -159,9 +163,13 @@ function calculateDose() {
     group.push(`
       <article class="result-card">
         <h3>Ibuprofen (oral)</h3>
-        <p><strong>Infant's 50 mg / 1.25 mL:</strong> Give ${ibuMl50.toFixed(1)} mL (${ibuMg.toFixed(0)} mg) every 6 hours as needed for fever/pain.</p>
         <p><strong>Children's 100 mg / 5 mL:</strong> Give ${ibuMl100.toFixed(1)} mL (${ibuMg.toFixed(0)} mg) every 6 hours as needed for fever/pain.</p>
-        <p class="dose-note">Maximum single dose for this age group is ${IBU_MAX_SINGLE_DOSE_MG} mg of ibuprofen every 6 hours.</p>
+        <p><strong>Infant's 50 mg / 1.25 mL:</strong> Give ${ibuMl50.toFixed(1)} mL (${ibuMg.toFixed(0)} mg) every 6 hours as needed for fever/pain.</p>
+        ${renderWarning(
+          '',
+          'Maximum single dose for this age group is 800 mg of ibuprofen every 6 hours.',
+          'warning-card--orange'
+        )}
         ${
           ibuCapped
             ? renderWarning(
