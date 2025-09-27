@@ -26,13 +26,12 @@
   />
   <meta name="twitter:image" content="images/og-2400.png" />
 
-  <link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32.png">
-  <link rel="icon" type="image/png" sizes="192x192" href="images/favicon-192.png">
-  <link rel="apple-touch-icon" sizes="180x180" href="images/logo-teal.png" media="(prefers-color-scheme: light)">
-  <link rel="apple-touch-icon" sizes="180x180" href="images/logo-dark.png" media="(prefers-color-scheme: dark)">
-  <meta name="theme-color" content="#24a687" media="(prefers-color-scheme: light)">
-  <meta name="theme-color" content="#0f2c2a" media="(prefers-color-scheme: dark)">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png">
+  <link rel="apple-touch-icon" href="/logo-light.svg">
+  <link rel="apple-touch-icon" href="/logo-dark.svg" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#24a687">
 
   <style>
     :root {
@@ -46,7 +45,7 @@
       --bg-accent: rgba(36, 166, 135, 0.14);
       --white: #ffffff;
       --card-bg: rgba(255, 255, 255, 0.95);
-      --card-border: 3px solid rgba(18, 58, 55, 0.16);
+      --card-border: 3px solid var(--ink-900);
       --card-radius: 26px;
       --shadow-card: 0 14px 42px rgba(18, 58, 55, 0.15);
       --shadow-btn: 0 4px 0 rgba(15, 44, 42, 0.2);
@@ -61,8 +60,9 @@
     body {
       margin: 0;
       font-family: "Nunito", system-ui, -apple-system, "Segoe UI", sans-serif;
-      background: var(--bg) url("images/light-bg.png") repeat;
-      background-size: 520px auto;
+      background: var(--bg) url("images/bg4k.png");
+      background-size: cover;
+      background-attachment: fixed;
       color: var(--ink-900);
       min-height: 100vh;
       display: flex;
@@ -162,11 +162,6 @@
       height: 64px;
     }
 
-    .menu-btn:focus-visible {
-      outline: 3px solid var(--teal-400);
-      outline-offset: 4px;
-    }
-
     .menu-btn .label {
       display: none;
     }
@@ -192,11 +187,35 @@
     }
 
     .menu-btn .hamburger span:nth-child(2) {
-      top: calc(50% - 1.5px);
+      top: 6px;
     }
 
     .menu-btn .hamburger span:nth-child(3) {
-      bottom: 0;
+      top: 12px;
+    }
+
+    .menu-btn:hover,
+    .menu-btn:focus-visible {
+      background: #f0faf6;
+      box-shadow: 0 5px 0 rgba(15, 44, 42, 0.35);
+      outline: none;
+    }
+
+    .menu-btn:active {
+      transform: translateY(2px);
+      box-shadow: inset 0 4px 8px rgba(15, 44, 42, 0.25);
+    }
+
+    .menu-btn.is-expanded {
+      width: auto;
+      height: auto;
+      padding: 12px 20px;
+      border-radius: 999px;
+      font-size: 0.95rem;
+    }
+
+    .menu-btn.is-expanded .label {
+      display: inline;
     }
 
     main {
@@ -252,16 +271,16 @@
       text-decoration: none;
       color: inherit;
       background: linear-gradient(160deg, var(--card-bg), rgba(255, 255, 255, 0.86));
-      border: 2px solid rgba(18, 58, 55, 0.12);
-      box-shadow: 0 16px 34px rgba(18, 58, 55, 0.12);
+      border: var(--card-border);
+      box-shadow: 0 16px 34px rgba(18, 58, 55, 0.18);
       transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
     }
 
     .donation-card:hover,
     .donation-card:focus-visible {
       transform: translateY(-4px);
-      border-color: rgba(36, 166, 135, 0.42);
-      box-shadow: 0 22px 42px rgba(18, 58, 55, 0.18);
+      border-color: var(--teal-500);
+      box-shadow: 0 22px 42px rgba(18, 58, 55, 0.2);
       outline: none;
     }
 
@@ -300,11 +319,11 @@
     }
 
     .impact-card {
-      background: rgba(255, 255, 255, 0.88);
+      background: rgba(255, 255, 255, 0.9);
       border-radius: 24px;
-      border: 2px solid rgba(18, 58, 55, 0.14);
+      border: var(--card-border);
       padding: clamp(24px, 4vw, 36px);
-      box-shadow: 0 18px 38px rgba(18, 58, 55, 0.12);
+      box-shadow: var(--shadow-card);
       display: grid;
       gap: 16px;
     }
@@ -327,14 +346,14 @@
       position: fixed;
       inset: 0;
       z-index: 1400;
-      background: rgba(12, 31, 38, 0.52);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 32px;
+      background: rgba(245, 249, 249, 0.96);
+      backdrop-filter: blur(3px) saturate(1.02);
+      display: grid;
+      place-items: center;
+      padding: 24px;
       opacity: 0;
       pointer-events: none;
-      transition: opacity 0.2s ease;
+      transition: opacity 0.18s ease;
     }
 
     .menu-overlay.open {
@@ -343,67 +362,69 @@
     }
 
     .menu-panel {
-      background: var(--card-bg);
-      border-radius: 28px;
+      width: min(420px, 92vw);
+      background: #fff;
       border: var(--card-border);
-      padding: clamp(24px, 4vw, 36px);
-      box-shadow: var(--shadow-card);
-      width: min(420px, 100%);
+      border-radius: 24px;
+      box-shadow: 0 6px 0 var(--ink-900);
+      padding: 30px 28px;
+      transform: translateY(8px);
+      transition: transform 0.18s ease;
       display: grid;
-      gap: 24px;
+      gap: 18px;
+    }
+
+    .menu-overlay.open .menu-panel {
+      transform: translateY(0);
     }
 
     .menu-links {
       display: grid;
-      gap: 12px;
+      gap: 16px;
     }
 
     .menu-links a {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      padding: 14px 20px;
-      border-radius: 999px;
-      border: 2px solid rgba(18, 58, 55, 0.2);
-      font-weight: 700;
       text-decoration: none;
       color: var(--ink-900);
-      transition: background 0.18s ease, transform 0.18s ease, color 0.18s ease;
-    }
-
-    .menu-links a:hover,
-    .menu-links a:focus-visible {
-      background: rgba(36, 166, 135, 0.18);
-      transform: translateY(-2px);
-      outline: none;
+      font-weight: 900;
+      letter-spacing: 0.06em;
+      text-align: center;
+      font-size: clamp(1.2rem, 2.8vw, 1.6rem);
+      padding: 10px 4px;
+      border-radius: 16px;
+      transition: background 0.12s ease, color 0.12s ease;
     }
 
     .menu-links a[aria-current="page"] {
-      background: rgba(36, 166, 135, 0.18);
-      border-color: rgba(36, 166, 135, 0.4);
+      background: #e4f4f0;
+      border: 2px solid var(--ink-900);
     }
 
     .close-menu {
-      appearance: none;
-      border: 2px solid rgba(18, 58, 55, 0.2);
+      justify-self: center;
+      padding: 10px 20px;
       border-radius: 999px;
-      background: rgba(18, 58, 55, 0.12);
-      padding: 10px 18px;
-      font-weight: 700;
+      border: var(--card-border);
+      background: var(--teal-400);
+      color: #fff;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
       cursor: pointer;
+      box-shadow: var(--shadow-btn);
     }
 
-    .close-menu:hover,
     .close-menu:focus-visible {
-      background: rgba(18, 58, 55, 0.2);
-      outline: none;
+      outline: 3px solid #222;
+      outline-offset: 3px;
     }
 
-    @media (max-width: 1024px) {
+    @media (max-width: 960px) {
       .menu-btn {
-        position: fixed;
-        bottom: clamp(18px, 6vw, 36px);
         top: auto;
+        bottom: clamp(20px, 6vw, 40px);
+        right: clamp(20px, 6vw, 40px);
+        box-shadow: 0 8px 0 rgba(15, 44, 42, 0.35);
       }
     }
 
@@ -412,9 +433,9 @@
         padding: 24px clamp(14px, 6vw, 24px) 80px;
       }
 
-      .menu-btn {
-        width: 56px;
-        height: 56px;
+      header {
+        background: transparent !important;
+        padding: clamp(10px, 3vw, 18px) clamp(16px, 6vw, 28px) clamp(4px, 2vw, 12px);
       }
     }
   </style>
@@ -602,77 +623,76 @@
         return;
       }
       const focusableSelector = 'a, button, [tabindex]:not([tabindex="-1"])';
+      const mobileQuery = window.matchMedia('(max-width: 640px)');
+
+      const updateMenuPresentation = () => {
+        const atTop = window.scrollY <= 6;
+        menuButton.classList.toggle('is-expanded', atTop);
+      };
 
       function openMenu() {
-        menuButton.setAttribute('aria-expanded', 'true');
         overlay.hidden = false;
-        overlay.classList.add('open');
-        const focusable = overlay.querySelectorAll(focusableSelector);
-        if (focusable.length) {
-          focusable[0].focus();
-        }
-        document.addEventListener('keydown', onKeyDown);
+        requestAnimationFrame(() => overlay.classList.add('open'));
+        menuButton.setAttribute('aria-expanded', 'true');
+        menuButton.setAttribute('aria-label', 'Close menu');
+        closeButton.focus();
       }
 
       function closeMenu() {
-        menuButton.setAttribute('aria-expanded', 'false');
         overlay.classList.remove('open');
-        const focusable = overlay.querySelectorAll(focusableSelector);
-        const lastFocused = document.activeElement;
-        overlay.addEventListener(
-          'transitionend',
-          () => {
-            overlay.hidden = true;
-            if (lastFocused && overlay.contains(lastFocused)) {
-              menuButton.focus();
-            }
-          },
-          { once: true }
-        );
-        document.removeEventListener('keydown', onKeyDown);
-      }
-
-      function onKeyDown(event) {
-        if (event.key === 'Escape') {
-          closeMenu();
-        }
-
-        if (event.key === 'Tab') {
-          const focusable = Array.from(overlay.querySelectorAll(focusableSelector));
-          if (!focusable.length) {
-            event.preventDefault();
-            return;
-          }
-          const first = focusable[0];
-          const last = focusable[focusable.length - 1];
-          if (event.shiftKey && document.activeElement === first) {
-            event.preventDefault();
-            last.focus();
-          } else if (!event.shiftKey && document.activeElement === last) {
-            event.preventDefault();
-            first.focus();
-          }
-        }
+        overlay.hidden = true;
+        menuButton.setAttribute('aria-expanded', 'false');
+        menuButton.setAttribute('aria-label', 'Open menu');
+        menuButton.focus();
       }
 
       menuButton.addEventListener('click', () => {
-        const expanded = menuButton.getAttribute('aria-expanded') === 'true';
-        if (expanded) {
+        if (overlay.classList.contains('open')) {
           closeMenu();
         } else {
           openMenu();
         }
       });
 
-      closeButton.addEventListener('click', () => {
-        closeMenu();
-      });
+      closeButton.addEventListener('click', closeMenu);
 
       overlay.addEventListener('click', (event) => {
         if (event.target === overlay) {
           closeMenu();
         }
       });
+
+      overlay.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') {
+          closeMenu();
+          return;
+        }
+        if (event.key !== 'Tab' || !overlay.classList.contains('open')) {
+          return;
+        }
+        const focusable = Array.from(overlay.querySelectorAll(focusableSelector));
+        if (!focusable.length) {
+          return;
+        }
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (event.shiftKey && document.activeElement === first) {
+          event.preventDefault();
+          last.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault();
+          first.focus();
+        }
+      });
+
+      updateMenuPresentation();
+      window.addEventListener('scroll', updateMenuPresentation, { passive: true });
+      window.addEventListener('resize', updateMenuPresentation);
+      if (typeof mobileQuery.addEventListener === 'function') {
+        mobileQuery.addEventListener('change', updateMenuPresentation);
+      } else if (typeof mobileQuery.addListener === 'function') {
+        mobileQuery.addListener(updateMenuPresentation);
+      }
     })();
   </script>
 </body>
