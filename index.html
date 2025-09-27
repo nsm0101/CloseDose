@@ -44,10 +44,6 @@
       flex-direction: column;
     }
 
-    body.is-disclaimer-open {
-      overflow: hidden;
-    }
-
     .visually-hidden {
       position: absolute;
       width: 1px;
@@ -245,12 +241,6 @@
       .hero-card {
         width: clamp(70vw, 85vw, 95vw);
       }
-      .pill-card {
-        max-width: min(var(--pill-max-width, 720px), 95vw);
-      }
-      .pill-card.is-expanded {
-        max-width: min(var(--pill-max-width, 860px), 100vw);
-      }
       .menu-btn {
         margin-left: 0;
       }
@@ -281,58 +271,83 @@
       height: auto;
     }
 
-    .card.pill-card {
-      border-radius: 999px;
-      padding: clamp(14px, 3vw, 22px) clamp(32px, 6vw, 44px);
-      background: rgba(255, 255, 255, 0.96);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 14px;
-      text-align: center;
-      width: 100%;
-      max-width: var(--pill-max-width, 720px);
+    .donate-card {
       margin: clamp(32px, 8vw, 64px) auto 0;
-      transition: border-radius 0.3s ease, background 0.3s ease, box-shadow 0.3s ease, color 0.3s ease, padding 0.3s ease,
-        width 0.3s ease;
-      overflow: hidden;
+      background: linear-gradient(145deg, rgba(36, 166, 135, 0.94), rgba(18, 70, 67, 0.96));
+      color: #ffffff;
+      border-color: rgba(255, 255, 255, 0.65);
+      box-shadow: 0 10px 0 rgba(15, 44, 42, 0.42);
+      display: grid;
+      gap: clamp(16px, 3vw, 24px);
+      text-align: left;
     }
 
-    .pill-card h2,
-    .pill-card .pill-title {
+    .donate-card .donate-header {
+      display: grid;
+      gap: 8px;
+    }
+
+    .donate-card h2 {
       margin: 0;
       font-size: clamp(1rem, 2.4vw, 1.25rem);
       font-weight: 900;
       letter-spacing: 0.14em;
       text-transform: uppercase;
-      color: var(--teal-600);
-      white-space: nowrap;
+      color: inherit;
     }
 
-    .pill-card .pill-content {
-      display: grid;
-      gap: 14px;
-      text-align: left;
-      width: 100%;
+    .donate-card .donate-subtitle {
+      margin: 0;
+      font-size: clamp(0.85rem, 2vw, 1rem);
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.86);
     }
 
-    .pill-card p {
+    .donate-card .donate-intro {
       margin: 0;
       font-size: 0.98rem;
       line-height: 1.55;
-      color: var(--teal-600);
+      color: rgba(255, 255, 255, 0.94);
     }
 
-    .pill-card.is-expanded {
-      border-radius: var(--card-radius);
-      box-shadow: 0 10px 0 rgba(15, 44, 42, 0.42);
-      flex-direction: column;
-      align-items: stretch;
-      text-align: left;
-      width: 100%;
-      max-width: var(--pill-max-width, 860px);
-      padding: clamp(24px, 4vw, 36px);
-      gap: 18px;
+    .donate-card .donate-content {
+      display: grid;
+      gap: clamp(14px, 3vw, 20px);
+    }
+
+    .donate-card .donate-links {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: grid;
+      gap: 12px;
+    }
+
+    .donate-card .donate-links a {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 12px 18px;
+      border-radius: 16px;
+      border: 2px solid rgba(255, 255, 255, 0.65);
+      background: rgba(255, 255, 255, 0.12);
+      color: #ffffff;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      text-decoration: none;
+      transition: background 0.2s ease, transform 0.2s ease, border-color 0.2s ease;
+    }
+
+    .donate-card .donate-links a:hover,
+    .donate-card .donate-links a:focus-visible {
+      background: rgba(255, 255, 255, 0.28);
+      border-color: rgba(255, 255, 255, 0.85);
+      transform: translateY(-2px);
+      outline: none;
     }
 
     .card--disclaimer {
@@ -428,12 +443,14 @@
       background: linear-gradient(140deg, rgba(15, 44, 42, 0.95), rgba(18, 70, 67, 0.98));
       color: var(--white);
       position: fixed;
-      inset: 0;
+      top: var(--disclaimer-top, 0px);
+      left: 0;
+      right: 0;
       width: 100vw;
       max-width: none;
-      height: 100vh;
+      height: max(0px, calc(100vh - var(--disclaimer-top, 0px)));
       margin: 0;
-      border-radius: 0;
+      border-radius: var(--card-radius) var(--card-radius) 0 0;
       padding: clamp(32px, 6vw, 64px) clamp(24px, 6vw, 80px);
       box-shadow: 0 18px 48px rgba(15, 44, 42, 0.5);
       z-index: 1100;
@@ -487,115 +504,6 @@
 
     .card--disclaimer.is-expanded p {
       color: rgba(255, 255, 255, 0.92);
-    }
-
-    .donate-pill {
-      margin-top: clamp(20px, 6vw, 36px);
-    }
-
-    .donate-pill .pill-toggle {
-      appearance: none;
-      border: none;
-      background: transparent;
-      color: inherit;
-      font: inherit;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      width: 100%;
-      cursor: pointer;
-      padding: 0;
-    }
-
-    .donate-pill .pill-toggle:focus-visible {
-      outline: 3px solid var(--ink-900);
-      outline-offset: 6px;
-    }
-
-    .donate-pill .pill-subtitle {
-      font-size: clamp(0.85rem, 2vw, 1rem);
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--ink-700);
-    }
-
-    .donate-pill .pill-icon {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 32px;
-      height: 32px;
-      border-radius: 999px;
-      border: 2px solid currentColor;
-      font-weight: 900;
-      font-size: 1rem;
-      transition: transform 0.3s ease;
-    }
-
-    .donate-pill .donate-content {
-      display: grid;
-      gap: 16px;
-    }
-
-    .donate-pill .donate-links {
-      list-style: none;
-      margin: 0;
-      padding: 0;
-      display: grid;
-      gap: 12px;
-    }
-
-    .donate-pill .donate-links a {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      padding: 12px 18px;
-      border-radius: 16px;
-      border: 2px solid rgba(255, 255, 255, 0.65);
-      background: rgba(255, 255, 255, 0.15);
-      color: #ffffff;
-      font-weight: 800;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      text-decoration: none;
-      transition: background 0.2s ease, transform 0.2s ease;
-    }
-
-    .donate-pill .donate-links a:hover,
-    .donate-pill .donate-links a:focus-visible {
-      background: rgba(255, 255, 255, 0.3);
-      transform: translateY(-2px);
-      outline: none;
-    }
-
-    .donate-pill.is-expanded {
-      background: linear-gradient(145deg, rgba(36, 166, 135, 0.94), rgba(18, 70, 67, 0.96));
-      color: #ffffff;
-    }
-
-    .donate-pill.is-expanded .pill-toggle {
-      align-items: flex-start;
-      text-align: left;
-    }
-
-    .donate-pill.is-expanded .pill-toggle:focus-visible {
-      outline-color: rgba(255, 255, 255, 0.85);
-    }
-
-    .donate-pill.is-expanded .pill-subtitle {
-      color: rgba(255, 255, 255, 0.86);
-    }
-
-    .donate-pill.is-expanded .pill-icon {
-      transform: rotate(45deg);
-    }
-
-    .donate-pill.is-expanded p {
-      color: rgba(255, 255, 255, 0.94);
     }
 
     .hero-card h1 {
@@ -1221,14 +1129,13 @@
           </form>
         </section>
       </div>
-      <section class="card pill-card donate-pill" aria-labelledby="donate-heading" aria-expanded="false">
-        <button type="button" class="pill-toggle" aria-expanded="false" aria-controls="donate-content">
-          <span role="heading" aria-level="2" class="pill-title" id="donate-heading">Donate!</span>
-          <span class="pill-subtitle">Help keep CloseDose free for families.</span>
-          <span class="pill-icon" aria-hidden="true">+</span>
-        </button>
-        <div class="donate-content" id="donate-content" hidden>
-          <p>
+      <section class="card donate-card" aria-labelledby="donate-heading">
+        <div class="donate-header">
+          <h2 id="donate-heading">Donate!</h2>
+          <p class="donate-subtitle">Help keep CloseDose free for families.</p>
+        </div>
+        <div class="donate-content">
+          <p class="donate-intro">
             CloseDose remains a free resource thanks to support from our community. If you are able, please consider donating
             through one of the options below—every contribution helps us maintain and expand trusted pediatric dosing tools.
           </p>
@@ -1464,21 +1371,22 @@
       const disclaimerContent = disclaimerCard ? disclaimerCard.querySelector('.disclaimer-content') : null;
       const disclaimerClose = disclaimerCard ? disclaimerCard.querySelector('.disclaimer-close') : null;
       const rootElement = document.documentElement;
-      const donatePill = document.querySelector('.donate-pill');
-      const donateToggle = donatePill ? donatePill.querySelector('.pill-toggle') : null;
-      const donateContent = donatePill ? donatePill.querySelector('.donate-content') : null;
-      const heroCard = document.querySelector('.hero-card');
-      const calculatorCard = document.querySelector('.card--calculator');
+      const donateCard = document.querySelector('.donate-card');
 
-      const updatePillMaxWidth = () => {
-        const heroWidth = heroCard ? heroCard.offsetWidth : 0;
-        const calculatorWidth = calculatorCard ? calculatorCard.offsetWidth : 0;
-        const targetWidth = Math.max(heroWidth, calculatorWidth);
-        if (targetWidth > 0) {
-          rootElement.style.setProperty('--pill-max-width', `${targetWidth}px`);
-        } else {
-          rootElement.style.removeProperty('--pill-max-width');
+      const measureDonateBottom = () => {
+        if (!donateCard || typeof donateCard.getBoundingClientRect !== 'function') {
+          return 0;
         }
+        const rect = donateCard.getBoundingClientRect();
+        return Math.min(Math.max(rect.bottom, 0), window.innerHeight);
+      };
+
+      const applyDisclaimerOverlayOffset = () => {
+        if (!disclaimerCard || !disclaimerCard.classList.contains('is-expanded')) {
+          return;
+        }
+        const offset = measureDonateBottom();
+        disclaimerCard.style.setProperty('--disclaimer-top', `${offset}px`);
       };
 
       let disclaimerDismissedManually = false;
@@ -1494,7 +1402,7 @@
         }
         if (expanded) {
           disclaimerDismissedManually = false;
-          document.body.classList.add('is-disclaimer-open');
+          applyDisclaimerOverlayOffset();
           if (disclaimerClose) {
             requestAnimationFrame(() => {
               if (disclaimerCard.classList.contains('is-expanded')) {
@@ -1503,7 +1411,7 @@
             });
           }
         } else {
-          document.body.classList.remove('is-disclaimer-open');
+          disclaimerCard.style.removeProperty('--disclaimer-top');
           const shouldRestoreFocus = manual || document.activeElement === disclaimerClose;
           if (manual) {
             disclaimerDismissedManually = true;
@@ -1514,16 +1422,6 @@
             });
           }
         }
-      };
-
-      const setDonateState = (expanded) => {
-        if (!donatePill || !donateToggle || !donateContent) {
-          return;
-        }
-        donatePill.classList.toggle('is-expanded', expanded);
-        donatePill.setAttribute('aria-expanded', String(expanded));
-        donateToggle.setAttribute('aria-expanded', String(expanded));
-        donateContent.hidden = !expanded;
       };
 
       const updateDisclaimerState = () => {
@@ -1537,30 +1435,22 @@
         } else if (!reachedBottom && isExpanded) {
           setDisclaimerState(false);
         }
+        if (disclaimerCard.classList.contains('is-expanded')) {
+          applyDisclaimerOverlayOffset();
+        }
         if (!reachedBottom && disclaimerDismissedManually) {
           disclaimerDismissedManually = false;
         }
       };
 
-      updatePillMaxWidth();
       updateDisclaimerState();
       window.addEventListener('scroll', updateDisclaimerState, { passive: true });
       window.addEventListener('resize', () => {
-        updatePillMaxWidth();
         updateDisclaimerState();
       });
       window.addEventListener('load', () => {
-        updatePillMaxWidth();
         updateDisclaimerState();
       });
-
-      if (donateToggle && donateContent) {
-        setDonateState(false);
-        donateToggle.addEventListener('click', () => {
-          const isExpanded = donatePill.classList.contains('is-expanded');
-          setDonateState(!isExpanded);
-        });
-      }
 
       if (disclaimerClose) {
         disclaimerClose.addEventListener('click', () => {
