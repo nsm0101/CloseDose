@@ -335,6 +335,7 @@
       gap: 18px;
       position: relative;
       overflow: hidden;
+      background: var(--card-bg);
     }
 
     .card--disclaimer > *:not(.trust-and-safety_background__A22kJ) {
@@ -343,11 +344,12 @@
     }
 
     .card--disclaimer .trust-and-safety_background__A22kJ {
-      position: fixed;
+      position: absolute;
       inset: 0;
-      background: radial-gradient(circle at bottom, rgba(18, 70, 67, 0.94), rgba(15, 44, 42, 0.98));
+      border-radius: inherit;
+      background: radial-gradient(circle at top right, rgba(36, 166, 135, 0.15), rgba(18, 70, 67, 0.65));
       opacity: 0;
-      transform: translate3d(0, 10%, 0);
+      transform: scale(0.98);
       transition: opacity 0.35s ease, transform 0.35s ease;
       pointer-events: none;
       z-index: 0;
@@ -438,33 +440,20 @@
     .card--disclaimer.is-expanded {
       background: linear-gradient(140deg, rgba(15, 44, 42, 0.95), rgba(18, 70, 67, 0.98));
       color: var(--white);
-      position: fixed;
-      top: var(--disclaimer-top, 0px);
-      left: 0;
-      right: 0;
-      width: 100vw;
-      max-width: none;
-      height: max(0px, calc(100vh - var(--disclaimer-top, 0px)));
-      margin: 0;
-      border-radius: var(--card-radius) var(--card-radius) 0 0;
-      padding: clamp(32px, 6vw, 64px) clamp(24px, 6vw, 80px);
-      box-shadow: 0 18px 48px rgba(15, 44, 42, 0.5);
-      z-index: 1100;
-      display: flex;
-      flex-direction: column;
+      padding: clamp(32px, 6vw, 64px) clamp(24px, 6vw, 56px);
+      box-shadow: 0 18px 48px rgba(15, 44, 42, 0.35);
       gap: clamp(24px, 4vw, 36px);
-      overflow-y: auto;
     }
 
     .card--disclaimer.is-expanded .trust-and-safety_background__A22kJ {
       opacity: 1;
-      transform: translate3d(0, 0, 0);
+      transform: scale(1);
       visibility: visible;
     }
 
     .card--disclaimer.is-expanded .disclaimer-header,
     .card--disclaimer.is-expanded .disclaimer-content {
-      width: min(960px, 100%);
+      width: 100%;
       margin-left: auto;
       margin-right: auto;
     }
@@ -477,9 +466,9 @@
       color: #ffffff;
       white-space: normal;
       letter-spacing: 0.08em;
-      max-width: min(1100px, 96vw);
-      margin-left: auto;
-      margin-right: auto;
+      max-width: 100%;
+      margin-left: 0;
+      margin-right: 0;
     }
 
     .card--disclaimer.is-expanded .disclaimer-close {
@@ -1257,23 +1246,6 @@
         ? disclaimerCard.querySelector('.trust-and-safety_background__A22kJ')
         : null;
       const rootElement = document.documentElement;
-      const donateCard = document.querySelector('.donate-card');
-
-      const measureDonateBottom = () => {
-        if (!donateCard || typeof donateCard.getBoundingClientRect !== 'function') {
-          return 0;
-        }
-        const rect = donateCard.getBoundingClientRect();
-        return Math.min(Math.max(rect.bottom, 0), window.innerHeight);
-      };
-
-      const applyDisclaimerOverlayOffset = () => {
-        if (!disclaimerCard || !disclaimerCard.classList.contains('is-expanded')) {
-          return;
-        }
-        const offset = measureDonateBottom();
-        disclaimerCard.style.setProperty('--disclaimer-top', `${offset}px`);
-      };
 
       let disclaimerDismissedManually = false;
 
@@ -1291,7 +1263,6 @@
         }
         if (expanded) {
           disclaimerDismissedManually = false;
-          applyDisclaimerOverlayOffset();
           if (disclaimerClose) {
             requestAnimationFrame(() => {
               if (disclaimerCard.classList.contains('is-expanded')) {
@@ -1300,7 +1271,6 @@
             });
           }
         } else {
-          disclaimerCard.style.removeProperty('--disclaimer-top');
           const shouldRestoreFocus = manual || document.activeElement === disclaimerClose;
           if (manual) {
             disclaimerDismissedManually = true;
@@ -1321,11 +1291,6 @@
         const isExpanded = disclaimerCard.classList.contains('is-expanded');
         if (reachedBottom && !isExpanded && !disclaimerDismissedManually) {
           setDisclaimerState(true);
-        } else if (!reachedBottom && isExpanded) {
-          setDisclaimerState(false);
-        }
-        if (disclaimerCard.classList.contains('is-expanded')) {
-          applyDisclaimerOverlayOffset();
         }
         if (!reachedBottom && disclaimerDismissedManually) {
           disclaimerDismissedManually = false;
