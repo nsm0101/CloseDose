@@ -334,6 +334,88 @@
       letter-spacing: 0.02em;
     }
 
+    .feature-card-group {
+      display: grid;
+      gap: clamp(18px, 3.2vw, 28px);
+    }
+
+    .feature-card-group h2 {
+      margin: 0;
+      font-size: clamp(1.6rem, 2.8vw, 2rem);
+      color: var(--ink-900);
+    }
+
+    .feature-intro {
+      margin: 0;
+      font-size: 1.02rem;
+      line-height: 1.7;
+      color: rgba(15, 44, 42, 0.78);
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: clamp(16px, 2.8vw, 26px);
+    }
+
+    .feature-item {
+      list-style: none;
+      display: grid;
+      gap: 12px;
+      align-content: start;
+      padding: 18px 16px;
+      border-radius: 22px;
+      border: 2px solid rgba(18, 58, 55, 0.1);
+      background: rgba(255, 255, 255, 0.92);
+      text-align: center;
+      box-shadow: 0 6px 20px rgba(18, 58, 55, 0.08);
+    }
+
+    .feature-item:last-child {
+      background: linear-gradient(145deg, rgba(62, 192, 171, 0.18), rgba(36, 166, 135, 0.24));
+      border-color: rgba(18, 58, 55, 0.22);
+    }
+
+    .feature-item img {
+      justify-self: center;
+      width: 72px;
+      height: 72px;
+    }
+
+    .feature-item span {
+      font-weight: 800;
+      color: var(--ink-700);
+      font-size: 0.98rem;
+      line-height: 1.5;
+      letter-spacing: 0.01em;
+    }
+
+    .impact-card {
+      display: grid;
+      grid-template-columns: minmax(72px, 96px) 1fr;
+      gap: clamp(14px, 2.4vw, 22px);
+      align-items: center;
+      background: rgba(255, 255, 255, 0.96);
+    }
+
+    .impact-card img {
+      width: 100%;
+      max-width: 96px;
+      height: auto;
+    }
+
+    .impact-card h2 {
+      margin: 0 0 8px;
+      font-size: clamp(1.6rem, 2.8vw, 2rem);
+      color: var(--ink-900);
+    }
+
+    .impact-card p {
+      margin: 0;
+      color: rgba(15, 44, 42, 0.78);
+      line-height: 1.7;
+    }
+
     footer {
       padding: 24px clamp(18px, 5vw, 52px) 48px;
       font-size: 0.9rem;
@@ -495,6 +577,57 @@
           </p>
         </section>
 
+        <section class="card feature-card-group">
+          <h2>CloseDose at a glance</h2>
+          <p class="feature-intro">Every tool is built to remove guesswork for families and clinicians alike.</p>
+          <ul class="feature-grid">
+            <li class="feature-item">
+              <img src="images/About%20Icons/4.svg" alt="Icon showing an age and weight chart" />
+              <span>Only the age and weight you already know are needed to calculate the right dose.</span>
+            </li>
+            <li class="feature-item">
+              <img src="images/About%20Icons/5.svg" alt="Lightning bolt icon" />
+              <span>Fast results with simple inputs so you can help a sick child without delay.</span>
+            </li>
+            <li class="feature-item">
+              <img src="images/About%20Icons/6.svg" alt="No login required icon" />
+              <span>No account or subscription—just open CloseDose when you need it.</span>
+            </li>
+            <li class="feature-item">
+              <img src="images/About%20Icons/7.svg" alt="Universal accessibility icon" />
+              <span>Designed for accessibility with high contrast colors and multilingual support.</span>
+            </li>
+            <li class="feature-item">
+              <img src="images/About%20Icons/8.svg" alt="Color-coded warning icon" />
+              <span>Color-coded care and dosing warnings update instantly based on your answers.</span>
+            </li>
+            <li class="feature-item">
+              <img src="images/About%20Icons/9.svg" alt="Targeted dosing icon" />
+              <span>Individualized dosing recommendations—no ranges to interpret or math to redo.</span>
+            </li>
+            <li class="feature-item">
+              <img src="images/About%20Icons/11.svg" alt="Devices icon representing mobile and desktop" />
+              <span>Available on phones, tablets, and desktops wherever families are caring.</span>
+            </li>
+            <li class="feature-item">
+              <img src="images/About%20Icons/12.svg" alt="Smiling face icon" />
+              <span>Intuitive layout and plain language make it easy for anyone to use.</span>
+            </li>
+            <li class="feature-item">
+              <img src="images/About%20Icons/13.svg" alt="Checkmark badge icon" />
+              <span>Accurate, evidence-based information that reflects the latest pediatric guidance.</span>
+            </li>
+            <li class="feature-item">
+              <img src="images/About%20Icons/14.svg" alt="Physician stethoscope icon" />
+              <span>Created and continually reviewed by an actively practicing pediatric emergency physician.</span>
+            </li>
+            <li class="feature-item">
+              <img src="images/About%20Icons/3.svg" alt="Peace of mind heart icon" />
+              <span>Peace of mind for caregivers—the reassurance that dosing decisions are backed by experts.</span>
+            </li>
+          </ul>
+        </section>
+
         <section class="card values-card">
           <h2>What guides our work</h2>
           <ul>
@@ -502,6 +635,16 @@
             <li><strong>Clarity matters.</strong> We explain dosing in plain language, with visuals that support calm decisions in stressful moments.</li>
             <li><strong>Access for all.</strong> CloseDose remains free thanks to community support, and we continue investing in multilingual resources.</li>
           </ul>
+        </section>
+
+        <section class="card impact-card">
+          <img src="ripped-icons/Piggybank-color.svg" alt="Piggy bank icon with coins" />
+          <div>
+            <h2>Community supported</h2>
+            <p>
+              CloseDose stays free for families because of generous donors and partners who believe safe dosing guidance should never sit behind a paywall. Every contribution keeps the calculator up to date and accessible.
+            </p>
+          </div>
         </section>
 
         <section class="card trust-card">

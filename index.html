@@ -292,6 +292,76 @@
       color: rgba(255, 255, 255, 0.94);
     }
 
+    .donate-card .donate-primary {
+      display: flex;
+      justify-content: flex-start;
+      perspective: 900px;
+    }
+
+    .donate-card .donate-pill {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      padding: clamp(14px, 3vw, 18px) clamp(48px, 10vw, 74px) clamp(14px, 3vw, 18px) clamp(26px, 6vw, 36px);
+      border-radius: 999px;
+      border: 3px solid rgba(255, 255, 255, 0.82);
+      background: rgba(255, 255, 255, 0.16);
+      color: #ffffff;
+      font-weight: 900;
+      letter-spacing: 0.04em;
+      font-size: clamp(1rem, 2.6vw, 1.22rem);
+      text-transform: none;
+      text-decoration: none;
+      box-shadow: 0 6px 0 rgba(15, 44, 42, 0.35);
+      transition:
+        transform 0.22s ease,
+        box-shadow 0.22s ease,
+        background 0.22s ease,
+        border-color 0.22s ease;
+      isolation: isolate;
+      transform-style: preserve-3d;
+    }
+
+    .donate-card .donate-pill:hover,
+    .donate-card .donate-pill:focus-visible {
+      background: rgba(255, 255, 255, 0.28);
+      border-color: rgba(255, 255, 255, 0.95);
+      transform: translateY(-4px) scale(1.03) rotateX(6deg);
+      box-shadow: 0 12px 0 rgba(15, 44, 42, 0.48);
+      outline: none;
+    }
+
+    .donate-card .donate-pill:active {
+      transform: translateY(2px) scale(0.98);
+      box-shadow: inset 0 6px 12px rgba(15, 44, 42, 0.35);
+      background: rgba(255, 255, 255, 0.18);
+    }
+
+    .donate-card .donate-pill img {
+      position: absolute;
+      right: clamp(0px, 2.4vw, 14px);
+      top: 50%;
+      transform: translate(45%, -50%) rotate(-4deg);
+      width: clamp(70px, 22vw, 108px);
+      height: auto;
+      filter: drop-shadow(0 6px 6px rgba(12, 38, 36, 0.35));
+      transition: transform 0.22s ease, filter 0.22s ease;
+      transform-style: preserve-3d;
+    }
+
+    .donate-card .donate-pill:hover img,
+    .donate-card .donate-pill:focus-visible img {
+      transform: translate(48%, -58%) rotate(-1deg) translateZ(26px) scale(1.12);
+      filter: drop-shadow(0 16px 18px rgba(12, 38, 36, 0.45));
+    }
+
+    .donate-card .donate-pill:active img {
+      transform: translate(40%, -44%) rotate(-6deg) translateZ(8px) scale(0.96);
+      filter: drop-shadow(0 6px 10px rgba(12, 38, 36, 0.38));
+    }
+
     .donate-card .donate-content {
       display: grid;
       gap: clamp(14px, 3vw, 20px);
@@ -328,6 +398,18 @@
       border-color: rgba(255, 255, 255, 0.85);
       transform: translateY(-2px);
       outline: none;
+    }
+
+    @media (max-width: 540px) {
+      .donate-card .donate-primary {
+        justify-content: center;
+      }
+
+      .donate-card .donate-pill img {
+        right: clamp(6px, 4vw, 18px);
+        transform: translate(35%, -50%);
+        width: clamp(62px, 30vw, 88px);
+      }
     }
 
     .card--disclaimer {
@@ -1005,28 +1087,34 @@
             <p class="donate-subtitle">Help keep CloseDose free for families.</p>
           </div>
           <div class="donate-content">
-          <p class="donate-intro">
-            CloseDose remains a free resource thanks to support from our community. If you are able, please consider donating
-            through one of the options below—every contribution helps us maintain and expand trusted pediatric dosing tools.
-          </p>
-          <ul class="donate-links">
-            <li>
-              <a href="https://www.paypal.com/donate?business=donate%40closedose.com&currency_code=USD" target="_blank" rel="noopener">
-                Donate with PayPal
+            <div class="donate-primary">
+              <a class="donate-pill" href="https://givebutter.com/93Xrjv" target="_blank" rel="noopener">
+                <span>Please Donate!</span>
+                <img src="ripped-icons/Piggybank-color.svg" alt="" aria-hidden="true" />
               </a>
-            </li>
-            <li>
-              <a href="https://www.buymeacoffee.com/closedose" target="_blank" rel="noopener">
-                Buy Us a Coffee
-              </a>
-            </li>
-            <li>
-              <a href="mailto:hello@closedose.com?subject=CloseDose%20Support" rel="noopener">
-                Connect for Sponsorships
-              </a>
-            </li>
-          </ul>
-        </div>
+            </div>
+            <p class="donate-intro">
+              CloseDose remains a free resource thanks to support from our community. If you are able, please consider donating
+              through one of the options below—every contribution helps us maintain and expand trusted pediatric dosing tools.
+            </p>
+            <ul class="donate-links">
+              <li>
+                <a href="https://www.paypal.com/donate?business=donate%40closedose.com&currency_code=USD" target="_blank" rel="noopener">
+                  Donate with PayPal
+                </a>
+              </li>
+              <li>
+                <a href="https://www.buymeacoffee.com/closedose" target="_blank" rel="noopener">
+                  Buy Us a Coffee
+                </a>
+              </li>
+              <li>
+                <a href="mailto:hello@closedose.com?subject=CloseDose%20Support" rel="noopener">
+                  Connect for Sponsorships
+                </a>
+              </li>
+            </ul>
+          </div>
         </section>
         <section class="card card--disclaimer" aria-labelledby="disclaimer-heading" aria-expanded="false" tabindex="-1">
           <div class="trust-and-safety_background__A22kJ" data-testid="value-prop" aria-hidden="true"></div>
