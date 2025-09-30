@@ -1099,7 +1099,7 @@
                 data-gb-campaign="93XRJV"
               >
                 <span>Please Donate!</span>
-                <img src="images/PIGGYBANK-color.svg" alt="" aria-hidden="true" />
+                <img src="images/piggyFINAL.svg" alt="" aria-hidden="true" />
               </button>
             </div>
             <p class="donate-intro">
@@ -1248,6 +1248,37 @@
           first.focus();
         }
       });
+
+      const donateButton = document.querySelector('.donate-pill[data-gb-account][data-gb-campaign]');
+      if (donateButton) {
+        const fallbackUrl = 'https://givebutter.com/93Xrjv';
+        donateButton.setAttribute('data-fallback-href', fallbackUrl);
+
+        const isGivebutterReady = () => {
+          const givebutter = window.Givebutter;
+          if (!givebutter) {
+            return false;
+          }
+          if (typeof givebutter === 'function') {
+            return true;
+          }
+          if (typeof givebutter === 'object') {
+            if (typeof givebutter.Widget === 'function') {
+              return true;
+            }
+            if (typeof givebutter.open === 'function') {
+              return true;
+            }
+          }
+          return false;
+        };
+
+        donateButton.addEventListener('click', () => {
+          if (!isGivebutterReady()) {
+            window.open(fallbackUrl, '_blank', 'noopener,noreferrer');
+          }
+        });
+      }
 
       updateMenuPresentation();
       window.addEventListener('scroll', updateMenuPresentation, { passive: true });
