@@ -306,12 +306,15 @@
       gap: 12px;
       padding: clamp(14px, 3vw, 18px) clamp(48px, 10vw, 74px) clamp(14px, 3vw, 18px) clamp(26px, 6vw, 36px);
       border-radius: 999px;
+      appearance: none;
       border: 3px solid rgba(255, 255, 255, 0.82);
       background: rgba(255, 255, 255, 0.16);
       color: #ffffff;
       font-weight: 900;
       letter-spacing: 0.04em;
       font-size: clamp(1rem, 2.6vw, 1.22rem);
+      font-family: inherit;
+      line-height: 1;
       text-transform: none;
       text-decoration: none;
       box-shadow: 0 6px 0 rgba(15, 44, 42, 0.35);
@@ -322,6 +325,7 @@
         border-color 0.22s ease;
       isolation: isolate;
       transform-style: preserve-3d;
+      cursor: pointer;
     }
 
     .donate-card .donate-pill:hover,
@@ -1088,10 +1092,15 @@
           </div>
           <div class="donate-content">
             <div class="donate-primary">
-              <a class="donate-pill" href="https://givebutter.com/93Xrjv" target="_blank" rel="noopener">
+              <button
+                class="donate-pill"
+                type="button"
+                data-gb-account="LYXNmj"
+                data-gb-campaign="93XRJV"
+              >
                 <span>Please Donate!</span>
-                <img src="ripped-icons/Piggybank-color.svg" alt="" aria-hidden="true" />
-              </a>
+                <img src="images/PIGGYBANK-color.svg" alt="" aria-hidden="true" />
+              </button>
             </div>
             <p class="donate-intro">
               CloseDose remains a free resource thanks to support from our community. If you are able, please consider donating
@@ -1158,6 +1167,11 @@
   </div>
 
   <script src="script.js"></script>
+  <script
+    async
+    src="https://widgets.givebutter.com/latest.umd.cjs?acct=LYXNmj"
+  ></script>
+
   <script>
     (function () {
       const menuButton = document.querySelector('.menu-btn');
