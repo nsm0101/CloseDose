@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 120" role="img" aria-labelledby="title desc">
+  <title id="title">Piggy bank icon</title>
+  <desc id="desc">Friendly pink piggy bank with a dollar coin above its back.</desc>
+  <defs>
+    <linearGradient id="bodyGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffbfd8" />
+      <stop offset="100%" stop-color="#ff82b3" />
+    </linearGradient>
+    <linearGradient id="coinGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffe38d" />
+      <stop offset="100%" stop-color="#ffb347" />
+    </linearGradient>
+  </defs>
+  <g fill="none" fill-rule="evenodd">
+    <path d="M119 22c-8.6 0-16.2 3.3-21.8 8.7-6.3-4.1-14.1-6.5-22.7-6.5-23.4 0-42.4 16.6-44.4 37.9C17.7 67.8 11 74.4 11 82.3c0 6.3 4 11.6 9.7 13.3l-1.4 10.8c-.3 2.2 1.3 4.1 3.5 4.4.2 0 .5.1.7.1 1.9 0 3.6-1.4 3.9-3.3l1.3-9.9c4.8 3.2 11.1 5.2 18.1 5.2h44.5c8.7 0 16.8-2.5 23.3-6.8l6 11.9c.8 1.6 2.7 2.2 4.3 1.4s2.2-2.7 1.4-4.3l-6.7-13.3c6.8-5.9 10.9-13.9 10.9-22.7 0-4.3-.9-8.5-2.6-12.3 6.9-4.1 11.5-11.1 11.5-19.1 0-5.4-2-10.5-5.6-14.5-2.1-2.3-5.7-2.4-8-.3l-8.3 7.9C135.8 27.2 127 22 119 22Z" fill="url(#bodyGradient)" />
+    <ellipse cx="60" cy="86" rx="7" ry="5" fill="#f15a8a" />
+    <ellipse cx="108" cy="86" rx="7" ry="5" fill="#f15a8a" />
+    <path d="M52 58a6 6 0 0 0-6 6v6a6 6 0 0 0 12 0v-6a6 6 0 0 0-6-6Z" fill="#f9a4c0" />
+    <circle cx="102" cy="53" r="8" fill="#fff" opacity=".2" />
+    <circle cx="100" cy="52" r="4" fill="#3d1238" />
+    <circle cx="62" cy="52" r="4" fill="#3d1238" />
+    <path d="M83 69c0 3.9-4.5 7-10 7s-10-3.1-10-7" stroke="#c6135f" stroke-width="4" stroke-linecap="round" />
+    <path d="M120 42.5c2.6-4 4.1-8.9 4.1-14 0-14.7-12-26.5-26.7-26.5S70.7 13.8 70.7 28.5c0 5 1.4 9.8 4 13.7a26.7 26.7 0 0 1 45.3.3Z" fill="url(#coinGradient)" />
+    <path d="M102.2 14.6h-5.7v-4h14.8v4h-5.7v15.3h-4.1V14.6Z" fill="#a06518" />
+    <path d="M74.4 33.5h35.4c2.3 0 4.1 1.9 4.1 4.2 0 2.4-1.8 4.3-4.1 4.3H74.4c-2.3 0-4.1-1.9-4.1-4.3 0-2.3 1.8-4.2 4.1-4.2Z" fill="#d23f72" />
+  </g>
+</svg>
