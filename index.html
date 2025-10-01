@@ -1033,6 +1033,8 @@
         <span class="label">Menu</span>
         <span class="hamburger" aria-hidden="true"><span></span><span></span><span></span></span>
       </button>
+      <!-- Givebutter widget host element (popup) -->
+      <givebutter-widget id="LYXNmj"></givebutter-widget>
     </header>
 
     <main>
@@ -1096,7 +1098,7 @@
                 class="donate-pill"
                 type="button"
                 data-gb-account="LYXNmj"
-                data-gb-campaign="93XRJV"
+                data-gb-campaign="93Xrjv"
               >
                 <span>Please Donate!</span>
                 <img src="images/piggyFINAL.svg" alt="" aria-hidden="true" />
@@ -1251,30 +1253,45 @@
 
       const donateButton = document.querySelector('.donate-pill[data-gb-account][data-gb-campaign]');
       if (donateButton) {
-        const fallbackUrl = 'https://givebutter.com/93Xrjv';
+        const accountId = donateButton.getAttribute('data-gb-account') || 'LYXNmj';
+        const campaignId = (donateButton.getAttribute('data-gb-campaign') || '93Xrjv');
+        const fallbackUrl = `https://givebutter.com/${campaignId}`;
         donateButton.setAttribute('data-fallback-href', fallbackUrl);
 
-        const isGivebutterReady = () => {
-          const givebutter = window.Givebutter;
-          if (!givebutter) {
-            return false;
-          }
-          if (typeof givebutter === 'function') {
-            return true;
-          }
-          if (typeof givebutter === 'object') {
-            if (typeof givebutter.Widget === 'function') {
+        const openGivebutterPopup = () => {
+          const gb = window.Givebutter;
+          try {
+            // Preferred: global open(campaign, opts)
+            if (gb && typeof gb.open === 'function') {
+              gb.open(campaignId, { account: accountId });
               return true;
             }
-            if (typeof givebutter.open === 'function') {
+            // Try web component instance if available
+            const widgetEl = document.querySelector(`givebutter-widget#${CSS.escape(accountId)}`) ||
+                             document.querySelector(`givebutter-widget[id="${accountId}"]`);
+            if (widgetEl && typeof widgetEl.open === 'function') {
+              widgetEl.open(campaignId);
               return true;
             }
+            // Fallback: construct a widget instance via API
+            if (gb && typeof gb.Widget === 'function') {
+              const instance = new gb.Widget({ account: accountId });
+              if (instance && typeof instance.open === 'function') {
+                instance.open(campaignId);
+                return true;
+              }
+            }
+          } catch (err) {
+            // no-op, will use URL fallback
           }
           return false;
         };
 
-        donateButton.addEventListener('click', () => {
-          if (!isGivebutterReady()) {
+        donateButton.addEventListener('click', (e) => {
+          // Ensure this handler controls the behavior fully
+          e.preventDefault();
+          e.stopImmediatePropagation();
+          if (!openGivebutterPopup()) {
             window.open(fallbackUrl, '_blank', 'noopener,noreferrer');
           }
         });
