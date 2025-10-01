@@ -1032,9 +1032,6 @@
       <button class="menu-btn" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="siteMenu" aria-label="Open menu">
         <span class="label">Menu</span>
         <span class="hamburger" aria-hidden="true"><span></span><span></span><span></span></span>
-      </button>
-      <!-- Givebutter widget host element (popup) -->
-      <givebutter-widget id="LYXNmj"></givebutter-widget>
     </header>
 
     <main>
@@ -1094,13 +1091,15 @@
           </div>
           <div class="donate-content">
             <div class="donate-primary">
-              <button
+            <div></div>
+               <button class="donate-pill" type="button" data-gb-account="r8SGiZ0RhFRoIkXu" data-gb-campaign="93Xrjv" data-fallback-href="https://givebutter.com/93Xrjv" data-gb-processed="true">
+<givebutter-widget id="LYXNmj"></givebutter-widget><span>Please Donate to Support CloseDose Today!!</span>
+                <img src="images/piggyFINAL.svg" alt="" aria-hidden="true">
                 class="donate-pill"
                 type="button"
-                data-gb-account="LYXNmj"
-                data-gb-campaign="93Xrjv"
-              >
-                <span>Please Donate!</span>
+                data-gb-account="r8SGiZ0RhFRoIkXu"
+                data-gb-campaign="93Xrjv">
+                <span>Powered by Parents! Please Consdier Donating Today!!!</span>
                 <img src="images/piggyFINAL.svg" alt="" aria-hidden="true" />
               </button>
             </div>
@@ -1258,51 +1257,7 @@
         const fallbackUrl = `https://givebutter.com/${campaignId}`;
         donateButton.setAttribute('data-fallback-href', fallbackUrl);
 
-        const openGivebutterPopup = () => {
-          const gb = window.Givebutter;
-          try {
-            // Preferred: global open(campaign, opts)
-            if (gb && typeof gb.open === 'function') {
-              gb.open(campaignId, { account: accountId });
-              return true;
-            }
-            // Try web component instance if available
-            // Polyfill for CSS.escape if not available
-            function cssEscapeCompat(value) {
-              if (window.CSS && typeof window.CSS.escape === 'function') {
-                return window.CSS.escape(value);
-              }
-              // Simple fallback: escape special CSS selector chars
-              return String(value).replace(/([ #;?%&,.+*~\':"!^$[\]()=>|/@])/g, '\\$1');
-            }
-            const widgetEl = document.querySelector(`givebutter-widget#${cssEscapeCompat(accountId)}`) ||
-                             document.querySelector(`givebutter-widget[id="${accountId}"]`);
-            if (widgetEl && typeof widgetEl.open === 'function') {
-              widgetEl.open(campaignId);
-              return true;
-            }
-            // Fallback: construct a widget instance via API
-            if (gb && typeof gb.Widget === 'function') {
-              const instance = new gb.Widget({ account: accountId });
-              if (instance && typeof instance.open === 'function') {
-                instance.open(campaignId);
-                return true;
-              }
-            }
-          } catch (err) {
-            console.warn('Givebutter widget error:', err);
-          }
-          return false;
-        };
-
-        donateButton.addEventListener('click', (e) => {
-          // Ensure this handler controls the behavior fully
-          e.preventDefault();
-          e.stopPropagation();
-          if (!openGivebutterPopup()) {
-            window.open(fallbackUrl, '_blank', 'noopener,noreferrer');
-          }
-        });
+      
       }
 
       updateMenuPresentation();
@@ -1318,7 +1273,7 @@
     document.addEventListener('DOMContentLoaded', () => {
       const ageSelect = document.getElementById('age');
       const ageButtons = document.querySelectorAll('.age-option');
-      const unitSelect = document.getElementById('weight-unit');
+                const unitSelect = document.getElementById('weight-unit');
       const unitButtons = document.querySelectorAll('.unit-option');
       const calculateButton = document.querySelector('.action button');
 
