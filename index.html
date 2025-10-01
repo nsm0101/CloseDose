@@ -1090,7 +1090,7 @@
         <section class="card donate-card" aria-labelledby="donate-heading">
           <div class="donate-header">
             <h2 id="donate-heading">Donate!</h2>
-            <p class="donate-subtitle">Help keep CloseDose free for families.</p>
+            <p class="donate-subtitle">Please consider supporting CloseDose!</p>
           </div>
           <div class="donate-content">
             <div class="donate-primary">
@@ -1105,8 +1105,8 @@
               </button>
             </div>
             <p class="donate-intro">
-              CloseDose remains a free resource thanks to support from our community. If you are able, please consider donating
-              through one of the options below—every contribution helps us maintain and expand trusted pediatric dosing tools.
+              If you are able, please consider supporting me
+              through one of the options below—every contribution helps me continue developmnent!
             </p>
             <ul class="donate-links">
               <li>
@@ -1170,8 +1170,8 @@
 
   <script src="script.js"></script>
   <script
-    async
-    src="https://widgets.givebutter.com/latest.umd.cjs?acct=LYXNmj"
+  async
+  src="https://widgets.givebutter.com/latest.umd.cjs?acct=r8SGiZ0RhFRoIkXu&p=other"
   ></script>
 
   <script>
@@ -1253,7 +1253,7 @@
 
       const donateButton = document.querySelector('.donate-pill[data-gb-account][data-gb-campaign]');
       if (donateButton) {
-        const accountId = donateButton.getAttribute('data-gb-account') || 'LYXNmj';
+        const accountId = donateButton.getAttribute('data-gb-account') || 'r8SGiZ0RhFRoIkXu&p';
         const campaignId = (donateButton.getAttribute('data-gb-campaign') || '93Xrjv');
         const fallbackUrl = `https://givebutter.com/${campaignId}`;
         donateButton.setAttribute('data-fallback-href', fallbackUrl);
@@ -1267,7 +1267,15 @@
               return true;
             }
             // Try web component instance if available
-            const widgetEl = document.querySelector(`givebutter-widget#${CSS.escape(accountId)}`) ||
+            // Polyfill for CSS.escape if not available
+            function cssEscapeCompat(value) {
+              if (window.CSS && typeof window.CSS.escape === 'function') {
+                return window.CSS.escape(value);
+              }
+              // Simple fallback: escape special CSS selector chars
+              return String(value).replace(/([ #;?%&,.+*~\':"!^$[\]()=>|/@])/g, '\\$1');
+            }
+            const widgetEl = document.querySelector(`givebutter-widget#${cssEscapeCompat(accountId)}`) ||
                              document.querySelector(`givebutter-widget[id="${accountId}"]`);
             if (widgetEl && typeof widgetEl.open === 'function') {
               widgetEl.open(campaignId);
@@ -1282,7 +1290,7 @@
               }
             }
           } catch (err) {
-            // no-op, will use URL fallback
+            console.warn('Givebutter widget error:', err);
           }
           return false;
         };
@@ -1290,7 +1298,7 @@
         donateButton.addEventListener('click', (e) => {
           // Ensure this handler controls the behavior fully
           e.preventDefault();
-          e.stopImmediatePropagation();
+          e.stopPropagation();
           if (!openGivebutterPopup()) {
             window.open(fallbackUrl, '_blank', 'noopener,noreferrer');
           }
