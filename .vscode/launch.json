@@ -9,14 +9,15 @@
             "port": 9222,
             "request": "attach",
             "type": "chrome",
-            "webRoot": "${workspaceFolder}"
+            "webRoot": "${workspaceFolder}/src"
+            "sourcemaps": true
         },
         {
             "type": "chrome",
             "request": "launch",
             "name": "Launch Chrome against localhost",
             "url": "http://localhost:8080",
-            "webRoot": "${workspaceFolder}"
+            "webRoot": "${workspaceFolder}/src"
         }
     ]
 }
