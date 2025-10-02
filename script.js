@@ -6,6 +6,9 @@ function getElements() {
     message: document.getElementById('message'),
     results: document.getElementById('results'),
     calculateButton: document.querySelector('#calculator button'),
+    ageButtons: document.querySelectorAll('.age-option'),
+    unitButtons: document.querySelectorAll('.unit-option'),
+    helloBox: document.querySelector('.hello-box'),
   };
 }
 
@@ -29,6 +32,28 @@ function updateForm() {
   }
 
   const age = elements.ageSelect.value;
+
+  if (elements.ageButtons && elements.ageButtons.length > 0) {
+    elements.ageButtons.forEach((button) => {
+      const isSelected = button.dataset.age === age;
+      button.setAttribute('aria-pressed', String(isSelected));
+      button.classList.toggle('is-active', isSelected);
+    });
+  }
+
+  if (elements.helloBox) {
+    elements.helloBox.hidden = Boolean(age);
+    elements.helloBox.classList.toggle('is-hidden', Boolean(age));
+  }
+
+  if (elements.unitButtons && elements.unitButtons.length > 0) {
+    const unit = elements.weightUnit.value || 'lbs';
+    elements.unitButtons.forEach((button) => {
+      const isSelected = button.dataset.unit === unit;
+      button.setAttribute('aria-pressed', String(isSelected));
+      button.classList.toggle('is-active', isSelected);
+    });
+  }
 
   clearResults(elements);
   elements.message.hidden = true;
@@ -200,6 +225,36 @@ function initCalculator() {
   const form = document.getElementById('calculator');
   if (!form) {
     return;
+  }
+
+  const elements = getElements();
+
+  if (elements.ageButtons && elements.ageSelect) {
+    elements.ageButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        const ageValue = button.dataset.age || '';
+        elements.ageSelect.value = ageValue;
+        updateForm();
+      });
+    });
+  }
+
+  if (elements.unitButtons && elements.weightUnit) {
+    elements.unitButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        const unitValue = button.dataset.unit || 'lbs';
+        elements.weightUnit.value = unitValue;
+        updateForm();
+      });
+    });
+  }
+
+  if (elements.ageSelect) {
+    elements.ageSelect.addEventListener('change', () => updateForm());
+  }
+
+  if (elements.weightUnit) {
+    elements.weightUnit.addEventListener('change', () => updateForm());
   }
 
   form.addEventListener('submit', (event) => {
