@@ -32,6 +32,11 @@
       --shadow-card: 0 6px 0 rgba(15, 44, 42, 0.18);
       --shadow-btn: 0 4px 0 rgba(15, 44, 42, 0.25);
       --pill-max-width: 720px;
+      --footer-bg: #f8f9fa;
+      --footer-fg: #111111;
+      --footer-muted: #666666;
+      --footer-link: #0369a1;
+      --footer-border: #e5e7eb;
     }
 
     *,
@@ -920,21 +925,110 @@
       color: var(--teal-600);
     }
 
-    footer {
-      padding: 24px clamp(18px, 5vw, 52px) 48px;
-      font-size: 0.9rem;
-      line-height: 1.5;
-      text-align: center;
-      color: var(--teal-600);
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --footer-bg: #0d1b2a;
+        --footer-fg: #eaeaea;
+        --footer-muted: #a8b3bd;
+        --footer-link: #4dd0e1;
+        --footer-border: #1b263b;
+      }
     }
 
-    footer small {
-      display: block;
-      max-width: 960px;
-      margin: 0 auto;
-      font-size: 0.78rem;
-      letter-spacing: 0.02em;
-      color: var(--teal-500);
+    .cd-footer {
+      background: var(--footer-bg);
+      color: var(--footer-fg);
+      border-top: 1px solid var(--footer-border);
+      padding: 1.25rem min(5vw, 1.25rem);
+      text-align: center;
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    .cd-footer a {
+      color: var(--footer-link);
+      text-decoration: none;
+      padding: 0.5rem 0.75rem;
+      border-radius: 0.5rem;
+      display: inline-block;
+    }
+
+    .cd-footer a:hover,
+    .cd-footer a:focus-visible {
+      text-decoration: underline;
+      outline: none;
+    }
+
+    .cd-copy {
+      margin: 0 0 0.5rem;
+      font-weight: 600;
+    }
+
+    .cd-note {
+      margin: 0.75rem auto 0;
+      max-width: 60ch;
+      color: var(--footer-muted);
+      font-size: 0.85rem;
+    }
+
+    .cd-contact {
+      margin: 0.75rem 0 0;
+      font-size: 0.9rem;
+    }
+
+    .cd-legal--full {
+      margin: 0.35rem auto 0;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.25rem 0.25rem;
+      justify-content: center;
+    }
+
+    .cd-legal--accordion {
+      margin: 0.35rem auto 0;
+      max-width: 22rem;
+      text-align: left;
+    }
+
+    .cd-legal--accordion summary {
+      cursor: pointer;
+      font-weight: 600;
+      list-style: none;
+      padding: 0.5rem 0.75rem;
+      border-radius: 0.5rem;
+      background: transparent;
+      color: var(--footer-link);
+    }
+
+    .cd-legal--accordion summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .cd-legal--accordion[open] summary {
+      text-decoration: underline;
+    }
+
+    .cd-legal--accordion nav {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      padding: 0.25rem 0.75rem 0.5rem;
+    }
+
+    @media (min-width: 640px) {
+      .cd-legal--accordion {
+        display: none;
+      }
+    }
+
+    @media (max-width: 639px) {
+      .cd-legal--full {
+        display: none;
+      }
+
+      .cd-note {
+        font-size: 0.8rem;
+      }
     }
 
     /* Overlay menu */
@@ -1152,6 +1246,39 @@
       </div>
     </main>
   </div>
+
+  <footer class="cd-footer" role="contentinfo" aria-label="Site footer">
+    <p class="cd-copy">© 2025 CloseDose. All rights reserved.</p>
+
+    <nav class="cd-legal cd-legal--full" aria-label="Legal and policy links">
+      <a href="/legal/terms">Terms of Use</a>
+      <a href="/legal/privacy">Privacy Policy</a>
+      <a href="/legal/disclaimer">Disclaimer</a>
+      <a href="/legal/aup">Acceptable Use</a>
+      <a href="/legal/dmca">DMCA Policy</a>
+    </nav>
+
+    <details class="cd-legal cd-legal--accordion">
+      <summary aria-controls="legal-links">Legal &amp; Policies ▾</summary>
+      <nav id="legal-links" aria-label="Legal and policy links">
+        <a href="/legal/terms">Terms of Use</a>
+        <a href="/legal/privacy">Privacy Policy</a>
+        <a href="/legal/disclaimer">Disclaimer</a>
+        <a href="/legal/aup">Acceptable Use</a>
+        <a href="/legal/dmca">DMCA Policy</a>
+      </nav>
+    </details>
+
+    <p class="cd-note">
+      For medical emergencies, call 911. This site is for educational purposes only and not a substitute for professional medical
+      advice.
+    </p>
+
+    <p class="cd-contact">
+      Contact: <a href="mailto:info@closedose.com">info@closedose.com</a> •
+      <a href="mailto:hello@closedose.com">hello@closedose.com</a>
+    </p>
+  </footer>
 
   <div class="menu-overlay" id="siteMenu" hidden>
     <div class="menu-panel" role="dialog" aria-modal="true" aria-labelledby="menuHeading">

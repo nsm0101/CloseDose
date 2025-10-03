@@ -10,6 +10,11 @@
   --primary-strong: #081c29;
   --text-light: #0b2136;
   --text-muted: rgba(15, 46, 68, 0.7);
+  --footer-bg: #f8f9fa;
+  --footer-fg: #111111;
+  --footer-muted: #666666;
+  --footer-link: #0369a1;
+  --footer-border: #e5e7eb;
   color-scheme: light;
 }
 
@@ -701,19 +706,110 @@ button:focus-visible {
   transform: scale(1.1);
 }
 
-footer {
-  padding: 16px;
+.cd-footer {
+  background: var(--footer-bg);
+  color: var(--footer-fg);
+  border-top: 1px solid var(--footer-border);
+  padding: 1.25rem min(5vw, 1.25rem);
   text-align: center;
-  background-color: rgba(223, 240, 250, 0.86);
-  font-size: 0.9rem;
-  color: var(--text-muted);
+  font-size: 0.95rem;
+  line-height: 1.5;
 }
 
-footer small {
-  display: block;
-  font-size: 0.78rem;
-  letter-spacing: 0.02em;
-  color: inherit;
+.cd-footer a {
+  color: var(--footer-link);
+  text-decoration: none;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.5rem;
+  display: inline-block;
+}
+
+.cd-footer a:hover,
+.cd-footer a:focus-visible {
+  text-decoration: underline;
+  outline: none;
+}
+
+.cd-copy {
+  margin: 0 0 0.5rem;
+  font-weight: 600;
+}
+
+.cd-note {
+  margin: 0.75rem auto 0;
+  max-width: 60ch;
+  color: var(--footer-muted);
+  font-size: 0.85rem;
+}
+
+.cd-contact {
+  margin: 0.75rem 0 0;
+  font-size: 0.9rem;
+}
+
+.cd-legal--full {
+  margin: 0.35rem auto 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 0.25rem;
+  justify-content: center;
+}
+
+.cd-legal--accordion {
+  margin: 0.35rem auto 0;
+  max-width: 22rem;
+  text-align: left;
+}
+
+.cd-legal--accordion summary {
+  cursor: pointer;
+  font-weight: 600;
+  list-style: none;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.5rem;
+  background: transparent;
+  color: var(--footer-link);
+}
+
+.cd-legal--accordion summary::-webkit-details-marker {
+  display: none;
+}
+
+.cd-legal--accordion[open] summary {
+  text-decoration: underline;
+}
+
+.cd-legal--accordion nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.25rem 0.75rem 0.5rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --footer-bg: #0d1b2a;
+    --footer-fg: #eaeaea;
+    --footer-muted: #a8b3bd;
+    --footer-link: #4dd0e1;
+    --footer-border: #1b263b;
+  }
+}
+
+@media (min-width: 640px) {
+  .cd-legal--accordion {
+    display: none;
+  }
+}
+
+@media (max-width: 639px) {
+  .cd-legal--full {
+    display: none;
+  }
+
+  .cd-note {
+    font-size: 0.8rem;
+  }
 }
 
 @media (max-width: 600px) {
