@@ -257,6 +257,10 @@
       align-self: stretch;
     }
 
+    .calculator-widget-host {
+      width: 100%;
+    }
+
     .donate-card {
       background: linear-gradient(145deg, rgba(36, 166, 135, 0.94), rgba(18, 70, 67, 0.96));
       color: #ffffff;
@@ -1033,7 +1037,7 @@
   </style>
 </head>
 <body>
-  <a class="skip-link" href="#calculator">Ir para a calculadora</a>
+  <a class="skip-link" href="#calculator-card">Ir para a calculadora</a>
   <div class="wrap">
     <header>
       <img src="images/CloseDose_ExtendedLogo.svg" alt="CloseDose" class="header-wordmark" />
@@ -1045,54 +1049,7 @@
 
     <main>
       <div class="layout">
-        <section class="card card--calculator" aria-labelledby="calculator-title">
-          <div class="calculator-header">
-            <div class="brand-name" id="calculator-title">Calculadora de Medicamentos para Febre/Dor</div>
-          </div>
-          <form id="calculator" novalidate>
-            <div class="form-group" aria-live="polite">
-              <div class="form-title">Idade do paciente</div>
-              <div class="segmented">
-                <div class="segmented-buttons" role="group" aria-label="Selecionar idade do paciente">
-                  <button type="button" class="age-option" data-age="0-2" aria-pressed="false">0-2 meses</button>
-                  <button type="button" class="age-option" data-age="2-6" aria-pressed="false">2-6 meses</button>
-                  <button type="button" class="age-option" data-age="6+" aria-pressed="false">6+ meses</button>
-                </div>
-                <p class="hello-box">Bem-vindo! Escolha uma faixa etária para começar.</p>
-              </div>
-              <select id="age" name="age" aria-hidden="true" tabindex="-1" hidden>
-                <option value="">Selecione a idade</option>
-                <option value="0-2">0-2 meses</option>
-                <option value="2-6">2-6 meses</option>
-                <option value="6+">6+ meses</option>
-              </select>
-              <p id="message" class="alert" hidden></p>
-            </div>
-
-            <div class="form-group">
-              <div class="form-title">Peso do paciente</div>
-              <div class="unit-row">
-                <div class="weight-input">
-                  <label for="weight" class="visually-hidden">Digite o peso</label>
-                  <input type="number" id="weight" name="weight" inputmode="decimal" placeholder="Digite o peso" min="0" step="0.1" />
-                </div>
-                <div class="unit-toggle" role="group" aria-label="Selecionar unidade de peso">
-                  <button type="button" class="unit-option" data-unit="lbs" aria-pressed="true">lbs</button>
-                  <button type="button" class="unit-option" data-unit="kg" aria-pressed="false">kg</button>
-                </div>
-              </div>
-              <select id="weight-unit" name="weight-unit" aria-hidden="true" tabindex="-1" hidden>
-                <option value="lbs" selected>lbs</option>
-                <option value="kg">kg</option>
-              </select>
-            </div>
-
-            <div class="action">
-              <button type="submit">Calcular</button>
-            </div>
-            <div id="results" aria-live="polite"></div>
-          </form>
-        </section>
+        <div class="calculator-widget-host" id="calculator-card" data-calculator-root></div>
         <section class="card donate-card" aria-labelledby="donate-heading">
           <div class="donate-header">
             <h2 id="donate-heading">Doe!</h2>
@@ -1195,6 +1152,78 @@
     </div>
   </div>
 
+  <script src="widget/close-dose-calculator.js"></script>
+  <script>
+    window.addEventListener('DOMContentLoaded', function () {
+      var host = document.querySelector('[data-calculator-root]');
+      if (host && window.CloseDoseCalculator) {
+        window.CloseDoseCalculator.mount(host, {
+          id: 'main-calculator-pt',
+          strings: {
+            title: 'Calculadora de Medicamentos para Febre/Dor',
+            form: {
+              ageLabel: 'Idade do paciente',
+              ageGroupAria: 'Selecionar idade do paciente',
+              agePrompt: 'Bem-vindo! Escolha uma faixa etária para começar.',
+              ageOptions: {
+                '0-2': '0-2 meses',
+                '2-6': '2-6 meses',
+                '6+': '6+ meses',
+              },
+              ageSelectLabel: 'Selecione a idade',
+              infantCriticalMessage:
+                '<strong>Busque atendimento médico imediato.</strong> Se uma criança com menos de 60 dias tiver febre, é uma emergência médica. Entre em contato com o pediatra ou procure atendimento com um profissional de saúde imediatamente.',
+              weightLabel: 'Peso do paciente',
+              weightInputLabel: 'Digite o peso',
+              weightPlaceholder: 'Digite o peso',
+              weightUnitAria: 'Selecionar unidade de peso',
+              calculate: 'Calcular',
+            },
+            units: {
+              lbs: 'lbs',
+              kg: 'kg',
+            },
+            warnings: {
+              ageRequiredTitle: 'Idade obrigatória',
+              ageRequiredBody: 'Selecione uma faixa etária para continuar.',
+              weightRequiredTitle: 'Peso obrigatório',
+              weightRequiredBody: 'Informe um peso válido para calcular a dose.',
+              maxDoseReachedTitle: 'Dose máxima atingida',
+              maxDoseReachedBody:
+                'A dose baseada no peso foi limitada a este máximo. Considere conversar com o pediatra.',
+              doseSpacingTitle: 'Lembrete de intervalo',
+              doseSpacingBody:
+                'Nunca ultrapasse {{acetaminophenMax}} mg de acetaminofeno ou {{ibuprofenMax}} mg de ibuprofeno em uma única dose e deixe pelo menos 6 horas entre as doses.',
+              infantIbuprofen:
+                '<em>O ibuprofeno não é recomendado para lactentes com menos de seis meses. Consulte o pediatra antes de usar ibuprofeno para esse grupo etário.</em>',
+              acetaminophenMax:
+                'A dose única máxima para essa faixa etária é de {{max}} mg de acetaminofeno a cada 6 horas.',
+              ibuprofenMax:
+                'A dose única máxima para essa faixa etária é de {{max}} mg de ibuprofeno a cada 6 horas.',
+            },
+            results: {
+              patientWeightLabel: 'Peso do paciente',
+              patientWeightValue: '{{kg}} kg ({{lbs}} lbs)',
+              acetaminophenInfantTitle: 'Paracetamol (160 mg / 5 mL)',
+              acetaminophenInfantBody:
+                'Administrar {{ml}} mL ({{mg}} mg) a cada 4 horas, se necessário, para febre/dor.',
+              acetaminophenOlderTitle: 'Paracetamol (160 mg / 5 mL)',
+              acetaminophenOlderBody:
+                'Administrar {{ml}} mL ({{mg}} mg) a cada 6 horas, se necessário, para febre/dor.',
+              ibuprofenTitle: 'Ibuprofeno (oral)',
+              ibuprofenBody100:
+                '<strong>Infantil 100 mg / 5 mL:</strong> Administrar {{ml}} mL ({{mg}} mg) a cada 6 horas, se necessário, para febre/dor.',
+              ibuprofenBody50:
+                '<strong>Gotas 50 mg / 1,25 mL:</strong> Administrar {{ml}} mL ({{mg}} mg) a cada 6 horas, se necessário, para febre/dor.',
+            },
+            accessibility: {
+              resultsRegion: 'Resultados de dosagem',
+            },
+          },
+        });
+      }
+    });
+  </script>
   <script src="script.js"></script>
   <script>
     (function () {

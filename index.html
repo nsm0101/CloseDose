@@ -258,6 +258,10 @@
       align-self: stretch;
     }
 
+    .calculator-widget-host {
+      width: 100%;
+    }
+
     .donate-card {
       background: linear-gradient(145deg, rgba(36, 166, 135, 0.94), rgba(18, 70, 67, 0.96));
       color: #ffffff;
@@ -1120,7 +1124,7 @@
   </style>
 </head>
 <body>
-  <a class="skip-link" href="#calculator">Skip to calculator</a>
+  <a class="skip-link" href="#calculator-card">Skip to calculator</a>
   <div class="wrap">
     <header>
       <img src="images/CloseDose_ExtendedLogo.svg" alt="CloseDose" class="header-wordmark" />
@@ -1131,54 +1135,7 @@
 
     <main>
       <div class="layout">
-        <section class="card card--calculator" aria-labelledby="calculator-title">
-          <div class="calculator-header">
-            <div class="brand-name" id="calculator-title">Fever/Pain Medication Calculator</div>
-          </div>
-          <form id="calculator" novalidate>
-            <div class="form-group" aria-live="polite">
-              <div class="form-title">Patient Age</div>
-              <div class="segmented">
-                <div class="segmented-buttons" role="group" aria-label="Select patient age">
-                  <button type="button" class="age-option" data-age="0-2" aria-pressed="false">0-2 Months</button>
-                  <button type="button" class="age-option" data-age="2-6" aria-pressed="false">2-6 Months</button>
-                  <button type="button" class="age-option" data-age="6+" aria-pressed="false">6+ Months</button>
-                </div>
-                <p class="hello-box">Choose an age group to begin!</p>
-              </div>
-              <select id="age" name="age" aria-hidden="true" tabindex="-1" hidden>
-                <option value="">Select age</option>
-                <option value="0-2">0-2 Months</option>
-                <option value="2-6">2-6 Months</option>
-                <option value="6+">6+ Months</option>
-              </select>
-              <p id="message" class="alert" hidden></p>
-            </div>
-
-            <div class="form-group">
-              <div class="form-title">Patient Weight</div>
-              <div class="unit-row">
-                <div class="weight-input">
-                  <label for="weight" class="visually-hidden">Enter weight!</label>
-                  <input type="number" id="weight" name="weight" inputmode="decimal" placeholder="Enter weight" min="0" step="0.1" />
-                </div>
-                <div class="unit-toggle" role="group" aria-label="Select weight unit">
-                  <button type="button" class="unit-option" data-unit="lbs" aria-pressed="true">lbs</button>
-                  <button type="button" class="unit-option" data-unit="kg" aria-pressed="false">kg</button>
-                </div>
-              </div>
-              <select id="weight-unit" name="weight-unit" aria-hidden="true" tabindex="-1" hidden>
-                <option value="lbs" selected>lbs</option>
-                <option value="kg">kg</option>
-              </select>
-            </div>
-
-            <div class="action">
-              <button type="submit">Calculate</button>
-            </div>
-            <div id="results" aria-live="polite"></div>
-          </form>
-        </section>
+        <div class="calculator-widget-host" id="calculator-card" data-calculator-root></div>
         <section class="card donate-card" aria-labelledby="donate-heading">
           <div class="donate-header">
             <h2 id="donate-heading">Donate!</h2>
@@ -1293,6 +1250,15 @@
       <button class="close-menu" type="button">Close</button>
     </div>
   </div>
+  <script src="widget/close-dose-calculator.js"></script>
+  <script>
+    window.addEventListener('DOMContentLoaded', function () {
+      var host = document.querySelector('[data-calculator-root]');
+      if (host && window.CloseDoseCalculator) {
+        window.CloseDoseCalculator.mount(host, { id: 'main-calculator' });
+      }
+    });
+  </script>
   <script src="script.js"></script>
   <script>
     (function () {
