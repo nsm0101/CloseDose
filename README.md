@@ -16,6 +16,8 @@ The dosing calculator now ships as a reusable widget that can be embedded inside
 
 The optional `options.strings` object allows you to localize or customize any label. See the language-specific pages (`index-es.html`, `index-fr.html`, `index-pt.html`) for complete examples. Set `options.injectStyles` to `false` if you prefer to provide your own styles.
 
+By default the widget renders four pediatric age groups (0-2 months, 2-6 months, 6-24 months, and 2+ years) with tailored messaging for infants under two months and ibuprofen guidance for children under six months.
+
 ## Dark & Light Modes
 
 The site supports both dark and light modes using the CSS prefers-color-scheme media query. Dark mode uses a dark teal background with a white logo, while light mode uses a teal background and dark logo. You can find the assets in the images/ directory. If you wish to swap in different colors or images, update the relevant variables in style.css.

@@ -12,6 +12,8 @@
       ageOptions: {
         '0-2': '0-2 Months',
         '2-6': '2-6 Months',
+        '6-24': '6-24 Months',
+        '2y+': '2+ Years',
         '6+': '6+ Months',
       },
       ageSelectLabel: 'Select age',
@@ -121,7 +123,7 @@
 
     .cdcalc-segmented-buttons {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
       gap: 10px;
     }
 
@@ -396,6 +398,28 @@
 
   function buildMarkup(strings, ids) {
     const { form, units } = strings;
+    const fallbackAgeOptions = DEFAULT_STRINGS.form.ageOptions || {};
+    const ageOptions = form.ageOptions || {};
+    const resolveAgeLabel = function (key, fallbackKey) {
+      if (Object.prototype.hasOwnProperty.call(ageOptions, key)) {
+        return ageOptions[key];
+      }
+      if (fallbackKey && Object.prototype.hasOwnProperty.call(ageOptions, fallbackKey)) {
+        return ageOptions[fallbackKey];
+      }
+      if (Object.prototype.hasOwnProperty.call(fallbackAgeOptions, key)) {
+        return fallbackAgeOptions[key];
+      }
+      if (fallbackKey && Object.prototype.hasOwnProperty.call(fallbackAgeOptions, fallbackKey)) {
+        return fallbackAgeOptions[fallbackKey];
+      }
+      return key;
+    };
+
+    const ageLabel0to2 = resolveAgeLabel('0-2');
+    const ageLabel2to6 = resolveAgeLabel('2-6');
+    const ageLabel6to24 = resolveAgeLabel('6-24', '6+');
+    const ageLabel2Plus = resolveAgeLabel('2y+', '6+');
     return `
       <div class="cdcalc-card" data-calculator-card aria-labelledby="${ids.title}" role="group">
         <div class="cdcalc-header">
@@ -406,17 +430,19 @@
             <div class="cdcalc-group-title">${form.ageLabel}</div>
             <div class="cdcalc-segmented">
               <div class="cdcalc-segmented-buttons" role="group" aria-label="${form.ageGroupAria}">
-                <button type="button" class="cdcalc-age-option" data-age="0-2" aria-pressed="false">${form.ageOptions['0-2']}</button>
-                <button type="button" class="cdcalc-age-option" data-age="2-6" aria-pressed="false">${form.ageOptions['2-6']}</button>
-                <button type="button" class="cdcalc-age-option" data-age="6+" aria-pressed="false">${form.ageOptions['6+']}</button>
+                <button type="button" class="cdcalc-age-option" data-age="0-2" aria-pressed="false">${ageLabel0to2}</button>
+                <button type="button" class="cdcalc-age-option" data-age="2-6" aria-pressed="false">${ageLabel2to6}</button>
+                <button type="button" class="cdcalc-age-option" data-age="6-24" aria-pressed="false">${ageLabel6to24}</button>
+                <button type="button" class="cdcalc-age-option" data-age="2y+" aria-pressed="false">${ageLabel2Plus}</button>
               </div>
               <p class="cdcalc-hello" data-age-prompt>${form.agePrompt}</p>
             </div>
             <select data-age-select aria-hidden="true" tabindex="-1" hidden>
               <option value="">${form.ageSelectLabel}</option>
-              <option value="0-2">${form.ageOptions['0-2']}</option>
-              <option value="2-6">${form.ageOptions['2-6']}</option>
-              <option value="6+">${form.ageOptions['6+']}</option>
+              <option value="0-2">${ageLabel0to2}</option>
+              <option value="2-6">${ageLabel2to6}</option>
+              <option value="6-24">${ageLabel6to24}</option>
+              <option value="2y+">${ageLabel2Plus}</option>
             </select>
             <p class="cdcalc-alert" data-message hidden></p>
           </div>
@@ -614,7 +640,7 @@
       );
 
       resultBlocks.push(`<div class="cdcalc-result-group">${group.join('')}</div>`);
-    } else if (age === '6+') {
+    } else if (age === '6-24' || age === '2y+' || age === '6+') {
       const ACETA_MAX_SINGLE_DOSE_MG = 1000;
       const IBU_MAX_SINGLE_DOSE_MG = 800;
 
