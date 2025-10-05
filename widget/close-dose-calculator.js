@@ -8,12 +8,36 @@
     form: {
       ageLabel: 'Step 1: Tap an age group',
       ageGroupAria: 'Select patient age',
-      agePrompt: 'Step 1: Tap an age group to begin!',
+      agePrompt: '',
       ageOptions: {
-        '0-2': { primary: '0 Months', secondary: '2 Months', align: 'start', accessible: '0 to 2 Months' },
-        '2-6': { primary: '2 Months', secondary: '6 Months', align: 'start', accessible: '2 to 6 Months' },
-        '6-11': { primary: '6 Months', secondary: '11 Years', align: 'start', accessible: '6 Months to 11 Years' },
-        '12+': { primary: '12 Years', secondary: '+', align: 'center', accessible: '12 Years+' },
+        '0-2': {
+          primary: '0 Months',
+          connector: 'TO',
+          secondary: '2 Months',
+          align: 'center',
+          accessible: '0 to 2 Months',
+        },
+        '2-6': {
+          primary: '2 Months',
+          connector: 'TO',
+          secondary: '6 Months',
+          align: 'center',
+          accessible: '2 to 6 Months',
+        },
+        '6-11': {
+          primary: '6 Months',
+          connector: 'TO',
+          secondary: '11 Years',
+          align: 'center',
+          accessible: '6 Months to 11 Years',
+        },
+        '12+': {
+          primary: '12 Years',
+          connector: '+',
+          secondary: '',
+          align: 'center',
+          accessible: '12 Years and older',
+        },
         '6-24': '6-24 Months',
         '2y+': '2+ Years',
         '6+': '6+ Months',
@@ -81,6 +105,7 @@
       max-width: 720px;
       margin: 0 auto;
       color: #0f2c2a;
+      --cdcalc-gold: #ffe8a8;
     }
 
     .cdcalc-header {
@@ -150,10 +175,10 @@
       display: flex;
       flex-direction: column;
       justify-content: center;
-      align-items: flex-start;
-      text-align: left;
-      gap: 4px;
-      min-height: 72px;
+      align-items: center;
+      text-align: center;
+      gap: 2px;
+      min-height: 92px;
       line-height: 1.05;
     }
 
@@ -178,9 +203,16 @@
       font-size: 1.05rem;
     }
 
+    .cdcalc-age-line--connector {
+      font-size: 0.72rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      opacity: 0.7;
+    }
+
     .cdcalc-age-line--secondary {
-      font-size: 0.92rem;
-      opacity: 0.82;
+      font-size: 1.05rem;
+      font-weight: 800;
     }
 
     .cdcalc-age-option:focus-visible,
@@ -211,14 +243,26 @@
 
     .cdcalc-input {
       width: 100%;
-      border: 3px solid #0f2c2a;
+      display: block;
+      border: 4px dashed #0f2c2a;
       border-radius: 16px;
-      padding: 14px 16px;
+      padding: 16px 18px;
       font-size: 1.1rem;
       font-weight: 700;
       color: #0f2c2a;
       background: #ffffff;
+      text-align: center;
+      letter-spacing: 0.04em;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
       appearance: textfield;
+    }
+
+    .cdcalc-input:focus,
+    .cdcalc-input:focus-visible {
+      outline: none;
+      border-color: var(--cdcalc-gold);
+      box-shadow: 0 0 0 8px rgba(255, 232, 168, 0.3);
+      transform: scale(1.01);
     }
 
     .cdcalc-input::-webkit-outer-spin-button,
@@ -242,10 +286,10 @@
     .cdcalc-action {
       display: flex;
       flex-direction: column;
-      align-items: center;
+      align-items: stretch;
       gap: 10px;
       margin-top: 12px;
-      text-align: center;
+      text-align: left;
     }
 
     .cdcalc-step-callout {
@@ -261,7 +305,7 @@
       appearance: none;
       border: 3px solid #0f2c2a;
       border-radius: 999px;
-      background: #24a687;
+      background: linear-gradient(135deg, #24a687 0%, #1f8f7b 70%);
       color: #ffffff;
       font-weight: 900;
       letter-spacing: 0.14em;
@@ -270,7 +314,8 @@
       font-size: clamp(1rem, 0.95rem + 0.25vw, 1.15rem);
       cursor: pointer;
       box-shadow: 0 4px 0 rgba(15, 44, 42, 0.25);
-      transition: transform 0.12s ease, box-shadow 0.12s ease;
+      transition: transform 0.16s ease, box-shadow 0.16s ease, filter 0.16s ease, background 0.16s ease;
+      align-self: center;
     }
 
     .cdcalc-button:disabled {
@@ -285,20 +330,47 @@
       box-shadow: 0 6px 0 rgba(15, 44, 42, 0.25);
     }
 
-    @keyframes cdcalc-button-attention {
+    @keyframes cdcalc-button-breathe {
       0%,
       100% {
         transform: translateY(0) scale(1);
-        box-shadow: 0 4px 0 rgba(15, 44, 42, 0.25);
+        box-shadow:
+          0 4px 0 rgba(15, 44, 42, 0.25),
+          0 0 0 0 rgba(255, 232, 168, 0);
+        background: linear-gradient(135deg, #24a687 0%, #1f8f7b 70%);
+        filter: drop-shadow(0 0 0 rgba(255, 232, 168, 0));
       }
-      50% {
-        transform: translateY(-4px) scale(1.03);
-        box-shadow: 0 10px 0 rgba(15, 44, 42, 0.28);
+      45% {
+        transform: translateY(-6px) scale(1.1);
+        box-shadow:
+          0 16px 0 rgba(15, 44, 42, 0.32),
+          0 0 0 14px rgba(255, 232, 168, 0.45);
+        background: linear-gradient(140deg, #24a687 0%, var(--cdcalc-gold) 92%);
+        filter: drop-shadow(0 0 18px rgba(255, 232, 168, 0.4));
       }
     }
 
-    .cdcalc-button--attention {
-      animation: cdcalc-button-attention 1.25s ease-in-out 0s 2;
+    @keyframes cdcalc-input-breathe {
+      0%,
+      100% {
+        transform: scale(1);
+        border-color: #0f2c2a;
+        box-shadow: 0 0 0 0 rgba(255, 232, 168, 0);
+      }
+      50% {
+        transform: scale(1.02);
+        border-color: var(--cdcalc-gold);
+        box-shadow: 0 0 0 10px rgba(255, 232, 168, 0.35);
+      }
+    }
+
+    .cdcalc-button--breathing {
+      animation: cdcalc-button-breathe 2.4s ease-in-out infinite;
+    }
+
+    .cdcalc-input--attention {
+      animation: cdcalc-input-breathe 2.1s ease-in-out infinite;
+      will-change: transform, box-shadow, border-color;
     }
 
     .cdcalc-alert {
@@ -473,7 +545,8 @@
     return style;
   }
 
-  const ATTENTION_CLASS = 'cdcalc-button--attention';
+  const ATTENTION_CLASS = 'cdcalc-button--breathing';
+  const INPUT_ATTENTION_CLASS = 'cdcalc-input--attention';
 
   // Implementation summary:
   // - 0–2 months: emergency redirect, calculator inputs disabled.
@@ -511,10 +584,9 @@
     if (!button) {
       return;
     }
-    button.classList.remove(ATTENTION_CLASS);
-    // Force a reflow so the animation can replay when the class is re-added.
-    void button.offsetWidth;
-    button.classList.add(ATTENTION_CLASS);
+    if (!button.classList.contains(ATTENTION_CLASS)) {
+      button.classList.add(ATTENTION_CLASS);
+    }
   }
 
   function buildMarkup(strings, ids) {
@@ -534,6 +606,7 @@
         return {
           primary: trimmed,
           secondary: '',
+          connector: '',
           align: 'center',
           accessible: trimmed,
         };
@@ -541,15 +614,18 @@
       if (value && typeof value === 'object' && !Array.isArray(value)) {
         const primary = typeof value.primary === 'string' ? value.primary.trim() : '';
         const secondary = typeof value.secondary === 'string' ? value.secondary.trim() : '';
+        const connector = typeof value.connector === 'string' ? value.connector.trim() : '';
         const alignPreference = value.align === 'center' ? 'center' : 'start';
-        const align = secondary ? alignPreference : 'center';
         const accessibleText = typeof value.accessible === 'string' ? value.accessible.trim() : '';
-        const fallbackAccessible = [primary, secondary].filter(Boolean).join(secondary ? ' – ' : '');
+        const fallbackAccessible = [primary, connector, secondary]
+          .filter(Boolean)
+          .join(' ');
 
         if (!primary && accessibleText) {
           return {
             primary: accessibleText,
             secondary: '',
+            connector: '',
             align: 'center',
             accessible: accessibleText,
           };
@@ -559,9 +635,12 @@
           return null;
         }
 
+        const align = alignPreference === 'center' || connector || secondary ? 'center' : alignPreference;
+
         return {
           primary,
           secondary,
+          connector,
           align,
           accessible: accessibleText || fallbackAccessible || primary,
         };
@@ -592,6 +671,7 @@
       return {
         primary: key,
         secondary: '',
+        connector: '',
         align: 'center',
         accessible: key,
       };
@@ -604,12 +684,16 @@
 
     const renderAgeButton = function (ageValue, label) {
       const alignmentClass = label.align === 'center' ? ' cdcalc-age-option--align-center' : '';
+      const connectorLine = label.connector
+        ? `<span class="cdcalc-age-line cdcalc-age-line--connector">${escapeHtml(label.connector)}</span>`
+        : '';
       const secondaryLine = label.secondary
         ? `<span class="cdcalc-age-line cdcalc-age-line--secondary">${escapeHtml(label.secondary)}</span>`
         : '';
       return `
         <button type="button" class="cdcalc-age-option${alignmentClass}" data-age="${ageValue}" aria-pressed="false" aria-label="${escapeHtml(label.accessible)}">
           <span class="cdcalc-age-line cdcalc-age-line--primary">${escapeHtml(label.primary)}</span>
+          ${connectorLine}
           ${secondaryLine}
         </button>
       `;
@@ -637,7 +721,11 @@
                 ${renderAgeButton('6-11', ageLabel6to11)}
                 ${renderAgeButton('12+', ageLabel12Plus)}
               </div>
-              <p class="cdcalc-hello" data-age-prompt>${form.agePrompt}</p>
+              ${
+                form.agePrompt
+                  ? `<p class="cdcalc-hello" data-age-prompt>${form.agePrompt}</p>`
+                  : ''
+              }
             </div>
             <select data-age-select aria-hidden="true" tabindex="-1" hidden>
               <option value="">${form.ageSelectLabel}</option>
@@ -945,11 +1033,82 @@
       return () => {};
     }
 
+    const shouldAnimateSubmit = () => {
+      if (
+        !elements ||
+        !elements.submitButton ||
+        !elements.weightInput ||
+        !elements.ageSelect ||
+        elements.submitButton.disabled
+      ) {
+        return false;
+      }
+      const weightValue = parseFloat(elements.weightInput.value);
+      if (Number.isNaN(weightValue) || weightValue <= 0) {
+        return false;
+      }
+      const gate = resolveAgeGate(elements.ageSelect.value);
+      return Boolean(gate && gate !== 'emergency');
+    };
+
+    const shouldAnimateWeightInput = () => {
+      if (
+        !elements ||
+        !elements.weightInput ||
+        !elements.ageSelect ||
+        elements.weightInput.disabled
+      ) {
+        return false;
+      }
+      const ageValue = elements.ageSelect.value;
+      const gate = resolveAgeGate(ageValue);
+      if (!gate || gate === 'emergency') {
+        return false;
+      }
+      if (document.activeElement === elements.weightInput) {
+        return false;
+      }
+      const weightValue = typeof elements.weightInput.value === 'string'
+        ? elements.weightInput.value.trim()
+        : '';
+      return weightValue === '';
+    };
+
+    const refreshSubmitAnimation = () => {
+      if (!elements || !elements.submitButton) {
+        return;
+      }
+      if (shouldAnimateSubmit()) {
+        triggerButtonAttention(elements.submitButton);
+      } else {
+        clearButtonAttention(elements.submitButton);
+      }
+    };
+
+    const refreshWeightAnimation = () => {
+      if (!elements || !elements.weightInput) {
+        return;
+      }
+      if (shouldAnimateWeightInput()) {
+        if (!elements.weightInput.classList.contains(INPUT_ATTENTION_CLASS)) {
+          elements.weightInput.classList.add(INPUT_ATTENTION_CLASS);
+        }
+      } else {
+        elements.weightInput.classList.remove(INPUT_ATTENTION_CLASS);
+      }
+    };
+
+    const refreshGuidanceAnimations = () => {
+      refreshSubmitAnimation();
+      refreshWeightAnimation();
+    };
+
     const onAgeButtonClick = (event) => {
       const button = event.currentTarget;
       const ageValue = button.dataset.age || '';
       elements.ageSelect.value = ageValue;
       updateForm(elements, strings);
+      refreshGuidanceAnimations();
     };
 
     elements.ageButtons.forEach((button) => {
@@ -961,40 +1120,35 @@
       const unitValue = button.dataset.unit || 'lbs';
       elements.unitSelect.value = unitValue;
       updateForm(elements, strings);
+      refreshGuidanceAnimations();
     };
 
     elements.unitButtons.forEach((button) => {
       button.addEventListener('click', onUnitButtonClick);
     });
 
-    const onAgeSelectChange = () => updateForm(elements, strings);
-    const onUnitSelectChange = () => updateForm(elements, strings);
+    const onAgeSelectChange = () => {
+      updateForm(elements, strings);
+      refreshGuidanceAnimations();
+    };
+    const onUnitSelectChange = () => {
+      updateForm(elements, strings);
+      refreshGuidanceAnimations();
+    };
     const onWeightInput = () => {
-      if (!elements.weightInput) {
-        return;
-      }
-      const weightValue = parseFloat(elements.weightInput.value);
-      if (
-        !isNaN(weightValue) &&
-        weightValue > 0 &&
-        elements.submitButton &&
-        !elements.submitButton.disabled &&
-        resolveAgeGate(elements.ageSelect.value)
-      ) {
-        triggerButtonAttention(elements.submitButton);
-      }
+      refreshGuidanceAnimations();
+    };
+
+    const onWeightFocusChange = () => {
+      refreshWeightAnimation();
     };
 
     elements.ageSelect.addEventListener('change', onAgeSelectChange);
     elements.unitSelect.addEventListener('change', onUnitSelectChange);
     elements.weightInput.addEventListener('input', onWeightInput);
     elements.weightInput.addEventListener('change', onWeightInput);
-
-    if (elements.submitButton) {
-      elements.submitButton.addEventListener('animationend', () => {
-        clearButtonAttention(elements.submitButton);
-      });
-    }
+    elements.weightInput.addEventListener('focus', onWeightFocusChange);
+    elements.weightInput.addEventListener('blur', onWeightFocusChange);
 
     const onSubmit = (event) => {
       event.preventDefault();
@@ -1005,6 +1159,7 @@
     elements.form.addEventListener('submit', onSubmit);
 
     updateForm(elements, strings);
+    refreshGuidanceAnimations();
 
     return () => {
       elements.ageButtons.forEach((button) => {
@@ -1016,6 +1171,10 @@
       elements.ageSelect.removeEventListener('change', onAgeSelectChange);
       elements.unitSelect.removeEventListener('change', onUnitSelectChange);
       elements.form.removeEventListener('submit', onSubmit);
+      elements.weightInput.removeEventListener('input', onWeightInput);
+      elements.weightInput.removeEventListener('change', onWeightInput);
+      elements.weightInput.removeEventListener('focus', onWeightFocusChange);
+      elements.weightInput.removeEventListener('blur', onWeightFocusChange);
     };
   }
 
