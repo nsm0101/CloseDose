@@ -242,7 +242,7 @@
     }
 
     .layout {
-      width: min(820px, 100%);
+      width: min(760px, 100%);
       margin: 0 auto;
       display: flex;
       flex-direction: column;
@@ -257,8 +257,8 @@
       box-shadow: var(--shadow-card);
       padding: clamp(24px, 4vw, 36px);
       width: 100%;
-      max-width: min(760px, 100%);
-      margin: 0;
+      max-width: min(720px, 100%);
+      margin: 0 auto;
     }
 
     .card.card--calculator,
@@ -269,6 +269,8 @@
 
     .calculator-widget-host {
       width: 100%;
+      max-width: 720px;
+      margin: 0 auto;
     }
 
     .donate-card {
@@ -1172,23 +1174,25 @@
           strings: {
             title: 'Calculatrice de médicaments pour fièvre/douleur',
             form: {
-              ageLabel: 'Âge du patient',
+              ageLabel: "Étape 1 : Touchez le groupe d’âge",
               ageGroupAria: "Sélectionner l’âge du patient",
-              agePrompt: "Bienvenue ! Choisissez un groupe d’âge pour commencer.",
+              agePrompt: "Étape 1 : Choisissez un groupe d’âge pour commencer.",
               ageOptions: {
-                '0-2': '0-2 mois',
-                '2-6': '2-6 mois',
-                '6-24': '6-24 mois',
-                '2y+': '2 ans ou plus',
+                '0-2': { primary: '0 mois', secondary: '2 mois', align: 'start', accessible: '0 à 2 mois' },
+                '2-6': { primary: '2 mois', secondary: '6 mois', align: 'start', accessible: '2 à 6 mois' },
+                '6-11': { primary: '6 mois', secondary: '11 ans', align: 'start', accessible: '6 mois à 11 ans' },
+                '12+': { primary: '12 ans', secondary: 'et plus', align: 'center', accessible: '12 ans et plus' },
+                '2y+': { primary: '12 ans', secondary: 'et plus', align: 'center', accessible: '12 ans et plus' },
               },
               ageSelectLabel: "Sélectionnez l’âge",
               infantCriticalMessage:
                 "<strong>Consultez immédiatement un médecin.</strong> Si un enfant de moins de 60 jours a de la fièvre, il s’agit d’une urgence médicale. Veuillez contacter votre pédiatre ou consulter un professionnel de santé immédiatement.",
-              weightLabel: 'Poids du patient',
+              weightLabel: 'Étape 2 : Saisir le poids',
               weightInputLabel: 'Saisir le poids',
               weightPlaceholder: 'Saisir le poids',
               weightUnitAria: "Sélectionner l’unité de poids",
               calculate: 'Calculer',
+              calculateStep: 'Étape 3 : Calculer !',
             },
             units: {
               lbs: 'lbs',
