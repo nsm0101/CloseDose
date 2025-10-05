@@ -1,18 +1,243 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Terms of Use • CloseDose</title>
+  <style>
+    :root{
+      --teal:#24A687;
+      --ink:#0B1F1A;
+      --muted:#4A5A55;
+      --bg:#ffffff;
+      --border:#E8F2EF;
+      --maxw: 840px;
+    }
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji","Segoe UI Emoji";
+      color:var(--ink);
+      background:var(--bg);
+      line-height:1.6;
+    }
+    .page{
+      min-height:100%;
+      position:relative;
+      overflow-x:hidden;
+    }
+    header{
+      padding:48px 20px 16px;
+      text-align:center;
+      border-bottom:1px solid var(--border);
+      background:
+        radial-gradient(1200px 200px at 50% -80px, rgba(36,166,135,0.08), transparent 70%);
+    }
+    .brand{
+      font-weight:800;
+      letter-spacing:0.2px;
+      color:var(--teal);
+      text-transform:uppercase;
+      font-size:14px;
+      display:inline-block;
+      margin-bottom:6px;
+    }
+    h1{
+      margin:6px 0 4px;
+      font-size: clamp(26px, 4vw, 34px);
+      line-height:1.15;
+    }
+    .meta{
+      color:var(--muted);
+      font-size:14px;
+      margin-top:4px;
+    }
+    main{
+      padding:28px 20px 120px;
+      max-width:var(--maxw);
+      margin:0 auto;
+    }
+    section{
+      margin: 24px 0;
+    }
+    h2{
+      font-size: clamp(18px, 2.5vw, 22px);
+      margin: 22px 0 8px;
+      line-height:1.25;
+    }
+    ul{padding-left:20px}
+    li{margin:6px 0}
+    .card{
+      background:#fff;
+      border:1px solid var(--border);
+      border-radius:14px;
+      padding:20px;
+    }
+    .note{
+      font-size:14px;color:var(--muted)
+    }
+    footer{
+      position:relative;
+      z-index:2;
+      border-top:1px solid var(--border);
+      background:#fff;
+    }
+    .footer-inner{
+      max-width:var(--maxw);
+      margin:0 auto;
+      padding:18px 20px 26px;
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:center;
+      font-size:14px;
+    }
+    .footer-inner a{
+      color:var(--muted);
+      text-decoration:none;
+      border-bottom:1px dashed rgba(0,0,0,0.15);
+    }
+    .footer-inner a:hover{color:var(--ink)}
+    /* Watermark */
+    .watermark{
+      pointer-events:none;
+      position:fixed;
+      right:-30px;
+      bottom:-10px;
+      z-index:1;
+      opacity:0.06;
+      font-weight:900;
+      font-size:120px;
+      line-height:1;
+      color:var(--teal);
+      transform: rotate(-12deg);
+      letter-spacing:1.5px;
+      user-select:none;
+    }
+    @media (prefers-color-scheme: dark){
+      body{background:#0c1211;color:#ebf4f1}
+      header{border-bottom-color:#122320}
+      .card{background:#0f1716;border-color:#122320}
+      .footer-inner{background:#0f1716}
+      .footer-inner a{color:#9fb9b2}
+      .meta, .note{color:#9fb9b2}
+      .watermark{opacity:0.08}
+      --border:#122320;
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+  <div class="watermark">CloseDose</div>
 
-<!DOCTYPE html><html lang="en"><head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Terms of Use • CloseDose</title>
-<style>
-:root{--teal:#24A687;--dark:#123934;--text:#0f2b29;--white:#ffffff;}
-body{font-family:'Nunito',sans-serif;margin:0;padding:0;background:#f8faf9;color:var(--text);line-height:1.6;}
-.header{background:linear-gradient(135deg,var(--dark),var(--teal));color:var(--white);padding:48px 20px;text-align:center;}
-.container{max-width:900px;margin:auto;padding:20px;}
-.card{background:#fff;border-radius:12px;padding:24px;box-shadow:0 4px 16px rgba(0,0,0,.05);margin-bottom:40px;}
-.footer{background:#fbfdfc;border-top:1px solid #e6eeeb;padding:20px;text-align:center;font-size:.9rem;}
-.footer a{color:var(--teal);text-decoration:none;margin:0 5px;}
-</style></head><body>
-<header class="header"><h1>Terms of Use</h1><p>Rules for using CloseDose services and content</p><p><em>Effective October 03, 2025</em></p></header>
-<div class="container"><div class="card"><h2>Overview</h2><p>By using CloseDose, you agree to these terms...</p></div></div>
-<footer class="footer">© 2025 CloseDose — Educational use only. Not medical advice.<br>
-<a href="https://nsm0101.github.io/CloseDoseAlt/legal/terms">Terms</a> | <a href="https://nsm0101.github.io/CloseDoseAlt/legal/privacy">Privacy</a> | <a href="https://nsm0101.github.io/CloseDoseAlt/legal/disclaimer">Disclaimer</a> | <a href="https://nsm0101.github.io/CloseDoseAlt/legal/dmca">DMCA</a> | <a href="https://nsm0101.github.io/CloseDoseAlt/legal/linking">Acceptable Use</a>
-</footer></body></html>
+  <header>
+    <div class="brand">CloseDose</div>
+    <h1>Terms of Use</h1>
+    <div class="meta">Effective Date: <strong>October 02, 2025</strong></div>
+  </header>
+
+  <main>
+    <section class="card">
+      <h2>Overview</h2>
+      <p>
+        CloseDose LLC (“CloseDose”, “we”, “us”) provides weight-based pediatric dosing calculators and educational content for informational purposes only. The Services are intended for use by parents, caregivers, and healthcare professionals as a supplemental aid and are not a substitute for medical advice, diagnosis, or treatment. By accessing CloseDose.com (the “Website”) or any related application, you agree to these Terms of Use.
+      </p>
+
+      <h2>Eligibility &amp; Accounts</h2>
+      <p>
+        You must be at least 18 years old to use the Services. If you create an account or opt into features that store preferences, you agree to provide accurate information and keep it up to date.
+      </p>
+
+      <h2>Not Medical Advice</h2>
+      <p>
+        Calculated outputs are based on commonly referenced weight-based pediatric dosing ranges and assumptions which may not apply to every child. Do not disregard, avoid, or delay obtaining medical advice from a licensed professional because of information on the Services. In an emergency, call your local emergency number.
+      </p>
+
+      <h2>Use License; Permitted Use</h2>
+      <p>
+        We grant you a limited, nonexclusive, revocable license to access and use the Services for your personal, non-commercial use (or for clinical point-of-care use by licensed professionals with appropriate independent judgment). You may view results on screen and download or print a single copy of an individual dosing result for personal use provided you do not remove proprietary notices.
+      </p>
+
+      <h2>Prohibited Uses</h2>
+      <ul>
+        <li>Copy, reproduce, modify, translate, or create derivative works from the Services or any part of the Website;</li>
+        <li>Scrape, spider, crawl, harvest, or access the Services via automated means;</li>
+        <li>Bulk-generate, store, or redistribute results;</li>
+        <li>Reverse engineer, decompile, or attempt to extract source code;</li>
+        <li>Use the Services to train or improve any AI/ML models;</li>
+        <li>Bypass security controls or probe/scan the Services;</li>
+        <li>Use the Services in violation of any law;</li>
+        <li>Misrepresent CloseDose’s brand or marks.</li>
+      </ul>
+
+      <h2>Intellectual Property</h2>
+      <p>
+        All rights, title, and interest in the Services, including software, algorithms, design, layout, text, graphics, logos, and trademarks, are owned by CloseDose or its licensors and are protected by intellectual property laws. Except for the limited license above, no rights are granted by implication or otherwise.
+      </p>
+
+      <h2>User Content (if applicable)</h2>
+      <p>
+        If you submit feedback or suggestions, you grant CloseDose a nonexclusive, worldwide, perpetual, irrevocable, royalty-free license to use, reproduce, modify, and create derivative works from such feedback for any purpose. CloseDose does not host public comments or media uploads on dosing pages.
+      </p>
+
+      <h2>Third-Party Links</h2>
+      <p>
+        The Services may reference third-party websites or resources. CloseDose is not responsible for their availability, content, or policies. Your use of third-party sites is at your own risk.
+      </p>
+
+      <h2>Privacy</h2>
+      <p>
+        CloseDose does not request or store protected health information (PHI). Limited analytics data (e.g., page views, device type, approximate location) may be collected to improve the Services. For details, see the Privacy Policy.
+      </p>
+
+      <h2>Disclaimer of Warranties</h2>
+      <p>
+        THE SERVICES ARE PROVIDED “AS IS” AND “AS AVAILABLE.” CLOSEDOSE DISCLAIMS ALL WARRANTIES, EXPRESS OR IMPLIED, INCLUDING MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT. WE DO NOT WARRANT THAT THE SERVICES WILL BE ACCURATE, COMPLETE, ERROR-FREE, SECURE, OR UNINTERRUPTED.
+      </p>
+
+      <h2>Limitation of Liability</h2>
+      <p>
+        TO THE MAXIMUM EXTENT PERMITTED BY LAW, CLOSEDOSE SHALL NOT BE LIABLE FOR INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, EXEMPLARY, OR PUNITIVE DAMAGES, OR FOR LOSS OF DATA, PROFITS, OR GOODWILL, ARISING OUT OF OR RELATED TO YOUR USE OF THE SERVICES, EVEN IF ADVISED OF THE POSSIBILITY. IN NO EVENT WILL CLOSEDOSE’S TOTAL LIABILITY EXCEED ONE HUNDRED U.S. DOLLARS (US $100).
+      </p>
+
+      <h2>Indemnification</h2>
+      <p>
+        You agree to indemnify, defend, and hold harmless CloseDose and its officers, directors, employees, and agents from any claims, liabilities, damages, losses, and expenses (including reasonable attorneys’ fees) arising from your violation of these Terms or misuse of the Services.
+      </p>
+
+      <h2>Changes to the Services or Terms</h2>
+      <p>
+        We may modify or discontinue the Services or update these Terms at any time. Changes are effective upon posting an updated Effective Date. Your continued use constitutes acceptance.
+      </p>
+
+      <h2>Governing Law; Venue</h2>
+      <p>
+        These Terms are governed by the laws of the State of Rhode Island, without regard to its conflict-of-law rules. You agree to the exclusive jurisdiction of state and federal courts located in Rhode Island.
+      </p>
+
+      <h2>DMCA Policy</h2>
+      <p>
+        If you believe content on the Services infringes your copyright, please send a notice to our designated agent:
+        <br />DMCA Agent, CloseDose LLC, [Address], [City, State ZIP], Email: legal@closedose.com.
+        <br />Your notice must include all elements required by 17 U.S.C. §512(c)(3).
+      </p>
+
+      <h2>Contact</h2>
+      <p>CloseDose, [Mailing Address], Email: <a href="mailto:support@closedose.com">support@closedose.com</a>.</p>
+      <p class="note">This page is provided for convenience; if any portion conflicts with posted Terms on the primary domain, the primary posting controls.</p>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+      <a href="terms.html">Terms</a> •
+      <a href="privacy.html">Privacy</a> •
+      <a href="disclaimer.html">Disclaimer</a> •
+      <a href="dmca.html">DMCA</a> •
+      <a href="linking.html">Acceptable Use &amp; Linking</a>
+    </div>
+  </footer>
+</div>
+</body>
+</html>
