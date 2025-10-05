@@ -366,6 +366,26 @@ button:focus-visible {
     0 3px 12px rgba(12, 52, 82, 0.18);
 }
 
+@keyframes calculator-button-attention {
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+    box-shadow:
+      0 20px 44px rgba(13, 52, 82, 0.24),
+      0 4px 14px rgba(12, 52, 82, 0.18);
+  }
+  50% {
+    transform: translateY(-6px) scale(1.03);
+    box-shadow:
+      0 32px 60px rgba(13, 52, 82, 0.3),
+      0 10px 22px rgba(12, 52, 82, 0.24);
+  }
+}
+
+#calculator button.button--attention {
+  animation: calculator-button-attention 1.25s ease-in-out 0s 2;
+}
+
 .translation-overlay[hidden] {
   display: none;
 }

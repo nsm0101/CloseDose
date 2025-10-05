@@ -232,7 +232,7 @@
     }
 
     .layout {
-      width: min(820px, 100%);
+      width: min(760px, 100%);
       margin: 0 auto;
       display: flex;
       flex-direction: column;
@@ -247,8 +247,8 @@
       box-shadow: var(--shadow-card);
       padding: clamp(24px, 4vw, 36px);
       width: 100%;
-      max-width: min(760px, 100%);
-      margin: 0;
+      max-width: min(720px, 100%);
+      margin: 0 auto;
     }
 
     .card.card--calculator,
@@ -259,6 +259,8 @@
 
     .calculator-widget-host {
       width: 100%;
+      max-width: 720px;
+      margin: 0 auto;
     }
 
     .donate-card {
@@ -1162,23 +1164,25 @@
           strings: {
             title: 'Calculadora de Medicamentos para Febre/Dor',
             form: {
-              ageLabel: 'Idade do paciente',
+              ageLabel: 'Passo 1: Toque o grupo etário',
               ageGroupAria: 'Selecionar idade do paciente',
-              agePrompt: 'Bem-vindo! Escolha uma faixa etária para começar.',
+              agePrompt: 'Passo 1: Escolha um grupo etário para começar.',
               ageOptions: {
-                '0-2': '0-2 meses',
-                '2-6': '2-6 meses',
-                '6-24': '6-24 meses',
-                '2y+': '2+ anos',
+                '0-2': { primary: '0 meses', secondary: '2 meses', align: 'start', accessible: '0 a 2 meses' },
+                '2-6': { primary: '2 meses', secondary: '6 meses', align: 'start', accessible: '2 a 6 meses' },
+                '6-11': { primary: '6 meses', secondary: '11 anos', align: 'start', accessible: '6 meses a 11 anos' },
+                '12+': { primary: '12 anos', secondary: 'ou mais', align: 'center', accessible: '12 anos ou mais' },
+                '2y+': { primary: '12 anos', secondary: 'ou mais', align: 'center', accessible: '12 anos ou mais' },
               },
               ageSelectLabel: 'Selecione a idade',
               infantCriticalMessage:
                 '<strong>Busque atendimento médico imediato.</strong> Se uma criança com menos de 60 dias tiver febre, é uma emergência médica. Entre em contato com o pediatra ou procure atendimento com um profissional de saúde imediatamente.',
-              weightLabel: 'Peso do paciente',
+              weightLabel: 'Passo 2: Inserir peso',
               weightInputLabel: 'Digite o peso',
               weightPlaceholder: 'Digite o peso',
               weightUnitAria: 'Selecionar unidade de peso',
               calculate: 'Calcular',
+              calculateStep: 'Passo 3: Calcular!',
             },
             units: {
               lbs: 'lbs',

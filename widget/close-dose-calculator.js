@@ -6,12 +6,14 @@
   const DEFAULT_STRINGS = {
     title: 'Fever/Pain Medication Calculator',
     form: {
-      ageLabel: 'Patient Age',
+      ageLabel: 'Step 1: Tap an age group',
       ageGroupAria: 'Select patient age',
-      agePrompt: 'Choose an age group to begin!',
+      agePrompt: 'Step 1: Tap an age group to begin!',
       ageOptions: {
-        '0-2': '0-2 Months',
-        '2-6': '2-6 Months',
+        '0-2': { primary: '0 Months', secondary: '2 Months', align: 'start', accessible: '0 to 2 Months' },
+        '2-6': { primary: '2 Months', secondary: '6 Months', align: 'start', accessible: '2 to 6 Months' },
+        '6-11': { primary: '6 Months', secondary: '11 Years', align: 'start', accessible: '6 Months to 11 Years' },
+        '12+': { primary: '12 Years', secondary: '+', align: 'center', accessible: '12 Years+' },
         '6-24': '6-24 Months',
         '2y+': '2+ Years',
         '6+': '6+ Months',
@@ -19,11 +21,12 @@
       ageSelectLabel: 'Select age',
       infantCriticalMessage:
         '<strong>Seek immediate medical care.</strong> If a child less than 60 days old has a fever it is a medical emergency. Please contact your pediatrician or seek care with a healthcare provider immediately.',
-      weightLabel: 'Patient Weight',
+      weightLabel: 'Step 2: Enter weight',
       weightInputLabel: 'Enter weight',
       weightPlaceholder: 'Enter weight',
       weightUnitAria: 'Select weight unit',
       calculate: 'Calculate',
+      calculateStep: 'Step 3: Calculate!',
     },
     units: {
       lbs: 'lbs',
@@ -143,11 +146,41 @@
       transition: background 0.12s ease, color 0.12s ease, transform 0.12s ease;
     }
 
+    .cdcalc-age-option {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+      text-align: left;
+      gap: 4px;
+      min-height: 72px;
+      line-height: 1.05;
+    }
+
+    .cdcalc-age-option--align-center {
+      align-items: center;
+      text-align: center;
+    }
+
     .cdcalc-age-option.is-active,
     .cdcalc-unit-option.is-active {
       background: #24a687;
       color: #ffffff;
       box-shadow: inset 0 0 0 2px #0f2c2a;
+    }
+
+    .cdcalc-age-line {
+      display: block;
+      width: 100%;
+    }
+
+    .cdcalc-age-line--primary {
+      font-size: 1.05rem;
+    }
+
+    .cdcalc-age-line--secondary {
+      font-size: 0.92rem;
+      opacity: 0.82;
     }
 
     .cdcalc-age-option:focus-visible,
@@ -164,14 +197,16 @@
     }
 
     .cdcalc-unit-row {
-      display: grid;
-      grid-template-columns: 2fr minmax(120px, 1fr);
-      gap: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
       align-items: center;
     }
 
     .cdcalc-weight-input {
       position: relative;
+      width: min(100%, clamp(200px, 33%, 240px));
+      margin: 0 auto;
     }
 
     .cdcalc-input {
@@ -196,12 +231,30 @@
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 10px;
+      width: min(100%, clamp(240px, 50%, 360px));
+      margin: 0 auto;
+    }
+
+    .cdcalc-unit-option {
+      width: 100%;
     }
 
     .cdcalc-action {
       display: flex;
-      justify-content: center;
-      margin-top: 8px;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      margin-top: 12px;
+      text-align: center;
+    }
+
+    .cdcalc-step-callout {
+      margin: 0;
+      font-weight: 800;
+      font-size: 0.95rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #0f2c2a;
     }
 
     .cdcalc-button {
@@ -213,8 +266,8 @@
       font-weight: 900;
       letter-spacing: 0.14em;
       text-transform: uppercase;
-      padding: 16px 20px;
-      font-size: 1rem;
+      padding: clamp(18px, 2.5vw, 24px) clamp(28px, 6vw, 40px);
+      font-size: clamp(1rem, 0.95rem + 0.25vw, 1.15rem);
       cursor: pointer;
       box-shadow: 0 4px 0 rgba(15, 44, 42, 0.25);
       transition: transform 0.12s ease, box-shadow 0.12s ease;
@@ -230,6 +283,22 @@
     .cdcalc-button:not(:disabled):hover {
       transform: translateY(-1px);
       box-shadow: 0 6px 0 rgba(15, 44, 42, 0.25);
+    }
+
+    @keyframes cdcalc-button-attention {
+      0%,
+      100% {
+        transform: translateY(0) scale(1);
+        box-shadow: 0 4px 0 rgba(15, 44, 42, 0.25);
+      }
+      50% {
+        transform: translateY(-4px) scale(1.03);
+        box-shadow: 0 10px 0 rgba(15, 44, 42, 0.28);
+      }
+    }
+
+    .cdcalc-button--attention {
+      animation: cdcalc-button-attention 1.25s ease-in-out 0s 2;
     }
 
     .cdcalc-alert {
@@ -340,15 +409,23 @@
         grid-template-columns: 1fr;
       }
 
-      .cdcalc-unit-row {
-        grid-template-columns: 1fr;
-      }
-
-      .cdcalc-unit-toggle {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+      .cdcalc-age-option {
+        min-height: 60px;
       }
     }
   `;
+
+  function escapeHtml(value) {
+    if (typeof value !== 'string') {
+      return '';
+    }
+    return value
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
 
   function deepMerge(target, source) {
     if (!source) {
@@ -396,30 +473,155 @@
     return style;
   }
 
+  const ATTENTION_CLASS = 'cdcalc-button--attention';
+
+  // Implementation summary:
+  // - 0–2 months: emergency redirect, calculator inputs disabled.
+  // - 2–6 months: acetaminophen at 12.5 mg/kg (max 160 mg) with ibuprofen suppressed.
+  // - 6 months–11 years: pediatric caps of 480 mg acetaminophen and 400 mg ibuprofen.
+  // - 12+ years: adult ceilings of 1000 mg acetaminophen and 800 mg ibuprofen.
+  // This replaces the previous catch-all 6+ pathway while leaving room to refine
+  // segmentation further if future clinical guidance differentiates additional cohorts.
+  function resolveAgeGate(age) {
+    switch (age) {
+      case '0-2':
+        return 'emergency';
+      case '2-6':
+        return 'infant';
+      case '6-11':
+      case '6-24':
+        return 'pediatric';
+      case '12+':
+      case '2y+':
+      case '6+':
+        return 'adolescent';
+      default:
+        return '';
+    }
+  }
+
+  function clearButtonAttention(button) {
+    if (!button) {
+      return;
+    }
+    button.classList.remove(ATTENTION_CLASS);
+  }
+
+  function triggerButtonAttention(button) {
+    if (!button) {
+      return;
+    }
+    button.classList.remove(ATTENTION_CLASS);
+    // Force a reflow so the animation can replay when the class is re-added.
+    void button.offsetWidth;
+    button.classList.add(ATTENTION_CLASS);
+  }
+
   function buildMarkup(strings, ids) {
     const { form, units } = strings;
     const fallbackAgeOptions = DEFAULT_STRINGS.form.ageOptions || {};
     const ageOptions = form.ageOptions || {};
+
+    const normalizeAgeLabel = function (value) {
+      if (!value) {
+        return null;
+      }
+      if (typeof value === 'string') {
+        const trimmed = value.trim();
+        if (!trimmed) {
+          return null;
+        }
+        return {
+          primary: trimmed,
+          secondary: '',
+          align: 'center',
+          accessible: trimmed,
+        };
+      }
+      if (value && typeof value === 'object' && !Array.isArray(value)) {
+        const primary = typeof value.primary === 'string' ? value.primary.trim() : '';
+        const secondary = typeof value.secondary === 'string' ? value.secondary.trim() : '';
+        const alignPreference = value.align === 'center' ? 'center' : 'start';
+        const align = secondary ? alignPreference : 'center';
+        const accessibleText = typeof value.accessible === 'string' ? value.accessible.trim() : '';
+        const fallbackAccessible = [primary, secondary].filter(Boolean).join(secondary ? ' – ' : '');
+
+        if (!primary && accessibleText) {
+          return {
+            primary: accessibleText,
+            secondary: '',
+            align: 'center',
+            accessible: accessibleText,
+          };
+        }
+
+        if (!primary) {
+          return null;
+        }
+
+        return {
+          primary,
+          secondary,
+          align,
+          accessible: accessibleText || fallbackAccessible || primary,
+        };
+      }
+      return null;
+    };
+
     const resolveAgeLabel = function (key, fallbackKey) {
-      if (Object.prototype.hasOwnProperty.call(ageOptions, key)) {
-        return ageOptions[key];
+      const candidates = [
+        Object.prototype.hasOwnProperty.call(ageOptions, key) ? normalizeAgeLabel(ageOptions[key]) : null,
+        fallbackKey && Object.prototype.hasOwnProperty.call(ageOptions, fallbackKey)
+          ? normalizeAgeLabel(ageOptions[fallbackKey])
+          : null,
+        Object.prototype.hasOwnProperty.call(fallbackAgeOptions, key)
+          ? normalizeAgeLabel(fallbackAgeOptions[key])
+          : null,
+        fallbackKey && Object.prototype.hasOwnProperty.call(fallbackAgeOptions, fallbackKey)
+          ? normalizeAgeLabel(fallbackAgeOptions[fallbackKey])
+          : null,
+      ];
+
+      for (let index = 0; index < candidates.length; index += 1) {
+        if (candidates[index]) {
+          return candidates[index];
+        }
       }
-      if (fallbackKey && Object.prototype.hasOwnProperty.call(ageOptions, fallbackKey)) {
-        return ageOptions[fallbackKey];
-      }
-      if (Object.prototype.hasOwnProperty.call(fallbackAgeOptions, key)) {
-        return fallbackAgeOptions[key];
-      }
-      if (fallbackKey && Object.prototype.hasOwnProperty.call(fallbackAgeOptions, fallbackKey)) {
-        return fallbackAgeOptions[fallbackKey];
-      }
-      return key;
+
+      return {
+        primary: key,
+        secondary: '',
+        align: 'center',
+        accessible: key,
+      };
     };
 
     const ageLabel0to2 = resolveAgeLabel('0-2');
     const ageLabel2to6 = resolveAgeLabel('2-6');
-    const ageLabel6to24 = resolveAgeLabel('6-24', '6+');
-    const ageLabel2Plus = resolveAgeLabel('2y+', '6+');
+    const ageLabel6to11 = resolveAgeLabel('6-11', '6-24');
+    const ageLabel12Plus = resolveAgeLabel('12+', '2y+');
+
+    const renderAgeButton = function (ageValue, label) {
+      const alignmentClass = label.align === 'center' ? ' cdcalc-age-option--align-center' : '';
+      const secondaryLine = label.secondary
+        ? `<span class="cdcalc-age-line cdcalc-age-line--secondary">${escapeHtml(label.secondary)}</span>`
+        : '';
+      return `
+        <button type="button" class="cdcalc-age-option${alignmentClass}" data-age="${ageValue}" aria-pressed="false" aria-label="${escapeHtml(label.accessible)}">
+          <span class="cdcalc-age-line cdcalc-age-line--primary">${escapeHtml(label.primary)}</span>
+          ${secondaryLine}
+        </button>
+      `;
+    };
+
+    const resolveAgeOptionText = function (label) {
+      if (!label) {
+        return '';
+      }
+      return label.accessible || label.primary;
+    };
+    const calculateStepLabel = form.calculateStep || '';
     return `
       <div class="cdcalc-card" data-calculator-card aria-labelledby="${ids.title}" role="group">
         <div class="cdcalc-header">
@@ -430,19 +632,19 @@
             <div class="cdcalc-group-title">${form.ageLabel}</div>
             <div class="cdcalc-segmented">
               <div class="cdcalc-segmented-buttons" role="group" aria-label="${form.ageGroupAria}">
-                <button type="button" class="cdcalc-age-option" data-age="0-2" aria-pressed="false">${ageLabel0to2}</button>
-                <button type="button" class="cdcalc-age-option" data-age="2-6" aria-pressed="false">${ageLabel2to6}</button>
-                <button type="button" class="cdcalc-age-option" data-age="6-24" aria-pressed="false">${ageLabel6to24}</button>
-                <button type="button" class="cdcalc-age-option" data-age="2y+" aria-pressed="false">${ageLabel2Plus}</button>
+                ${renderAgeButton('0-2', ageLabel0to2)}
+                ${renderAgeButton('2-6', ageLabel2to6)}
+                ${renderAgeButton('6-11', ageLabel6to11)}
+                ${renderAgeButton('12+', ageLabel12Plus)}
               </div>
               <p class="cdcalc-hello" data-age-prompt>${form.agePrompt}</p>
             </div>
             <select data-age-select aria-hidden="true" tabindex="-1" hidden>
               <option value="">${form.ageSelectLabel}</option>
-              <option value="0-2">${ageLabel0to2}</option>
-              <option value="2-6">${ageLabel2to6}</option>
-              <option value="6-24">${ageLabel6to24}</option>
-              <option value="2y+">${ageLabel2Plus}</option>
+              <option value="0-2">${escapeHtml(resolveAgeOptionText(ageLabel0to2))}</option>
+              <option value="2-6">${escapeHtml(resolveAgeOptionText(ageLabel2to6))}</option>
+              <option value="6-11">${escapeHtml(resolveAgeOptionText(ageLabel6to11))}</option>
+              <option value="12+">${escapeHtml(resolveAgeOptionText(ageLabel12Plus))}</option>
             </select>
             <p class="cdcalc-alert" data-message hidden></p>
           </div>
@@ -466,6 +668,11 @@
           </div>
 
           <div class="cdcalc-action">
+            ${
+              calculateStepLabel
+                ? `<p class="cdcalc-step-callout">${calculateStepLabel}</p>`
+                : ''
+            }
             <button type="submit" class="cdcalc-button" data-submit>${form.calculate}</button>
           </div>
           <div class="cdcalc-results" data-results role="region" aria-live="polite" aria-label="${strings.accessibility.resultsRegion}"></div>
@@ -520,9 +727,12 @@
     }
 
     const age = elements.ageSelect.value;
+    const gate = resolveAgeGate(age);
+    const normalizedAge =
+      age === '6-24' ? '6-11' : age === '2y+' || age === '6+' ? '12+' : age;
 
     elements.ageButtons.forEach((button) => {
-      const isSelected = button.dataset.age === age;
+      const isSelected = button.dataset.age === normalizedAge;
       button.setAttribute('aria-pressed', String(isSelected));
       button.classList.toggle('is-active', isSelected);
     });
@@ -546,8 +756,9 @@
     elements.submitButton.disabled = false;
     elements.weightInput.disabled = false;
     elements.unitSelect.disabled = false;
+    clearButtonAttention(elements.submitButton);
 
-    if (age === '0-2') {
+    if (gate === 'emergency') {
       elements.message.hidden = false;
       elements.message.innerHTML = strings.form.infantCriticalMessage;
       elements.submitButton.disabled = true;
@@ -568,6 +779,7 @@
     }
 
     const age = elements.ageSelect.value;
+    const gate = resolveAgeGate(age);
     const weightInput = parseFloat(elements.weightInput.value);
     const weightUnit = elements.unitSelect.value;
 
@@ -589,6 +801,10 @@
       return;
     }
 
+    if (gate === 'emergency') {
+      return;
+    }
+
     const weightKg = weightUnit === 'lbs' ? weightInput / 2.20462 : weightInput;
     const weightLbs = weightUnit === 'lbs' ? weightInput : weightInput * 2.20462;
 
@@ -604,7 +820,7 @@
     `;
     resultBlocks.push(weightLabel);
 
-    if (age === '2-6') {
+    if (gate === 'infant') {
       const ACETA_MAX_MG_INFANT = 160;
       const acetaMgCalculated = 12.5 * weightKg;
       const acetaMg = Math.min(acetaMgCalculated, ACETA_MAX_MG_INFANT);
@@ -640,9 +856,10 @@
       );
 
       resultBlocks.push(`<div class="cdcalc-result-group">${group.join('')}</div>`);
-    } else if (age === '6-24' || age === '2y+' || age === '6+') {
-      const ACETA_MAX_SINGLE_DOSE_MG = 1000;
-      const IBU_MAX_SINGLE_DOSE_MG = 800;
+    } else if (gate === 'pediatric' || gate === 'adolescent') {
+      const isPediatric = gate === 'pediatric';
+      const ACETA_MAX_SINGLE_DOSE_MG = isPediatric ? 480 : 1000;
+      const IBU_MAX_SINGLE_DOSE_MG = isPediatric ? 400 : 800;
 
       const acetaMgCalculated = 15 * weightKg;
       const acetaMg = Math.min(acetaMgCalculated, ACETA_MAX_SINGLE_DOSE_MG);
@@ -752,12 +969,36 @@
 
     const onAgeSelectChange = () => updateForm(elements, strings);
     const onUnitSelectChange = () => updateForm(elements, strings);
+    const onWeightInput = () => {
+      if (!elements.weightInput) {
+        return;
+      }
+      const weightValue = parseFloat(elements.weightInput.value);
+      if (
+        !isNaN(weightValue) &&
+        weightValue > 0 &&
+        elements.submitButton &&
+        !elements.submitButton.disabled &&
+        resolveAgeGate(elements.ageSelect.value)
+      ) {
+        triggerButtonAttention(elements.submitButton);
+      }
+    };
 
     elements.ageSelect.addEventListener('change', onAgeSelectChange);
     elements.unitSelect.addEventListener('change', onUnitSelectChange);
+    elements.weightInput.addEventListener('input', onWeightInput);
+    elements.weightInput.addEventListener('change', onWeightInput);
+
+    if (elements.submitButton) {
+      elements.submitButton.addEventListener('animationend', () => {
+        clearButtonAttention(elements.submitButton);
+      });
+    }
 
     const onSubmit = (event) => {
       event.preventDefault();
+      clearButtonAttention(elements.submitButton);
       calculateDose(elements, strings);
     };
 
