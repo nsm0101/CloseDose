@@ -406,6 +406,24 @@
       letter-spacing: 0.01em;
     }
 
+    .impact-card-link {
+      display: block;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .impact-card-link:hover {
+      border-color: rgba(18, 58, 55, 0.32);
+      box-shadow: 0 12px 32px rgba(18, 58, 55, 0.12);
+    }
+
+    .impact-card-link:focus-visible {
+      border-color: rgba(18, 58, 55, 0.32);
+      box-shadow: 0 12px 32px rgba(18, 58, 55, 0.12);
+      outline: 3px solid var(--teal-400);
+      outline-offset: 6px;
+    }
+
     .impact-card {
       display: grid;
       grid-template-columns: minmax(72px, 96px) 1fr;
@@ -746,7 +764,7 @@
           </ul>
         </section>
 
-        <section class="card impact-card">
+        <a class="card impact-card impact-card-link" href="donation.html">
           <img src="images/piggyFINAL.svg" alt="Piggy bank icon with coins" />
           <div>
             <h2>Community supported</h2>
@@ -754,7 +772,7 @@
               CloseDose stays free for families because of generous donors and partners who believe safe dosing guidance should never sit behind a paywall. Every contribution keeps the calculator up to date and accessible.
             </p>
           </div>
-        </section>
+        </a>
 
         <section class="card trust-card">
           <h2>How we maintain trust</h2>
