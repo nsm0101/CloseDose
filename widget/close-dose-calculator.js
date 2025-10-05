@@ -482,7 +482,7 @@
       }
 
       .cdcalc-age-option {
-        min-height: 60px;
+        min-height: 92px;
       }
     }
   `;
