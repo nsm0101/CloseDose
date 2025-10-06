@@ -4,6 +4,20 @@ This directory contains comprehensive documentation about CloseDose and pediatri
 
 ## Available Resources
 
+### 🏥 U.S. Guidelines Notice
+**File**: [`us-guidelines-notice.md`](us-guidelines-notice.md)
+
+A user-friendly page explaining that CloseDose currently uses U.S. guidelines:
+- Clear explanation of current implementation
+- Important notes for international users
+- Quick reference to regional differences
+- Universal safety guidelines
+- Links to comprehensive documentation
+
+**Audience**: All users, especially international families
+
+---
+
 ### 📊 Global Dosing Guidelines Report
 **File**: [`global-dosing-guidelines-report.md`](global-dosing-guidelines-report.md)
 
