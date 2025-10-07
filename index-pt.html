@@ -15,6 +15,16 @@
   <meta property="og:image" content="/images/OG-image.png">
   <meta property="og:image:type" content="image/png">
   <meta property="og:image:alt" content="CloseDose pediatric dosing calculator preview">
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-WYY1QFRPYP"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+    gtag('js', new Date());
+    gtag('config', 'G-WYY1QFRPYP');
+  </script>
   <style>
     :root {
       --teal-400: #24a687;
@@ -232,7 +242,7 @@
     }
 
     .layout {
-      width: min(820px, 100%);
+      width: min(760px, 100%);
       margin: 0 auto;
       display: flex;
       flex-direction: column;
@@ -247,8 +257,8 @@
       box-shadow: var(--shadow-card);
       padding: clamp(24px, 4vw, 36px);
       width: 100%;
-      max-width: min(760px, 100%);
-      margin: 0;
+      max-width: min(720px, 100%);
+      margin: 0 auto;
     }
 
     .card.card--calculator,
@@ -259,6 +269,8 @@
 
     .calculator-widget-host {
       width: 100%;
+      max-width: 720px;
+      margin: 0 auto;
     }
 
     .donate-card {
@@ -356,7 +368,11 @@
       position: absolute;
       inset: 0;
       border-radius: inherit;
-      background: radial-gradient(circle at top right, rgba(36, 166, 135, 0.15), rgba(18, 70, 67, 0.65));
+      background:
+        radial-gradient(140% 140% at 85% 20%, rgba(36, 166, 135, 0.45) 0%, rgba(36, 166, 135, 0.28) 35%, rgba(36, 166, 135, 0.1) 60%, rgba(36, 166, 135, 0) 80%),
+        radial-gradient(160% 160% at 18% 85%, rgba(18, 70, 67, 0.38) 0%, rgba(18, 70, 67, 0.2) 36%, rgba(18, 70, 67, 0.08) 62%, rgba(18, 70, 67, 0) 82%);
+      background-repeat: no-repeat;
+      background-blend-mode: screen;
       opacity: 0;
       transform: scale(0.98);
       transition: opacity 0.35s ease, transform 0.35s ease;
@@ -1109,21 +1125,21 @@
     <p class="cd-copy">© 2025 CloseDose. All rights reserved.</p>
 
     <nav class="cd-legal cd-legal--full" aria-label="Legal and policy links">
-      <a href="/legal/terms">Terms of Use</a>
-      <a href="/legal/privacy">Privacy Policy</a>
-      <a href="/legal/disclaimer">Disclaimer</a>
-      <a href="/legal/aup">Acceptable Use</a>
-      <a href="/legal/dmca">DMCA Policy</a>
+      <a href="https://nsm0101.github.io/CloseDoseAlt/legal/terms">Terms of Use</a>
+      <a href="https://nsm0101.github.io/CloseDoseAlt/legal/privacy">Privacy Policy</a>
+      <a href="https://nsm0101.github.io/CloseDoseAlt/legal/disclaimer">Disclaimer</a>
+      <a href="https://nsm0101.github.io/CloseDoseAlt/legal/linking">Acceptable Use</a>
+      <a href="https://nsm0101.github.io/CloseDoseAlt/legal/dmca">DMCA Policy</a>
     </nav>
 
     <details class="cd-legal cd-legal--accordion">
       <summary aria-controls="legal-links">Legal &amp; Policies ▾</summary>
       <nav id="legal-links" aria-label="Legal and policy links">
-        <a href="/legal/terms">Terms of Use</a>
-        <a href="/legal/privacy">Privacy Policy</a>
-        <a href="/legal/disclaimer">Disclaimer</a>
-        <a href="/legal/aup">Acceptable Use</a>
-        <a href="/legal/dmca">DMCA Policy</a>
+        <a href="https://nsm0101.github.io/CloseDoseAlt/legal/terms">Terms of Use</a>
+        <a href="https://nsm0101.github.io/CloseDoseAlt/legal/privacy">Privacy Policy</a>
+        <a href="https://nsm0101.github.io/CloseDoseAlt/legal/disclaimer">Disclaimer</a>
+        <a href="https://nsm0101.github.io/CloseDoseAlt/legal/linking">Acceptable Use</a>
+        <a href="https://nsm0101.github.io/CloseDoseAlt/legal/dmca">DMCA Policy</a>
       </nav>
     </details>
 
@@ -1162,23 +1178,25 @@
           strings: {
             title: 'Calculadora de Medicamentos para Febre/Dor',
             form: {
-              ageLabel: 'Idade do paciente',
+              ageLabel: 'Passo 1: Toque o grupo etário',
               ageGroupAria: 'Selecionar idade do paciente',
-              agePrompt: 'Bem-vindo! Escolha uma faixa etária para começar.',
+              agePrompt: 'Passo 1: Escolha um grupo etário para começar.',
               ageOptions: {
-                '0-2': '0-2 meses',
-                '2-6': '2-6 meses',
-                '6-24': '6-24 meses',
-                '2y+': '2+ anos',
+                '0-2': { primary: '0 meses', secondary: '2 meses', align: 'start', accessible: '0 a 2 meses' },
+                '2-6': { primary: '2 meses', secondary: '6 meses', align: 'start', accessible: '2 a 6 meses' },
+                '6-11': { primary: '6 meses', secondary: '11 anos', align: 'start', accessible: '6 meses a 11 anos' },
+                '12+': { primary: '12 anos', secondary: 'ou mais', align: 'center', accessible: '12 anos ou mais' },
+                '2y+': { primary: '12 anos', secondary: 'ou mais', align: 'center', accessible: '12 anos ou mais' },
               },
               ageSelectLabel: 'Selecione a idade',
               infantCriticalMessage:
                 '<strong>Busque atendimento médico imediato.</strong> Se uma criança com menos de 60 dias tiver febre, é uma emergência médica. Entre em contato com o pediatra ou procure atendimento com um profissional de saúde imediatamente.',
-              weightLabel: 'Peso do paciente',
+              weightLabel: 'Passo 2: Inserir peso',
               weightInputLabel: 'Digite o peso',
               weightPlaceholder: 'Digite o peso',
               weightUnitAria: 'Selecionar unidade de peso',
               calculate: 'Calcular',
+              calculateStep: 'Passo 3: Calcular!',
             },
             units: {
               lbs: 'lbs',
@@ -1475,6 +1493,39 @@
           setDisclaimerState(false, { manual: true });
         }
       });
+    });
+  </script>
+  <script>
+    // Read simple tracking params from the URL
+    const u = new URL(location.href);
+    const SRC = (u.searchParams.get('src') || 'na').toLowerCase();
+    const ID = (u.searchParams.get('id') || 'na').toLowerCase();
+
+    // Helper to fire GA4 events
+    function track(event, params = {}) {
+      if (window.gtag) gtag('event', event, params);
+    }
+    // Log the visit itself (one event per load)
+    track('tag_visit', { src: SRC, id: ID });
+    // Wire up main actions (adjust selectors to your actual buttons/links)
+    document.getElementById('calcBtn')?.addEventListener('click', () =>
+      track('tag_use', { use: 'calc', src: SRC, id: ID })
+    );
+    document.getElementById('handoutBtn')?.addEventListener('click', () =>
+      track('tag_use', { use: 'handout', src: SRC, id: ID })
+    );
+    document.getElementById('donateBtn')?.addEventListener('click', () =>
+      track('tag_use', { use: 'donate', src: SRC, id: ID })
+    );
+    // Optional: generic auto-tracking for any link with data-use="…"
+    document.querySelectorAll('a[data-use]').forEach((a) => {
+      a.addEventListener('click', () =>
+        track('tag_use', {
+          use: a.getAttribute('data-use'),
+          src: SRC,
+          id: ID,
+        })
+      );
     });
   </script>
 </body>

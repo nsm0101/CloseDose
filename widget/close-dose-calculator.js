@@ -6,12 +6,38 @@
   const DEFAULT_STRINGS = {
     title: 'Fever/Pain Medication Calculator',
     form: {
-      ageLabel: 'Patient Age',
+      ageLabel: 'Step 1: Tap an age group',
       ageGroupAria: 'Select patient age',
-      agePrompt: 'Choose an age group to begin!',
+      agePrompt: '',
       ageOptions: {
-        '0-2': '0-2 Months',
-        '2-6': '2-6 Months',
+        '0-2': {
+          primary: '0 Months',
+          connector: 'TO',
+          secondary: '2 Months',
+          align: 'center',
+          accessible: '0 to 2 Months',
+        },
+        '2-6': {
+          primary: '2 Months',
+          connector: 'TO',
+          secondary: '6 Months',
+          align: 'center',
+          accessible: '2 to 6 Months',
+        },
+        '6-11': {
+          primary: '6 Months',
+          connector: 'TO',
+          secondary: '11 Years',
+          align: 'center',
+          accessible: '6 Months to 11 Years',
+        },
+        '12+': {
+          primary: '12 Years',
+          connector: '+',
+          secondary: '',
+          align: 'center',
+          accessible: '12 Years and older',
+        },
         '6-24': '6-24 Months',
         '2y+': '2+ Years',
         '6+': '6+ Months',
@@ -19,11 +45,12 @@
       ageSelectLabel: 'Select age',
       infantCriticalMessage:
         '<strong>Seek immediate medical care.</strong> If a child less than 60 days old has a fever it is a medical emergency. Please contact your pediatrician or seek care with a healthcare provider immediately.',
-      weightLabel: 'Patient Weight',
+      weightLabel: 'Step 2: Enter weight',
       weightInputLabel: 'Enter weight',
       weightPlaceholder: 'Enter weight',
       weightUnitAria: 'Select weight unit',
       calculate: 'Calculate',
+      calculateStep: 'Step 3: Calculate!',
     },
     units: {
       lbs: 'lbs',
@@ -67,6 +94,205 @@
     },
   };
 
+  function createMiniProductBadge(options = {}) {
+    const {
+      title = '',
+      subtitle = '',
+      tone = '#cde8e3',
+      glyph = '',
+    } = options;
+
+    const coerce = (value) => {
+      if (typeof value === 'string') {
+        return value;
+      }
+      if (value === null || value === undefined) {
+        return '';
+      }
+      return String(value);
+    };
+
+    const escapeSvg = (value) =>
+      coerce(value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+
+    const svg = `
+      <svg xmlns="http://www.w3.org/2000/svg" width="320" height="320" viewBox="0 0 320 320">
+        <defs>
+          <linearGradient id="miniBadgeGradient" x1="50%" x2="50%" y1="0%" y2="100%">
+            <stop offset="0%" stop-color="${tone}" stop-opacity="0.92" />
+            <stop offset="100%" stop-color="${tone}" stop-opacity="1" />
+          </linearGradient>
+        </defs>
+        <rect width="320" height="320" rx="48" fill="url(#miniBadgeGradient)" />
+        <text x="50%" y="120" font-family="Nunito, Arial, sans-serif" font-size="76" text-anchor="middle" fill="#0f2c2a">${escapeSvg(
+      glyph,
+    )}</text>
+        <text x="50%" y="188" font-family="Nunito, Arial, sans-serif" font-size="34" font-weight="700" text-anchor="middle" fill="#0f2c2a">${escapeSvg(
+      title,
+    )}</text>
+        <text x="50%" y="232" font-family="Nunito, Arial, sans-serif" font-size="26" text-anchor="middle" fill="#0f2c2a">${escapeSvg(
+      subtitle,
+    )}</text>
+      </svg>
+    `;
+
+    return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg.trim())}`;
+  }
+
+  const MINI_CAROUSEL_CONTENT = {
+    acetaminophenLiquid: [
+      {
+        src: 'images/Acetaminophen/Tylenol acetaminophen iso.png',
+        alt: "Tylenol children's acetaminophen suspension 160 mg per 5 mL",
+        caption: "Tylenol® Children's Oral Suspension",
+        meta: '160 mg / 5 mL',
+      },
+      {
+        src: 'images/Acetaminophen/amazon acetaminophen iso.png',
+        alt: "Amazon Basics children's acetaminophen 160 mg per 5 mL",
+        caption: "Amazon Basics® Children's Acetaminophen",
+        meta: '160 mg / 5 mL',
+      },
+      {
+        src: 'images/Acetaminophen/Target acetaminophen iso.png',
+        alt: "Target up & up children's acetaminophen 160 mg per 5 mL",
+        caption: "up & up® Children's Acetaminophen",
+        meta: '160 mg / 5 mL',
+      },
+      {
+        src: 'images/Acetaminophen/Equate acetaminophen iso.png',
+        alt: "Walmart Equate children's acetaminophen 160 mg per 5 mL",
+        caption: "Equate® Children's Acetaminophen",
+        meta: '160 mg / 5 mL',
+      },
+    ],
+    acetaminophenOther: [
+      {
+        src: createMiniProductBadge({
+          title: "Meltaways",
+          subtitle: '160 mg each',
+          tone: '#fde68a',
+          glyph: '🍓',
+        }),
+        alt: "Illustration representing Tylenol Children's Meltaways acetaminophen tablets 160 mg each",
+        caption: "Tylenol® Children's Meltaways",
+        meta: '160 mg orally disintegrating tablet',
+      },
+      {
+        src: createMiniProductBadge({
+          title: 'Chewables',
+          subtitle: '160 mg each',
+          tone: '#fbcfe8',
+          glyph: '🧡',
+        }),
+        alt: "Illustration representing children's chewable acetaminophen tablets 160 mg each",
+        caption: "Generic Children's Chewables",
+        meta: '160 mg chewable tablet',
+      },
+      {
+        src: createMiniProductBadge({
+          title: 'Suppository',
+          subtitle: '80-160 mg',
+          tone: '#bfdbfe',
+          glyph: '🌙',
+        }),
+        alt: 'Illustration representing acetaminophen suppositories in the 80-160 mg range',
+        caption: 'Rectal Suppositories',
+        meta: '80-160 mg per dose (check label)',
+      },
+    ],
+    ibuprofenChildren: [
+      {
+        src: 'images/Ibuprofen/Children/Motrin Children ibuprofen iso.png',
+        alt: "Motrin Children's ibuprofen 100 mg per 5 mL",
+        caption: "Motrin® Children's Suspension",
+        meta: '100 mg / 5 mL',
+      },
+      {
+        src: 'images/Ibuprofen/Children/Advil Children Ibuprofen iso.png',
+        alt: "Advil Children's ibuprofen 100 mg per 5 mL",
+        caption: "Advil® Children's Suspension",
+        meta: '100 mg / 5 mL',
+      },
+      {
+        src: 'images/Ibuprofen/Children/Amazon Children ibuprofen iso.png',
+        alt: "Amazon Basics Children's ibuprofen 100 mg per 5 mL",
+        caption: "Amazon Basics® Children's Ibuprofen",
+        meta: '100 mg / 5 mL',
+      },
+      {
+        src: 'images/Ibuprofen/Children/Target Children ibuprofen iso.png',
+        alt: "Target up & up Children's ibuprofen 100 mg per 5 mL",
+        caption: "up & up® Children's Ibuprofen",
+        meta: '100 mg / 5 mL',
+      },
+      {
+        src: 'images/Ibuprofen/Children/Equate Children ibuprofen iso.png',
+        alt: "Equate Children's ibuprofen 100 mg per 5 mL",
+        caption: "Equate® Children's Ibuprofen",
+        meta: '100 mg / 5 mL',
+      },
+    ],
+    ibuprofenInfant: [
+      {
+        src: 'images/Ibuprofen/Infants/Motrin Infant ibuprofen iso.png',
+        alt: "Infant's Motrin concentrated ibuprofen 50 mg per 1.25 mL",
+        caption: "Infant's Motrin® Concentrated Drops",
+        meta: '50 mg / 1.25 mL',
+      },
+      {
+        src: 'images/Ibuprofen/Infants/Amazon Infant ibuprofen iso.png',
+        alt: 'Amazon Basics infant ibuprofen 50 mg per 1.25 mL',
+        caption: "Amazon Basics® Infant Ibuprofen",
+        meta: '50 mg / 1.25 mL',
+      },
+      {
+        src: 'images/Ibuprofen/Infants/Target Infant ibuprofen iso.png',
+        alt: 'Target up & up infant ibuprofen 50 mg per 1.25 mL',
+        caption: "up & up® Infant Ibuprofen",
+        meta: '50 mg / 1.25 mL',
+      },
+    ],
+    ibuprofenOther: [
+      {
+        src: createMiniProductBadge({
+          title: 'Chewables',
+          subtitle: '100 mg each',
+          tone: '#fecdd3',
+          glyph: '🍊',
+        }),
+        alt: "Illustration representing Motrin children's chewable ibuprofen tablets 100 mg each",
+        caption: "Motrin® Children's Chewables",
+        meta: '100 mg chewable tablet',
+      },
+      {
+        src: createMiniProductBadge({
+          title: 'Junior Tabs',
+          subtitle: '100 mg each',
+          tone: '#d8b4fe',
+          glyph: '⭐',
+        }),
+        alt: "Illustration representing Advil Junior Strength ibuprofen tablets 100 mg each",
+        caption: 'Advil® Junior Strength Tablets',
+        meta: '100 mg coated tablet',
+      },
+      {
+        src: createMiniProductBadge({
+          title: 'Caplets',
+          subtitle: '200 mg each',
+          tone: '#bbf7d0',
+          glyph: '💊',
+        }),
+        alt: 'Illustration representing generic ibuprofen caplets 200 mg each',
+        caption: 'Ibuprofen Caplets',
+        meta: '200 mg tablet/capsule (adolescents+)',
+      },
+    ],
+  };
+
   const BASE_STYLES = `
     .cdcalc-card {
       font-family: "Nunito", system-ui, -apple-system, "Segoe UI", sans-serif;
@@ -78,6 +304,7 @@
       max-width: 720px;
       margin: 0 auto;
       color: #0f2c2a;
+      --cdcalc-gold: #ffe8a8;
     }
 
     .cdcalc-header {
@@ -143,11 +370,48 @@
       transition: background 0.12s ease, color 0.12s ease, transform 0.12s ease;
     }
 
+    .cdcalc-age-option {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      gap: 2px;
+      min-height: 92px;
+      line-height: 1.05;
+    }
+
+    .cdcalc-age-option--align-center {
+      align-items: center;
+      text-align: center;
+    }
+
     .cdcalc-age-option.is-active,
     .cdcalc-unit-option.is-active {
       background: #24a687;
       color: #ffffff;
       box-shadow: inset 0 0 0 2px #0f2c2a;
+    }
+
+    .cdcalc-age-line {
+      display: block;
+      width: 100%;
+    }
+
+    .cdcalc-age-line--primary {
+      font-size: 1.05rem;
+    }
+
+    .cdcalc-age-line--connector {
+      font-size: 0.72rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      opacity: 0.7;
+    }
+
+    .cdcalc-age-line--secondary {
+      font-size: 1.05rem;
+      font-weight: 800;
     }
 
     .cdcalc-age-option:focus-visible,
@@ -164,26 +428,40 @@
     }
 
     .cdcalc-unit-row {
-      display: grid;
-      grid-template-columns: 2fr minmax(120px, 1fr);
-      gap: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
       align-items: center;
     }
 
     .cdcalc-weight-input {
       position: relative;
+      width: min(100%, clamp(200px, 33%, 240px));
+      margin: 0 auto;
     }
 
     .cdcalc-input {
       width: 100%;
-      border: 3px solid #0f2c2a;
+      display: block;
+      border: 4px dashed #0f2c2a;
       border-radius: 16px;
-      padding: 14px 16px;
+      padding: 16px 18px;
       font-size: 1.1rem;
       font-weight: 700;
       color: #0f2c2a;
       background: #ffffff;
+      text-align: center;
+      letter-spacing: 0.04em;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
       appearance: textfield;
+    }
+
+    .cdcalc-input:focus,
+    .cdcalc-input:focus-visible {
+      outline: none;
+      border-color: var(--cdcalc-gold);
+      box-shadow: 0 0 0 8px rgba(255, 232, 168, 0.3);
+      transform: scale(1.01);
     }
 
     .cdcalc-input::-webkit-outer-spin-button,
@@ -196,28 +474,47 @@
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 10px;
+      width: min(100%, clamp(240px, 50%, 360px));
+      margin: 0 auto;
+    }
+
+    .cdcalc-unit-option {
+      width: 100%;
     }
 
     .cdcalc-action {
       display: flex;
-      justify-content: center;
-      margin-top: 8px;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 10px;
+      margin-top: 12px;
+      text-align: left;
+    }
+
+    .cdcalc-step-callout {
+      margin: 0;
+      font-weight: 800;
+      font-size: 0.95rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #0f2c2a;
     }
 
     .cdcalc-button {
       appearance: none;
       border: 3px solid #0f2c2a;
       border-radius: 999px;
-      background: #24a687;
+      background: linear-gradient(135deg, #24a687 0%, #1f8f7b 70%);
       color: #ffffff;
       font-weight: 900;
       letter-spacing: 0.14em;
       text-transform: uppercase;
-      padding: 16px 20px;
-      font-size: 1rem;
+      padding: clamp(18px, 2.5vw, 24px) clamp(28px, 6vw, 40px);
+      font-size: clamp(1rem, 0.95rem + 0.25vw, 1.15rem);
       cursor: pointer;
       box-shadow: 0 4px 0 rgba(15, 44, 42, 0.25);
-      transition: transform 0.12s ease, box-shadow 0.12s ease;
+      transition: transform 0.16s ease, box-shadow 0.16s ease, filter 0.16s ease, background 0.16s ease;
+      align-self: center;
     }
 
     .cdcalc-button:disabled {
@@ -230,6 +527,49 @@
     .cdcalc-button:not(:disabled):hover {
       transform: translateY(-1px);
       box-shadow: 0 6px 0 rgba(15, 44, 42, 0.25);
+    }
+
+    @keyframes cdcalc-button-breathe {
+      0%,
+      100% {
+        transform: translateY(0) scale(1);
+        box-shadow:
+          0 4px 0 rgba(15, 44, 42, 0.25),
+          0 0 0 0 rgba(255, 232, 168, 0);
+        background: linear-gradient(135deg, #24a687 0%, #1f8f7b 70%);
+        filter: drop-shadow(0 0 0 rgba(255, 232, 168, 0));
+      }
+      45% {
+        transform: translateY(-6px) scale(1.1);
+        box-shadow:
+          0 16px 0 rgba(15, 44, 42, 0.32),
+          0 0 0 14px rgba(255, 232, 168, 0.45);
+        background: linear-gradient(140deg, #24a687 0%, var(--cdcalc-gold) 92%);
+        filter: drop-shadow(0 0 18px rgba(255, 232, 168, 0.4));
+      }
+    }
+
+    @keyframes cdcalc-input-breathe {
+      0%,
+      100% {
+        transform: scale(1);
+        border-color: #0f2c2a;
+        box-shadow: 0 0 0 0 rgba(255, 232, 168, 0);
+      }
+      50% {
+        transform: scale(1.02);
+        border-color: var(--cdcalc-gold);
+        box-shadow: 0 0 0 10px rgba(255, 232, 168, 0.35);
+      }
+    }
+
+    .cdcalc-button--breathing {
+      animation: cdcalc-button-breathe 2.4s ease-in-out infinite;
+    }
+
+    .cdcalc-input--attention {
+      animation: cdcalc-input-breathe 2.1s ease-in-out infinite;
+      will-change: transform, box-shadow, border-color;
     }
 
     .cdcalc-alert {
@@ -283,6 +623,149 @@
       margin: 0;
       line-height: 1.5;
       font-size: 0.98rem;
+    }
+
+    .cdcalc-mini-carousel {
+      border: 2px solid rgba(15, 44, 42, 0.12);
+      border-radius: 14px;
+      background: rgba(228, 244, 240, 0.6);
+      padding: 12px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .cdcalc-mini-heading {
+      margin: 0;
+      font-size: 0.85rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #124643;
+    }
+
+    .cdcalc-mini-carousel-track {
+      position: relative;
+      min-height: 96px;
+    }
+
+    .cdcalc-mini-slide {
+      display: none;
+      margin: 0;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .cdcalc-mini-slide.is-active {
+      display: grid;
+      grid-template-columns: auto 1fr;
+    }
+
+    .cdcalc-mini-image {
+      width: 72px;
+      height: 72px;
+      aspect-ratio: 1 / 1;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.95);
+      box-shadow: 0 8px 18px rgba(15, 44, 42, 0.18);
+      display: grid;
+      place-items: center;
+      padding: 6px;
+      overflow: hidden;
+    }
+
+    .cdcalc-mini-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      transition: transform 0.25s ease;
+    }
+
+    @media (hover: hover) {
+      .cdcalc-mini-slide:hover .cdcalc-mini-image img,
+      .cdcalc-mini-slide:focus-within .cdcalc-mini-image img {
+        transform: scale(1.12);
+        will-change: transform;
+      }
+    }
+
+    .cdcalc-mini-figcaption {
+      margin: 0;
+      font-size: 0.85rem;
+      line-height: 1.4;
+      color: #124643;
+      display: grid;
+      gap: 4px;
+    }
+
+    .cdcalc-mini-caption {
+      font-weight: 700;
+    }
+
+    .cdcalc-mini-meta {
+      font-size: 0.75rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #35635d;
+    }
+
+    .cdcalc-mini-carousel-controls {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .cdcalc-mini-control {
+      border: 2px solid #0f2c2a;
+      background: #ffffff;
+      color: #0f2c2a;
+      border-radius: 12px;
+      padding: 4px 10px;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 4px 0 rgba(15, 44, 42, 0.18);
+    }
+
+    .cdcalc-mini-control:focus-visible {
+      outline: 3px solid rgba(36, 166, 135, 0.35);
+      outline-offset: 2px;
+    }
+
+    .cdcalc-mini-control:disabled {
+      opacity: 0.4;
+      cursor: default;
+      box-shadow: none;
+    }
+
+    .cdcalc-mini-dots {
+      display: flex;
+      gap: 6px;
+    }
+
+    .cdcalc-mini-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      border: 1px solid rgba(18, 58, 55, 0.25);
+      background: rgba(255, 255, 255, 0.9);
+      padding: 0;
+      cursor: pointer;
+    }
+
+    .cdcalc-mini-dot.is-active {
+      background: #24a687;
+      border-color: #0f2c2a;
+    }
+
+    .cdcalc-mini-carousel-stack {
+      display: grid;
+      gap: 12px;
+    }
+
+    @media (min-width: 560px) {
+      .cdcalc-mini-carousel-stack--split {
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      }
     }
 
     .cdcalc-warning {
@@ -340,15 +823,23 @@
         grid-template-columns: 1fr;
       }
 
-      .cdcalc-unit-row {
-        grid-template-columns: 1fr;
-      }
-
-      .cdcalc-unit-toggle {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+      .cdcalc-age-option {
+        min-height: 92px;
       }
     }
   `;
+
+  function escapeHtml(value) {
+    if (typeof value !== 'string') {
+      return '';
+    }
+    return value
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
 
   function deepMerge(target, source) {
     if (!source) {
@@ -396,30 +887,167 @@
     return style;
   }
 
+  const ATTENTION_CLASS = 'cdcalc-button--breathing';
+  const INPUT_ATTENTION_CLASS = 'cdcalc-input--attention';
+
+  // Implementation summary:
+  // - 0–2 months: emergency redirect, calculator inputs disabled.
+  // - 2–6 months: acetaminophen at 12.5 mg/kg (max 160 mg) with ibuprofen suppressed.
+  // - 6 months–11 years: pediatric caps of 480 mg acetaminophen and 400 mg ibuprofen.
+  // - 12+ years: adult ceilings of 1000 mg acetaminophen and 800 mg ibuprofen.
+  // This replaces the previous catch-all 6+ pathway while leaving room to refine
+  // segmentation further if future clinical guidance differentiates additional cohorts.
+  function resolveAgeGate(age) {
+    switch (age) {
+      case '0-2':
+        return 'emergency';
+      case '2-6':
+        return 'infant';
+      case '6-11':
+      case '6-24':
+        return 'pediatric';
+      case '12+':
+      case '2y+':
+      case '6+':
+        return 'adolescent';
+      default:
+        return '';
+    }
+  }
+
+  function clearButtonAttention(button) {
+    if (!button) {
+      return;
+    }
+    button.classList.remove(ATTENTION_CLASS);
+  }
+
+  function triggerButtonAttention(button) {
+    if (!button) {
+      return;
+    }
+    if (!button.classList.contains(ATTENTION_CLASS)) {
+      button.classList.add(ATTENTION_CLASS);
+    }
+  }
+
   function buildMarkup(strings, ids) {
     const { form, units } = strings;
     const fallbackAgeOptions = DEFAULT_STRINGS.form.ageOptions || {};
     const ageOptions = form.ageOptions || {};
+
+    const normalizeAgeLabel = function (value) {
+      if (!value) {
+        return null;
+      }
+      if (typeof value === 'string') {
+        const trimmed = value.trim();
+        if (!trimmed) {
+          return null;
+        }
+        return {
+          primary: trimmed,
+          secondary: '',
+          connector: '',
+          align: 'center',
+          accessible: trimmed,
+        };
+      }
+      if (value && typeof value === 'object' && !Array.isArray(value)) {
+        const primary = typeof value.primary === 'string' ? value.primary.trim() : '';
+        const secondary = typeof value.secondary === 'string' ? value.secondary.trim() : '';
+        const connector = typeof value.connector === 'string' ? value.connector.trim() : '';
+        const alignPreference = value.align === 'center' ? 'center' : 'start';
+        const accessibleText = typeof value.accessible === 'string' ? value.accessible.trim() : '';
+        const fallbackAccessible = [primary, connector, secondary]
+          .filter(Boolean)
+          .join(' ');
+
+        if (!primary && accessibleText) {
+          return {
+            primary: accessibleText,
+            secondary: '',
+            connector: '',
+            align: 'center',
+            accessible: accessibleText,
+          };
+        }
+
+        if (!primary) {
+          return null;
+        }
+
+        const align = alignPreference === 'center' || connector || secondary ? 'center' : alignPreference;
+
+        return {
+          primary,
+          secondary,
+          connector,
+          align,
+          accessible: accessibleText || fallbackAccessible || primary,
+        };
+      }
+      return null;
+    };
+
     const resolveAgeLabel = function (key, fallbackKey) {
-      if (Object.prototype.hasOwnProperty.call(ageOptions, key)) {
-        return ageOptions[key];
+      const candidates = [
+        Object.prototype.hasOwnProperty.call(ageOptions, key) ? normalizeAgeLabel(ageOptions[key]) : null,
+        fallbackKey && Object.prototype.hasOwnProperty.call(ageOptions, fallbackKey)
+          ? normalizeAgeLabel(ageOptions[fallbackKey])
+          : null,
+        Object.prototype.hasOwnProperty.call(fallbackAgeOptions, key)
+          ? normalizeAgeLabel(fallbackAgeOptions[key])
+          : null,
+        fallbackKey && Object.prototype.hasOwnProperty.call(fallbackAgeOptions, fallbackKey)
+          ? normalizeAgeLabel(fallbackAgeOptions[fallbackKey])
+          : null,
+      ];
+
+      for (let index = 0; index < candidates.length; index += 1) {
+        if (candidates[index]) {
+          return candidates[index];
+        }
       }
-      if (fallbackKey && Object.prototype.hasOwnProperty.call(ageOptions, fallbackKey)) {
-        return ageOptions[fallbackKey];
-      }
-      if (Object.prototype.hasOwnProperty.call(fallbackAgeOptions, key)) {
-        return fallbackAgeOptions[key];
-      }
-      if (fallbackKey && Object.prototype.hasOwnProperty.call(fallbackAgeOptions, fallbackKey)) {
-        return fallbackAgeOptions[fallbackKey];
-      }
-      return key;
+
+      return {
+        primary: key,
+        secondary: '',
+        connector: '',
+        align: 'center',
+        accessible: key,
+      };
     };
 
     const ageLabel0to2 = resolveAgeLabel('0-2');
     const ageLabel2to6 = resolveAgeLabel('2-6');
-    const ageLabel6to24 = resolveAgeLabel('6-24', '6+');
-    const ageLabel2Plus = resolveAgeLabel('2y+', '6+');
+    const ageLabel6to11 = resolveAgeLabel('6-11', '6-24');
+    const ageLabel12Plus = resolveAgeLabel('12+', '2y+');
+
+    const renderAgeButton = function (ageValue, label) {
+      const alignmentClass = label.align === 'center' ? ' cdcalc-age-option--align-center' : '';
+      const connectorLine = label.connector
+        ? `<span class="cdcalc-age-line cdcalc-age-line--connector">${escapeHtml(label.connector)}</span>`
+        : '';
+      const secondaryLine = label.secondary
+        ? `<span class="cdcalc-age-line cdcalc-age-line--secondary">${escapeHtml(label.secondary)}</span>`
+        : '';
+      return `
+        <button type="button" class="cdcalc-age-option${alignmentClass}" data-age="${ageValue}" aria-pressed="false" aria-label="${escapeHtml(label.accessible)}">
+          <span class="cdcalc-age-line cdcalc-age-line--primary">${escapeHtml(label.primary)}</span>
+          ${connectorLine}
+          ${secondaryLine}
+        </button>
+      `;
+    };
+
+    const resolveAgeOptionText = function (label) {
+      if (!label) {
+        return '';
+      }
+      return label.accessible || label.primary;
+    };
+    const calculateStepLabel = form.calculateStep || '';
     return `
       <div class="cdcalc-card" data-calculator-card aria-labelledby="${ids.title}" role="group">
         <div class="cdcalc-header">
@@ -430,19 +1058,23 @@
             <div class="cdcalc-group-title">${form.ageLabel}</div>
             <div class="cdcalc-segmented">
               <div class="cdcalc-segmented-buttons" role="group" aria-label="${form.ageGroupAria}">
-                <button type="button" class="cdcalc-age-option" data-age="0-2" aria-pressed="false">${ageLabel0to2}</button>
-                <button type="button" class="cdcalc-age-option" data-age="2-6" aria-pressed="false">${ageLabel2to6}</button>
-                <button type="button" class="cdcalc-age-option" data-age="6-24" aria-pressed="false">${ageLabel6to24}</button>
-                <button type="button" class="cdcalc-age-option" data-age="2y+" aria-pressed="false">${ageLabel2Plus}</button>
+                ${renderAgeButton('0-2', ageLabel0to2)}
+                ${renderAgeButton('2-6', ageLabel2to6)}
+                ${renderAgeButton('6-11', ageLabel6to11)}
+                ${renderAgeButton('12+', ageLabel12Plus)}
               </div>
-              <p class="cdcalc-hello" data-age-prompt>${form.agePrompt}</p>
+              ${
+                form.agePrompt
+                  ? `<p class="cdcalc-hello" data-age-prompt>${form.agePrompt}</p>`
+                  : ''
+              }
             </div>
             <select data-age-select aria-hidden="true" tabindex="-1" hidden>
               <option value="">${form.ageSelectLabel}</option>
-              <option value="0-2">${ageLabel0to2}</option>
-              <option value="2-6">${ageLabel2to6}</option>
-              <option value="6-24">${ageLabel6to24}</option>
-              <option value="2y+">${ageLabel2Plus}</option>
+              <option value="0-2">${escapeHtml(resolveAgeOptionText(ageLabel0to2))}</option>
+              <option value="2-6">${escapeHtml(resolveAgeOptionText(ageLabel2to6))}</option>
+              <option value="6-11">${escapeHtml(resolveAgeOptionText(ageLabel6to11))}</option>
+              <option value="12+">${escapeHtml(resolveAgeOptionText(ageLabel12Plus))}</option>
             </select>
             <p class="cdcalc-alert" data-message hidden></p>
           </div>
@@ -466,6 +1098,11 @@
           </div>
 
           <div class="cdcalc-action">
+            ${
+              calculateStepLabel
+                ? `<p class="cdcalc-step-callout">${calculateStepLabel}</p>`
+                : ''
+            }
             <button type="submit" class="cdcalc-button" data-submit>${form.calculate}</button>
           </div>
           <div class="cdcalc-results" data-results role="region" aria-live="polite" aria-label="${strings.accessibility.resultsRegion}"></div>
@@ -506,6 +1143,167 @@
     return `<div class="${classes.join(' ')}">${titleMarkup}${body}</div>`;
   }
 
+  function renderMiniCarousel(slides, options = {}) {
+    const { label = '', heading = '' } = options;
+    if (!Array.isArray(slides) || slides.length === 0) {
+      return '';
+    }
+
+    const labelAttribute = label ? ` data-mini-label="${escapeHtml(label)}"` : '';
+    const headingMarkup = heading
+      ? `<h4 class="cdcalc-mini-heading">${escapeHtml(heading)}</h4>`
+      : '';
+    const slidesMarkup = slides
+      .map((slide) => {
+        if (!slide || typeof slide !== 'object') {
+          return '';
+        }
+        const caption = slide.caption
+          ? `<span class="cdcalc-mini-caption">${escapeHtml(slide.caption)}</span>`
+          : '';
+        const meta = slide.meta
+          ? `<span class="cdcalc-mini-meta">${escapeHtml(slide.meta)}</span>`
+          : '';
+        const altText = slide.alt ? escapeHtml(slide.alt) : '';
+        const src = slide.src ? escapeHtml(slide.src) : '';
+        return `
+          <figure class="cdcalc-mini-slide" aria-hidden="true">
+            <div class="cdcalc-mini-image">
+              <img src="${src}" alt="${altText}" loading="lazy" decoding="async" />
+            </div>
+            <figcaption class="cdcalc-mini-figcaption">
+              ${caption}
+              ${meta}
+            </figcaption>
+          </figure>
+        `;
+      })
+      .join('');
+
+    const prevLabel = label ? `Show previous ${label}` : 'Show previous item';
+    const nextLabel = label ? `Show next ${label}` : 'Show next item';
+
+    return `
+      <div class="cdcalc-mini-carousel" data-mini-carousel${labelAttribute}>
+        ${headingMarkup}
+        <div class="cdcalc-mini-carousel-track">
+          ${slidesMarkup}
+        </div>
+        <div class="cdcalc-mini-carousel-controls">
+          <button type="button" class="cdcalc-mini-control" data-mini-carousel-prev aria-label="${escapeHtml(prevLabel)}">‹</button>
+          <div class="cdcalc-mini-dots" role="tablist"></div>
+          <button type="button" class="cdcalc-mini-control" data-mini-carousel-next aria-label="${escapeHtml(nextLabel)}">›</button>
+        </div>
+      </div>
+    `;
+  }
+
+  function initializeMiniCarousels(scope) {
+    const root = scope || document;
+    if (!root) {
+      return;
+    }
+
+    const carousels = root.querySelectorAll('[data-mini-carousel]');
+    carousels.forEach((carousel) => {
+      if (!carousel || carousel.dataset.miniCarouselReady === 'true') {
+        return;
+      }
+
+      const slides = Array.from(carousel.querySelectorAll('.cdcalc-mini-slide'));
+      if (!slides.length) {
+        return;
+      }
+
+      const prevButton = carousel.querySelector('[data-mini-carousel-prev]');
+      const nextButton = carousel.querySelector('[data-mini-carousel-next]');
+      const dotsContainer = carousel.querySelector('.cdcalc-mini-dots');
+      const label = carousel.dataset.miniLabel || '';
+      const dots = [];
+
+      if (dotsContainer) {
+        dotsContainer.innerHTML = '';
+      }
+
+      const hasMultipleSlides = slides.length > 1;
+
+      const goToSlide = (targetIndex) => {
+        if (!slides.length) {
+          return;
+        }
+        const normalizedIndex = ((targetIndex % slides.length) + slides.length) % slides.length;
+
+        slides.forEach((slide, slideIndex) => {
+          const isActive = slideIndex === normalizedIndex;
+          slide.classList.toggle('is-active', isActive);
+          slide.setAttribute('aria-hidden', isActive ? 'false' : 'true');
+        });
+
+        dots.forEach((dot, dotIndex) => {
+          const isActive = dotIndex === normalizedIndex;
+          dot.classList.toggle('is-active', isActive);
+          dot.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+        });
+
+        const controlsDisabled = slides.length <= 1;
+        if (prevButton) {
+          prevButton.disabled = controlsDisabled;
+        }
+        if (nextButton) {
+          nextButton.disabled = controlsDisabled;
+        }
+        if (dotsContainer) {
+          dotsContainer.style.display = slides.length > 1 ? 'flex' : 'none';
+        }
+
+        carousel.dataset.miniCarouselIndex = String(normalizedIndex);
+      };
+
+      slides.forEach((slide) => {
+        slide.classList.remove('is-active');
+        slide.setAttribute('aria-hidden', 'true');
+      });
+
+      if (dotsContainer && hasMultipleSlides) {
+        slides.forEach((_, slideIndex) => {
+          const dot = document.createElement('button');
+          dot.type = 'button';
+          dot.className = 'cdcalc-mini-dot';
+          dot.setAttribute(
+            'aria-label',
+            label
+              ? `Show ${label} option ${slideIndex + 1}`
+              : `Show option ${slideIndex + 1}`
+          );
+          dot.setAttribute('aria-pressed', 'false');
+          dot.addEventListener('click', () => {
+            goToSlide(slideIndex);
+          });
+          dotsContainer.appendChild(dot);
+          dots.push(dot);
+        });
+      }
+
+      if (prevButton) {
+        prevButton.addEventListener('click', () => {
+          const currentIndex = parseInt(carousel.dataset.miniCarouselIndex || '0', 10) || 0;
+          goToSlide(currentIndex - 1);
+        });
+      }
+
+      if (nextButton) {
+        nextButton.addEventListener('click', () => {
+          const currentIndex = parseInt(carousel.dataset.miniCarouselIndex || '0', 10) || 0;
+          goToSlide(currentIndex + 1);
+        });
+      }
+
+      goToSlide(0);
+      carousel.dataset.miniCarouselReady = 'true';
+      carousel.classList.add('cdcalc-mini-ready');
+    });
+  }
+
   function updateForm(elements, strings) {
     if (
       !elements ||
@@ -520,9 +1318,12 @@
     }
 
     const age = elements.ageSelect.value;
+    const gate = resolveAgeGate(age);
+    const normalizedAge =
+      age === '6-24' ? '6-11' : age === '2y+' || age === '6+' ? '12+' : age;
 
     elements.ageButtons.forEach((button) => {
-      const isSelected = button.dataset.age === age;
+      const isSelected = button.dataset.age === normalizedAge;
       button.setAttribute('aria-pressed', String(isSelected));
       button.classList.toggle('is-active', isSelected);
     });
@@ -546,8 +1347,9 @@
     elements.submitButton.disabled = false;
     elements.weightInput.disabled = false;
     elements.unitSelect.disabled = false;
+    clearButtonAttention(elements.submitButton);
 
-    if (age === '0-2') {
+    if (gate === 'emergency') {
       elements.message.hidden = false;
       elements.message.innerHTML = strings.form.infantCriticalMessage;
       elements.submitButton.disabled = true;
@@ -568,6 +1370,7 @@
     }
 
     const age = elements.ageSelect.value;
+    const gate = resolveAgeGate(age);
     const weightInput = parseFloat(elements.weightInput.value);
     const weightUnit = elements.unitSelect.value;
 
@@ -589,6 +1392,10 @@
       return;
     }
 
+    if (gate === 'emergency') {
+      return;
+    }
+
     const weightKg = weightUnit === 'lbs' ? weightInput / 2.20462 : weightInput;
     const weightLbs = weightUnit === 'lbs' ? weightInput : weightInput * 2.20462;
 
@@ -604,12 +1411,35 @@
     `;
     resultBlocks.push(weightLabel);
 
-    if (age === '2-6') {
+    if (gate === 'infant') {
       const ACETA_MAX_MG_INFANT = 160;
       const acetaMgCalculated = 12.5 * weightKg;
       const acetaMg = Math.min(acetaMgCalculated, ACETA_MAX_MG_INFANT);
       const acetaMl = (acetaMg / 160) * 5;
       const acetaCapped = acetaMg < acetaMgCalculated;
+      const acetaminophenLiquidCarousel = renderMiniCarousel(
+        MINI_CAROUSEL_CONTENT.acetaminophenLiquid,
+        {
+          label: "acetaminophen products",
+          heading: '160 mg / 5 mL liquids',
+        }
+      );
+      const acetaminophenAlternateCarousel = renderMiniCarousel(
+        MINI_CAROUSEL_CONTENT.acetaminophenOther,
+        {
+          label: 'alternate acetaminophen products',
+          heading: 'Chewables, meltaways & more',
+        }
+      );
+      const acetaminophenCarouselGroup = [
+        acetaminophenLiquidCarousel,
+        acetaminophenAlternateCarousel,
+      ]
+        .filter(Boolean)
+        .join('');
+      const acetaminophenCarouselMarkup = acetaminophenCarouselGroup
+        ? `<div class="cdcalc-mini-carousel-stack cdcalc-mini-carousel-stack--split">${acetaminophenCarouselGroup}</div>`
+        : '';
 
       const group = [];
       group.push(`
@@ -620,6 +1450,7 @@
             mg: acetaMg.toFixed(0),
           })}</p>
           <p>${formatString(strings.warnings.acetaminophenMax, { max: ACETA_MAX_MG_INFANT })}</p>
+          ${acetaminophenCarouselMarkup}
           ${
             acetaCapped
               ? renderWarning(strings, {
@@ -640,9 +1471,10 @@
       );
 
       resultBlocks.push(`<div class="cdcalc-result-group">${group.join('')}</div>`);
-    } else if (age === '6-24' || age === '2y+' || age === '6+') {
-      const ACETA_MAX_SINGLE_DOSE_MG = 1000;
-      const IBU_MAX_SINGLE_DOSE_MG = 800;
+    } else if (gate === 'pediatric' || gate === 'adolescent') {
+      const isPediatric = gate === 'pediatric';
+      const ACETA_MAX_SINGLE_DOSE_MG = isPediatric ? 480 : 1000;
+      const IBU_MAX_SINGLE_DOSE_MG = isPediatric ? 400 : 800;
 
       const acetaMgCalculated = 15 * weightKg;
       const acetaMg = Math.min(acetaMgCalculated, ACETA_MAX_SINGLE_DOSE_MG);
@@ -654,6 +1486,60 @@
       const ibuCapped = ibuMg < ibuMgCalculated;
       const ibuMl50 = (ibuMg / 50) * 1.25;
       const ibuMl100 = (ibuMg / 100) * 5;
+      const acetaminophenLiquidCarousel = renderMiniCarousel(
+        MINI_CAROUSEL_CONTENT.acetaminophenLiquid,
+        {
+          label: "acetaminophen products",
+          heading: '160 mg / 5 mL liquids',
+        }
+      );
+      const acetaminophenAlternateCarousel = renderMiniCarousel(
+        MINI_CAROUSEL_CONTENT.acetaminophenOther,
+        {
+          label: 'alternate acetaminophen products',
+          heading: 'Chewables, meltaways & more',
+        }
+      );
+      const acetaminophenCarouselGroup = [
+        acetaminophenLiquidCarousel,
+        acetaminophenAlternateCarousel,
+      ]
+        .filter(Boolean)
+        .join('');
+      const acetaminophenCarouselMarkup = acetaminophenCarouselGroup
+        ? `<div class="cdcalc-mini-carousel-stack cdcalc-mini-carousel-stack--split">${acetaminophenCarouselGroup}</div>`
+        : '';
+      const ibuprofenChildrenCarousel = renderMiniCarousel(
+        MINI_CAROUSEL_CONTENT.ibuprofenChildren,
+        {
+          label: "children's ibuprofen products",
+          heading: "Children's 100 mg / 5 mL",
+        }
+      );
+      const ibuprofenInfantCarousel = renderMiniCarousel(
+        MINI_CAROUSEL_CONTENT.ibuprofenInfant,
+        {
+          label: "infant ibuprofen products",
+          heading: 'Infant 50 mg / 1.25 mL',
+        }
+      );
+      const ibuprofenOtherCarousel = renderMiniCarousel(
+        MINI_CAROUSEL_CONTENT.ibuprofenOther,
+        {
+          label: 'other ibuprofen products',
+          heading: 'Tablets, capsules & chewables',
+        }
+      );
+      const ibuprofenCarouselGroup = [
+        ibuprofenChildrenCarousel,
+        ibuprofenInfantCarousel,
+        ibuprofenOtherCarousel,
+      ]
+        .filter(Boolean)
+        .join('');
+      const ibuprofenCarouselMarkup = ibuprofenCarouselGroup
+        ? `<div class="cdcalc-mini-carousel-stack cdcalc-mini-carousel-stack--split">${ibuprofenCarouselGroup}</div>`
+        : '';
 
       const group = [];
       group.push(`
@@ -663,6 +1549,7 @@
             ml: acetaMl.toFixed(1),
             mg: acetaMg.toFixed(0),
           })}</p>
+          ${acetaminophenCarouselMarkup}
           ${renderWarning(strings, {
             body: formatString(strings.warnings.acetaminophenMax, { max: ACETA_MAX_SINGLE_DOSE_MG }),
             tone: 'orange',
@@ -690,6 +1577,7 @@
             ml: ibuMl50.toFixed(1),
             mg: ibuMg.toFixed(0),
           })}</p>
+          ${ibuprofenCarouselMarkup}
           ${renderWarning(strings, {
             body: formatString(strings.warnings.ibuprofenMax, { max: IBU_MAX_SINGLE_DOSE_MG }),
             tone: 'orange',
@@ -721,6 +1609,7 @@
     }
 
     elements.results.innerHTML = resultBlocks.join('');
+    initializeMiniCarousels(elements.results);
   }
 
   function bindEvents(elements, strings) {
@@ -728,11 +1617,82 @@
       return () => {};
     }
 
+    const shouldAnimateSubmit = () => {
+      if (
+        !elements ||
+        !elements.submitButton ||
+        !elements.weightInput ||
+        !elements.ageSelect ||
+        elements.submitButton.disabled
+      ) {
+        return false;
+      }
+      const weightValue = parseFloat(elements.weightInput.value);
+      if (Number.isNaN(weightValue) || weightValue <= 0) {
+        return false;
+      }
+      const gate = resolveAgeGate(elements.ageSelect.value);
+      return Boolean(gate && gate !== 'emergency');
+    };
+
+    const shouldAnimateWeightInput = () => {
+      if (
+        !elements ||
+        !elements.weightInput ||
+        !elements.ageSelect ||
+        elements.weightInput.disabled
+      ) {
+        return false;
+      }
+      const ageValue = elements.ageSelect.value;
+      const gate = resolveAgeGate(ageValue);
+      if (!gate || gate === 'emergency') {
+        return false;
+      }
+      if (document.activeElement === elements.weightInput) {
+        return false;
+      }
+      const weightValue = typeof elements.weightInput.value === 'string'
+        ? elements.weightInput.value.trim()
+        : '';
+      return weightValue === '';
+    };
+
+    const refreshSubmitAnimation = () => {
+      if (!elements || !elements.submitButton) {
+        return;
+      }
+      if (shouldAnimateSubmit()) {
+        triggerButtonAttention(elements.submitButton);
+      } else {
+        clearButtonAttention(elements.submitButton);
+      }
+    };
+
+    const refreshWeightAnimation = () => {
+      if (!elements || !elements.weightInput) {
+        return;
+      }
+      if (shouldAnimateWeightInput()) {
+        if (!elements.weightInput.classList.contains(INPUT_ATTENTION_CLASS)) {
+          elements.weightInput.classList.add(INPUT_ATTENTION_CLASS);
+        }
+      } else {
+        elements.weightInput.classList.remove(INPUT_ATTENTION_CLASS);
+      }
+    };
+
+    const refreshGuidanceAnimations = () => {
+      refreshSubmitAnimation();
+      refreshWeightAnimation();
+    };
+
     const onAgeButtonClick = (event) => {
       const button = event.currentTarget;
       const ageValue = button.dataset.age || '';
       elements.ageSelect.value = ageValue;
       updateForm(elements, strings);
+      refreshGuidanceAnimations();
     };
 
     elements.ageButtons.forEach((button) => {
@@ -744,26 +1704,46 @@
       const unitValue = button.dataset.unit || 'lbs';
       elements.unitSelect.value = unitValue;
       updateForm(elements, strings);
+      refreshGuidanceAnimations();
     };
 
     elements.unitButtons.forEach((button) => {
       button.addEventListener('click', onUnitButtonClick);
     });
 
-    const onAgeSelectChange = () => updateForm(elements, strings);
-    const onUnitSelectChange = () => updateForm(elements, strings);
+    const onAgeSelectChange = () => {
+      updateForm(elements, strings);
+      refreshGuidanceAnimations();
+    };
+    const onUnitSelectChange = () => {
+      updateForm(elements, strings);
+      refreshGuidanceAnimations();
+    };
+    const onWeightInput = () => {
+      refreshGuidanceAnimations();
+    };
+
+    const onWeightFocusChange = () => {
+      refreshWeightAnimation();
+    };
 
     elements.ageSelect.addEventListener('change', onAgeSelectChange);
     elements.unitSelect.addEventListener('change', onUnitSelectChange);
+    elements.weightInput.addEventListener('input', onWeightInput);
+    elements.weightInput.addEventListener('change', onWeightInput);
+    elements.weightInput.addEventListener('focus', onWeightFocusChange);
+    elements.weightInput.addEventListener('blur', onWeightFocusChange);
 
     const onSubmit = (event) => {
       event.preventDefault();
+      clearButtonAttention(elements.submitButton);
       calculateDose(elements, strings);
     };
 
     elements.form.addEventListener('submit', onSubmit);
 
     updateForm(elements, strings);
+    refreshGuidanceAnimations();
 
     return () => {
       elements.ageButtons.forEach((button) => {
@@ -775,6 +1755,10 @@
       elements.ageSelect.removeEventListener('change', onAgeSelectChange);
       elements.unitSelect.removeEventListener('change', onUnitSelectChange);
       elements.form.removeEventListener('submit', onSubmit);
+      elements.weightInput.removeEventListener('input', onWeightInput);
+      elements.weightInput.removeEventListener('change', onWeightInput);
+      elements.weightInput.removeEventListener('focus', onWeightFocusChange);
+      elements.weightInput.removeEventListener('blur', onWeightFocusChange);
     };
   }
 

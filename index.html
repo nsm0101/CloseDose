@@ -15,6 +15,16 @@
   <meta property="og:image" content="/images/OG-image.png">
   <meta property="og:image:type" content="image/png">
   <meta property="og:image:alt" content="CloseDose pediatric dosing calculator preview">
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-WYY1QFRPYP"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+    gtag('js', new Date());
+    gtag('config', 'G-WYY1QFRPYP');
+  </script>
   <script async src="https://widgets.givebutter.com/latest.umd.cjs?acct=r8SGiZ0RhFRoIkXu&p=other"></script>
   <style>
     :root {
@@ -233,7 +243,7 @@
     }
 
     .layout {
-      width: min(820px, 100%);
+      width: min(760px, 100%);
       margin: 0 auto;
       display: flex;
       flex-direction: column;
@@ -248,8 +258,8 @@
       box-shadow: var(--shadow-card);
       padding: clamp(24px, 4vw, 36px);
       width: 100%;
-      max-width: min(760px, 100%);
-      margin: 0;
+      max-width: min(720px, 100%);
+      margin: 0 auto;
     }
 
     .card.card--calculator,
@@ -260,6 +270,8 @@
 
     .calculator-widget-host {
       width: 100%;
+      max-width: 720px;
+      margin: 0 auto;
     }
 
     .donate-card {
@@ -269,12 +281,14 @@
       box-shadow: 0 10px 0 rgba(15, 44, 42, 0.42);
       display: grid;
       gap: clamp(16px, 3vw, 24px);
-      text-align: left;
+      text-align: center;
+      justify-items: center;
     }
 
     .donate-card .donate-header {
       display: grid;
       gap: 8px;
+      justify-items: center;
     }
 
     .donate-card h2 {
@@ -290,9 +304,9 @@
       margin: 0;
       font-size: clamp(0.85rem, 2vw, 1rem);
       font-weight: 700;
-      letter-spacing: 0.08em;
+      letter-spacing: 0.12em;
       text-transform: uppercase;
-      color: rgba(255, 255, 255, 0.86);
+      color: #ffe8a8;
     }
 
     .donate-card .donate-intro {
@@ -304,17 +318,20 @@
 
     .donate-card .donate-primary {
       display: flex;
-      justify-content: flex-start;
+      justify-content: center;
+      align-items: center;
       perspective: 900px;
+      width: 100%;
     }
 
     .donate-card .donate-pill {
       position: relative;
-      display: inline-flex;
+      display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 12px;
-      padding: clamp(14px, 3vw, 18px) clamp(48px, 10vw, 74px) clamp(14px, 3vw, 18px) clamp(26px, 6vw, 36px);
+      gap: 10px;
+      padding: clamp(18px, 4vw, 22px) clamp(48px, 10vw, 74px) clamp(20px, 4vw, 24px) clamp(32px, 8vw, 48px);
       border-radius: 999px;
       appearance: none;
       border: 3px solid rgba(255, 255, 255, 0.82);
@@ -324,7 +341,7 @@
       letter-spacing: 0.04em;
       font-size: clamp(1rem, 2.6vw, 1.22rem);
       font-family: inherit;
-      line-height: 1;
+      line-height: 1.1;
       text-transform: none;
       text-decoration: none;
       box-shadow: 0 6px 0 rgba(15, 44, 42, 0.35);
@@ -353,6 +370,34 @@
       background: rgba(255, 255, 255, 0.18);
     }
 
+    .donate-card .donate-pill-lines {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .donate-card .donate-pill-line {
+      display: block;
+      font-size: clamp(1rem, 2.6vw, 1.22rem);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      text-shadow: 0 2px 6px rgba(15, 44, 42, 0.35);
+    }
+
+    .donate-card .donate-pill-sub {
+      display: block;
+      font-size: clamp(0.75rem, 1.8vw, 0.9rem);
+      font-weight: 800;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: #ffe8a8;
+      text-shadow: 0 2px 6px rgba(15, 44, 42, 0.35);
+    }
+
     .donate-card .donate-pill img {
       position: absolute;
       right: clamp(0px, 2.4vw, 14px);
@@ -379,6 +424,8 @@
     .donate-card .donate-content {
       display: grid;
       gap: clamp(14px, 3vw, 20px);
+      width: 100%;
+      justify-items: center;
     }
 
     .donate-card .donate-links {
@@ -387,31 +434,56 @@
       padding: 0;
       display: grid;
       gap: 12px;
+      width: 100%;
     }
 
     .donate-card .donate-links a {
-      display: inline-flex;
+      display: flex;
       align-items: center;
       justify-content: center;
       gap: 10px;
-      padding: 12px 18px;
+      padding: 14px 18px;
       border-radius: 16px;
-      border: 2px solid rgba(255, 255, 255, 0.65);
-      background: rgba(255, 255, 255, 0.12);
-      color: #ffffff;
+      border: 2px solid var(--link-border, rgba(255, 255, 255, 0.65));
+      background: var(--link-bg, rgba(255, 255, 255, 0.12));
+      color: var(--link-color, #ffffff);
       font-weight: 800;
-      letter-spacing: 0.06em;
+      letter-spacing: 0.08em;
       text-transform: uppercase;
       text-decoration: none;
-      transition: background 0.2s ease, transform 0.2s ease, border-color 0.2s ease;
+      transition:
+        background 0.2s ease,
+        transform 0.2s ease,
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        color 0.2s ease;
+      width: 100%;
     }
 
     .donate-card .donate-links a:hover,
     .donate-card .donate-links a:focus-visible {
-      background: rgba(255, 255, 255, 0.28);
-      border-color: rgba(255, 255, 255, 0.85);
-      transform: translateY(-2px);
+      background: var(--link-bg-hover, rgba(255, 255, 255, 0.22));
+      color: var(--link-color-hover, #ffffff);
+      transform: translateY(-3px);
+      border-color: rgba(255, 255, 255, 0.95);
+      box-shadow: 0 8px 0 rgba(15, 44, 42, 0.42);
       outline: none;
+    }
+
+    .donate-card .donate-links a.donate-link--kofi {
+      --link-bg: linear-gradient(135deg, rgba(41, 171, 224, 0.96), rgba(41, 171, 224, 0.78));
+      --link-bg-hover: linear-gradient(135deg, rgba(41, 171, 224, 1), rgba(41, 171, 224, 0.9));
+      --link-border: rgba(255, 255, 255, 0.85);
+      --link-color: #082d35;
+      --link-color-hover: #04191e;
+    }
+
+    .donate-card .donate-links a.donate-link--givebutter {
+      --link-bg: linear-gradient(135deg, rgba(255, 222, 89, 0.94), rgba(253, 200, 64, 0.88));
+      --link-bg-hover: linear-gradient(135deg, rgba(255, 230, 120, 1), rgba(253, 211, 90, 0.95));
+      --link-border: rgba(255, 255, 255, 0.9);
+      --link-color: #0f2c2a;
+      --link-color-hover: #061312;
     }
 
     @media (max-width: 540px) {
@@ -443,7 +515,11 @@
       position: absolute;
       inset: 0;
       border-radius: inherit;
-      background: radial-gradient(circle at top right, rgba(36, 166, 135, 0.15), rgba(18, 70, 67, 0.65));
+      background:
+        radial-gradient(140% 140% at 85% 20%, rgba(36, 166, 135, 0.45) 0%, rgba(36, 166, 135, 0.28) 35%, rgba(36, 166, 135, 0.1) 60%, rgba(36, 166, 135, 0) 80%),
+        radial-gradient(160% 160% at 18% 85%, rgba(18, 70, 67, 0.38) 0%, rgba(18, 70, 67, 0.2) 36%, rgba(18, 70, 67, 0.08) 62%, rgba(18, 70, 67, 0) 82%);
+      background-repeat: no-repeat;
+      background-blend-mode: screen;
       opacity: 0;
       transform: scale(0.98);
       transition: opacity 0.35s ease, transform 0.35s ease;
@@ -1127,7 +1203,7 @@
   <a class="skip-link" href="#calculator-card">Skip to calculator</a>
   <div class="wrap">
     <header>
-      <img src="images/CloseDose_ExtendedLogo.svg" alt="CloseDose" class="header-wordmark" />
+      <img src="images/logo/CloseDose%20Logo_2048-transparent.png" alt="CloseDose" class="header-wordmark" />
       <button class="menu-btn" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="siteMenu" aria-label="Open menu">
         <span class="label">Menu</span>
         <span class="hamburger" aria-hidden="true"><span></span><span></span><span></span></span>
@@ -1139,34 +1215,38 @@
         <section class="card donate-card" aria-labelledby="donate-heading">
           <div class="donate-header">
             <h2 id="donate-heading">Donate!</h2>
-            <p class="donate-subtitle">Please consider supporting CloseDose!</p>
+            <p class="donate-subtitle">Please consider donating today.</p>
           </div>
           <div class="donate-content">
             <div class="donate-primary">
-            <div></div>
-               <button 
-               class="donate-pill" 
-               type="button" 
-               data-gb-account="r8SGiZ0RhFRoIkXu" 
-               data-gb-campaign="93Xrjv" 
+              <button
+                class="donate-pill"
+                type="button"
+                id="donateBtn"
+                data-gb-account="r8SGiZ0RhFRoIkXu"
+                data-gb-campaign="93Xrjv"
                 data-fallback-href="https://givebutter.com/93Xrjv">
-                <span>Powered by Parents! Please Consider Donating Today!!!</span>
+                <span class="donate-pill-lines">
+                  <span class="donate-pill-line">Powered by Parents!</span>
+                  <span class="donate-pill-line">Help Support Us Today!</span>
+                  <span class="donate-pill-sub">Please consider donating today.</span>
+                </span>
                 <img src="images/piggyFINAL.svg" alt="" aria-hidden="true" />
               </button>
             </div>
             <p class="donate-intro">
-              If you are able, please consider supporting me in launching this tool!
-              Every contribution helps me continue development!
+              Please consider supporting me in the continued development of this tool!
+              Every contribution helps!
             </p>
             <ul class="donate-links">
               <li>
-                <a href="https://www.paypal.com/donate?business=donate%40closedose.com&currency_code=USD" target="_blank" rel="noopener">
-                  Donate with PayPal
+                <a class="donate-link--kofi" href="https://ko-fi.com/closedose" target="_blank" rel="noopener">
+                  Support on Ko-fi
                 </a>
               </li>
               <li>
-                <a href="https://www.buymeacoffee.com/closedose" target="_blank" rel="noopener">
-                  Buy Us a Coffee
+                <a class="donate-link--givebutter" href="https://givebutter.com/93Xrjv" target="_blank" rel="noopener">
+                  GiveButter Campaign
                 </a>
               </li>
               <li>
@@ -1205,24 +1285,24 @@
   </div>
 
   <footer class="cd-footer" role="contentinfo" aria-label="Site footer">
-    <p class="cd-copy">© 2025 CloseDose. All rights reserved.</p>
+    <p class="cd-copy">2025 CloseDose. All rights reserved.</p>
 
     <nav class="cd-legal cd-legal--full" aria-label="Legal and policy links">
-      <a href="/legal/terms">Terms of Use</a>
-      <a href="/legal/privacy">Privacy Policy</a>
-      <a href="/legal/disclaimer">Disclaimer</a>
-      <a href="/legal/aup">Acceptable Use</a>
-      <a href="/legal/dmca">DMCA Policy</a>
+      <a href="https://nsm0101.github.io/CloseDoseAlt/legal/terms">Terms of Use</a>
+      <a href="https://nsm0101.github.io/CloseDoseAlt/legal/privacy">Privacy Policy</a>
+      <a href="https://nsm0101.github.io/CloseDoseAlt/legal/disclaimer">Disclaimer</a>
+      <a href="https://nsm0101.github.io/CloseDoseAlt/legal/linking">Acceptable Use</a>
+      <a href="https://nsm0101.github.io/CloseDoseAlt/legal/dmca">DMCA Policy</a>
     </nav>
 
     <details class="cd-legal cd-legal--accordion">
       <summary aria-controls="legal-links">Legal &amp; Policies ▾</summary>
       <nav id="legal-links" aria-label="Legal and policy links">
-        <a href="/legal/terms">Terms of Use</a>
-        <a href="/legal/privacy">Privacy Policy</a>
-        <a href="/legal/disclaimer">Disclaimer</a>
-        <a href="/legal/aup">Acceptable Use</a>
-        <a href="/legal/dmca">DMCA Policy</a>
+        <a href="https://nsm0101.github.io/CloseDoseAlt/legal/terms">Terms of Use</a>
+        <a href="https://nsm0101.github.io/CloseDoseAlt/legal/privacy">Privacy Policy</a>
+        <a href="https://nsm0101.github.io/CloseDoseAlt/legal/disclaimer">Disclaimer</a>
+        <a href="https://nsm0101.github.io/CloseDoseAlt/legal/linking">Acceptable Use</a>
+        <a href="https://nsm0101.github.io/CloseDoseAlt/legal/dmca">DMCA Policy</a>
       </nav>
     </details>
 
@@ -1519,6 +1599,39 @@
           setDisclaimerState(false, { manual: true });
         }
       });
+    });
+  </script>
+  <script>
+    // Read simple tracking params from the URL
+    const u = new URL(location.href);
+    const SRC = (u.searchParams.get('src') || 'na').toLowerCase(); // nfc | qr | link
+    const ID = (u.searchParams.get('id') || 'na').toLowerCase(); // 01..22 or short label
+
+    // Helper to fire GA4 events
+    function track(event, params = {}) {
+      if (window.gtag) gtag('event', event, params);
+    }
+    // Log the visit itself (one event per load)
+    track('tag_visit', { src: SRC, id: ID });
+    // Wire up main actions (adjust selectors to your actual buttons/links)
+    document.getElementById('calcBtn')?.addEventListener('click', () =>
+      track('tag_use', { use: 'calc', src: SRC, id: ID })
+    );
+    document.getElementById('handoutBtn')?.addEventListener('click', () =>
+      track('tag_use', { use: 'handout', src: SRC, id: ID })
+    );
+    document.getElementById('donateBtn')?.addEventListener('click', () =>
+      track('tag_use', { use: 'donate', src: SRC, id: ID })
+    );
+    // Optional: generic auto-tracking for any link with data-use="…"
+    document.querySelectorAll('a[data-use]').forEach((a) => {
+      a.addEventListener('click', () =>
+        track('tag_use', {
+          use: a.getAttribute('data-use'),
+          src: SRC,
+          id: ID,
+        })
+      );
     });
   </script>
 </body>

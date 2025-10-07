@@ -12,6 +12,52 @@ function getElements() {
   };
 }
 
+const ATTENTION_CLASS = 'button--attention';
+
+// Implementation summary:
+// - 0–2 months: emergency pathway with the calculator disabled and families
+//   directed to seek immediate care.
+// - 2–6 months: acetaminophen at 12.5 mg/kg (maximum 160 mg) and no ibuprofen.
+// - 6 months–11 years: pediatric caps limiting acetaminophen to 480 mg and
+//   ibuprofen to 400 mg per single dose.
+// - 12+ years: adult dosing ceilings of 1000 mg acetaminophen and 800 mg
+//   ibuprofen per single dose.
+// This replaces the prior combined 6+ pathway while keeping the structure ready
+// for future refinements if more age bands are needed.
+function resolveAgeGate(age) {
+  switch (age) {
+    case '0-2':
+      return 'emergency';
+    case '2-6':
+      return 'infant';
+    case '6-11':
+    case '6-24':
+      return 'pediatric';
+    case '12+':
+    case '2y+':
+    case '6+':
+      return 'adolescent';
+    default:
+      return '';
+  }
+}
+
+function clearButtonAttention(button) {
+  if (!button) {
+    return;
+  }
+  button.classList.remove(ATTENTION_CLASS);
+}
+
+function triggerButtonAttention(button) {
+  if (!button) {
+    return;
+  }
+  button.classList.remove(ATTENTION_CLASS);
+  void button.offsetWidth;
+  button.classList.add(ATTENTION_CLASS);
+}
+
 function clearResults(elements) {
   if (elements.results) {
     elements.results.innerHTML = '';
@@ -32,10 +78,13 @@ function updateForm() {
   }
 
   const age = elements.ageSelect.value;
+  const gate = resolveAgeGate(age);
+  const normalizedAge =
+    age === '6-24' ? '6-11' : age === '2y+' || age === '6+' ? '12+' : age;
 
   if (elements.ageButtons && elements.ageButtons.length > 0) {
     elements.ageButtons.forEach((button) => {
-      const isSelected = button.dataset.age === age;
+      const isSelected = button.dataset.age === normalizedAge;
       button.setAttribute('aria-pressed', String(isSelected));
       button.classList.toggle('is-active', isSelected);
     });
@@ -62,8 +111,9 @@ function updateForm() {
   elements.calculateButton.disabled = false;
   elements.weightInput.disabled = false;
   elements.weightUnit.disabled = false;
+  clearButtonAttention(elements.calculateButton);
 
-  if (age === '0-2') {
+  if (gate === 'emergency') {
     elements.message.hidden = false;
     elements.message.classList.add('alert--critical');
     elements.message.innerHTML =
@@ -84,10 +134,12 @@ function calculateDose() {
   }
 
   const age = elements.ageSelect.value;
+  const gate = resolveAgeGate(age);
   const weightInput = parseFloat(elements.weightInput.value);
   const weightUnit = elements.weightUnit.value;
 
   clearResults(elements);
+  clearButtonAttention(elements.calculateButton);
 
   const renderWarning = (title, body, modifier = 'warning-card--teal') => {
     const label = title ? `<strong>${title}</strong>` : '';
@@ -105,6 +157,10 @@ function calculateDose() {
     return;
   }
 
+  if (gate === 'emergency') {
+    return;
+  }
+
   const weightKg = weightUnit === 'lbs' ? weightInput / 2.20462 : weightInput;
   const weightLbs = weightUnit === 'lbs' ? weightInput : weightInput * 2.20462;
   const resultBlocks = [];
@@ -113,7 +169,7 @@ function calculateDose() {
     `<p class="result-weight"><span>Patient weight</span><br><strong>${weightKg.toFixed(1)} kg (${weightLbs.toFixed(1)} lbs)</strong></p>`
   );
 
-  if (age === '2-6') {
+  if (gate === 'infant') {
     const acetaMgCalculated = 12.5 * weightKg;
     const ACETA_MAX_MG_INFANT = 160;
     const acetaMg = Math.min(acetaMgCalculated, ACETA_MAX_MG_INFANT);
@@ -147,9 +203,10 @@ function calculateDose() {
     );
 
     resultBlocks.push(`<div class="result-group">${group.join('')}</div>`);
-  } else if (age === '6+') {
-    const ACETA_MAX_SINGLE_DOSE_MG = 1000;
-    const IBU_MAX_SINGLE_DOSE_MG = 800;
+  } else if (gate === 'pediatric' || gate === 'adolescent') {
+    const isPediatric = gate === 'pediatric';
+    const ACETA_MAX_SINGLE_DOSE_MG = isPediatric ? 480 : 1000;
+    const IBU_MAX_SINGLE_DOSE_MG = isPediatric ? 400 : 800;
 
     const acetaMgCalculated = 15 * weightKg;
     const acetaMg = Math.min(acetaMgCalculated, ACETA_MAX_SINGLE_DOSE_MG);
@@ -170,7 +227,7 @@ function calculateDose() {
         <p>Give ${acetaMl.toFixed(1)} mL (${acetaMg.toFixed(0)} mg) every 6 hours as needed for fever/pain.</p>
         ${renderWarning(
           '',
-          'Maximum single dose for this age group is 1000 mg of acetaminophen every 6 hours.',
+          `Maximum single dose for this age group is ${ACETA_MAX_SINGLE_DOSE_MG} mg of acetaminophen every 6 hours.`,
           'warning-card--orange'
         )}
         ${
@@ -192,7 +249,7 @@ function calculateDose() {
         <p><strong>Infant's 50 mg / 1.25 mL:</strong> Give ${ibuMl50.toFixed(1)} mL (${ibuMg.toFixed(0)} mg) every 6 hours as needed for fever/pain.</p>
         ${renderWarning(
           '',
-          'Maximum single dose for this age group is 800 mg of ibuprofen every 6 hours.',
+          `Maximum single dose for this age group is ${IBU_MAX_SINGLE_DOSE_MG} mg of ibuprofen every 6 hours.`,
           'warning-card--orange'
         )}
         ${
@@ -257,8 +314,36 @@ function initCalculator() {
     elements.weightUnit.addEventListener('change', () => updateForm());
   }
 
+  if (elements.weightInput) {
+    const handleWeightInput = () => {
+      if (!elements.weightInput) {
+        return;
+      }
+      const value = parseFloat(elements.weightInput.value);
+      if (
+        !isNaN(value) &&
+        value > 0 &&
+        elements.calculateButton &&
+        !elements.calculateButton.disabled &&
+        resolveAgeGate(elements.ageSelect ? elements.ageSelect.value : '')
+      ) {
+        triggerButtonAttention(elements.calculateButton);
+      }
+    };
+
+    elements.weightInput.addEventListener('input', handleWeightInput);
+    elements.weightInput.addEventListener('change', handleWeightInput);
+  }
+
+  if (elements.calculateButton) {
+    elements.calculateButton.addEventListener('animationend', () => {
+      clearButtonAttention(elements.calculateButton);
+    });
+  }
+
   form.addEventListener('submit', (event) => {
     event.preventDefault();
+    clearButtonAttention(elements.calculateButton);
     calculateDose();
   });
 }
