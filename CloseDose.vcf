@@ -1,0 +1,16 @@
+BEGIN:VCARD
+VERSION:3.0
+PRODID:-//Apple Inc.//macOS 15.5//EN
+N:;CloseDose;;;
+FN:CloseDose
+ORG:CloseDose;
+item1.EMAIL;type=INTERNET;type=pref:hello@closedose.com
+item1.X-ABLabel:Hello
+item2.EMAIL;type=INTERNET:hello@closedose.com
+item2.X-ABLabel:Hello
+item3.URL;type=pref:https://closedose.com
+item3.X-ABLabel:Website
+BDAY:2025-09-21
+item4.X-ABRELATEDNAMES;type=pref:Nickolas Mancini\, MD\, MBA
+item4.X-ABLabel:Founder
+END:VCARD

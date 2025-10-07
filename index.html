@@ -7,6 +7,25 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png">
+  <link rel="apple-touch-icon" href="/logo-light.svg">
+  <link rel="apple-touch-icon" href="/logo-dark.svg" media="(prefers-color-scheme: dark)">
+  <meta property="og:image" content="/images/OG-image.png">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:alt" content="CloseDose pediatric dosing calculator preview">
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-WYY1QFRPYP"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+    gtag('js', new Date());
+    gtag('config', 'G-WYY1QFRPYP');
+  </script>
+  <script async src="https://widgets.givebutter.com/latest.umd.cjs?acct=r8SGiZ0RhFRoIkXu&p=other"></script>
   <style>
     :root {
       --teal-400: #24a687;
@@ -22,6 +41,12 @@
       --inner-radius: 18px;
       --shadow-card: 0 6px 0 rgba(15, 44, 42, 0.18);
       --shadow-btn: 0 4px 0 rgba(15, 44, 42, 0.25);
+      --pill-max-width: 720px;
+      --footer-bg: #f8f9fa;
+      --footer-fg: #111111;
+      --footer-muted: #666666;
+      --footer-link: #0369a1;
+      --footer-border: #e5e7eb;
     }
 
     *,
@@ -33,8 +58,9 @@
     body {
       margin: 0;
       font-family: "Nunito", system-ui, -apple-system, "Segoe UI", sans-serif;
-      background: var(--bg) url("images/light-bg.png") repeat;
-      background-size: 520px auto;
+      background: var(--bg) url("images/bg4k.png");
+      background-size: cover;
+      background-attachment: fixed;
       color: var(--ink-900);
       min-height: 100vh;
       display: flex;
@@ -91,68 +117,57 @@
       top: 0;
       z-index: 1000;
       display: flex;
-      align-items: flex-start;
-      justify-content: flex-start;
-      gap: clamp(14px, 3vw, 24px);
+      align-items: center;
+      justify-content: center;
+      gap: clamp(12px, 3vw, 32px);
       padding: clamp(14px, 3vw, 26px) clamp(18px, 5vw, 48px) clamp(6px, 2vw, 14px);
       margin-bottom: 0;
     }
 
-    .brand {
-      display: flex;
-      align-items: stretch;
-      justify-content: flex-start;
-      flex: 1;
-      flex-wrap: nowrap;
-      gap: clamp(12px, 2.6vw, 22px);
-      min-width: 0;
-    }
 
-    .brand img {
+    .header-wordmark {
       display: block;
-      height: auto;
-      min-height: 58px;
-    }
-
-    .brand .logo {
-      width: clamp(128px, 22vw, 204px);
+      width: min(650px, 60vw);
       max-width: 100%;
-      flex-shrink: 0;
-    }
-
-    .brand .wordmark {
-      flex: 1 1 auto;
-      width: 100%;
-      max-width: none;
-      min-width: 160px;
-      min-height: 58px;
       height: auto;
-      object-fit: contain;
-      aspect-ratio: 520 / 69;
-      display: block;
+      margin: 0 auto;
     }
 
 
     .menu-btn {
       appearance: none;
       border: var(--card-border);
-      border-radius: 999px;
+      border-radius: 50%;
       background: var(--white);
       color: var(--ink-900);
       font-weight: 900;
       letter-spacing: 0.14em;
       text-transform: uppercase;
-      padding: 12px 20px;
-      font-size: 0.95rem;
+      padding: 12px;
+      font-size: 0;
       display: inline-flex;
       align-items: center;
+      justify-content: center;
       gap: 12px;
       cursor: pointer;
       box-shadow: var(--shadow-btn);
-      transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
-      position: relative;
+      transition:
+        transform 0.12s ease,
+        box-shadow 0.12s ease,
+        background 0.12s ease,
+        width 0.18s ease,
+        padding 0.18s ease,
+        border-radius 0.18s ease;
+      position: fixed;
+      top: clamp(16px, 3vw, 32px);
+      right: clamp(18px, 5vw, 48px);
       z-index: 1200;
-      margin-left: auto;
+      width: 56px;
+      height: 56px;
+    }
+
+    .menu-btn .label {
+      display: none;
     }
 
     .menu-btn .hamburger {
@@ -187,12 +202,24 @@
       box-shadow: inset 0 4px 8px rgba(15, 44, 42, 0.25);
     }
 
+    .menu-btn.is-expanded {
+      width: auto;
+      height: 56px;
+      padding: 12px 20px;
+      border-radius: 999px;
+      font-size: 0.95rem;
+    }
+
+    .menu-btn.is-expanded .label {
+      display: inline;
+    }
+
     @media (max-width: 960px) {
       header {
         padding-inline: clamp(16px, 5vw, 32px);
       }
       .menu-btn {
-        position: fixed;
+        top: auto;
         bottom: clamp(20px, 6vw, 40px);
         right: clamp(20px, 6vw, 40px);
         box-shadow: 0 8px 0 rgba(15, 44, 42, 0.35);
@@ -201,80 +228,27 @@
 
     @media (max-width: 640px) {
       header {
-        align-items: flex-start;
-        gap: 10px;
         background: transparent !important;
         padding: clamp(10px, 3vw, 18px) clamp(16px, 6vw, 28px) clamp(4px, 2vw, 12px);
-      }
-      .menu-btn {
-        padding: 12px;
-        width: 64px;
-        height: 64px;
-        justify-content: center;
-        border-radius: 50%;
-        font-size: 0;
-      }
-      .menu-btn .label {
-        display: none;
-      }
-      .brand {
-        flex-direction: column;
-        gap: clamp(8px, 4vw, 16px);
-      }
-      .brand .logo {
-        width: clamp(120px, 42vw, 180px);
-      }
-      .brand .wordmark {
-        width: 100%;
-        min-width: 0;
-        max-width: none;
-        min-height: 54px;
       }
     }
 
     main {
       flex: 1;
       width: 100%;
+      display: flex;
+      justify-content: center;
       padding: 0 clamp(18px, 5vw, 52px) clamp(48px, 8vw, 80px);
       box-sizing: border-box;
     }
 
     .layout {
-      width: min(1100px, 100%);
+      width: min(760px, 100%);
       margin: 0 auto;
-      display: grid;
-      gap: clamp(24px, 4vw, 40px);
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      align-items: start;
-      justify-items: stretch;
-    }
-
-    @media (max-width: 960px) {
-      .layout {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: clamp(20px, 5vw, 32px);
-      }
-      .card {
-        width: clamp(60vw, 78vw, 95vw);
-        max-width: 95vw;
-      }
-      .hero-card {
-        width: clamp(70vw, 85vw, 95vw);
-      }
-      .card.disclaimer-pill {
-        width: auto;
-        max-width: min(92vw, 560px);
-        margin-left: auto;
-        margin-right: auto;
-      }
-      .card.disclaimer-pill.is-expanded {
-        width: 100%;
-      }
-      .menu-btn {
-        margin-left: 0;
-      }
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: clamp(32px, 6vw, 48px);
     }
 
     .card {
@@ -284,57 +258,345 @@
       box-shadow: var(--shadow-card);
       padding: clamp(24px, 4vw, 36px);
       width: 100%;
-      max-width: 100%;
+      max-width: min(720px, 100%);
       margin: 0 auto;
     }
 
-    .hero-card {
-      display: grid;
-      gap: clamp(20px, 3vw, 30px);
+    .card.card--calculator,
+    .donate-card,
+    .card--disclaimer {
+      align-self: stretch;
     }
 
-    .card.disclaimer-pill {
+    .calculator-widget-host {
+      width: 100%;
+      max-width: 720px;
+      margin: 0 auto;
+    }
+
+    .donate-card {
+      background: linear-gradient(145deg, rgba(36, 166, 135, 0.94), rgba(18, 70, 67, 0.96));
+      color: #ffffff;
+      border-color: rgba(255, 255, 255, 0.65);
+      box-shadow: 0 10px 0 rgba(15, 44, 42, 0.42);
+      display: grid;
+      gap: clamp(16px, 3vw, 24px);
+      text-align: center;
+      justify-items: center;
+    }
+
+    .donate-card .donate-header {
+      display: grid;
+      gap: 8px;
+      justify-items: center;
+    }
+
+    .donate-card h2 {
+      margin: 0;
+      font-size: clamp(1rem, 2.4vw, 1.25rem);
+      font-weight: 900;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: inherit;
+    }
+
+    .donate-card .donate-subtitle {
+      margin: 0;
+      font-size: clamp(0.85rem, 2vw, 1rem);
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #ffe8a8;
+    }
+
+    .donate-card .donate-intro {
+      margin: 0;
+      font-size: 0.98rem;
+      line-height: 1.55;
+      color: rgba(255, 255, 255, 0.94);
+    }
+
+    .donate-card .donate-primary {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      perspective: 900px;
+      width: 100%;
+    }
+
+    .donate-card .donate-pill {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: clamp(18px, 4vw, 22px) clamp(48px, 10vw, 74px) clamp(20px, 4vw, 24px) clamp(32px, 8vw, 48px);
       border-radius: 999px;
-      padding: clamp(14px, 3vw, 22px) clamp(32px, 6vw, 44px);
-      background: rgba(255, 255, 255, 0.96);
+      appearance: none;
+      border: 3px solid rgba(255, 255, 255, 0.82);
+      background: rgba(255, 255, 255, 0.16);
+      color: #ffffff;
+      font-weight: 900;
+      letter-spacing: 0.04em;
+      font-size: clamp(1rem, 2.6vw, 1.22rem);
+      font-family: inherit;
+      line-height: 1.1;
+      text-transform: none;
+      text-decoration: none;
+      box-shadow: 0 6px 0 rgba(15, 44, 42, 0.35);
+      transition:
+        transform 0.22s ease,
+        box-shadow 0.22s ease,
+        background 0.22s ease,
+        border-color 0.22s ease;
+      isolation: isolate;
+      transform-style: preserve-3d;
+      cursor: pointer;
+    }
+
+    .donate-card .donate-pill:hover,
+    .donate-card .donate-pill:focus-visible {
+      background: rgba(255, 255, 255, 0.28);
+      border-color: rgba(255, 255, 255, 0.95);
+      transform: translateY(-4px) scale(1.03) rotateX(6deg);
+      box-shadow: 0 12px 0 rgba(15, 44, 42, 0.48);
+      outline: none;
+    }
+
+    .donate-card .donate-pill:active {
+      transform: translateY(2px) scale(0.98);
+      box-shadow: inset 0 6px 12px rgba(15, 44, 42, 0.35);
+      background: rgba(255, 255, 255, 0.18);
+    }
+
+    .donate-card .donate-pill-lines {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .donate-card .donate-pill-line {
+      display: block;
+      font-size: clamp(1rem, 2.6vw, 1.22rem);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      text-shadow: 0 2px 6px rgba(15, 44, 42, 0.35);
+    }
+
+    .donate-card .donate-pill-sub {
+      display: block;
+      font-size: clamp(0.75rem, 1.8vw, 0.9rem);
+      font-weight: 800;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: #ffe8a8;
+      text-shadow: 0 2px 6px rgba(15, 44, 42, 0.35);
+    }
+
+    .donate-card .donate-pill img {
+      position: absolute;
+      right: clamp(0px, 2.4vw, 14px);
+      top: 50%;
+      transform: translate(45%, -50%) rotate(-4deg);
+      width: clamp(70px, 22vw, 108px);
+      height: auto;
+      filter: drop-shadow(0 6px 6px rgba(12, 38, 36, 0.35));
+      transition: transform 0.22s ease, filter 0.22s ease;
+      transform-style: preserve-3d;
+    }
+
+    .donate-card .donate-pill:hover img,
+    .donate-card .donate-pill:focus-visible img {
+      transform: translate(48%, -58%) rotate(-1deg) translateZ(26px) scale(1.12);
+      filter: drop-shadow(0 16px 18px rgba(12, 38, 36, 0.45));
+    }
+
+    .donate-card .donate-pill:active img {
+      transform: translate(40%, -44%) rotate(-6deg) translateZ(8px) scale(0.96);
+      filter: drop-shadow(0 6px 10px rgba(12, 38, 36, 0.38));
+    }
+
+    .donate-card .donate-content {
+      display: grid;
+      gap: clamp(14px, 3vw, 20px);
+      width: 100%;
+      justify-items: center;
+    }
+
+    .donate-card .donate-links {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: grid;
+      gap: 12px;
+      width: 100%;
+    }
+
+    .donate-card .donate-links a {
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 14px;
-      text-align: center;
-      width: fit-content;
-      max-width: 100%;
-      margin: clamp(32px, 8vw, 64px) auto 0;
-      transition: border-radius 0.3s ease, background 0.3s ease, box-shadow 0.3s ease, color 0.3s ease, padding 0.3s ease,
-        width 0.3s ease;
-      overflow: hidden;
+      gap: 10px;
+      padding: 14px 18px;
+      border-radius: 16px;
+      border: 2px solid var(--link-border, rgba(255, 255, 255, 0.65));
+      background: var(--link-bg, rgba(255, 255, 255, 0.12));
+      color: var(--link-color, #ffffff);
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      text-decoration: none;
+      transition:
+        background 0.2s ease,
+        transform 0.2s ease,
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        color 0.2s ease;
+      width: 100%;
     }
 
-    .disclaimer-pill h2 {
+    .donate-card .donate-links a:hover,
+    .donate-card .donate-links a:focus-visible {
+      background: var(--link-bg-hover, rgba(255, 255, 255, 0.22));
+      color: var(--link-color-hover, #ffffff);
+      transform: translateY(-3px);
+      border-color: rgba(255, 255, 255, 0.95);
+      box-shadow: 0 8px 0 rgba(15, 44, 42, 0.42);
+      outline: none;
+    }
+
+    .donate-card .donate-links a.donate-link--kofi {
+      --link-bg: linear-gradient(135deg, rgba(41, 171, 224, 0.96), rgba(41, 171, 224, 0.78));
+      --link-bg-hover: linear-gradient(135deg, rgba(41, 171, 224, 1), rgba(41, 171, 224, 0.9));
+      --link-border: rgba(255, 255, 255, 0.85);
+      --link-color: #082d35;
+      --link-color-hover: #04191e;
+    }
+
+    .donate-card .donate-links a.donate-link--givebutter {
+      --link-bg: linear-gradient(135deg, rgba(255, 222, 89, 0.94), rgba(253, 200, 64, 0.88));
+      --link-bg-hover: linear-gradient(135deg, rgba(255, 230, 120, 1), rgba(253, 211, 90, 0.95));
+      --link-border: rgba(255, 255, 255, 0.9);
+      --link-color: #0f2c2a;
+      --link-color-hover: #061312;
+    }
+
+    @media (max-width: 540px) {
+      .donate-card .donate-primary {
+        justify-content: center;
+      }
+
+      .donate-card .donate-pill img {
+        right: clamp(6px, 4vw, 18px);
+        transform: translate(35%, -50%);
+        width: clamp(62px, 30vw, 88px);
+      }
+    }
+
+    .card--disclaimer {
+      display: grid;
+      gap: 18px;
+      position: relative;
+      overflow: hidden;
+      background: var(--card-bg);
+    }
+
+    .card--disclaimer > *:not(.trust-and-safety_background__A22kJ) {
+      position: relative;
+      z-index: 1;
+    }
+
+    .card--disclaimer .trust-and-safety_background__A22kJ {
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      background:
+        radial-gradient(140% 140% at 85% 20%, rgba(36, 166, 135, 0.45) 0%, rgba(36, 166, 135, 0.28) 35%, rgba(36, 166, 135, 0.1) 60%, rgba(36, 166, 135, 0) 80%),
+        radial-gradient(160% 160% at 18% 85%, rgba(18, 70, 67, 0.38) 0%, rgba(18, 70, 67, 0.2) 36%, rgba(18, 70, 67, 0.08) 62%, rgba(18, 70, 67, 0) 82%);
+      background-repeat: no-repeat;
+      background-blend-mode: screen;
+      opacity: 0;
+      transform: scale(0.98);
+      transition: opacity 0.35s ease, transform 0.35s ease;
+      pointer-events: none;
+      z-index: 0;
+      visibility: hidden;
+    }
+
+    .card--disclaimer:focus-visible {
+      outline: 3px solid rgba(18, 70, 67, 0.45);
+      outline-offset: 8px;
+    }
+
+    .card--disclaimer h2 {
       margin: 0;
       font-size: clamp(1rem, 2.4vw, 1.25rem);
       font-weight: 900;
       letter-spacing: 0.14em;
       text-transform: uppercase;
       color: var(--teal-600);
+    }
+
+    .card--disclaimer .disclaimer-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      width: min(960px, 100%);
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .card--disclaimer .disclaimer-close {
+      appearance: none;
+      border: none;
+      background: rgba(18, 70, 67, 0.08);
+      color: var(--teal-600);
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      padding: 8px 18px;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+      display: none;
       white-space: nowrap;
     }
 
-    .disclaimer-pill .disclaimer-content {
+    .card--disclaimer .disclaimer-close:hover,
+    .card--disclaimer .disclaimer-close:focus-visible {
+      background: rgba(18, 70, 67, 0.16);
+      outline: none;
+      box-shadow: 0 4px 0 rgba(15, 44, 42, 0.25);
+    }
+
+    .card--disclaimer .disclaimer-close:active {
+      transform: translateY(1px);
+      box-shadow: inset 0 4px 8px rgba(15, 44, 42, 0.18);
+    }
+
+    .card--disclaimer .disclaimer-content {
       display: grid;
       gap: 14px;
       text-align: left;
-      width: 100%;
+      width: min(960px, 100%);
+      margin-left: auto;
+      margin-right: auto;
     }
 
-    .disclaimer-pill p {
+    .card--disclaimer p {
       margin: 0;
       font-size: 0.98rem;
       line-height: 1.55;
-      color: var(--teal-600);
+      color: var(--ink-900);
     }
 
-    .disclaimer-pill .disclaimer-updated {
+    .card--disclaimer .disclaimer-updated {
       font-size: 0.85rem;
       font-weight: 700;
       letter-spacing: 0.06em;
@@ -342,123 +604,69 @@
       color: var(--ink-700);
     }
 
-    .disclaimer-pill.is-expanded {
-      border-radius: var(--card-radius);
-      background: linear-gradient(140deg, rgba(15, 44, 42, 0.92), rgba(18, 70, 67, 0.96));
-      color: var(--white);
-      box-shadow: 0 10px 0 rgba(15, 44, 42, 0.42);
-      flex-direction: column;
-      align-items: stretch;
-      text-align: left;
-      width: min(860px, 100%);
-      padding: clamp(24px, 4vw, 36px);
-      gap: 18px;
-    }
-
-    .disclaimer-pill.is-expanded h2 {
-      color: #ffffff;
-      white-space: normal;
-      letter-spacing: 0.08em;
-    }
-
-    .disclaimer-pill.is-expanded .disclaimer-updated {
-      color: rgba(255, 255, 255, 0.86);
-    }
-
-    .disclaimer-pill.is-expanded p {
-      color: rgba(255, 255, 255, 0.92);
-    }
-
-    .disclaimer-pill .disclaimer-seek-care {
+    .card--disclaimer .disclaimer-seek-care {
       font-weight: 700;
       letter-spacing: 0.04em;
     }
 
-    .hero-card h1 {
-      margin: 0;
-      font-size: clamp(2rem, 4vw, 2.85rem);
-      font-weight: 900;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-    }
-
-    .hero-card p {
-      margin: 0;
-      font-size: 1.05rem;
-      line-height: 1.6;
-    }
-
-    .hero-card .mission-text {
-      font-weight: 800;
-      color: var(--teal-600);
-    }
-
-    .hero-card .mission-support {
-      color: var(--teal-600);
-    }
-
-    .cta-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-    }
-
-    .pill-link {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      padding: 12px 22px;
-      border-radius: 999px;
-      border: var(--card-border);
-      background: var(--teal-400);
+    .card--disclaimer.is-expanded {
+      background: linear-gradient(140deg, rgba(15, 44, 42, 0.95), rgba(18, 70, 67, 0.98));
       color: var(--white);
-      text-decoration: none;
-      font-weight: 800;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      box-shadow: var(--shadow-btn);
-      transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
+      padding: clamp(32px, 6vw, 64px) clamp(24px, 6vw, 56px);
+      box-shadow: 0 18px 48px rgba(15, 44, 42, 0.35);
+      gap: clamp(24px, 4vw, 36px);
     }
 
-    .pill-link:hover,
-    .pill-link:focus-visible {
-      outline: none;
-      background: var(--teal-500);
-      box-shadow: 0 5px 0 rgba(15, 44, 42, 0.3);
+    .card--disclaimer.is-expanded .trust-and-safety_background__A22kJ {
+      opacity: 1;
+      transform: scale(1);
+      visibility: visible;
     }
 
-    .pill-link:active {
-      transform: translateY(2px);
+    .card--disclaimer.is-expanded .disclaimer-header,
+    .card--disclaimer.is-expanded .disclaimer-content {
+      width: 100%;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .card--disclaimer.is-expanded .disclaimer-header {
+      align-items: flex-start;
+    }
+
+    .card--disclaimer.is-expanded h2 {
+      color: #ffffff;
+      white-space: normal;
+      letter-spacing: 0.08em;
+      max-width: 100%;
+      margin-left: 0;
+      margin-right: 0;
+    }
+
+    .card--disclaimer.is-expanded .disclaimer-close {
+      display: inline-flex;
+      align-self: flex-start;
+      background: rgba(255, 255, 255, 0.14);
+      color: #ffffff;
+      box-shadow: 0 6px 20px rgba(15, 44, 42, 0.35);
+    }
+
+    .card--disclaimer.is-expanded .disclaimer-close:hover,
+    .card--disclaimer.is-expanded .disclaimer-close:focus-visible {
+      background: rgba(255, 255, 255, 0.22);
+      box-shadow: 0 8px 24px rgba(15, 44, 42, 0.4);
+    }
+
+    .card--disclaimer.is-expanded .disclaimer-close:active {
       box-shadow: inset 0 4px 8px rgba(15, 44, 42, 0.3);
     }
 
-    .feature-grid {
-      display: grid;
-      gap: 14px;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    .card--disclaimer.is-expanded .disclaimer-updated {
+      color: rgba(255, 255, 255, 0.86);
     }
 
-    .feature-card {
-      background: #e4f4f0;
-      border: 2px solid var(--ink-900);
-      border-radius: 20px;
-      box-shadow: 0 4px 0 rgba(15, 44, 42, 0.18);
-      padding: 16px 18px;
-      display: grid;
-      gap: 6px;
-    }
-
-    .feature-card h2 {
-      margin: 0;
-      font-size: 1.1rem;
-      font-weight: 800;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-    }
-
-    .feature-card p {
-      margin: 0;
-      font-size: 0.95rem;
+    .card--disclaimer.is-expanded p {
+      color: rgba(255, 255, 255, 0.92);
     }
 
     .card--calculator {
@@ -473,16 +681,12 @@
       justify-items: center;
     }
 
-    .calculator-header img {
-      width: clamp(86px, 12vw, 120px);
-      height: auto;
-    }
-
     .calculator-header .brand-name {
       font-size: clamp(1.8rem, 3.8vw, 2.8rem);
       font-weight: 900;
       letter-spacing: 0.12em;
       text-transform: uppercase;
+      font-family: "Gotham", "Nunito", system-ui, -apple-system, "Segoe UI", sans-serif;
     }
 
     form {
@@ -579,6 +783,7 @@
       box-shadow: 0 6px 0 rgba(15, 44, 42, 0.6);
       background: var(--white);
       color: var(--ink-900);
+      appearance: textfield;
       -moz-appearance: textfield;
     }
 
@@ -800,21 +1005,110 @@
       color: var(--teal-600);
     }
 
-    footer {
-      padding: 24px clamp(18px, 5vw, 52px) 48px;
-      font-size: 0.9rem;
-      line-height: 1.5;
-      text-align: center;
-      color: var(--teal-600);
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --footer-bg: #0d1b2a;
+        --footer-fg: #eaeaea;
+        --footer-muted: #a8b3bd;
+        --footer-link: #4dd0e1;
+        --footer-border: #1b263b;
+      }
     }
 
-    footer small {
-      display: block;
-      max-width: 960px;
-      margin: 0 auto;
-      font-size: 0.78rem;
-      letter-spacing: 0.02em;
-      color: var(--teal-500);
+    .cd-footer {
+      background: var(--footer-bg);
+      color: var(--footer-fg);
+      border-top: 1px solid var(--footer-border);
+      padding: 1.25rem min(5vw, 1.25rem);
+      text-align: center;
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    .cd-footer a {
+      color: var(--footer-link);
+      text-decoration: none;
+      padding: 0.5rem 0.75rem;
+      border-radius: 0.5rem;
+      display: inline-block;
+    }
+
+    .cd-footer a:hover,
+    .cd-footer a:focus-visible {
+      text-decoration: underline;
+      outline: none;
+    }
+
+    .cd-copy {
+      margin: 0 0 0.5rem;
+      font-weight: 600;
+    }
+
+    .cd-note {
+      margin: 0.75rem auto 0;
+      max-width: 60ch;
+      color: var(--footer-muted);
+      font-size: 0.85rem;
+    }
+
+    .cd-contact {
+      margin: 0.75rem 0 0;
+      font-size: 0.9rem;
+    }
+
+    .cd-legal--full {
+      margin: 0.35rem auto 0;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.25rem 0.25rem;
+      justify-content: center;
+    }
+
+    .cd-legal--accordion {
+      margin: 0.35rem auto 0;
+      max-width: 22rem;
+      text-align: left;
+    }
+
+    .cd-legal--accordion summary {
+      cursor: pointer;
+      font-weight: 600;
+      list-style: none;
+      padding: 0.5rem 0.75rem;
+      border-radius: 0.5rem;
+      background: transparent;
+      color: var(--footer-link);
+    }
+
+    .cd-legal--accordion summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .cd-legal--accordion[open] summary {
+      text-decoration: underline;
+    }
+
+    .cd-legal--accordion nav {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      padding: 0.25rem 0.75rem 0.5rem;
+    }
+
+    @media (min-width: 640px) {
+      .cd-legal--accordion {
+        display: none;
+      }
+    }
+
+    @media (max-width: 639px) {
+      .cd-legal--full {
+        display: none;
+      }
+
+      .cd-note {
+        font-size: 0.8rem;
+      }
     }
 
     /* Overlay menu */
@@ -906,106 +1200,72 @@
   </style>
 </head>
 <body>
-  <a class="skip-link" href="#calculator">Skip to calculator</a>
+  <a class="skip-link" href="#calculator-card">Skip to calculator</a>
   <div class="wrap">
     <header>
-      <div class="brand">
-        <img src="images/logo-hex2tone.png" class="logo" alt="CloseDose logo" />
-        <img src="images/name.png" class="wordmark" alt="CloseDose wordmark" />
-      </div>
+      <img src="images/logo/CloseDose%20Logo_2048-transparent.png" alt="CloseDose" class="header-wordmark" />
       <button class="menu-btn" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="siteMenu" aria-label="Open menu">
         <span class="label">Menu</span>
         <span class="hamburger" aria-hidden="true"><span></span><span></span><span></span></span>
-      </button>
     </header>
 
     <main>
       <div class="layout">
-        <section class="card hero-card">
-          <h1>Pediatric dosing made simple</h1>
-          <p>
-            CloseDose helps caregivers calculate safe acetaminophen and ibuprofen doses for infants and children. Select an age range,
-            enter weight, and receive easy-to-follow guidance—backed by pediatric expertise.
-          </p>
-          <p class="mission-text">
-            Our goal is to provide simple, accurate, individualized, pediatric, weight-based dosing calculators for common over-the-counter medications.
-          </p>
-          <p class="mission-support">
-            CloseDose is the solution to inaccurate dosing due to unclear medication guidance. Too busy trying to keep a sibling under control at your child's doctor's appointment and forget the ibuprofen dose recommended when you get home? Confused by range-based dosing tables provided on medication boxes or tired of searching for outdated handouts on old discharge paperwork? All you need to enter is the patient's age and weight and you can determine their personalized dosing options in seconds.
-          </p>
-          <div class="cta-row">
-            <a class="pill-link" href="#calculator">Open Calculator</a>
-            <a class="pill-link" href="medication-guides.html">Medication Guides</a>
+        <div class="calculator-widget-host" id="calculator-card" data-calculator-root></div>
+        <section class="card donate-card" aria-labelledby="donate-heading">
+          <div class="donate-header">
+            <h2 id="donate-heading">Donate!</h2>
+            <p class="donate-subtitle">Please consider donating today.</p>
           </div>
-          <div class="feature-grid">
-            <article class="feature-card">
-              <h2>Quick Age Cards</h2>
-              <p>Tap the age buttons to see tailored dosing instructions, warnings, and next steps.</p>
-            </article>
-            <article class="feature-card">
-              <h2>Weight-Based</h2>
-              <p>Enter pounds or kilograms—CloseDose converts automatically and applies safety caps.</p>
-            </article>
-            <article class="feature-card">
-              <h2>Caregiver Tips</h2>
-              <p>Review practical reminders on alternating medications, logging doses, and red flags.</p>
-            </article>
+          <div class="donate-content">
+            <div class="donate-primary">
+              <button
+                class="donate-pill"
+                type="button"
+                id="donateBtn"
+                data-gb-account="r8SGiZ0RhFRoIkXu"
+                data-gb-campaign="93Xrjv"
+                data-fallback-href="https://givebutter.com/93Xrjv">
+                <span class="donate-pill-lines">
+                  <span class="donate-pill-line">Powered by Parents!</span>
+                  <span class="donate-pill-line">Help Support Us Today!</span>
+                  <span class="donate-pill-sub">Please consider donating today.</span>
+                </span>
+                <img src="images/piggyFINAL.svg" alt="" aria-hidden="true" />
+              </button>
+            </div>
+            <p class="donate-intro">
+              If you are able, please consider supporting me in launching this tool!
+              Every contribution helps me continue development!
+            </p>
+            <ul class="donate-links">
+              <li>
+                <a class="donate-link--kofi" href="https://ko-fi.com/closedose" target="_blank" rel="noopener">
+                  Support on Ko-fi
+                </a>
+              </li>
+              <li>
+                <a class="donate-link--givebutter" href="https://givebutter.com/93Xrjv" target="_blank" rel="noopener">
+                  GiveButter Campaign
+                </a>
+              </li>
+              <li>
+                <a href="mailto:hello@closedose.com?subject=CloseDose%20Support" rel="noopener">
+                  Connect for Sponsorships
+                </a>
+              </li>
+            </ul>
           </div>
         </section>
-
-        <section class="card card--calculator" aria-labelledby="calculator-title">
-          <div class="calculator-header">
-            <img src="images/logo-hex2tone.png" alt="CloseDose badge" />
-            <div class="brand-name" id="calculator-title">Dose Calculator</div>
+        <section class="card card--disclaimer" aria-labelledby="disclaimer-heading" aria-expanded="false" tabindex="-1">
+          <div class="trust-and-safety_background__A22kJ" data-testid="value-prop" aria-hidden="true"></div>
+          <div class="disclaimer-header">
+            <h2 id="disclaimer-heading">Disclaimer</h2>
+            <button type="button" class="disclaimer-close" aria-label="Close disclaimer">
+              Close
+            </button>
           </div>
-          <form id="calculator" novalidate>
-            <div class="form-group" aria-live="polite">
-              <div class="form-title">Patient Age</div>
-              <div class="segmented">
-                <div class="segmented-buttons" role="group" aria-label="Select patient age">
-                  <button type="button" class="age-option" data-age="0-2" aria-pressed="false">0-2 Months</button>
-                  <button type="button" class="age-option" data-age="2-6" aria-pressed="false">2-6 Months</button>
-                  <button type="button" class="age-option" data-age="6+" aria-pressed="false">6+ Months</button>
-                </div>
-                <p class="hello-box">Welcome! Choose an age group to begin.</p>
-              </div>
-              <select id="age" name="age" aria-hidden="true" tabindex="-1" hidden>
-                <option value="">Select age</option>
-                <option value="0-2">0-2 Months</option>
-                <option value="2-6">2-6 Months</option>
-                <option value="6+">6+ Months</option>
-              </select>
-              <p id="message" class="alert" hidden></p>
-            </div>
-
-            <div class="form-group">
-              <div class="form-title">Patient Weight</div>
-              <div class="unit-row">
-                <div class="weight-input">
-                  <label for="weight" class="visually-hidden">Enter weight</label>
-                  <input type="number" id="weight" name="weight" inputmode="decimal" placeholder="Enter weight" min="0" step="0.1" />
-                </div>
-                <div class="unit-toggle" role="group" aria-label="Select weight unit">
-                  <button type="button" class="unit-option" data-unit="lbs" aria-pressed="true">lbs</button>
-                  <button type="button" class="unit-option" data-unit="kg" aria-pressed="false">kg</button>
-                </div>
-              </div>
-              <select id="weight-unit" name="weight-unit" aria-hidden="true" tabindex="-1" hidden>
-                <option value="lbs" selected>lbs</option>
-                <option value="kg">kg</option>
-              </select>
-            </div>
-
-            <div class="action">
-              <button type="submit">Calculate</button>
-            </div>
-            <div id="results" aria-live="polite"></div>
-          </form>
-        </section>
-      </div>
-      <section class="card disclaimer-pill" aria-labelledby="disclaimer-heading" aria-expanded="false">
-        <h2 id="disclaimer-heading">Disclaimer</h2>
-        <div class="disclaimer-content" hidden>
+          <div class="disclaimer-content" hidden>
           <p>
             This calculator is for educational support only and does not replace guidance from your pediatrician or pharmacist.
             Always confirm dosing before administering medication.
@@ -1019,9 +1279,43 @@
           <p class="disclaimer-seek-care"><strong>When to seek care:</strong> ***</p>
           <p class="disclaimer-updated">Updated 9.22.2025 • Nickolas Mancini, MD, MBA</p>
         </div>
-      </section>
+        </section>
+      </div>
     </main>
   </div>
+
+  <footer class="cd-footer" role="contentinfo" aria-label="Site footer">
+    <p class="cd-copy">© 2025 CloseDose. All rights reserved.</p>
+
+    <nav class="cd-legal cd-legal--full" aria-label="Legal and policy links">
+      <a href="https://nsm0101.github.io/CloseDoseAlt/legal/terms">Terms of Use</a>
+      <a href="https://nsm0101.github.io/CloseDoseAlt/legal/privacy">Privacy Policy</a>
+      <a href="https://nsm0101.github.io/CloseDoseAlt/legal/disclaimer">Disclaimer</a>
+      <a href="https://nsm0101.github.io/CloseDoseAlt/legal/linking">Acceptable Use</a>
+      <a href="https://nsm0101.github.io/CloseDoseAlt/legal/dmca">DMCA Policy</a>
+    </nav>
+
+    <details class="cd-legal cd-legal--accordion">
+      <summary aria-controls="legal-links">Legal &amp; Policies ▾</summary>
+      <nav id="legal-links" aria-label="Legal and policy links">
+        <a href="https://nsm0101.github.io/CloseDoseAlt/legal/terms">Terms of Use</a>
+        <a href="https://nsm0101.github.io/CloseDoseAlt/legal/privacy">Privacy Policy</a>
+        <a href="https://nsm0101.github.io/CloseDoseAlt/legal/disclaimer">Disclaimer</a>
+        <a href="https://nsm0101.github.io/CloseDoseAlt/legal/linking">Acceptable Use</a>
+        <a href="https://nsm0101.github.io/CloseDoseAlt/legal/dmca">DMCA Policy</a>
+      </nav>
+    </details>
+
+    <p class="cd-note">
+      For medical emergencies, call 911. This site is for educational purposes only and not a substitute for professional medical
+      advice.
+    </p>
+
+    <p class="cd-contact">
+      Contact: <a href="mailto:info@closedose.com">info@closedose.com</a> •
+      <a href="mailto:hello@closedose.com">hello@closedose.com</a>
+    </p>
+  </footer>
 
   <div class="menu-overlay" id="siteMenu" hidden>
     <div class="menu-panel" role="dialog" aria-modal="true" aria-labelledby="menuHeading">
@@ -1029,18 +1323,44 @@
       <nav class="menu-links">
         <a href="index.html" aria-current="page">Calculator</a>
         <a href="medication-guides.html">Medication Guides</a>
+        <a href="about.html">About</a>
+        <a href="donations.html">Support CloseDose</a>
+        <a href="contact.html">Contact</a>
       </nav>
       <button class="close-menu" type="button">Close</button>
     </div>
   </div>
-
+  <script src="widget/close-dose-calculator.js"></script>
+  <script>
+    window.addEventListener('DOMContentLoaded', function () {
+      var host = document.querySelector('[data-calculator-root]');
+      if (host && window.CloseDoseCalculator) {
+        window.CloseDoseCalculator.mount(host, { id: 'main-calculator' });
+      }
+    });
+  </script>
   <script src="script.js"></script>
   <script>
     (function () {
       const menuButton = document.querySelector('.menu-btn');
       const overlay = document.getElementById('siteMenu');
+      if (!menuButton || !overlay) {
+        return;
+      }
       const closeButton = overlay.querySelector('.close-menu');
+      if (!closeButton) {
+        return;
+      }
       const focusableSelector = 'a, button, [tabindex]:not([tabindex="-1"])';
+      const mobileQuery = window.matchMedia('(max-width: 640px)');
+
+      const updateMenuPresentation = () => {
+        if (!menuButton) {
+          return;
+        }
+        const atTop = window.scrollY <= 6;
+        menuButton.classList.toggle('is-expanded', atTop);
+      };
 
       function openMenu() {
         overlay.hidden = false;
@@ -1096,12 +1416,31 @@
           first.focus();
         }
       });
+
+      const donateButton = document.querySelector('.donate-pill[data-gb-account][data-gb-campaign]');
+      if (donateButton) {
+        const accountId = donateButton.getAttribute('data-gb-account') || 'r8SGiZ0RhFRoIkXu&p';
+        const campaignId = (donateButton.getAttribute('data-gb-campaign') || '93Xrjv');
+        const fallbackUrl = `https://givebutter.com/${campaignId}`;
+        donateButton.setAttribute('data-fallback-href', fallbackUrl);
+
+      
+      }
+
+      updateMenuPresentation();
+      window.addEventListener('scroll', updateMenuPresentation, { passive: true });
+      window.addEventListener('resize', updateMenuPresentation);
+      if (typeof mobileQuery.addEventListener === 'function') {
+        mobileQuery.addEventListener('change', updateMenuPresentation);
+      } else if (typeof mobileQuery.addListener === 'function') {
+        mobileQuery.addListener(updateMenuPresentation);
+      }
     })();
 
     document.addEventListener('DOMContentLoaded', () => {
       const ageSelect = document.getElementById('age');
       const ageButtons = document.querySelectorAll('.age-option');
-      const unitSelect = document.getElementById('weight-unit');
+                const unitSelect = document.getElementById('weight-unit');
       const unitButtons = document.querySelectorAll('.unit-option');
       const calculateButton = document.querySelector('.action button');
 
@@ -1182,32 +1521,117 @@
         setUnit(unitSelect.value || 'lbs');
       }
 
-      const disclaimerPill = document.querySelector('.disclaimer-pill');
-      const disclaimerContent = disclaimerPill ? disclaimerPill.querySelector('.disclaimer-content') : null;
+      const disclaimerCard = document.querySelector('.card--disclaimer');
+      const disclaimerContent = disclaimerCard ? disclaimerCard.querySelector('.disclaimer-content') : null;
+      const disclaimerClose = disclaimerCard ? disclaimerCard.querySelector('.disclaimer-close') : null;
+      const disclaimerOverlay = disclaimerCard
+        ? disclaimerCard.querySelector('.trust-and-safety_background__A22kJ')
+        : null;
       const rootElement = document.documentElement;
 
-      const setDisclaimerState = (expanded) => {
-        if (!disclaimerPill) {
+      let disclaimerDismissedManually = false;
+
+      const setDisclaimerState = (expanded, { manual = false } = {}) => {
+        if (!disclaimerCard) {
           return;
         }
-        disclaimerPill.classList.toggle('is-expanded', expanded);
-        disclaimerPill.setAttribute('aria-expanded', String(expanded));
+        disclaimerCard.classList.toggle('is-expanded', expanded);
+        disclaimerCard.setAttribute('aria-expanded', String(expanded));
         if (disclaimerContent) {
           disclaimerContent.hidden = !expanded;
+        }
+        if (disclaimerOverlay) {
+          disclaimerOverlay.setAttribute('aria-hidden', String(!expanded));
+        }
+        if (expanded) {
+          disclaimerDismissedManually = false;
+          if (disclaimerClose) {
+            requestAnimationFrame(() => {
+              if (disclaimerCard.classList.contains('is-expanded')) {
+                disclaimerClose.focus({ preventScroll: true });
+              }
+            });
+          }
+        } else {
+          const shouldRestoreFocus = manual || document.activeElement === disclaimerClose;
+          if (manual) {
+            disclaimerDismissedManually = true;
+          }
+          if (shouldRestoreFocus) {
+            requestAnimationFrame(() => {
+              disclaimerCard.focus({ preventScroll: true });
+            });
+          }
         }
       };
 
       const updateDisclaimerState = () => {
-        if (!disclaimerPill) {
+        if (!disclaimerCard) {
           return;
         }
         const reachedBottom = window.innerHeight + window.scrollY >= rootElement.scrollHeight - 2;
-        setDisclaimerState(reachedBottom);
+        const isExpanded = disclaimerCard.classList.contains('is-expanded');
+        if (reachedBottom && !isExpanded && !disclaimerDismissedManually) {
+          setDisclaimerState(true);
+        }
+        if (!reachedBottom && disclaimerDismissedManually) {
+          disclaimerDismissedManually = false;
+        }
       };
 
       updateDisclaimerState();
       window.addEventListener('scroll', updateDisclaimerState, { passive: true });
-      window.addEventListener('resize', updateDisclaimerState);
+      window.addEventListener('resize', () => {
+        updateDisclaimerState();
+      });
+      window.addEventListener('load', () => {
+        updateDisclaimerState();
+      });
+
+      if (disclaimerClose) {
+        disclaimerClose.addEventListener('click', () => {
+          setDisclaimerState(false, { manual: true });
+        });
+      }
+
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && disclaimerCard && disclaimerCard.classList.contains('is-expanded')) {
+          setDisclaimerState(false, { manual: true });
+        }
+      });
+    });
+  </script>
+  <script>
+    // Read simple tracking params from the URL
+    const u = new URL(location.href);
+    const SRC = (u.searchParams.get('src') || 'na').toLowerCase(); // nfc | qr | link
+    const ID = (u.searchParams.get('id') || 'na').toLowerCase(); // 01..22 or short label
+
+    // Helper to fire GA4 events
+    function track(event, params = {}) {
+      if (window.gtag) gtag('event', event, params);
+    }
+    // Log the visit itself (one event per load)
+    track('tag_visit', { src: SRC, id: ID });
+    // Wire up main actions (adjust selectors to your actual buttons/links)
+    document.getElementById('calcBtn')?.addEventListener('click', () =>
+      track('tag_use', { use: 'calc', src: SRC, id: ID })
+    );
+    document.getElementById('handoutBtn')?.addEventListener('click', () =>
+      track('tag_use', { use: 'handout', src: SRC, id: ID })
+    );
+    document.getElementById('donateBtn')?.addEventListener('click', () =>
+      track('tag_use', { use: 'donate', src: SRC, id: ID })
+    );
+    // Optional: generic auto-tracking for any link with data-use="…"
+    document.querySelectorAll('a[data-use]').forEach((a) => {
+      a.addEventListener('click', () =>
+        track('tag_use', {
+          use: a.getAttribute('data-use'),
+          src: SRC,
+          id: ID,
+        })
+      );
     });
   </script>
 </body>

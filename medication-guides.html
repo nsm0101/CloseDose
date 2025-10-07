@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="color-scheme" content="light dark" />
+  <meta name="color-scheme" content="light" />
   <title>CloseDose – Medication Guides</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -20,13 +20,23 @@
   <meta name="twitter:description" content="Browse pediatric acetaminophen/ibuprofen products, concentrations, and safety tips." />
   <meta name="twitter:image" content="images/og-2400.png" />
 
-  <link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32.png">
-  <link rel="icon" type="image/png" sizes="192x192" href="images/favicon-192.png">
-  <link rel="apple-touch-icon" sizes="180x180" href="images/logo-teal.png" media="(prefers-color-scheme: light)">
-  <link rel="apple-touch-icon" sizes="180x180" href="images/logo-dark.png" media="(prefers-color-scheme: dark)">
-  <meta name="theme-color" content="#24a687" media="(prefers-color-scheme: light)">
-  <meta name="theme-color" content="#0f2c2a" media="(prefers-color-scheme: dark)">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png">
+  <link rel="apple-touch-icon" href="/logo-light.svg">
+  <link rel="apple-touch-icon" href="/logo-dark.svg" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#24a687">
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-WYY1QFRPYP"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+    gtag('js', new Date());
+    gtag('config', 'G-WYY1QFRPYP');
+  </script>
 
   <style>
     :root {
@@ -44,6 +54,11 @@
       --shadow-card: 0 6px 0 rgba(15, 44, 42, 0.18);
       --shadow-btn: 0 4px 0 rgba(15, 44, 42, 0.25);
       --shadow-pill: var(--shadow-btn);
+      --footer-bg: #f8f9fa;
+      --footer-fg: #111111;
+      --footer-muted: #666666;
+      --footer-link: #0369a1;
+      --footer-border: #e5e7eb;
     }
 
     *,
@@ -55,8 +70,9 @@
     body {
       margin: 0;
       font-family: "Nunito", system-ui, -apple-system, "Segoe UI", sans-serif;
-      background: var(--bg) url("images/light-bg.png") repeat;
-      background-size: 520px auto;
+      background: var(--bg) url("images/bg4k.png");
+      background-size: cover;
+      background-attachment: fixed;
       color: var(--ink-900);
       min-height: 100vh;
       display: flex;
@@ -153,23 +169,37 @@
     .menu-btn {
       appearance: none;
       border: var(--card-border);
-      border-radius: 999px;
+      border-radius: 50%;
       background: var(--white);
       color: var(--ink-900);
       font-weight: 900;
       letter-spacing: 0.14em;
       text-transform: uppercase;
-      padding: 12px 20px;
-      font-size: 0.95rem;
+      padding: 12px;
+      font-size: 0;
       display: inline-flex;
       align-items: center;
+      justify-content: center;
       gap: 12px;
       cursor: pointer;
       box-shadow: var(--shadow-btn);
-      transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
-      position: relative;
+      transition:
+        transform 0.12s ease,
+        box-shadow 0.12s ease,
+        background 0.12s ease,
+        width 0.18s ease,
+        padding 0.18s ease,
+        border-radius 0.18s ease;
+      position: fixed;
+      top: clamp(16px, 3vw, 32px);
+      right: clamp(18px, 5vw, 48px);
       z-index: 1200;
-      margin-left: auto;
+      width: 56px;
+      height: 56px;
+    }
+
+    .menu-btn .label {
+      display: none;
     }
 
     .menu-btn .hamburger {
@@ -203,16 +233,27 @@
       box-shadow: inset 0 4px 8px rgba(15, 44, 42, 0.25);
     }
 
+    .menu-btn.is-expanded {
+      width: auto;
+      height: 56px;
+      padding: 12px 20px;
+      border-radius: 999px;
+      font-size: 0.95rem;
+    }
+
+    .menu-btn.is-expanded .label {
+      display: inline;
+    }
+
     @media (max-width: 960px) {
       header {
         padding-inline: clamp(16px, 5vw, 32px);
       }
       .menu-btn {
-        position: fixed;
+        top: auto;
         bottom: clamp(20px, 6vw, 40px);
         right: clamp(20px, 6vw, 40px);
         box-shadow: 0 8px 0 rgba(15, 44, 42, 0.35);
-        margin-left: 0;
       }
     }
 
@@ -222,17 +263,6 @@
         gap: 10px;
         padding: clamp(10px, 3vw, 18px) clamp(16px, 6vw, 28px) clamp(4px, 2vw, 12px);
         background: transparent !important;
-      }
-      .menu-btn {
-        padding: 12px;
-        width: 64px;
-        height: 64px;
-        justify-content: center;
-        border-radius: 50%;
-        font-size: 0;
-      }
-      .menu-btn .label {
-        display: none;
       }
       .brand {
         flex-direction: column;
@@ -379,23 +409,6 @@
       gap: 16px;
     }
 
-    @media (prefers-color-scheme: dark) {
-      body {
-        background: #07201d;
-        color: #e6f3f1;
-      }
-      .card {
-        background: rgba(8, 32, 29, 0.8);
-      }
-      .guide-card {
-        background: rgba(8, 32, 29, 0.7);
-      }
-      .menu-overlay,
-      .translation-overlay {
-        background: rgba(7, 32, 29, 0.94);
-      }
-    }
-
     .carousel-track {
       position: relative;
       overflow: hidden;
@@ -530,21 +543,110 @@
       gap: 6px;
     }
 
-    footer {
-      padding: 24px clamp(18px, 5vw, 52px) 48px;
-      font-size: 0.9rem;
-      line-height: 1.5;
-      text-align: center;
-      color: var(--teal-600);
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --footer-bg: #0d1b2a;
+        --footer-fg: #eaeaea;
+        --footer-muted: #a8b3bd;
+        --footer-link: #4dd0e1;
+        --footer-border: #1b263b;
+      }
     }
 
-    footer small {
-      display: block;
-      max-width: 960px;
-      margin: 0 auto;
-      font-size: 0.78rem;
-      letter-spacing: 0.02em;
-      color: var(--teal-500);
+    .cd-footer {
+      background: var(--footer-bg);
+      color: var(--footer-fg);
+      border-top: 1px solid var(--footer-border);
+      padding: 1.25rem min(5vw, 1.25rem);
+      text-align: center;
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    .cd-footer a {
+      color: var(--footer-link);
+      text-decoration: none;
+      padding: 0.5rem 0.75rem;
+      border-radius: 0.5rem;
+      display: inline-block;
+    }
+
+    .cd-footer a:hover,
+    .cd-footer a:focus-visible {
+      text-decoration: underline;
+      outline: none;
+    }
+
+    .cd-copy {
+      margin: 0 0 0.5rem;
+      font-weight: 600;
+    }
+
+    .cd-note {
+      margin: 0.75rem auto 0;
+      max-width: 60ch;
+      color: var(--footer-muted);
+      font-size: 0.85rem;
+    }
+
+    .cd-contact {
+      margin: 0.75rem 0 0;
+      font-size: 0.9rem;
+    }
+
+    .cd-legal--full {
+      margin: 0.35rem auto 0;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.25rem 0.25rem;
+      justify-content: center;
+    }
+
+    .cd-legal--accordion {
+      margin: 0.35rem auto 0;
+      max-width: 22rem;
+      text-align: left;
+    }
+
+    .cd-legal--accordion summary {
+      cursor: pointer;
+      font-weight: 600;
+      list-style: none;
+      padding: 0.5rem 0.75rem;
+      border-radius: 0.5rem;
+      background: transparent;
+      color: var(--footer-link);
+    }
+
+    .cd-legal--accordion summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .cd-legal--accordion[open] summary {
+      text-decoration: underline;
+    }
+
+    .cd-legal--accordion nav {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      padding: 0.25rem 0.75rem 0.5rem;
+    }
+
+    @media (min-width: 640px) {
+      .cd-legal--accordion {
+        display: none;
+      }
+    }
+
+    @media (max-width: 639px) {
+      .cd-legal--full {
+        display: none;
+      }
+
+      .cd-note {
+        font-size: 0.8rem;
+      }
     }
 
     /* Overlay menu */
@@ -835,19 +937,46 @@
       <nav class="menu-links">
         <a href="index.html">Calculator</a>
         <a href="medication-guides.html" aria-current="page">Medication Guides</a>
+        <a href="about.html">About</a>
+        <a href="donations.html">Support CloseDose</a>
+        <a href="contact.html">Contact</a>
         <a href="#" aria-disabled="true">Translate</a>
-        <a href="#" aria-disabled="true">Donate</a>
       </nav>
       <button class="close-menu" type="button">Close</button>
     </div>
   </div>
 
-  <footer>
-    <small>
-      Disclaimer: This tool is for educational purposes only and is not a substitute for professional medical advice. Always confirm dosing with your pediatrician or pharmacist before administering medication.
-      <br />Updated 9.22.2025 • Nickolas Mancini, MD, MBA
-    </small>
-  </footer>
+    <footer class="cd-footer" role="contentinfo" aria-label="Site footer">
+      <p class="cd-copy">© 2025 CloseDose. All rights reserved.</p>
+
+      <nav class="cd-legal cd-legal--full" aria-label="Legal and policy links">
+        <a href="https://nsm0101.github.io/CloseDoseAlt/legal/terms">Terms of Use</a>
+        <a href="https://nsm0101.github.io/CloseDoseAlt/legal/privacy">Privacy Policy</a>
+        <a href="https://nsm0101.github.io/CloseDoseAlt/legal/disclaimer">Disclaimer</a>
+        <a href="https://nsm0101.github.io/CloseDoseAlt/legal/linking">Acceptable Use</a>
+        <a href="https://nsm0101.github.io/CloseDoseAlt/legal/dmca">DMCA Policy</a>
+      </nav>
+
+      <details class="cd-legal cd-legal--accordion">
+        <summary aria-controls="legal-links">Legal &amp; Policies ▾</summary>
+        <nav id="legal-links" aria-label="Legal and policy links">
+          <a href="https://nsm0101.github.io/CloseDoseAlt/legal/terms">Terms of Use</a>
+          <a href="https://nsm0101.github.io/CloseDoseAlt/legal/privacy">Privacy Policy</a>
+          <a href="https://nsm0101.github.io/CloseDoseAlt/legal/disclaimer">Disclaimer</a>
+          <a href="https://nsm0101.github.io/CloseDoseAlt/legal/linking">Acceptable Use</a>
+          <a href="https://nsm0101.github.io/CloseDoseAlt/legal/dmca">DMCA Policy</a>
+        </nav>
+      </details>
+
+      <p class="cd-note">
+        For medical emergencies, call 911. This site is for educational purposes only and not a substitute for professional medical advice.
+      </p>
+
+      <p class="cd-contact">
+        Contact: <a href="mailto:info@closedose.com">info@closedose.com</a> •
+        <a href="mailto:hello@closedose.com">hello@closedose.com</a>
+      </p>
+    </footer>
 
   <div class="translation-overlay" id="translationOverlay" hidden aria-hidden="true">
     <div class="translation-modal" role="dialog" aria-modal="true" aria-labelledby="translationHeading">
@@ -868,8 +997,18 @@
     (function(){
       const menuBtn = document.querySelector('.menu-btn');
       const overlay = document.getElementById('menuOverlay');
-      const closeBtn = overlay.querySelector('.close-menu');
+      const closeBtn = overlay ? overlay.querySelector('.close-menu') : null;
       const focusableSelector = 'a, button, [tabindex]:not([tabindex="-1"])';
+      const mobileQuery = window.matchMedia('(max-width: 640px)');
+
+      if (!menuBtn || !overlay || !closeBtn) {
+        return;
+      }
+
+      const updateMenuPresentation = () => {
+        const atTop = window.scrollY <= 6;
+        menuBtn.classList.toggle('is-expanded', atTop);
+      };
 
       function openMenu(){
         overlay.hidden = false;
@@ -925,8 +1064,50 @@
           first.focus();
         }
       });
+
+      updateMenuPresentation();
+      window.addEventListener('scroll', updateMenuPresentation, { passive: true });
+      window.addEventListener('resize', updateMenuPresentation);
+      if (typeof mobileQuery.addEventListener === 'function') {
+        mobileQuery.addEventListener('change', updateMenuPresentation);
+      } else if (typeof mobileQuery.addListener === 'function') {
+        mobileQuery.addListener(updateMenuPresentation);
+      }
     })();
 
+  </script>
+  <script>
+    // Read simple tracking params from the URL
+    const u = new URL(location.href);
+    const SRC = (u.searchParams.get('src') || 'na').toLowerCase();
+    const ID = (u.searchParams.get('id') || 'na').toLowerCase();
+
+    // Helper to fire GA4 events
+    function track(event, params = {}) {
+      if (window.gtag) gtag('event', event, params);
+    }
+    // Log the visit itself (one event per load)
+    track('tag_visit', { src: SRC, id: ID });
+    // Wire up main actions (adjust selectors to your actual buttons/links)
+    document.getElementById('calcBtn')?.addEventListener('click', () =>
+      track('tag_use', { use: 'calc', src: SRC, id: ID })
+    );
+    document.getElementById('handoutBtn')?.addEventListener('click', () =>
+      track('tag_use', { use: 'handout', src: SRC, id: ID })
+    );
+    document.getElementById('donateBtn')?.addEventListener('click', () =>
+      track('tag_use', { use: 'donate', src: SRC, id: ID })
+    );
+    // Optional: generic auto-tracking for any link with data-use="…"
+    document.querySelectorAll('a[data-use]').forEach((a) => {
+      a.addEventListener('click', () =>
+        track('tag_use', {
+          use: a.getAttribute('data-use'),
+          src: SRC,
+          id: ID,
+        })
+      );
+    });
   </script>
 </body>
 </html>

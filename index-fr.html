@@ -1,0 +1,1532 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CloseDose – Calculateur de dosage pédiatrique</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png">
+  <link rel="apple-touch-icon" href="/logo-light.svg">
+  <link rel="apple-touch-icon" href="/logo-dark.svg" media="(prefers-color-scheme: dark)">
+  <meta property="og:image" content="/images/OG-image.png">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:alt" content="CloseDose pediatric dosing calculator preview">
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-WYY1QFRPYP"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+    gtag('js', new Date());
+    gtag('config', 'G-WYY1QFRPYP');
+  </script>
+  <style>
+    :root {
+      --teal-400: #24a687;
+      --teal-500: #1f8f7b;
+      --teal-600: #123a37;
+      --ink-900: #0f2c2a;
+      --ink-700: #124643;
+      --bg: #f5f9f9;
+      --white: #ffffff;
+      --card-bg: rgba(255, 255, 255, 0.92);
+      --card-border: 3px solid var(--ink-900);
+      --card-radius: 26px;
+      --inner-radius: 18px;
+      --shadow-card: 0 6px 0 rgba(15, 44, 42, 0.18);
+      --shadow-btn: 0 4px 0 rgba(15, 44, 42, 0.25);
+      --pill-max-width: 720px;
+      --footer-bg: #f8f9fa;
+      --footer-fg: #111111;
+      --footer-muted: #666666;
+      --footer-link: #0369a1;
+      --footer-border: #e5e7eb;
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Nunito", system-ui, -apple-system, "Segoe UI", sans-serif;
+      background: var(--bg) url("images/bg4k.png");
+      background-size: cover;
+      background-attachment: fixed;
+      color: var(--ink-900);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .visually-hidden {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0 0 0 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    select[hidden] {
+      display: none !important;
+    }
+
+    .skip-link {
+      position: absolute;
+      left: -9999px;
+      top: auto;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+    }
+
+    .skip-link:focus {
+      position: fixed;
+      left: 16px;
+      top: 16px;
+      z-index: 200;
+      width: auto;
+      height: auto;
+      padding: 10px 16px;
+      border-radius: 999px;
+      background: none;
+      border: 3px solid var(--ink-900);
+    }
+
+    .wrap {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    header {
+      position: relative;
+      top: 0;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: clamp(12px, 3vw, 32px);
+      padding: clamp(14px, 3vw, 26px) clamp(18px, 5vw, 48px) clamp(6px, 2vw, 14px);
+      margin-bottom: 0;
+    }
+
+
+    .header-wordmark {
+      display: block;
+      width: min(650px, 60vw);
+      max-width: 100%;
+      height: auto;
+      margin: 0 auto;
+    }
+
+
+    .menu-btn {
+      appearance: none;
+      border: var(--card-border);
+      border-radius: 50%;
+      background: var(--white);
+      color: var(--ink-900);
+      font-weight: 900;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      padding: 12px;
+      font-size: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      cursor: pointer;
+      box-shadow: var(--shadow-btn);
+      transition:
+        transform 0.12s ease,
+        box-shadow 0.12s ease,
+        background 0.12s ease,
+        width 0.18s ease,
+        padding 0.18s ease,
+        border-radius 0.18s ease;
+      position: fixed;
+      top: clamp(16px, 3vw, 32px);
+      right: clamp(18px, 5vw, 48px);
+      z-index: 1200;
+      width: 56px;
+      height: 56px;
+    }
+
+    .menu-btn .label {
+      display: none;
+    }
+
+    .menu-btn .hamburger {
+      width: 24px;
+      height: 16px;
+      position: relative;
+    }
+
+    .menu-btn .hamburger span {
+      position: absolute;
+      left: 0;
+      right: 0;
+      height: 3px;
+      border-radius: 999px;
+      background: var(--ink-900);
+      transition: background 0.12s ease;
+    }
+
+    .menu-btn .hamburger span:nth-child(1) { top: 0; }
+    .menu-btn .hamburger span:nth-child(2) { top: 6px; }
+    .menu-btn .hamburger span:nth-child(3) { top: 12px; }
+
+    .menu-btn:hover,
+    .menu-btn:focus-visible {
+      background: #f0faf6;
+      box-shadow: 0 5px 0 rgba(15, 44, 42, 0.35);
+      outline: none;
+    }
+
+    .menu-btn:active {
+      transform: translateY(2px);
+      box-shadow: inset 0 4px 8px rgba(15, 44, 42, 0.25);
+    }
+
+    .menu-btn.is-expanded {
+      width: auto;
+      height: 56px;
+      padding: 12px 20px;
+      border-radius: 999px;
+      font-size: 0.95rem;
+    }
+
+    .menu-btn.is-expanded .label {
+      display: inline;
+    }
+
+    @media (max-width: 960px) {
+      header {
+        padding-inline: clamp(16px, 5vw, 32px);
+      }
+      .menu-btn {
+        top: auto;
+        bottom: clamp(20px, 6vw, 40px);
+        right: clamp(20px, 6vw, 40px);
+        box-shadow: 0 8px 0 rgba(15, 44, 42, 0.35);
+      }
+    }
+
+    @media (max-width: 640px) {
+      header {
+        background: transparent !important;
+        padding: clamp(10px, 3vw, 18px) clamp(16px, 6vw, 28px) clamp(4px, 2vw, 12px);
+      }
+    }
+
+    main {
+      flex: 1;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      padding: 0 clamp(18px, 5vw, 52px) clamp(48px, 8vw, 80px);
+      box-sizing: border-box;
+    }
+
+    .layout {
+      width: min(760px, 100%);
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: clamp(32px, 6vw, 48px);
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: var(--card-border);
+      border-radius: var(--card-radius);
+      box-shadow: var(--shadow-card);
+      padding: clamp(24px, 4vw, 36px);
+      width: 100%;
+      max-width: min(720px, 100%);
+      margin: 0 auto;
+    }
+
+    .card.card--calculator,
+    .donate-card,
+    .card--disclaimer {
+      align-self: stretch;
+    }
+
+    .calculator-widget-host {
+      width: 100%;
+      max-width: 720px;
+      margin: 0 auto;
+    }
+
+    .donate-card {
+      background: linear-gradient(145deg, rgba(36, 166, 135, 0.94), rgba(18, 70, 67, 0.96));
+      color: #ffffff;
+      border-color: rgba(255, 255, 255, 0.65);
+      box-shadow: 0 10px 0 rgba(15, 44, 42, 0.42);
+      display: grid;
+      gap: clamp(16px, 3vw, 24px);
+      text-align: left;
+    }
+
+    .donate-card .donate-header {
+      display: grid;
+      gap: 8px;
+    }
+
+    .donate-card h2 {
+      margin: 0;
+      font-size: clamp(1rem, 2.4vw, 1.25rem);
+      font-weight: 900;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: inherit;
+    }
+
+    .donate-card .donate-subtitle {
+      margin: 0;
+      font-size: clamp(0.85rem, 2vw, 1rem);
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.86);
+    }
+
+    .donate-card .donate-intro {
+      margin: 0;
+      font-size: 0.98rem;
+      line-height: 1.55;
+      color: rgba(255, 255, 255, 0.94);
+    }
+
+    .donate-card .donate-content {
+      display: grid;
+      gap: clamp(14px, 3vw, 20px);
+    }
+
+    .donate-card .donate-links {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: grid;
+      gap: 12px;
+    }
+
+    .donate-card .donate-links a {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 12px 18px;
+      border-radius: 16px;
+      border: 2px solid rgba(255, 255, 255, 0.65);
+      background: rgba(255, 255, 255, 0.12);
+      color: #ffffff;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      text-decoration: none;
+      transition: background 0.2s ease, transform 0.2s ease, border-color 0.2s ease;
+    }
+
+    .donate-card .donate-links a:hover,
+    .donate-card .donate-links a:focus-visible {
+      background: rgba(255, 255, 255, 0.28);
+      border-color: rgba(255, 255, 255, 0.85);
+      transform: translateY(-2px);
+      outline: none;
+    }
+
+    .card--disclaimer {
+      display: grid;
+      gap: 18px;
+      position: relative;
+      overflow: hidden;
+      background: var(--card-bg);
+    }
+
+    .card--disclaimer > *:not(.trust-and-safety_background__A22kJ) {
+      position: relative;
+      z-index: 1;
+    }
+
+    .card--disclaimer .trust-and-safety_background__A22kJ {
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      background:
+        radial-gradient(140% 140% at 85% 20%, rgba(36, 166, 135, 0.45) 0%, rgba(36, 166, 135, 0.28) 35%, rgba(36, 166, 135, 0.1) 60%, rgba(36, 166, 135, 0) 80%),
+        radial-gradient(160% 160% at 18% 85%, rgba(18, 70, 67, 0.38) 0%, rgba(18, 70, 67, 0.2) 36%, rgba(18, 70, 67, 0.08) 62%, rgba(18, 70, 67, 0) 82%);
+      background-repeat: no-repeat;
+      background-blend-mode: screen;
+      opacity: 0;
+      transform: scale(0.98);
+      transition: opacity 0.35s ease, transform 0.35s ease;
+      pointer-events: none;
+      z-index: 0;
+      visibility: hidden;
+    }
+
+    .card--disclaimer:focus-visible {
+      outline: 3px solid rgba(18, 70, 67, 0.45);
+      outline-offset: 8px;
+    }
+
+    .card--disclaimer h2 {
+      margin: 0;
+      font-size: clamp(1rem, 2.4vw, 1.25rem);
+      font-weight: 900;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--teal-600);
+    }
+
+    .card--disclaimer .disclaimer-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      width: min(960px, 100%);
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .card--disclaimer .disclaimer-close {
+      appearance: none;
+      border: none;
+      background: rgba(18, 70, 67, 0.08);
+      color: var(--teal-600);
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      padding: 8px 18px;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+      display: none;
+      white-space: nowrap;
+    }
+
+    .card--disclaimer .disclaimer-close:hover,
+    .card--disclaimer .disclaimer-close:focus-visible {
+      background: rgba(18, 70, 67, 0.16);
+      outline: none;
+      box-shadow: 0 4px 0 rgba(15, 44, 42, 0.25);
+    }
+
+    .card--disclaimer .disclaimer-close:active {
+      transform: translateY(1px);
+      box-shadow: inset 0 4px 8px rgba(15, 44, 42, 0.18);
+    }
+
+    .card--disclaimer .disclaimer-content {
+      display: grid;
+      gap: 14px;
+      text-align: left;
+      width: min(960px, 100%);
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .card--disclaimer p {
+      margin: 0;
+      font-size: 0.98rem;
+      line-height: 1.55;
+      color: var(--ink-900);
+    }
+
+    .card--disclaimer .disclaimer-updated {
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--ink-700);
+    }
+
+    .card--disclaimer .disclaimer-seek-care {
+      font-weight: 700;
+      letter-spacing: 0.04em;
+    }
+
+    .card--disclaimer.is-expanded {
+      background: linear-gradient(140deg, rgba(15, 44, 42, 0.95), rgba(18, 70, 67, 0.98));
+      color: var(--white);
+      padding: clamp(32px, 6vw, 64px) clamp(24px, 6vw, 56px);
+      box-shadow: 0 18px 48px rgba(15, 44, 42, 0.35);
+      gap: clamp(24px, 4vw, 36px);
+    }
+
+    .card--disclaimer.is-expanded .trust-and-safety_background__A22kJ {
+      opacity: 1;
+      transform: scale(1);
+      visibility: visible;
+    }
+
+    .card--disclaimer.is-expanded .disclaimer-header,
+    .card--disclaimer.is-expanded .disclaimer-content {
+      width: 100%;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .card--disclaimer.is-expanded .disclaimer-header {
+      align-items: flex-start;
+    }
+
+    .card--disclaimer.is-expanded h2 {
+      color: #ffffff;
+      white-space: normal;
+      letter-spacing: 0.08em;
+      max-width: 100%;
+      margin-left: 0;
+      margin-right: 0;
+    }
+
+    .card--disclaimer.is-expanded .disclaimer-close {
+      display: inline-flex;
+      align-self: flex-start;
+      background: rgba(255, 255, 255, 0.14);
+      color: #ffffff;
+      box-shadow: 0 6px 20px rgba(15, 44, 42, 0.35);
+    }
+
+    .card--disclaimer.is-expanded .disclaimer-close:hover,
+    .card--disclaimer.is-expanded .disclaimer-close:focus-visible {
+      background: rgba(255, 255, 255, 0.22);
+      box-shadow: 0 8px 24px rgba(15, 44, 42, 0.4);
+    }
+
+    .card--disclaimer.is-expanded .disclaimer-close:active {
+      box-shadow: inset 0 4px 8px rgba(15, 44, 42, 0.3);
+    }
+
+    .card--disclaimer.is-expanded .disclaimer-updated {
+      color: rgba(255, 255, 255, 0.86);
+    }
+
+    .card--disclaimer.is-expanded p {
+      color: rgba(255, 255, 255, 0.92);
+    }
+
+    .card--calculator {
+      display: grid;
+      gap: clamp(20px, 3vw, 30px);
+    }
+
+    .calculator-header {
+      text-align: center;
+      display: grid;
+      gap: 8px;
+      justify-items: center;
+    }
+
+    .calculator-header .brand-name {
+      font-size: clamp(1.8rem, 3.8vw, 2.8rem);
+      font-weight: 900;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      font-family: "Gotham", "Nunito", system-ui, -apple-system, "Segoe UI", sans-serif;
+    }
+
+    form {
+      display: grid;
+      gap: clamp(20px, 3vw, 28px);
+    }
+
+    .form-group {
+      background: #f0faf6;
+      border: 3px solid var(--ink-900);
+      border-radius: var(--inner-radius);
+      padding: clamp(22px, 4vw, 30px);
+      display: grid;
+      gap: 18px;
+    }
+
+    .form-title {
+      font-weight: 800;
+      font-size: clamp(1.1rem, 2.8vw, 1.4rem);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .segmented {
+      display: grid;
+      gap: 16px;
+    }
+
+    .segmented-buttons {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .segmented button {
+      border: 3px solid var(--ink-900);
+      border-radius: 18px;
+      background: var(--white);
+      font-weight: 800;
+      font-size: clamp(0.85rem, 2.6vw, 1.05rem);
+      letter-spacing: 0.05em;
+      padding: 14px 12px;
+      text-transform: uppercase;
+      transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
+      box-shadow: 0 6px 0 rgba(15, 44, 42, 0.6);
+      cursor: pointer;
+    }
+
+    .segmented button[aria-pressed="true"] {
+      background: var(--teal-400);
+      color: var(--white);
+      transform: translateY(2px);
+      box-shadow: 0 4px 0 rgba(15, 44, 42, 0.7);
+    }
+
+    .segmented button:focus-visible,
+    .unit-toggle button:focus-visible,
+    .action button:focus-visible {
+      outline: 3px solid #222;
+      outline-offset: 3px;
+    }
+
+    .hello-box {
+      background: var(--white);
+      border: 3px solid var(--ink-900);
+      border-radius: 18px;
+      padding: 18px;
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-align: center;
+      color: var(--teal-600);
+    }
+
+    .unit-row {
+      display: grid;
+      gap: 16px;
+    }
+
+    .weight-input {
+      display: flex;
+      justify-content: center;
+    }
+
+    .weight-input input[type="number"] {
+      width: min(100%, 220px);
+      border: 3px solid var(--ink-900);
+      border-radius: 18px;
+      padding: 14px 18px;
+      font-size: 1.1rem;
+      font-weight: 700;
+      text-align: center;
+      font-family: "Nunito", sans-serif;
+      box-shadow: 0 6px 0 rgba(15, 44, 42, 0.6);
+      background: var(--white);
+      color: var(--ink-900);
+      appearance: textfield;
+      -moz-appearance: textfield;
+    }
+
+    .weight-input input::-webkit-outer-spin-button,
+    .weight-input input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    .unit-toggle {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .unit-toggle button {
+      border: 3px solid var(--ink-900);
+      border-radius: 18px;
+      background: var(--white);
+      font-weight: 800;
+      font-size: 1rem;
+      padding: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      box-shadow: 0 5px 0 rgba(15, 44, 42, 0.55);
+      transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
+      cursor: pointer;
+    }
+
+    .unit-toggle button[aria-pressed="true"] {
+      background: var(--teal-400);
+      color: var(--white);
+      transform: translateY(2px);
+      box-shadow: 0 3px 0 rgba(15, 44, 42, 0.7);
+    }
+
+    .action button {
+      width: 100%;
+      border: 3px solid var(--ink-900);
+      border-radius: 18px;
+      background: var(--teal-500);
+      color: var(--white);
+      font-weight: 900;
+      font-size: clamp(1.05rem, 3.4vw, 1.4rem);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      padding: 18px;
+      box-shadow: 0 8px 0 rgba(15, 44, 42, 0.75);
+      transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
+      cursor: pointer;
+    }
+
+    .action button:hover:not(:disabled) {
+      background: var(--teal-400);
+    }
+
+    .action button:disabled {
+      background: #aacdc6;
+      cursor: not-allowed;
+      box-shadow: 0 6px 0 rgba(15, 44, 42, 0.5);
+    }
+
+    .action button:not(:disabled):active {
+      transform: translateY(2px);
+      box-shadow: 0 4px 0 rgba(15, 44, 42, 0.7);
+    }
+
+    .alert {
+      margin: 0;
+      border-radius: 18px;
+      border: 3px solid var(--ink-900);
+      padding: 18px 20px;
+      font-weight: 600;
+      line-height: 1.6;
+      text-align: left;
+      background: rgba(255, 255, 255, 0.96);
+      color: var(--teal-600);
+      box-shadow: var(--shadow-card);
+    }
+
+    .alert[hidden] {
+      display: none;
+    }
+
+    .alert:not([hidden]) {
+      display: block;
+    }
+
+    .alert--critical {
+      background: rgba(220, 38, 38, 0.16);
+      border-color: rgba(220, 38, 38, 0.45);
+      color: #8b1111;
+      box-shadow: 0 8px 0 rgba(139, 17, 17, 0.25);
+    }
+
+    #results {
+      text-align: left;
+      display: grid;
+      gap: 18px;
+    }
+
+    #results .result-weight {
+      margin: 0;
+      font-size: 1rem;
+      font-weight: 700;
+      color: #6f807c;
+      background: rgba(18, 58, 55, 0.06);
+      border-radius: 18px;
+      border: 2px solid rgba(18, 58, 55, 0.18);
+      padding: 16px 18px;
+      line-height: 1.6;
+      letter-spacing: 0.01em;
+    }
+
+    #results .result-weight strong {
+      color: var(--ink-900);
+      display: inline-block;
+      margin-top: 6px;
+      font-size: 1.05rem;
+    }
+
+    #results .result-weight span {
+      display: inline-block;
+      font-size: 0.85rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(18, 58, 55, 0.8);
+    }
+
+    #results .result-group {
+      display: grid;
+      gap: 16px;
+    }
+
+    .result-card {
+      background: rgba(255, 255, 255, 0.96);
+      border: var(--card-border);
+      border-radius: 22px;
+      box-shadow: var(--shadow-card);
+      padding: 20px 22px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .result-card h3 {
+      margin: 0;
+      font-size: 1.05rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--teal-600);
+    }
+
+    .result-card p {
+      margin: 0;
+      color: var(--ink-900);
+      line-height: 1.5;
+    }
+
+    .result-card p strong {
+      color: var(--teal-600);
+    }
+
+    .result-card .dose-note {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--ink-700);
+    }
+
+    .warning-card {
+      border-radius: 20px;
+      padding: 16px 20px;
+      font-weight: 700;
+      border: 3px solid transparent;
+      box-shadow: 0 6px 0 rgba(15, 44, 42, 0.28);
+      background: rgba(31, 143, 123, 0.12);
+      color: var(--teal-600);
+      line-height: 1.5;
+    }
+
+    .warning-card strong {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .warning-card--orange {
+      background: rgba(255, 149, 0, 0.18);
+      border-color: rgba(255, 149, 0, 0.45);
+      color: #b35a00;
+    }
+
+    .warning-card--red-strong {
+      background: rgba(220, 38, 38, 0.2);
+      border-color: rgba(220, 38, 38, 0.55);
+      color: #8b1111;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .warning-card--red-strong strong {
+      margin-bottom: 8px;
+    }
+
+    .warning-card--red-soft {
+      background: rgba(220, 38, 38, 0.12);
+      border-color: rgba(220, 38, 38, 0.28);
+      color: #a12a2a;
+      font-style: italic;
+      font-weight: 600;
+      box-shadow: 0 4px 0 rgba(161, 42, 42, 0.2);
+    }
+
+    .warning-card--teal {
+      background: rgba(31, 143, 123, 0.16);
+      border-color: rgba(18, 58, 55, 0.45);
+      color: var(--teal-600);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --footer-bg: #0d1b2a;
+        --footer-fg: #eaeaea;
+        --footer-muted: #a8b3bd;
+        --footer-link: #4dd0e1;
+        --footer-border: #1b263b;
+      }
+    }
+
+    .cd-footer {
+      background: var(--footer-bg);
+      color: var(--footer-fg);
+      border-top: 1px solid var(--footer-border);
+      padding: 1.25rem min(5vw, 1.25rem);
+      text-align: center;
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    .cd-footer a {
+      color: var(--footer-link);
+      text-decoration: none;
+      padding: 0.5rem 0.75rem;
+      border-radius: 0.5rem;
+      display: inline-block;
+    }
+
+    .cd-footer a:hover,
+    .cd-footer a:focus-visible {
+      text-decoration: underline;
+      outline: none;
+    }
+
+    .cd-copy {
+      margin: 0 0 0.5rem;
+      font-weight: 600;
+    }
+
+    .cd-note {
+      margin: 0.75rem auto 0;
+      max-width: 60ch;
+      color: var(--footer-muted);
+      font-size: 0.85rem;
+    }
+
+    .cd-contact {
+      margin: 0.75rem 0 0;
+      font-size: 0.9rem;
+    }
+
+    .cd-legal--full {
+      margin: 0.35rem auto 0;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.25rem 0.25rem;
+      justify-content: center;
+    }
+
+    .cd-legal--accordion {
+      margin: 0.35rem auto 0;
+      max-width: 22rem;
+      text-align: left;
+    }
+
+    .cd-legal--accordion summary {
+      cursor: pointer;
+      font-weight: 600;
+      list-style: none;
+      padding: 0.5rem 0.75rem;
+      border-radius: 0.5rem;
+      background: transparent;
+      color: var(--footer-link);
+    }
+
+    .cd-legal--accordion summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .cd-legal--accordion[open] summary {
+      text-decoration: underline;
+    }
+
+    .cd-legal--accordion nav {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      padding: 0.25rem 0.75rem 0.5rem;
+    }
+
+    @media (min-width: 640px) {
+      .cd-legal--accordion {
+        display: none;
+      }
+    }
+
+    @media (max-width: 639px) {
+      .cd-legal--full {
+        display: none;
+      }
+
+      .cd-note {
+        font-size: 0.8rem;
+      }
+    }
+
+    /* Overlay menu */
+    .menu-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      background: rgba(245, 249, 249, 0.96);
+      backdrop-filter: blur(3px) saturate(1.02);
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.18s ease;
+    }
+
+    .menu-overlay.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .menu-panel {
+      width: min(420px, 92vw);
+      background: #fff;
+      border: var(--card-border);
+      border-radius: 24px;
+      box-shadow: 0 6px 0 var(--ink-900);
+      padding: 30px 28px;
+      transform: translateY(8px);
+      transition: transform 0.18s ease;
+      display: grid;
+      gap: 18px;
+    }
+
+    .menu-overlay.open .menu-panel {
+      transform: translateY(0);
+    }
+
+    .menu-links {
+      display: grid;
+      gap: 16px;
+    }
+
+    .menu-links a {
+      text-decoration: none;
+      color: var(--ink-900);
+      font-weight: 900;
+      letter-spacing: 0.06em;
+      text-align: center;
+      font-size: clamp(1.2rem, 2.8vw, 1.6rem);
+      padding: 10px 4px;
+      border-radius: 16px;
+      transition: background 0.12s ease, color 0.12s ease;
+    }
+
+    .menu-links a[aria-current="page"] {
+      background: #e4f4f0;
+      border: 2px solid var(--ink-900);
+    }
+
+    .close-menu {
+      justify-self: center;
+      padding: 10px 20px;
+      border-radius: 999px;
+      border: var(--card-border);
+      background: var(--teal-400);
+      color: #fff;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      cursor: pointer;
+      box-shadow: var(--shadow-btn);
+    }
+
+    .close-menu:focus-visible {
+      outline: 3px solid #222;
+      outline-offset: 3px;
+    }
+
+    @media (max-width: 720px) {
+      .segmented-buttons {
+        grid-template-columns: 1fr;
+      }
+      .layout {
+        gap: 28px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#calculator-card">Aller à la calculatrice</a>
+  <div class="wrap">
+    <header>
+      <img src="images/CloseDose_ExtendedLogo.svg" alt="CloseDose" class="header-wordmark" />
+      <button class="menu-btn" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="siteMenu" aria-label="Ouvrir le menu">
+        <span class="label">Menu</span>
+        <span class="hamburger" aria-hidden="true"><span></span><span></span><span></span></span>
+      </button>
+    </header>
+
+    <main>
+      <div class="layout">
+        <div class="calculator-widget-host" id="calculator-card" data-calculator-root></div>
+        <section class="card donate-card" aria-labelledby="donate-heading">
+          <div class="donate-header">
+            <h2 id="donate-heading">Faites un don !</h2>
+            <p class="donate-subtitle">Aidez à garder CloseDose gratuit pour les familles.</p>
+          </div>
+          <div class="donate-content">
+          <p class="donate-intro">
+            CloseDose reste une ressource gratuite grâce au soutien de notre communauté. Si vous le pouvez, envisagez de faire un don par l'une des options ci-dessous ; chaque contribution nous aide à maintenir et développer des outils fiables de dosage pédiatrique.
+          </p>
+          <ul class="donate-links">
+            <li>
+              <a href="https://www.paypal.com/donate?business=donate%40closedose.com&currency_code=USD" target="_blank" rel="noopener">
+                Faire un don avec PayPal
+              </a>
+            </li>
+            <li>
+              <a href="https://www.buymeacoffee.com/closedose" target="_blank" rel="noopener">
+                Offrez-nous un café
+              </a>
+            </li>
+            <li>
+              <a href="mailto:hello@closedose.com?subject=CloseDose%20Support" rel="noopener">
+                Contactez-nous pour des partenariats
+              </a>
+            </li>
+          </ul>
+        </div>
+        </section>
+        <section class="card card--disclaimer" aria-labelledby="disclaimer-heading" aria-expanded="false" tabindex="-1">
+          <div class="trust-and-safety_background__A22kJ" data-testid="value-prop" aria-hidden="true"></div>
+          <div class="disclaimer-header">
+            <h2 id="disclaimer-heading">Avertissement</h2>
+            <button type="button" class="disclaimer-close" aria-label="Fermer l'avertissement">
+              Fermer
+            </button>
+          </div>
+          <div class="disclaimer-content" hidden>
+          <p>
+            Cette calculatrice sert uniquement de soutien éducatif et ne remplace pas les conseils de votre pédiatre ou pharmacien.
+            Vérifiez toujours la posologie avant d’administrer un médicament.
+          </p>
+          <p>
+            CloseDose a été créé afin de fournir des informations de dosage sur les médicaments courants en vente libre pour les enfants généralement en bonne santé.
+          </p>
+          <p>
+            Si votre enfant a entre 0 et 2 mois, présente des antécédents médicaux ou chirurgicaux complexes, des réactions antérieures aux médicaments administrés, des antécédents de réactions allergiques ou un historique personnel ou familial significatif de maladie du foie ou des reins, consultez votre équipe médicale avant d'utiliser le calculateur de dosage pédiatrique CloseDose.
+          </p>
+          <p class="disclaimer-seek-care"><strong>Quand consulter :</strong> ***</p>
+          <p class="disclaimer-updated">Mis à jour le 22.9.2025 • Nickolas Mancini, MD, MBA</p>
+        </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <footer class="cd-footer" role="contentinfo" aria-label="Site footer">
+    <p class="cd-copy">© 2025 CloseDose. All rights reserved.</p>
+
+    <nav class="cd-legal cd-legal--full" aria-label="Legal and policy links">
+      <a href="https://nsm0101.github.io/CloseDoseAlt/legal/terms">Terms of Use</a>
+      <a href="https://nsm0101.github.io/CloseDoseAlt/legal/privacy">Privacy Policy</a>
+      <a href="https://nsm0101.github.io/CloseDoseAlt/legal/disclaimer">Disclaimer</a>
+      <a href="https://nsm0101.github.io/CloseDoseAlt/legal/linking">Acceptable Use</a>
+      <a href="https://nsm0101.github.io/CloseDoseAlt/legal/dmca">DMCA Policy</a>
+    </nav>
+
+    <details class="cd-legal cd-legal--accordion">
+      <summary aria-controls="legal-links">Legal &amp; Policies ▾</summary>
+      <nav id="legal-links" aria-label="Legal and policy links">
+        <a href="https://nsm0101.github.io/CloseDoseAlt/legal/terms">Terms of Use</a>
+        <a href="https://nsm0101.github.io/CloseDoseAlt/legal/privacy">Privacy Policy</a>
+        <a href="https://nsm0101.github.io/CloseDoseAlt/legal/disclaimer">Disclaimer</a>
+        <a href="https://nsm0101.github.io/CloseDoseAlt/legal/linking">Acceptable Use</a>
+        <a href="https://nsm0101.github.io/CloseDoseAlt/legal/dmca">DMCA Policy</a>
+      </nav>
+    </details>
+
+    <p class="cd-note">
+      For medical emergencies, call 911. This site is for educational purposes only and not a substitute for professional medical
+      advice.
+    </p>
+
+    <p class="cd-contact">
+      Contact: <a href="mailto:info@closedose.com">info@closedose.com</a> •
+      <a href="mailto:hello@closedose.com">hello@closedose.com</a>
+    </p>
+  </footer>
+
+  <div class="menu-overlay" id="siteMenu" hidden>
+    <div class="menu-panel" role="dialog" aria-modal="true" aria-labelledby="menuHeading">
+      <h2 id="menuHeading" class="visually-hidden">Menu du site</h2>
+      <nav class="menu-links">
+        <a href="index.html" aria-current="page">Calculatrice</a>
+        <a href="medication-guides.html">Guides de médicaments</a>
+        <a href="about.html">À propos</a>
+        <a href="donations.html">Soutenir CloseDose</a>
+        <a href="contact.html">Contact</a>
+      </nav>
+      <button class="close-menu" type="button">Fermer</button>
+    </div>
+  </div>
+
+  <script src="widget/close-dose-calculator.js"></script>
+  <script>
+    window.addEventListener('DOMContentLoaded', function () {
+      var host = document.querySelector('[data-calculator-root]');
+      if (host && window.CloseDoseCalculator) {
+        window.CloseDoseCalculator.mount(host, {
+          id: 'main-calculator-fr',
+          strings: {
+            title: 'Calculatrice de médicaments pour fièvre/douleur',
+            form: {
+              ageLabel: "Étape 1 : Touchez le groupe d’âge",
+              ageGroupAria: "Sélectionner l’âge du patient",
+              agePrompt: "Étape 1 : Choisissez un groupe d’âge pour commencer.",
+              ageOptions: {
+                '0-2': { primary: '0 mois', secondary: '2 mois', align: 'start', accessible: '0 à 2 mois' },
+                '2-6': { primary: '2 mois', secondary: '6 mois', align: 'start', accessible: '2 à 6 mois' },
+                '6-11': { primary: '6 mois', secondary: '11 ans', align: 'start', accessible: '6 mois à 11 ans' },
+                '12+': { primary: '12 ans', secondary: 'et plus', align: 'center', accessible: '12 ans et plus' },
+                '2y+': { primary: '12 ans', secondary: 'et plus', align: 'center', accessible: '12 ans et plus' },
+              },
+              ageSelectLabel: "Sélectionnez l’âge",
+              infantCriticalMessage:
+                "<strong>Consultez immédiatement un médecin.</strong> Si un enfant de moins de 60 jours a de la fièvre, il s’agit d’une urgence médicale. Veuillez contacter votre pédiatre ou consulter un professionnel de santé immédiatement.",
+              weightLabel: 'Étape 2 : Saisir le poids',
+              weightInputLabel: 'Saisir le poids',
+              weightPlaceholder: 'Saisir le poids',
+              weightUnitAria: "Sélectionner l’unité de poids",
+              calculate: 'Calculer',
+              calculateStep: 'Étape 3 : Calculer !',
+            },
+            units: {
+              lbs: 'lbs',
+              kg: 'kg',
+            },
+            warnings: {
+              ageRequiredTitle: 'Âge requis',
+              ageRequiredBody: "Veuillez sélectionner un groupe d’âge pour continuer.",
+              weightRequiredTitle: 'Poids requis',
+              weightRequiredBody: 'Veuillez saisir un poids valide pour calculer la dose.',
+              maxDoseReachedTitle: 'Dose maximale atteinte',
+              maxDoseReachedBody:
+                'La dose basée sur le poids a été limitée à ce maximum. Envisagez d’en parler à votre pédiatre.',
+              doseSpacingTitle: "Rappel sur l’intervalle des doses",
+              doseSpacingBody:
+                "Ne dépassez jamais {{acetaminophenMax}} mg d’acétaminophène ni {{ibuprofenMax}} mg d’ibuprofène en une seule dose, et respectez un intervalle d’au moins 6 heures entre les doses.",
+              infantIbuprofen:
+                "<em>L'ibuprofène n'est pas recommandé pour les nourrissons de moins de six mois. Consultez votre pédiatre avant d'utiliser l'ibuprofène pour ce groupe d'âge.</em>",
+              acetaminophenMax:
+                "La dose unique maximale pour ce groupe d’âge est de {{max}} mg d’acétaminophène toutes les 6 heures.",
+              ibuprofenMax:
+                "La dose unique maximale pour ce groupe d’âge est de {{max}} mg d’ibuprofène toutes les 6 heures.",
+            },
+            results: {
+              patientWeightLabel: 'Poids du patient',
+              patientWeightValue: '{{kg}} kg ({{lbs}} lb)',
+              acetaminophenInfantTitle: 'Acétaminophène (160 mg / 5 mL)',
+              acetaminophenInfantBody:
+                'Administrer {{ml}} mL ({{mg}} mg) toutes les 4 heures au besoin contre la fièvre/la douleur.',
+              acetaminophenOlderTitle: 'Acétaminophène (160 mg / 5 mL)',
+              acetaminophenOlderBody:
+                'Administrer {{ml}} mL ({{mg}} mg) toutes les 6 heures au besoin contre la fièvre/la douleur.',
+              ibuprofenTitle: 'Ibuprofène (oral)',
+              ibuprofenBody100:
+                "<strong>Enfants 100 mg / 5 mL :</strong> Administrer {{ml}} mL ({{mg}} mg) toutes les 6 heures au besoin contre la fièvre/la douleur.",
+              ibuprofenBody50:
+                "<strong>Nourrissons 50 mg / 1,25 mL :</strong> Administrer {{ml}} mL ({{mg}} mg) toutes les 6 heures au besoin contre la fièvre/la douleur.",
+            },
+            accessibility: {
+              resultsRegion: 'Résultats de dosage',
+            },
+          },
+        });
+      }
+    });
+  </script>
+  <script src="script.js"></script>
+  <script>
+    (function () {
+      const menuButton = document.querySelector('.menu-btn');
+      const overlay = document.getElementById('siteMenu');
+      if (!menuButton || !overlay) {
+        return;
+      }
+      const closeButton = overlay.querySelector('.close-menu');
+      if (!closeButton) {
+        return;
+      }
+      const focusableSelector = 'a, button, [tabindex]:not([tabindex="-1"])';
+      const mobileQuery = window.matchMedia('(max-width: 640px)');
+
+      const updateMenuPresentation = () => {
+        if (!menuButton) {
+          return;
+        }
+        const atTop = window.scrollY <= 6;
+        menuButton.classList.toggle('is-expanded', atTop);
+      };
+
+      function openMenu() {
+        overlay.hidden = false;
+        requestAnimationFrame(() => overlay.classList.add('open'));
+        menuButton.setAttribute('aria-expanded', 'true');
+        menuButton.setAttribute('aria-label', 'Fermer le menu');
+        closeButton.focus();
+      }
+
+      function closeMenu() {
+        overlay.classList.remove('open');
+        overlay.hidden = true;
+        menuButton.setAttribute('aria-expanded', 'false');
+        menuButton.setAttribute('aria-label', 'Ouvrir le menu');
+        menuButton.focus();
+      }
+
+      menuButton.addEventListener('click', () => {
+        if (overlay.classList.contains('open')) {
+          closeMenu();
+        } else {
+          openMenu();
+        }
+      });
+
+      closeButton.addEventListener('click', closeMenu);
+
+      overlay.addEventListener('click', (event) => {
+        if (event.target === overlay) {
+          closeMenu();
+        }
+      });
+
+      overlay.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') {
+          closeMenu();
+          return;
+        }
+        if (event.key !== 'Tab' || !overlay.classList.contains('open')) {
+          return;
+        }
+        const focusable = Array.from(overlay.querySelectorAll(focusableSelector));
+        if (!focusable.length) {
+          return;
+        }
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (event.shiftKey && document.activeElement === first) {
+          event.preventDefault();
+          last.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault();
+          first.focus();
+        }
+      });
+
+      updateMenuPresentation();
+      window.addEventListener('scroll', updateMenuPresentation, { passive: true });
+      window.addEventListener('resize', updateMenuPresentation);
+      if (typeof mobileQuery.addEventListener === 'function') {
+        mobileQuery.addEventListener('change', updateMenuPresentation);
+      } else if (typeof mobileQuery.addListener === 'function') {
+        mobileQuery.addListener(updateMenuPresentation);
+      }
+    })();
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const ageSelect = document.getElementById('age');
+      const ageButtons = document.querySelectorAll('.age-option');
+      const unitSelect = document.getElementById('weight-unit');
+      const unitButtons = document.querySelectorAll('.unit-option');
+      const calculateButton = document.querySelector('.action button');
+
+      function setAge(value) {
+        if (ageSelect) {
+          ageSelect.value = value;
+          ageSelect.dispatchEvent(new Event('change'));
+        }
+        updateAgeButtons();
+        if (typeof updateForm === 'function') {
+          updateForm();
+        }
+      }
+
+      function updateAgeButtons() {
+        const currentValue = ageSelect ? ageSelect.value : '';
+        ageButtons.forEach((button) => {
+          const isActive = button.dataset.age === currentValue;
+          button.setAttribute('aria-pressed', String(isActive));
+        });
+      }
+
+      ageButtons.forEach((button) => {
+        button.addEventListener('click', () => {
+          const value = button.dataset.age || '';
+          setAge(value);
+        });
+      });
+
+      if (ageSelect) {
+        ageSelect.addEventListener('change', () => {
+          updateAgeButtons();
+          if (typeof updateForm === 'function') {
+            updateForm();
+          }
+        });
+      }
+
+      function setUnit(value) {
+        if (unitSelect) {
+          unitSelect.value = value;
+          unitSelect.dispatchEvent(new Event('change'));
+        }
+        const currentValue = unitSelect ? unitSelect.value : '';
+        unitButtons.forEach((button) => {
+          const isActive = button.dataset.unit === currentValue;
+          button.setAttribute('aria-pressed', String(isActive));
+        });
+      }
+
+      unitButtons.forEach((button) => {
+        button.addEventListener('click', () => {
+          const value = button.dataset.unit || 'lbs';
+          setUnit(value);
+        });
+      });
+
+      if (unitSelect) {
+        unitSelect.addEventListener('change', () => {
+          const currentValue = unitSelect.value;
+          unitButtons.forEach((button) => {
+            const isActive = button.dataset.unit === currentValue;
+            button.setAttribute('aria-pressed', String(isActive));
+          });
+        });
+      }
+
+      if (calculateButton) {
+        calculateButton.addEventListener('click', () => {
+          if (typeof updateForm === 'function') {
+            updateForm();
+          }
+        });
+      }
+
+      updateAgeButtons();
+      if (unitSelect) {
+        setUnit(unitSelect.value || 'lbs');
+      }
+
+      const disclaimerCard = document.querySelector('.card--disclaimer');
+      const disclaimerContent = disclaimerCard ? disclaimerCard.querySelector('.disclaimer-content') : null;
+      const disclaimerClose = disclaimerCard ? disclaimerCard.querySelector('.disclaimer-close') : null;
+      const disclaimerOverlay = disclaimerCard
+        ? disclaimerCard.querySelector('.trust-and-safety_background__A22kJ')
+        : null;
+      const rootElement = document.documentElement;
+
+      let disclaimerDismissedManually = false;
+
+      const setDisclaimerState = (expanded, { manual = false } = {}) => {
+        if (!disclaimerCard) {
+          return;
+        }
+        disclaimerCard.classList.toggle('is-expanded', expanded);
+        disclaimerCard.setAttribute('aria-expanded', String(expanded));
+        if (disclaimerContent) {
+          disclaimerContent.hidden = !expanded;
+        }
+        if (disclaimerOverlay) {
+          disclaimerOverlay.setAttribute('aria-hidden', String(!expanded));
+        }
+        if (expanded) {
+          disclaimerDismissedManually = false;
+          if (disclaimerClose) {
+            requestAnimationFrame(() => {
+              if (disclaimerCard.classList.contains('is-expanded')) {
+                disclaimerClose.focus({ preventScroll: true });
+              }
+            });
+          }
+        } else {
+          const shouldRestoreFocus = manual || document.activeElement === disclaimerClose;
+          if (manual) {
+            disclaimerDismissedManually = true;
+          }
+          if (shouldRestoreFocus) {
+            requestAnimationFrame(() => {
+              disclaimerCard.focus({ preventScroll: true });
+            });
+          }
+        }
+      };
+
+      const updateDisclaimerState = () => {
+        if (!disclaimerCard) {
+          return;
+        }
+        const reachedBottom = window.innerHeight + window.scrollY >= rootElement.scrollHeight - 2;
+        const isExpanded = disclaimerCard.classList.contains('is-expanded');
+        if (reachedBottom && !isExpanded && !disclaimerDismissedManually) {
+          setDisclaimerState(true);
+        }
+        if (!reachedBottom && disclaimerDismissedManually) {
+          disclaimerDismissedManually = false;
+        }
+      };
+
+      updateDisclaimerState();
+      window.addEventListener('scroll', updateDisclaimerState, { passive: true });
+      window.addEventListener('resize', () => {
+        updateDisclaimerState();
+      });
+      window.addEventListener('load', () => {
+        updateDisclaimerState();
+      });
+
+      if (disclaimerClose) {
+        disclaimerClose.addEventListener('click', () => {
+          setDisclaimerState(false, { manual: true });
+        });
+      }
+
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && disclaimerCard && disclaimerCard.classList.contains('is-expanded')) {
+          setDisclaimerState(false, { manual: true });
+        }
+      });
+    });
+  </script>
+  <script>
+    // Read simple tracking params from the URL
+    const u = new URL(location.href);
+    const SRC = (u.searchParams.get('src') || 'na').toLowerCase();
+    const ID = (u.searchParams.get('id') || 'na').toLowerCase();
+
+    // Helper to fire GA4 events
+    function track(event, params = {}) {
+      if (window.gtag) gtag('event', event, params);
+    }
+    // Log the visit itself (one event per load)
+    track('tag_visit', { src: SRC, id: ID });
+    // Wire up main actions (adjust selectors to your actual buttons/links)
+    document.getElementById('calcBtn')?.addEventListener('click', () =>
+      track('tag_use', { use: 'calc', src: SRC, id: ID })
+    );
+    document.getElementById('handoutBtn')?.addEventListener('click', () =>
+      track('tag_use', { use: 'handout', src: SRC, id: ID })
+    );
+    document.getElementById('donateBtn')?.addEventListener('click', () =>
+      track('tag_use', { use: 'donate', src: SRC, id: ID })
+    );
+    // Optional: generic auto-tracking for any link with data-use="…"
+    document.querySelectorAll('a[data-use]').forEach((a) => {
+      a.addEventListener('click', () =>
+        track('tag_use', {
+          use: a.getAttribute('data-use'),
+          src: SRC,
+          id: ID,
+        })
+      );
+    });
+  </script>
+</body>
+</html>

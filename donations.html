@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="color-scheme" content="light" />
+  <title>CloseDose – Support our work!</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Support CloseDose" />
+  <meta
+    property="og:description"
+    content="Chip in through Buy Me a Coffee, GoFundMe, Givebutter, or PayPal to help CloseDose stay free for families."
+  />
+  <meta property="og:image" content="images/og-2400.png" />
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Support CloseDose" />
+  <meta
+    name="twitter:description"
+    content="Your donation keeps our pediatric dosing resources accurate, safe, and free for caregivers."
+  />
+  <meta name="twitter:image" content="images/og-2400.png" />
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png">
+  <link rel="apple-touch-icon" href="/logo-light.svg">
+  <link rel="apple-touch-icon" href="/logo-dark.svg" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#24a687">
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-WYY1QFRPYP"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+    gtag('js', new Date());
+    gtag('config', 'G-WYY1QFRPYP');
+  </script>
+  <script async src="https://widgets.givebutter.com/latest.umd.cjs?acct=r8SGiZ0RhFRoIkXu&p=other"></script>
+
+  <style>
+    :root {
+      --teal-300: #3ec0ab;
+      --teal-400: #24a687;
+      --teal-500: #1f8f7b;
+      --teal-600: #123a37;
+      --ink-900: #0f2c2a;
+      --ink-700: #124643;
+      --bg: #f5f9f9;
+      --bg-accent: rgba(36, 166, 135, 0.14);
+      --white: #ffffff;
+      --card-bg: rgba(255, 255, 255, 0.95);
+      --card-border: 3px solid var(--ink-900);
+      --card-radius: 26px;
+      --shadow-card: 0 14px 42px rgba(18, 58, 55, 0.15);
+      --shadow-btn: 0 4px 0 rgba(15, 44, 42, 0.2);
+      --footer-bg: #f8f9fa;
+      --footer-fg: #111111;
+      --footer-muted: #666666;
+      --footer-link: #0369a1;
+      --footer-border: #e5e7eb;
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Nunito", system-ui, -apple-system, "Segoe UI", sans-serif;
+      background: var(--bg) url("images/bg4k.png");
+      background-size: cover;
+      background-attachment: fixed;
+      color: var(--ink-900);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .visually-hidden {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0 0 0 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    .skip-link {
+      position: absolute;
+      left: -9999px;
+      top: auto;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+    }
+
+    .skip-link:focus {
+      position: fixed;
+      left: 16px;
+      top: 16px;
+      z-index: 200;
+      width: auto;
+      height: auto;
+      padding: 10px 16px;
+      border-radius: 999px;
+      background: var(--white);
+      border: 3px solid var(--ink-900);
+      box-shadow: var(--shadow-card);
+    }
+
+    .wrap {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    header {
+      position: relative;
+      top: 0;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: clamp(12px, 3vw, 32px);
+      padding: clamp(14px, 3vw, 26px) clamp(18px, 5vw, 48px) clamp(6px, 2vw, 14px);
+      margin-bottom: 0;
+    }
+
+    .header-wordmark {
+      display: block;
+      width: min(640px, 60vw);
+      max-width: 100%;
+      height: auto;
+    }
+
+    .menu-btn {
+      appearance: none;
+      border: var(--card-border);
+      border-radius: 50%;
+      background: var(--white);
+      color: var(--ink-900);
+      font-weight: 900;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      padding: 12px;
+      font-size: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      cursor: pointer;
+      box-shadow: var(--shadow-btn);
+      transition:
+        transform 0.12s ease,
+        box-shadow 0.12s ease,
+        background 0.12s ease,
+        width 0.18s ease,
+        padding 0.18s ease,
+        border-radius 0.18s ease;
+      position: fixed;
+      top: clamp(16px, 3vw, 32px);
+      right: clamp(18px, 5vw, 48px);
+      z-index: 1200;
+      width: 56px;
+      height: 56px;
+    }
+
+    .menu-btn .label {
+      display: none;
+    }
+
+    .menu-btn .hamburger {
+      width: 24px;
+      height: 16px;
+      position: relative;
+    }
+
+    .menu-btn .hamburger span {
+      position: absolute;
+      left: 0;
+      right: 0;
+      height: 3px;
+      border-radius: 999px;
+      background: var(--ink-900);
+      transition: transform 0.2s ease, opacity 0.2s ease;
+    }
+
+    .menu-btn .hamburger span:nth-child(1) {
+      top: 0;
+    }
+
+    .menu-btn .hamburger span:nth-child(2) {
+      top: 6px;
+    }
+
+    .menu-btn .hamburger span:nth-child(3) {
+      top: 12px;
+    }
+
+    .menu-btn:hover,
+    .menu-btn:focus-visible {
+      background: #f0faf6;
+      box-shadow: 0 5px 0 rgba(15, 44, 42, 0.35);
+      outline: none;
+    }
+
+    .menu-btn:active {
+      transform: translateY(2px);
+      box-shadow: inset 0 4px 8px rgba(15, 44, 42, 0.25);
+    }
+
+    .menu-btn.is-expanded {
+      width: auto;
+      height: 56px;
+      padding: 12px 20px;
+      border-radius: 999px;
+      font-size: 0.95rem;
+    }
+
+    .menu-btn.is-expanded .label {
+      display: inline;
+    }
+
+    main {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      padding: clamp(24px, 5vw, 60px) clamp(18px, 5vw, 48px) clamp(64px, 12vw, 120px);
+    }
+
+    .donations-page {
+      width: min(1160px, 100%);
+      display: grid;
+      gap: clamp(24px, 4vw, 36px);
+    }
+
+    .intro-card {
+      background: var(--card-bg);
+      border: var(--card-border);
+      border-radius: var(--card-radius);
+      box-shadow: var(--shadow-card);
+      padding: clamp(26px, 4vw, 42px);
+      display: grid;
+      gap: clamp(16px, 2vw, 22px);
+    }
+
+    .intro-card h1 {
+      font-size: clamp(2rem, 3vw + 1rem, 2.8rem);
+      margin: 0;
+      line-height: 1.1;
+    }
+
+    .intro-card p {
+      margin: 0;
+      font-size: 1.05rem;
+      color: var(--ink-700);
+    }
+
+    .donation-grid {
+      display: grid;
+      gap: clamp(18px, 2.4vw, 28px);
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    }
+
+    .donation-card {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      align-items: center;
+      text-align: center;
+      padding: clamp(22px, 3vw, 32px);
+      border-radius: 24px;
+      text-decoration: none;
+      color: inherit;
+      background: linear-gradient(160deg, var(--card-bg), rgba(255, 255, 255, 0.86));
+      border: var(--card-border);
+      box-shadow: 0 16px 34px rgba(18, 58, 55, 0.18);
+      transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+    }
+
+    .donation-card:hover,
+    .donation-card:focus-visible {
+      transform: translateY(-4px);
+      border-color: var(--teal-500);
+      box-shadow: 0 22px 42px rgba(18, 58, 55, 0.2);
+      outline: none;
+    }
+
+    .donation-card:focus-visible {
+      box-shadow: 0 0 0 4px rgba(36, 166, 135, 0.25), 0 22px 42px rgba(18, 58, 55, 0.18);
+    }
+
+    .donation-card small {
+      font-size: 0.95rem;
+      color: var(--ink-700);
+    }
+
+    .donation-logo {
+      width: clamp(86px, 8vw, 112px);
+      height: clamp(86px, 8vw, 112px);
+      border-radius: 26px;
+      display: grid;
+      place-items: center;
+      background: var(--bg-accent);
+    }
+
+    .donation-logo img {
+      width: 70%;
+      height: auto;
+    }
+
+    .impact-card {
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 24px;
+      border: var(--card-border);
+      padding: clamp(24px, 4vw, 36px);
+      box-shadow: var(--shadow-card);
+      display: grid;
+      gap: 16px;
+    }
+
+    .impact-card h2 {
+      margin: 0;
+      font-size: 1.6rem;
+    }
+
+    .impact-card ul {
+      margin: 0;
+      padding-left: 20px;
+      font-size: 1rem;
+      color: var(--ink-700);
+      display: grid;
+      gap: 10px;
+    }
+
+    .menu-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 1400;
+      background: rgba(245, 249, 249, 0.96);
+      backdrop-filter: blur(3px) saturate(1.02);
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.18s ease;
+    }
+
+    .menu-overlay.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .menu-panel {
+      width: min(420px, 92vw);
+      background: #fff;
+      border: var(--card-border);
+      border-radius: 24px;
+      box-shadow: 0 6px 0 var(--ink-900);
+      padding: 30px 28px;
+      transform: translateY(8px);
+      transition: transform 0.18s ease;
+      display: grid;
+      gap: 18px;
+    }
+
+    .menu-overlay.open .menu-panel {
+      transform: translateY(0);
+    }
+
+    .menu-links {
+      display: grid;
+      gap: 16px;
+    }
+
+    .menu-links a {
+      text-decoration: none;
+      color: var(--ink-900);
+      font-weight: 900;
+      letter-spacing: 0.06em;
+      text-align: center;
+      font-size: clamp(1.2rem, 2.8vw, 1.6rem);
+      padding: 10px 4px;
+      border-radius: 16px;
+      transition: background 0.12s ease, color 0.12s ease;
+    }
+
+    .menu-links a[aria-current="page"] {
+      background: #e4f4f0;
+      border: 2px solid var(--ink-900);
+    }
+
+    .close-menu {
+      justify-self: center;
+      padding: 10px 20px;
+      border-radius: 999px;
+      border: var(--card-border);
+      background: var(--teal-400);
+      color: #fff;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      cursor: pointer;
+      box-shadow: var(--shadow-btn);
+    }
+
+    .close-menu:focus-visible {
+      outline: 3px solid #222;
+      outline-offset: 3px;
+    }
+
+    @media (max-width: 960px) {
+      .menu-btn {
+        top: auto;
+        bottom: clamp(20px, 6vw, 40px);
+        right: clamp(20px, 6vw, 40px);
+        box-shadow: 0 8px 0 rgba(15, 44, 42, 0.35);
+      }
+    }
+
+      @media (max-width: 640px) {
+        main {
+          padding: 24px clamp(14px, 6vw, 24px) 80px;
+        }
+
+        header {
+          background: transparent !important;
+          padding: clamp(10px, 3vw, 18px) clamp(16px, 6vw, 28px) clamp(4px, 2vw, 12px);
+        }
+      }
+
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --footer-bg: #0d1b2a;
+          --footer-fg: #eaeaea;
+          --footer-muted: #a8b3bd;
+          --footer-link: #4dd0e1;
+          --footer-border: #1b263b;
+        }
+      }
+
+      .cd-footer {
+        background: var(--footer-bg);
+        color: var(--footer-fg);
+        border-top: 1px solid var(--footer-border);
+        padding: 1.25rem min(5vw, 1.25rem);
+        text-align: center;
+        font-size: 0.95rem;
+        line-height: 1.5;
+      }
+
+      .cd-footer a {
+        color: var(--footer-link);
+        text-decoration: none;
+        padding: 0.5rem 0.75rem;
+        border-radius: 0.5rem;
+        display: inline-block;
+      }
+
+      .cd-footer a:hover,
+      .cd-footer a:focus-visible {
+        text-decoration: underline;
+        outline: none;
+      }
+
+      .cd-copy {
+        margin: 0 0 0.5rem;
+        font-weight: 600;
+      }
+
+      .cd-note {
+        margin: 0.75rem auto 0;
+        max-width: 60ch;
+        color: var(--footer-muted);
+        font-size: 0.85rem;
+      }
+
+      .cd-contact {
+        margin: 0.75rem 0 0;
+        font-size: 0.9rem;
+      }
+
+      .cd-legal--full {
+        margin: 0.35rem auto 0;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.25rem 0.25rem;
+        justify-content: center;
+      }
+
+      .cd-legal--accordion {
+        margin: 0.35rem auto 0;
+        max-width: 22rem;
+        text-align: left;
+      }
+
+      .cd-legal--accordion summary {
+        cursor: pointer;
+        font-weight: 600;
+        list-style: none;
+        padding: 0.5rem 0.75rem;
+        border-radius: 0.5rem;
+        background: transparent;
+        color: var(--footer-link);
+      }
+
+      .cd-legal--accordion summary::-webkit-details-marker {
+        display: none;
+      }
+
+      .cd-legal--accordion[open] summary {
+        text-decoration: underline;
+      }
+
+      .cd-legal--accordion nav {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+        padding: 0.25rem 0.75rem 0.5rem;
+      }
+
+      @media (min-width: 640px) {
+        .cd-legal--accordion {
+          display: none;
+        }
+      }
+
+      @media (max-width: 639px) {
+        .cd-legal--full {
+          display: none;
+        }
+
+        .cd-note {
+          font-size: 0.8rem;
+        }
+      }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#support-options">Skip to donation options</a>
+  <div class="wrap">
+    <header>
+      <img src="images/CloseDose_ExtendedLogo.svg" alt="CloseDose" class="header-wordmark" />
+      <button
+        class="menu-btn"
+        type="button"
+        aria-haspopup="true"
+        aria-expanded="false"
+        aria-controls="siteMenu"
+        aria-label="Open menu"
+      >
+        <span class="label">Menu</span>
+        <span class="hamburger" aria-hidden="true"><span></span><span></span><span></span></span>
+      </button>
+    </header>
+
+    <main>
+      <div class="donations-page">
+        <section class="intro-card" aria-labelledby="support-heading">
+          <h1 id="support-heading">Support CloseDose</h1>
+          <p>
+            CloseDose is a free dosing resource created by a Pediatric Emergency Medicine Physician.  When you donate, you help us update medication
+            guides, add new features families request, and keep the experience ad-free.
+          </p>
+          <p>
+            Choose the platform that works best for you—every gift directly fuels improvements that keep kids safe.
+          </p>
+        </section>
+
+        <section class="donation-grid" id="support-options" aria-label="Donation platforms">
+          <a
+            class="donation-card"
+            href="https://ko-fi.com/drnsm"
+            target="_blank"
+            rel="noopener"
+            aria-label="Support through Ko-Fi!"
+          >
+            <span class="donation-logo" aria-hidden="true">
+              <img src="[KOFI SOURCE]" alt="" />
+            </span>
+            <small>Quick, one-time boosts that power product updates.</small>
+          </a>
+
+          <a
+            class="donation-card"
+            href="https://givebutter.com/93Xrjv"
+            target="_blank"
+            rel="noopener"
+            aria-label="Donate through Givebutter"
+          >
+            <givebutter-widget id="L4RAop"></givebutter-widget>
+
+            <span class="donation-logo" aria-hidden="true">
+              <img src="Donations/Givebutter-stack-logo.png" alt="" />
+            </span>
+            <small>Set up recurring support or dedicate a gift to someone special.</small>
+            <small>Supports major credit cards, Paypal, Venmo, CashApp, Mobile wallet payments</small>
+          </a>
+
+          <a
+            class="donation-card"
+            href="https://givebutter.com/93Xrjv"
+            target="_blank"
+            rel="noopener"
+            aria-label="Donate through PayPal"
+          >
+            <span class="donation-logo" aria-hidden="true">
+              <img src="Donations/Paypal-stack-logo.png" alt="" />
+            </span>
+            <small>Give securely with PayPal using any major card or balance via Givebutter.</small>
+          </a>
+        </section>
+
+        <section class="impact-card" aria-labelledby="impact-heading">
+          <h2 id="impact-heading">How your donation helps</h2>
+          <ul>
+            <li>Expands our medication database with new visuals and dosing checks.</li>
+            <li>Keeps the calculator free from advertising or sponsored content.</li>
+            <li>Supports caregiver education resources shared by pediatric clinicians.</li>
+            <li>Both Donation platforms are 0% fee based for your donations to CloseDose at this time. </li>
+          </ul>
+        </section>
+        <section> 
+          <button class="donate-pill" type="button" id="donateBtn" data-gb-account="r8SGiZ0RhFRoIkXu" data-gb-campaign="93Xrjv" data-fallback-href="https://givebutter.com/93Xrjv" data-gb-processed="true">
+          <givebutter-widget id="LYXNmj"></givebutter-widget><span>Please Donate to Support CloseDose Today!!</span>
+           <img src="images/piggyFINAL.svg" alt="" aria-hidden="true">
+         </button>
+
+      </div>
+    </main>
+  </div>
+
+  <footer class="cd-footer" role="contentinfo" aria-label="Site footer">
+    <p class="cd-copy">© 2025 CloseDose. All rights reserved.</p>
+
+    <nav class="cd-legal cd-legal--full" aria-label="Legal and policy links">
+      <a href="https://nsm0101.github.io/CloseDoseAlt/legal/terms">Terms of Use</a>
+      <a href="https://nsm0101.github.io/CloseDoseAlt/legal/privacy">Privacy Policy</a>
+      <a href="https://nsm0101.github.io/CloseDoseAlt/legal/disclaimer">Disclaimer</a>
+      <a href="https://nsm0101.github.io/CloseDoseAlt/legal/linking">Acceptable Use</a>
+      <a href="https://nsm0101.github.io/CloseDoseAlt/legal/dmca">DMCA Policy</a>
+    </nav>
+
+    <details class="cd-legal cd-legal--accordion">
+      <summary aria-controls="legal-links">Legal &amp; Policies ▾</summary>
+      <nav id="legal-links" aria-label="Legal and policy links">
+        <a href="https://nsm0101.github.io/CloseDoseAlt/legal/terms">Terms of Use</a>
+        <a href="https://nsm0101.github.io/CloseDoseAlt/legal/privacy">Privacy Policy</a>
+        <a href="https://nsm0101.github.io/CloseDoseAlt/legal/disclaimer">Disclaimer</a>
+        <a href="https://nsm0101.github.io/CloseDoseAlt/legal/linking">Acceptable Use</a>
+        <a href="https://nsm0101.github.io/CloseDoseAlt/legal/dmca">DMCA Policy</a>
+      </nav>
+    </details>
+
+    <p class="cd-note">
+      For medical emergencies, call 911. This site is for educational purposes only and not a substitute for professional medical
+      advice.
+    </p>
+
+    <p class="cd-contact">
+      Contact: <a href="mailto:info@closedose.com">info@closedose.com</a> •
+      <a href="mailto:hello@closedose.com">hello@closedose.com</a>
+    </p>
+  </footer>
+
+  <div class="menu-overlay" id="siteMenu" hidden>
+    <div class="menu-panel" role="dialog" aria-modal="true" aria-labelledby="menuHeading">
+      <h2 id="menuHeading" class="visually-hidden">Site menu</h2>
+      <nav class="menu-links">
+        <a href="index.html">Calculator</a>
+        <a href="medication-guides.html">Medication Guides</a>
+        <a href="about.html">About</a>
+        <a href="donations.html" aria-current="page">Support CloseDose</a>
+        <a href="contact.html">Contact</a>
+      </nav>
+      <button class="close-menu" type="button">Close</button>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const menuButton = document.querySelector('.menu-btn');
+      const overlay = document.getElementById('siteMenu');
+      if (!menuButton || !overlay) {
+        return;
+      }
+      const closeButton = overlay.querySelector('.close-menu');
+      if (!closeButton) {
+        return;
+      }
+      const focusableSelector = 'a, button, [tabindex]:not([tabindex="-1"])';
+      const mobileQuery = window.matchMedia('(max-width: 640px)');
+
+      const updateMenuPresentation = () => {
+        const atTop = window.scrollY <= 6;
+        menuButton.classList.toggle('is-expanded', atTop);
+      };
+
+      function openMenu() {
+        overlay.hidden = false;
+        requestAnimationFrame(() => overlay.classList.add('open'));
+        menuButton.setAttribute('aria-expanded', 'true');
+        menuButton.setAttribute('aria-label', 'Close menu');
+        closeButton.focus();
+      }
+
+      function closeMenu() {
+        overlay.classList.remove('open');
+        overlay.hidden = true;
+        menuButton.setAttribute('aria-expanded', 'false');
+        menuButton.setAttribute('aria-label', 'Open menu');
+        menuButton.focus();
+      }
+
+      menuButton.addEventListener('click', () => {
+        if (overlay.classList.contains('open')) {
+          closeMenu();
+        } else {
+          openMenu();
+        }
+      });
+
+      closeButton.addEventListener('click', closeMenu);
+
+      overlay.addEventListener('click', (event) => {
+        if (event.target === overlay) {
+          closeMenu();
+        }
+      });
+
+      overlay.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') {
+          closeMenu();
+          return;
+        }
+        if (event.key !== 'Tab' || !overlay.classList.contains('open')) {
+          return;
+        }
+        const focusable = Array.from(overlay.querySelectorAll(focusableSelector));
+        if (!focusable.length) {
+          return;
+        }
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (event.shiftKey && document.activeElement === first) {
+          event.preventDefault();
+          last.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault();
+          first.focus();
+        }
+      });
+
+      updateMenuPresentation();
+      window.addEventListener('scroll', updateMenuPresentation, { passive: true });
+      window.addEventListener('resize', updateMenuPresentation);
+      if (typeof mobileQuery.addEventListener === 'function') {
+        mobileQuery.addEventListener('change', updateMenuPresentation);
+      } else if (typeof mobileQuery.addListener === 'function') {
+        mobileQuery.addListener(updateMenuPresentation);
+      }
+    })();
+  </script>
+    <script>
+      // Read simple tracking params from the URL
+      const u = new URL(location.href);
+      const SRC = (u.searchParams.get('src') || 'na').toLowerCase(); // nfc | qr | link
+      const ID = (u.searchParams.get('id') || 'na').toLowerCase(); // 01..22 or short label
+
+      // Helper to fire GA4 events
+      function track(event, params = {}) {
+        if (window.gtag) gtag('event', event, params);
+      }
+      // Log the visit itself (one event per load)
+      track('tag_visit', { src: SRC, id: ID });
+      // Wire up main actions (adjust selectors to your actual buttons/links)
+      document.getElementById('calcBtn')?.addEventListener('click', () =>
+        track('tag_use', { use: 'calc', src: SRC, id: ID })
+      );
+      document.getElementById('handoutBtn')?.addEventListener('click', () =>
+        track('tag_use', { use: 'handout', src: SRC, id: ID })
+      );
+      document.getElementById('donateBtn')?.addEventListener('click', () =>
+        track('tag_use', { use: 'donate', src: SRC, id: ID })
+      );
+      // Optional: generic auto-tracking for any link with data-use="…"
+      document.querySelectorAll('a[data-use]').forEach((a) => {
+        a.addEventListener('click', () =>
+          track('tag_use', {
+            use: a.getAttribute('data-use'),
+            src: SRC,
+            id: ID,
+          })
+        );
+      });
+    </script>
+</body>
+</html>

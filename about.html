@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="color-scheme" content="light" />
+  <title>CloseDose – About</title>
+  <meta name="description" content="Learn about CloseDose, the pediatric medication dosing calculator created by physicians to help families make safe dosing decisions." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="About CloseDose" />
+  <meta property="og:description" content="Discover the mission behind CloseDose and how we support safe pediatric medication dosing." />
+  <meta property="og:image" content="images/og-2400.png" />
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="About CloseDose" />
+  <meta name="twitter:description" content="Discover the mission behind CloseDose and how we support safe pediatric medication dosing." />
+  <meta name="twitter:image" content="images/og-2400.png" />
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-WYY1QFRPYP"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+    gtag('js', new Date());
+    gtag('config', 'G-WYY1QFRPYP');
+  </script>
+
+  <link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="images/favicon-192.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="images/logo-teal.png" media="(prefers-color-scheme: light)">
+  <link rel="apple-touch-icon" sizes="180x180" href="images/logo-dark.png" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#24a687" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0f2c2a" media="(prefers-color-scheme: dark)">
+
+  <style>
+    :root {
+      --teal-300: #3ec0ab;
+      --teal-400: #24a687;
+      --teal-500: #1f8f7b;
+      --teal-600: #123a37;
+      --ink-900: #0f2c2a;
+      --ink-700: #124643;
+      --bg: #f5f9f9;
+      --white: #ffffff;
+      --card-bg: rgba(255, 255, 255, 0.95);
+      --card-border: 3px solid var(--ink-900);
+      --card-radius: 26px;
+      --shadow-card: 0 10px 32px rgba(18, 58, 55, 0.14);
+      --shadow-btn: 0 4px 0 rgba(15, 44, 42, 0.25);
+      --footer-bg: #f8f9fa;
+      --footer-fg: #111111;
+      --footer-muted: #666666;
+      --footer-link: #0369a1;
+      --footer-border: #e5e7eb;
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Nunito", system-ui, -apple-system, "Segoe UI", sans-serif;
+      background: var(--bg) url("images/light-bg.png") repeat;
+      background-size: 520px auto;
+      color: var(--ink-900);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .visually-hidden {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0 0 0 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    .skip-link {
+      position: absolute;
+      left: -9999px;
+      top: auto;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+    }
+
+    .skip-link:focus {
+      position: fixed;
+      left: 16px;
+      top: 16px;
+      z-index: 200;
+      width: auto;
+      height: auto;
+      padding: 10px 16px;
+      border-radius: 999px;
+      background: var(--white);
+      border: 3px solid var(--ink-900);
+      box-shadow: var(--shadow-card);
+    }
+
+    .wrap {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    header {
+      position: relative;
+      top: 0;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: clamp(12px, 3vw, 32px);
+      padding: clamp(14px, 3vw, 26px) clamp(18px, 5vw, 48px) clamp(6px, 2vw, 14px);
+      margin-bottom: 0;
+    }
+
+    .header-wordmark {
+      display: block;
+      width: min(650px, 60vw);
+      max-width: 100%;
+      height: auto;
+    }
+
+    .menu-btn {
+      appearance: none;
+      border: var(--card-border);
+      border-radius: 50%;
+      background: var(--white);
+      color: var(--ink-900);
+      font-weight: 900;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      padding: 12px;
+      font-size: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      cursor: pointer;
+      box-shadow: var(--shadow-btn);
+      transition:
+        transform 0.12s ease,
+        box-shadow 0.12s ease,
+        background 0.12s ease,
+        width 0.18s ease,
+        padding 0.18s ease,
+        border-radius 0.18s ease;
+      position: fixed;
+      top: clamp(16px, 3vw, 32px);
+      right: clamp(18px, 5vw, 48px);
+      z-index: 1200;
+      width: 56px;
+      height: 56px;
+    }
+
+    .menu-btn:focus-visible {
+      outline: 3px solid var(--teal-400);
+      outline-offset: 4px;
+    }
+
+    .menu-btn .label {
+      display: none;
+    }
+
+    .menu-btn .hamburger {
+      width: 24px;
+      height: 16px;
+      position: relative;
+    }
+
+    .menu-btn .hamburger span {
+      position: absolute;
+      left: 0;
+      right: 0;
+      height: 3px;
+      border-radius: 999px;
+      background: var(--ink-900);
+      transition: transform 0.2s ease, opacity 0.2s ease;
+    }
+
+    .menu-btn .hamburger span:nth-child(1) { top: 0; }
+    .menu-btn .hamburger span:nth-child(2) { top: calc(50% - 1.5px); }
+    .menu-btn .hamburger span:nth-child(3) { bottom: 0; }
+
+    main {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      padding: clamp(24px, 5vw, 60px) clamp(18px, 5vw, 48px) clamp(64px, 12vw, 120px);
+    }
+
+    .layout {
+      width: min(960px, 100%);
+      margin: 0 auto;
+      display: grid;
+      gap: clamp(24px, 4vw, 36px);
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: var(--card-border);
+      border-radius: var(--card-radius);
+      box-shadow: var(--shadow-card);
+      padding: clamp(26px, 4vw, 42px);
+    }
+
+    .card p {
+      margin: 0;
+      font-size: 1rem;
+      line-height: 1.7;
+      color: rgba(15, 44, 42, 0.78);
+    }
+
+    .hero-card {
+      background: linear-gradient(140deg, rgba(36, 166, 135, 0.94), rgba(18, 70, 67, 0.97));
+      border-color: rgba(255, 255, 255, 0.68);
+      color: #fff;
+      text-align: center;
+      display: grid;
+      gap: clamp(18px, 4vw, 26px);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-card::after {
+      content: "";
+      position: absolute;
+      inset: -20% -40% auto;
+      height: 120%;
+      background: radial-gradient(circle at top, rgba(255, 255, 255, 0.32), rgba(255, 255, 255, 0));
+      opacity: 0.8;
+      pointer-events: none;
+    }
+
+    .hero-card > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-card h1 {
+      margin: 0;
+      font-size: clamp(2.2rem, 4vw + 1rem, 3rem);
+      line-height: 1.08;
+      letter-spacing: 0.02em;
+    }
+
+    .hero-card p {
+      font-size: clamp(1.05rem, 2.4vw, 1.2rem);
+      color: rgba(255, 255, 255, 0.92);
+    }
+
+    .hero-card .hero-highlight {
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      font-size: 0.95rem;
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    .hero-card .cta-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: center;
+    }
+
+    .hero-card .cta-links a {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px 20px;
+      border-radius: 16px;
+      border: 2px solid rgba(255, 255, 255, 0.78);
+      color: #fff;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      text-decoration: none;
+      transition: transform 0.16s ease, background 0.16s ease, border-color 0.16s ease;
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .hero-card .cta-links a:hover,
+    .hero-card .cta-links a:focus-visible {
+      transform: translateY(-2px);
+      background: rgba(255, 255, 255, 0.22);
+      border-color: rgba(255, 255, 255, 0.94);
+      outline: none;
+    }
+
+    .story-card h2,
+    .values-card h2,
+    .trust-card h2 {
+      margin-top: 0;
+      margin-bottom: clamp(12px, 2vw, 18px);
+      font-size: clamp(1.6rem, 2.8vw, 2rem);
+      color: var(--ink-900);
+    }
+
+    .story-card p + p {
+      margin-top: 12px;
+    }
+
+    .values-card ul {
+      margin: 0;
+      padding-left: 20px;
+      display: grid;
+      gap: 12px;
+      color: rgba(15, 44, 42, 0.78);
+    }
+
+    .trust-card {
+      display: grid;
+      gap: clamp(16px, 3vw, 22px);
+      background: rgba(255, 255, 255, 0.98);
+    }
+
+    .trust-card .trust-points {
+      display: grid;
+      gap: 12px;
+    }
+
+    .trust-card .trust-points li {
+      list-style: none;
+      padding: 14px 16px;
+      border-radius: 16px;
+      border: 2px solid rgba(18, 58, 55, 0.18);
+      background: rgba(18, 58, 55, 0.05);
+      font-weight: 700;
+      color: var(--ink-700);
+      letter-spacing: 0.02em;
+    }
+
+    .feature-card-group {
+      display: grid;
+      gap: clamp(18px, 3.2vw, 28px);
+    }
+
+    .feature-card-group h2 {
+      margin: 0;
+      font-size: clamp(1.6rem, 2.8vw, 2rem);
+      color: var(--ink-900);
+    }
+
+    .feature-intro {
+      margin: 0;
+      font-size: 1.02rem;
+      line-height: 1.7;
+      color: rgba(15, 44, 42, 0.78);
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: clamp(16px, 2.8vw, 26px);
+    }
+
+    .feature-item {
+      list-style: none;
+      display: grid;
+      gap: 12px;
+      align-content: start;
+      padding: 18px 16px;
+      border-radius: 22px;
+      border: 2px solid rgba(18, 58, 55, 0.1);
+      background: rgba(255, 255, 255, 0.92);
+      text-align: center;
+      box-shadow: 0 6px 20px rgba(18, 58, 55, 0.08);
+    }
+
+    .feature-item:last-child {
+      background: linear-gradient(145deg, rgba(62, 192, 171, 0.18), rgba(36, 166, 135, 0.24));
+      border-color: rgba(18, 58, 55, 0.22);
+    }
+
+    .feature-item img {
+      justify-self: center;
+      width: 72px;
+      height: 72px;
+    }
+
+    .feature-item span {
+      font-weight: 800;
+      color: var(--ink-700);
+      font-size: 0.98rem;
+      line-height: 1.5;
+      letter-spacing: 0.01em;
+    }
+
+    .impact-card-link {
+      display: block;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .impact-card-link:hover {
+      border-color: rgba(18, 58, 55, 0.32);
+      box-shadow: 0 12px 32px rgba(18, 58, 55, 0.12);
+    }
+
+    .impact-card-link:focus-visible {
+      border-color: rgba(18, 58, 55, 0.32);
+      box-shadow: 0 12px 32px rgba(18, 58, 55, 0.12);
+      outline: 3px solid var(--teal-400);
+      outline-offset: 6px;
+    }
+
+    .impact-card {
+      display: grid;
+      grid-template-columns: minmax(72px, 96px) 1fr;
+      gap: clamp(14px, 2.4vw, 22px);
+      align-items: center;
+      background: rgba(255, 255, 255, 0.96);
+    }
+
+    .impact-card img {
+      width: 100%;
+      max-width: 96px;
+      height: auto;
+    }
+
+    .impact-card h2 {
+      margin: 0 0 8px;
+      font-size: clamp(1.6rem, 2.8vw, 2rem);
+      color: var(--ink-900);
+    }
+
+    .impact-card p {
+      margin: 0;
+      color: rgba(15, 44, 42, 0.78);
+      line-height: 1.7;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --footer-bg: #0d1b2a;
+        --footer-fg: #eaeaea;
+        --footer-muted: #a8b3bd;
+        --footer-link: #4dd0e1;
+        --footer-border: #1b263b;
+      }
+    }
+
+    .cd-footer {
+      background: var(--footer-bg);
+      color: var(--footer-fg);
+      border-top: 1px solid var(--footer-border);
+      padding: 1.25rem min(5vw, 1.25rem);
+      text-align: center;
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    .cd-footer a {
+      color: var(--footer-link);
+      text-decoration: none;
+      padding: 0.5rem 0.75rem;
+      border-radius: 0.5rem;
+      display: inline-block;
+    }
+
+    .cd-footer a:hover,
+    .cd-footer a:focus-visible {
+      text-decoration: underline;
+      outline: none;
+    }
+
+    .cd-copy {
+      margin: 0 0 0.5rem;
+      font-weight: 600;
+    }
+
+    .cd-note {
+      margin: 0.75rem auto 0;
+      max-width: 60ch;
+      color: var(--footer-muted);
+      font-size: 0.85rem;
+    }
+
+    .cd-contact {
+      margin: 0.75rem 0 0;
+      font-size: 0.9rem;
+    }
+
+    .cd-legal--full {
+      margin: 0.35rem auto 0;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.25rem 0.25rem;
+      justify-content: center;
+    }
+
+    .cd-legal--accordion {
+      margin: 0.35rem auto 0;
+      max-width: 22rem;
+      text-align: left;
+    }
+
+    .cd-legal--accordion summary {
+      cursor: pointer;
+      font-weight: 600;
+      list-style: none;
+      padding: 0.5rem 0.75rem;
+      border-radius: 0.5rem;
+      background: transparent;
+      color: var(--footer-link);
+    }
+
+    .cd-legal--accordion summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .cd-legal--accordion[open] summary {
+      text-decoration: underline;
+    }
+
+    .cd-legal--accordion nav {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      padding: 0.25rem 0.75rem 0.5rem;
+    }
+
+    @media (min-width: 640px) {
+      .cd-legal--accordion {
+        display: none;
+      }
+    }
+
+    @media (max-width: 639px) {
+      .cd-legal--full {
+        display: none;
+      }
+
+      .cd-note {
+        font-size: 0.8rem;
+      }
+    }
+
+    .menu-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      background: rgba(245, 249, 249, 0.96);
+      backdrop-filter: blur(3px) saturate(1.02);
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.18s ease;
+    }
+
+    .menu-overlay.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .menu-panel {
+      width: min(420px, 92vw);
+      background: #fff;
+      border: var(--card-border);
+      border-radius: 24px;
+      box-shadow: 0 6px 0 var(--ink-900);
+      padding: 30px 28px;
+      transform: translateY(8px);
+      transition: transform 0.18s ease;
+      display: grid;
+      gap: 18px;
+    }
+
+    .menu-overlay.open .menu-panel {
+      transform: translateY(0);
+    }
+
+    .menu-links {
+      display: grid;
+      gap: 16px;
+    }
+
+    .menu-links a {
+      text-decoration: none;
+      color: var(--ink-900);
+      font-weight: 900;
+      letter-spacing: 0.06em;
+      text-align: center;
+      font-size: clamp(1.2rem, 2.8vw, 1.6rem);
+      padding: 10px 4px;
+      border-radius: 16px;
+      transition: background 0.12s ease, color 0.12s ease;
+    }
+
+    .menu-links a[aria-current="page"] {
+      background: #e4f4f0;
+      border: 2px solid var(--ink-900);
+    }
+
+    .close-menu {
+      justify-self: center;
+      padding: 10px 20px;
+      border-radius: 999px;
+      border: var(--card-border);
+      background: var(--teal-400);
+      color: #fff;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      cursor: pointer;
+      box-shadow: var(--shadow-btn);
+    }
+
+    .close-menu:focus-visible {
+      outline: 3px solid rgba(18, 70, 67, 0.25);
+      outline-offset: 4px;
+    }
+
+    @media (max-width: 960px) {
+      header {
+        padding-inline: clamp(16px, 5vw, 32px);
+      }
+
+      .menu-btn {
+        top: auto;
+        bottom: clamp(20px, 6vw, 40px);
+        right: clamp(20px, 6vw, 40px);
+        box-shadow: 0 8px 0 rgba(15, 44, 42, 0.35);
+      }
+
+      main {
+        padding-bottom: clamp(96px, 18vw, 160px);
+      }
+
+      .hero-card {
+        text-align: left;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .hero-card .cta-links {
+        flex-direction: column;
+      }
+
+      .layout {
+        gap: 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#about">Skip to about content</a>
+  <div class="wrap">
+    <header>
+      <img src="images/CloseDose_ExtendedLogo.svg" alt="CloseDose" class="header-wordmark" />
+      <button class="menu-btn" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="siteMenu" aria-label="Open menu">
+        <span class="label">Menu</span>
+        <span class="hamburger" aria-hidden="true"><span></span><span></span><span></span></span>
+      </button>
+    </header>
+
+    <main>
+      <div class="layout" id="about">
+        <section class="card hero-card">
+          <div class="hero-highlight">Built by pediatric physicians</div>
+          <h1>CloseDose helps families make confident, safe dosing decisions.</h1>
+          <p>
+            We created CloseDose to demystify pediatric medication dosing with tools that feel trustworthy, accessible, and easy to use—no matter the hour or the device.
+          </p>
+          <div class="cta-links">
+            <a href="index.html">Use the Calculator</a>
+            <a href="medication-guides.html">Browse Medication Guides</a>
+          </div>
+        </section>
+
+        <section class="card story-card">
+          <h2>Why CloseDose exists</h2>
+          <p>
+            Parents and caregivers told us that dosing over-the-counter medicines often feels overwhelming. Between varying bottle concentrations, fast-changing guidance, and countless online charts, it can be hard to know what information to trust.
+          </p>
+          <p>
+            CloseDose combines clinical expertise with thoughtful design so caregivers can quickly calculate accurate, age-appropriate doses and review the context behind each recommendation.
+          </p>
+        </section>
+
+        <section class="card feature-card-group">
+          <h2>CloseDose at a glance</h2>
+          <p class="feature-intro">Every tool is built to remove guesswork for families and clinicians alike.</p>
+          <ul class="feature-grid">
+            <li class="feature-item">
+              <img src="images/about_icons/age-and-weight.svg" alt="Chart icon showing age and weight inputs" />
+              <span>Only the age and weight you already know are needed to calculate the right dose.</span>
+            </li>
+            <li class="feature-item">
+              <img src="images/about_icons/fast-results.svg" alt="Lightning bolt icon representing fast results" />
+              <span>Fast results with simple inputs so you can help a sick child without delay.</span>
+            </li>
+            <li class="feature-item">
+              <img src="images/about_icons/no-login-required.svg" alt="Unlocked padlock icon showing no login is required" />
+              <span>No account or subscription—just open CloseDose when you need it.</span>
+            </li>
+            <li class="feature-item">
+              <img src="images/about_icons/accessible-design.svg" alt="Accessible design icon with universal symbols" />
+              <span>Designed for accessibility with high contrast colors and multilingual support.</span>
+            </li>
+            <li class="feature-item">
+              <img src="images/about_icons/color-coded-warnings.svg" alt="Color-coded warning icon" />
+              <span>Color-coded care and dosing warnings update instantly based on your answers.</span>
+            </li>
+            <li class="feature-item">
+              <img src="images/about_icons/individualized-dosing.svg" alt="Targeted dosing icon illustrating individualized results" />
+              <span>Individualized dosing recommendations—no ranges to interpret or math to redo.</span>
+            </li>
+            <li class="feature-item">
+              <img src="images/about_icons/multi-device-support.svg" alt="Icon showing CloseDose on multiple devices" />
+              <span>Available on phones, tablets, and desktops wherever families are caring.</span>
+            </li>
+            <li class="feature-item">
+              <img src="images/about_icons/intuitive-layout.svg" alt="Smiling face icon representing an intuitive layout" />
+              <span>Intuitive layout and plain language make it easy for anyone to use.</span>
+            </li>
+            <li class="feature-item">
+              <img src="images/about_icons/evidence-based.svg" alt="Checkmark badge icon representing evidence-based guidance" />
+              <span>Accurate, evidence-based information that reflects the latest pediatric guidance.</span>
+            </li>
+            <li class="feature-item">
+              <img src="images/about_icons/physician-reviewed.svg" alt="Stethoscope icon representing physician review" />
+              <span>Created and continually reviewed by an actively practicing pediatric emergency physician.</span>
+            </li>
+            <li class="feature-item">
+              <img src="images/about_icons/fast-results.svg" alt="Fast results icon emphasizing quick answers" />
+              <span>Fast results when every minute counts, so caregivers can act without second-guessing.</span>
+            </li>
+            <li class="feature-item">
+              <img src="images/about_icons/peace-of-mind.svg" alt="Heart icon representing peace of mind" />
+              <span>Peace of mind for caregivers—the reassurance that dosing decisions are backed by experts.</span>
+            </li>
+          </ul>
+        </section>
+
+        <section class="card values-card">
+          <h2>What guides our work</h2>
+          <ul>
+            <li><strong>Safety first.</strong> Every update is reviewed by pediatric physicians who actively care for children.</li>
+            <li><strong>Clarity matters.</strong> We explain dosing in plain language, with visuals that support calm decisions in stressful moments.</li>
+            <li><strong>Access for all.</strong> CloseDose remains free thanks to community support, and we continue investing in multilingual resources.</li>
+          </ul>
+        </section>
+
+        <a class="card impact-card impact-card-link" href="donation.html">
+          <img src="images/piggyFINAL.svg" alt="Piggy bank icon with coins" />
+          <div>
+            <h2>Community supported</h2>
+            <p>
+              CloseDose stays free for families because of generous donors and partners who believe safe dosing guidance should never sit behind a paywall. Every contribution keeps the calculator up to date and accessible.
+            </p>
+          </div>
+        </a>
+
+        <section class="card trust-card">
+          <h2>How we maintain trust</h2>
+          <p>
+            CloseDose follows strict safeguards before we share guidance with families.
+          </p>
+          <ul class="trust-points">
+            <li>Medication data is sourced from trusted pediatric references and double-checked against manufacturer labeling.</li>
+            <li>Review dates are displayed across the site so you always know when information was last validated.</li>
+            <li>We actively collect feedback from clinicians, pharmacists, and caregivers to keep improving the experience.</li>
+          </ul>
+        </section>
+      </div>
+    </main>
+  </div>
+
+    <footer class="cd-footer" role="contentinfo" aria-label="Site footer">
+      <p class="cd-copy">© 2025 CloseDose. All rights reserved.</p>
+
+      <nav class="cd-legal cd-legal--full" aria-label="Legal and policy links">
+        <a href="https://nsm0101.github.io/CloseDoseAlt/legal/terms">Terms of Use</a>
+        <a href="https://nsm0101.github.io/CloseDoseAlt/legal/privacy">Privacy Policy</a>
+        <a href="https://nsm0101.github.io/CloseDoseAlt/legal/disclaimer">Disclaimer</a>
+        <a href="https://nsm0101.github.io/CloseDoseAlt/legal/linking">Acceptable Use</a>
+        <a href="https://nsm0101.github.io/CloseDoseAlt/legal/dmca">DMCA Policy</a>
+      </nav>
+
+      <details class="cd-legal cd-legal--accordion">
+        <summary aria-controls="legal-links">Legal &amp; Policies ▾</summary>
+        <nav id="legal-links" aria-label="Legal and policy links">
+          <a href="https://nsm0101.github.io/CloseDoseAlt/legal/terms">Terms of Use</a>
+          <a href="https://nsm0101.github.io/CloseDoseAlt/legal/privacy">Privacy Policy</a>
+          <a href="https://nsm0101.github.io/CloseDoseAlt/legal/disclaimer">Disclaimer</a>
+          <a href="https://nsm0101.github.io/CloseDoseAlt/legal/linking">Acceptable Use</a>
+          <a href="https://nsm0101.github.io/CloseDoseAlt/legal/dmca">DMCA Policy</a>
+        </nav>
+      </details>
+
+      <p class="cd-note">
+        For medical emergencies, call 911. This site is for educational purposes only and not a substitute for professional medical
+        advice.
+      </p>
+
+      <p class="cd-contact">
+        Contact: <a href="mailto:info@closedose.com">info@closedose.com</a> •
+        <a href="mailto:hello@closedose.com">hello@closedose.com</a>
+      </p>
+    </footer>
+
+  <div class="menu-overlay" id="siteMenu" hidden>
+    <div class="menu-panel" role="dialog" aria-modal="true" aria-labelledby="menuHeading">
+      <h2 id="menuHeading" class="visually-hidden">Site menu</h2>
+      <nav class="menu-links">
+        <a href="index.html">Calculator</a>
+        <a href="medication-guides.html">Medication Guides</a>
+        <a href="about.html" aria-current="page">About</a>
+        <a href="donations.html">Support CloseDose</a>
+        <a href="contact.html">Contact</a>
+      </nav>
+      <button class="close-menu" type="button">Close</button>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const menuButton = document.querySelector('.menu-btn');
+      const overlay = document.getElementById('siteMenu');
+      if (!menuButton || !overlay) {
+        return;
+      }
+      const closeButton = overlay.querySelector('.close-menu');
+      if (!closeButton) {
+        return;
+      }
+      const focusableSelector = 'a, button, [tabindex]:not([tabindex="-1"])';
+
+      function openMenu() {
+        overlay.hidden = false;
+        requestAnimationFrame(() => overlay.classList.add('open'));
+        menuButton.setAttribute('aria-expanded', 'true');
+        menuButton.setAttribute('aria-label', 'Close menu');
+        const focusable = overlay.querySelectorAll(focusableSelector);
+        if (focusable.length) {
+          focusable[0].focus();
+        }
+      }
+
+      function closeMenu() {
+        overlay.classList.remove('open');
+        overlay.hidden = true;
+        menuButton.setAttribute('aria-expanded', 'false');
+        menuButton.setAttribute('aria-label', 'Open menu');
+        menuButton.focus();
+      }
+
+      menuButton.addEventListener('click', () => {
+        if (overlay.classList.contains('open')) {
+          closeMenu();
+        } else {
+          openMenu();
+        }
+      });
+
+      closeButton.addEventListener('click', closeMenu);
+
+      overlay.addEventListener('click', (event) => {
+        if (event.target === overlay) {
+          closeMenu();
+        }
+      });
+
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && overlay.classList.contains('open')) {
+          closeMenu();
+        }
+      });
+
+      const yearEl = document.getElementById('year');
+      if (yearEl) {
+        yearEl.textContent = new Date().getFullYear();
+      }
+    })();
+  </script>
+  <script>
+    // Read simple tracking params from the URL
+    const u = new URL(location.href);
+    const SRC = (u.searchParams.get('src') || 'na').toLowerCase();
+    const ID = (u.searchParams.get('id') || 'na').toLowerCase();
+
+    function track(event, params = {}) {
+      if (window.gtag) gtag('event', event, params);
+    }
+
+    track('tag_visit', { src: SRC, id: ID });
+
+    document.getElementById('calcBtn')?.addEventListener('click', () =>
+      track('tag_use', { use: 'calc', src: SRC, id: ID })
+    );
+    document.getElementById('handoutBtn')?.addEventListener('click', () =>
+      track('tag_use', { use: 'handout', src: SRC, id: ID })
+    );
+    document.getElementById('donateBtn')?.addEventListener('click', () =>
+      track('tag_use', { use: 'donate', src: SRC, id: ID })
+    );
+
+    document.querySelectorAll('a[data-use]').forEach((a) => {
+      a.addEventListener('click', () =>
+        track('tag_use', {
+          use: a.getAttribute('data-use'),
+          src: SRC,
+          id: ID,
+        })
+      );
+    });
+  </script>
+</body>
+</html>
