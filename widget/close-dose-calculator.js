@@ -94,6 +94,205 @@
     },
   };
 
+  function createMiniProductBadge(options = {}) {
+    const {
+      title = '',
+      subtitle = '',
+      tone = '#cde8e3',
+      glyph = '',
+    } = options;
+
+    const coerce = (value) => {
+      if (typeof value === 'string') {
+        return value;
+      }
+      if (value === null || value === undefined) {
+        return '';
+      }
+      return String(value);
+    };
+
+    const escapeSvg = (value) =>
+      coerce(value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+
+    const svg = `
+      <svg xmlns="http://www.w3.org/2000/svg" width="320" height="320" viewBox="0 0 320 320">
+        <defs>
+          <linearGradient id="miniBadgeGradient" x1="50%" x2="50%" y1="0%" y2="100%">
+            <stop offset="0%" stop-color="${tone}" stop-opacity="0.92" />
+            <stop offset="100%" stop-color="${tone}" stop-opacity="1" />
+          </linearGradient>
+        </defs>
+        <rect width="320" height="320" rx="48" fill="url(#miniBadgeGradient)" />
+        <text x="50%" y="120" font-family="Nunito, Arial, sans-serif" font-size="76" text-anchor="middle" fill="#0f2c2a">${escapeSvg(
+      glyph,
+    )}</text>
+        <text x="50%" y="188" font-family="Nunito, Arial, sans-serif" font-size="34" font-weight="700" text-anchor="middle" fill="#0f2c2a">${escapeSvg(
+      title,
+    )}</text>
+        <text x="50%" y="232" font-family="Nunito, Arial, sans-serif" font-size="26" text-anchor="middle" fill="#0f2c2a">${escapeSvg(
+      subtitle,
+    )}</text>
+      </svg>
+    `;
+
+    return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg.trim())}`;
+  }
+
+  const MINI_CAROUSEL_CONTENT = {
+    acetaminophenLiquid: [
+      {
+        src: 'images/Acetaminophen/Tylenol acetaminophen iso.png',
+        alt: "Tylenol children's acetaminophen suspension 160 mg per 5 mL",
+        caption: "Tylenol® Children's Oral Suspension",
+        meta: '160 mg / 5 mL',
+      },
+      {
+        src: 'images/Acetaminophen/amazon acetaminophen iso.png',
+        alt: "Amazon Basics children's acetaminophen 160 mg per 5 mL",
+        caption: "Amazon Basics® Children's Acetaminophen",
+        meta: '160 mg / 5 mL',
+      },
+      {
+        src: 'images/Acetaminophen/Target acetaminophen iso.png',
+        alt: "Target up & up children's acetaminophen 160 mg per 5 mL",
+        caption: "up & up® Children's Acetaminophen",
+        meta: '160 mg / 5 mL',
+      },
+      {
+        src: 'images/Acetaminophen/Equate acetaminophen iso.png',
+        alt: "Walmart Equate children's acetaminophen 160 mg per 5 mL",
+        caption: "Equate® Children's Acetaminophen",
+        meta: '160 mg / 5 mL',
+      },
+    ],
+    acetaminophenOther: [
+      {
+        src: createMiniProductBadge({
+          title: "Meltaways",
+          subtitle: '160 mg each',
+          tone: '#fde68a',
+          glyph: '🍓',
+        }),
+        alt: "Illustration representing Tylenol Children's Meltaways acetaminophen tablets 160 mg each",
+        caption: "Tylenol® Children's Meltaways",
+        meta: '160 mg orally disintegrating tablet',
+      },
+      {
+        src: createMiniProductBadge({
+          title: 'Chewables',
+          subtitle: '160 mg each',
+          tone: '#fbcfe8',
+          glyph: '🧡',
+        }),
+        alt: "Illustration representing children's chewable acetaminophen tablets 160 mg each",
+        caption: "Generic Children's Chewables",
+        meta: '160 mg chewable tablet',
+      },
+      {
+        src: createMiniProductBadge({
+          title: 'Suppository',
+          subtitle: '80-160 mg',
+          tone: '#bfdbfe',
+          glyph: '🌙',
+        }),
+        alt: 'Illustration representing acetaminophen suppositories in the 80-160 mg range',
+        caption: 'Rectal Suppositories',
+        meta: '80-160 mg per dose (check label)',
+      },
+    ],
+    ibuprofenChildren: [
+      {
+        src: 'images/Ibuprofen/Children/Motrin Children ibuprofen iso.png',
+        alt: "Motrin Children's ibuprofen 100 mg per 5 mL",
+        caption: "Motrin® Children's Suspension",
+        meta: '100 mg / 5 mL',
+      },
+      {
+        src: 'images/Ibuprofen/Children/Advil Children Ibuprofen iso.png',
+        alt: "Advil Children's ibuprofen 100 mg per 5 mL",
+        caption: "Advil® Children's Suspension",
+        meta: '100 mg / 5 mL',
+      },
+      {
+        src: 'images/Ibuprofen/Children/Amazon Children ibuprofen iso.png',
+        alt: "Amazon Basics Children's ibuprofen 100 mg per 5 mL",
+        caption: "Amazon Basics® Children's Ibuprofen",
+        meta: '100 mg / 5 mL',
+      },
+      {
+        src: 'images/Ibuprofen/Children/Target Children ibuprofen iso.png',
+        alt: "Target up & up Children's ibuprofen 100 mg per 5 mL",
+        caption: "up & up® Children's Ibuprofen",
+        meta: '100 mg / 5 mL',
+      },
+      {
+        src: 'images/Ibuprofen/Children/Equate Children ibuprofen iso.png',
+        alt: "Equate Children's ibuprofen 100 mg per 5 mL",
+        caption: "Equate® Children's Ibuprofen",
+        meta: '100 mg / 5 mL',
+      },
+    ],
+    ibuprofenInfant: [
+      {
+        src: 'images/Ibuprofen/Infants/Motrin Infant ibuprofen iso.png',
+        alt: "Infant's Motrin concentrated ibuprofen 50 mg per 1.25 mL",
+        caption: "Infant's Motrin® Concentrated Drops",
+        meta: '50 mg / 1.25 mL',
+      },
+      {
+        src: 'images/Ibuprofen/Infants/Amazon Infant ibuprofen iso.png',
+        alt: 'Amazon Basics infant ibuprofen 50 mg per 1.25 mL',
+        caption: "Amazon Basics® Infant Ibuprofen",
+        meta: '50 mg / 1.25 mL',
+      },
+      {
+        src: 'images/Ibuprofen/Infants/Target Infant ibuprofen iso.png',
+        alt: 'Target up & up infant ibuprofen 50 mg per 1.25 mL',
+        caption: "up & up® Infant Ibuprofen",
+        meta: '50 mg / 1.25 mL',
+      },
+    ],
+    ibuprofenOther: [
+      {
+        src: createMiniProductBadge({
+          title: 'Chewables',
+          subtitle: '100 mg each',
+          tone: '#fecdd3',
+          glyph: '🍊',
+        }),
+        alt: "Illustration representing Motrin children's chewable ibuprofen tablets 100 mg each",
+        caption: "Motrin® Children's Chewables",
+        meta: '100 mg chewable tablet',
+      },
+      {
+        src: createMiniProductBadge({
+          title: 'Junior Tabs',
+          subtitle: '100 mg each',
+          tone: '#d8b4fe',
+          glyph: '⭐',
+        }),
+        alt: "Illustration representing Advil Junior Strength ibuprofen tablets 100 mg each",
+        caption: 'Advil® Junior Strength Tablets',
+        meta: '100 mg coated tablet',
+      },
+      {
+        src: createMiniProductBadge({
+          title: 'Caplets',
+          subtitle: '200 mg each',
+          tone: '#bbf7d0',
+          glyph: '💊',
+        }),
+        alt: 'Illustration representing generic ibuprofen caplets 200 mg each',
+        caption: 'Ibuprofen Caplets',
+        meta: '200 mg tablet/capsule (adolescents+)',
+      },
+    ],
+  };
+
   const BASE_STYLES = `
     .cdcalc-card {
       font-family: "Nunito", system-ui, -apple-system, "Segoe UI", sans-serif;
@@ -424,6 +623,147 @@
       margin: 0;
       line-height: 1.5;
       font-size: 0.98rem;
+    }
+
+    .cdcalc-mini-carousel {
+      border: 2px solid rgba(15, 44, 42, 0.12);
+      border-radius: 14px;
+      background: rgba(228, 244, 240, 0.6);
+      padding: 12px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .cdcalc-mini-heading {
+      margin: 0;
+      font-size: 0.85rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #124643;
+    }
+
+    .cdcalc-mini-carousel-track {
+      position: relative;
+      min-height: 96px;
+    }
+
+    .cdcalc-mini-slide {
+      display: none;
+      margin: 0;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .cdcalc-mini-slide.is-active {
+      display: grid;
+      grid-template-columns: auto 1fr;
+    }
+
+    .cdcalc-mini-image {
+      width: 72px;
+      height: 72px;
+      aspect-ratio: 1 / 1;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.95);
+      box-shadow: 0 8px 18px rgba(15, 44, 42, 0.18);
+      display: grid;
+      place-items: center;
+      padding: 6px;
+      overflow: hidden;
+    }
+
+    .cdcalc-mini-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      transition: transform 0.25s ease;
+      will-change: transform;
+    }
+
+    .cdcalc-mini-slide:hover .cdcalc-mini-image img,
+    .cdcalc-mini-slide:focus-within .cdcalc-mini-image img {
+      transform: scale(1.12);
+    }
+
+    .cdcalc-mini-figcaption {
+      margin: 0;
+      font-size: 0.85rem;
+      line-height: 1.4;
+      color: #124643;
+      display: grid;
+      gap: 4px;
+    }
+
+    .cdcalc-mini-caption {
+      font-weight: 700;
+    }
+
+    .cdcalc-mini-meta {
+      font-size: 0.75rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #35635d;
+    }
+
+    .cdcalc-mini-carousel-controls {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .cdcalc-mini-control {
+      border: 2px solid #0f2c2a;
+      background: #ffffff;
+      color: #0f2c2a;
+      border-radius: 12px;
+      padding: 4px 10px;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 4px 0 rgba(15, 44, 42, 0.18);
+    }
+
+    .cdcalc-mini-control:focus-visible {
+      outline: 3px solid rgba(36, 166, 135, 0.35);
+      outline-offset: 2px;
+    }
+
+    .cdcalc-mini-control:disabled {
+      opacity: 0.4;
+      cursor: default;
+      box-shadow: none;
+    }
+
+    .cdcalc-mini-dots {
+      display: flex;
+      gap: 6px;
+    }
+
+    .cdcalc-mini-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      border: 1px solid rgba(18, 58, 55, 0.25);
+      background: rgba(255, 255, 255, 0.9);
+      padding: 0;
+      cursor: pointer;
+    }
+
+    .cdcalc-mini-dot.is-active {
+      background: #24a687;
+      border-color: #0f2c2a;
+    }
+
+    .cdcalc-mini-carousel-stack {
+      display: grid;
+      gap: 12px;
+    }
+
+    @media (min-width: 560px) {
+      .cdcalc-mini-carousel-stack--split {
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      }
     }
 
     .cdcalc-warning {
@@ -801,6 +1141,167 @@
     return `<div class="${classes.join(' ')}">${titleMarkup}${body}</div>`;
   }
 
+  function renderMiniCarousel(slides, options = {}) {
+    const { label = '', heading = '' } = options;
+    if (!Array.isArray(slides) || slides.length === 0) {
+      return '';
+    }
+
+    const labelAttribute = label ? ` data-mini-label="${escapeHtml(label)}"` : '';
+    const headingMarkup = heading
+      ? `<h4 class="cdcalc-mini-heading">${escapeHtml(heading)}</h4>`
+      : '';
+    const slidesMarkup = slides
+      .map((slide) => {
+        if (!slide || typeof slide !== 'object') {
+          return '';
+        }
+        const caption = slide.caption
+          ? `<span class="cdcalc-mini-caption">${escapeHtml(slide.caption)}</span>`
+          : '';
+        const meta = slide.meta
+          ? `<span class="cdcalc-mini-meta">${escapeHtml(slide.meta)}</span>`
+          : '';
+        const altText = slide.alt ? escapeHtml(slide.alt) : '';
+        const src = slide.src ? escapeHtml(slide.src) : '';
+        return `
+          <figure class="cdcalc-mini-slide" aria-hidden="true">
+            <div class="cdcalc-mini-image">
+              <img src="${src}" alt="${altText}" loading="lazy" decoding="async" />
+            </div>
+            <figcaption class="cdcalc-mini-figcaption">
+              ${caption}
+              ${meta}
+            </figcaption>
+          </figure>
+        `;
+      })
+      .join('');
+
+    const prevLabel = label ? `Show previous ${label}` : 'Show previous item';
+    const nextLabel = label ? `Show next ${label}` : 'Show next item';
+
+    return `
+      <div class="cdcalc-mini-carousel" data-mini-carousel${labelAttribute}>
+        ${headingMarkup}
+        <div class="cdcalc-mini-carousel-track">
+          ${slidesMarkup}
+        </div>
+        <div class="cdcalc-mini-carousel-controls">
+          <button type="button" class="cdcalc-mini-control" data-mini-carousel-prev aria-label="${escapeHtml(prevLabel)}">‹</button>
+          <div class="cdcalc-mini-dots" role="tablist"></div>
+          <button type="button" class="cdcalc-mini-control" data-mini-carousel-next aria-label="${escapeHtml(nextLabel)}">›</button>
+        </div>
+      </div>
+    `;
+  }
+
+  function initializeMiniCarousels(scope) {
+    const root = scope || document;
+    if (!root) {
+      return;
+    }
+
+    const carousels = root.querySelectorAll('[data-mini-carousel]');
+    carousels.forEach((carousel) => {
+      if (!carousel || carousel.dataset.miniCarouselReady === 'true') {
+        return;
+      }
+
+      const slides = Array.from(carousel.querySelectorAll('.cdcalc-mini-slide'));
+      if (!slides.length) {
+        return;
+      }
+
+      const prevButton = carousel.querySelector('[data-mini-carousel-prev]');
+      const nextButton = carousel.querySelector('[data-mini-carousel-next]');
+      const dotsContainer = carousel.querySelector('.cdcalc-mini-dots');
+      const label = carousel.dataset.miniLabel || '';
+      const dots = [];
+
+      if (dotsContainer) {
+        dotsContainer.innerHTML = '';
+      }
+
+      const hasMultipleSlides = slides.length > 1;
+
+      const goToSlide = (targetIndex) => {
+        if (!slides.length) {
+          return;
+        }
+        const normalizedIndex = ((targetIndex % slides.length) + slides.length) % slides.length;
+
+        slides.forEach((slide, slideIndex) => {
+          const isActive = slideIndex === normalizedIndex;
+          slide.classList.toggle('is-active', isActive);
+          slide.setAttribute('aria-hidden', isActive ? 'false' : 'true');
+        });
+
+        dots.forEach((dot, dotIndex) => {
+          const isActive = dotIndex === normalizedIndex;
+          dot.classList.toggle('is-active', isActive);
+          dot.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+        });
+
+        const controlsDisabled = slides.length <= 1;
+        if (prevButton) {
+          prevButton.disabled = controlsDisabled;
+        }
+        if (nextButton) {
+          nextButton.disabled = controlsDisabled;
+        }
+        if (dotsContainer) {
+          dotsContainer.style.display = slides.length > 1 ? 'flex' : 'none';
+        }
+
+        carousel.dataset.miniCarouselIndex = String(normalizedIndex);
+      };
+
+      slides.forEach((slide) => {
+        slide.classList.remove('is-active');
+        slide.setAttribute('aria-hidden', 'true');
+      });
+
+      if (dotsContainer && hasMultipleSlides) {
+        slides.forEach((_, slideIndex) => {
+          const dot = document.createElement('button');
+          dot.type = 'button';
+          dot.className = 'cdcalc-mini-dot';
+          dot.setAttribute(
+            'aria-label',
+            label
+              ? `Show ${label} option ${slideIndex + 1}`
+              : `Show option ${slideIndex + 1}`
+          );
+          dot.setAttribute('aria-pressed', 'false');
+          dot.addEventListener('click', () => {
+            goToSlide(slideIndex);
+          });
+          dotsContainer.appendChild(dot);
+          dots.push(dot);
+        });
+      }
+
+      if (prevButton) {
+        prevButton.addEventListener('click', () => {
+          const currentIndex = parseInt(carousel.dataset.miniCarouselIndex || '0', 10) || 0;
+          goToSlide(currentIndex - 1);
+        });
+      }
+
+      if (nextButton) {
+        nextButton.addEventListener('click', () => {
+          const currentIndex = parseInt(carousel.dataset.miniCarouselIndex || '0', 10) || 0;
+          goToSlide(currentIndex + 1);
+        });
+      }
+
+      goToSlide(0);
+      carousel.dataset.miniCarouselReady = 'true';
+      carousel.classList.add('cdcalc-mini-ready');
+    });
+  }
+
   function updateForm(elements, strings) {
     if (
       !elements ||
@@ -914,6 +1415,29 @@
       const acetaMg = Math.min(acetaMgCalculated, ACETA_MAX_MG_INFANT);
       const acetaMl = (acetaMg / 160) * 5;
       const acetaCapped = acetaMg < acetaMgCalculated;
+      const acetaminophenLiquidCarousel = renderMiniCarousel(
+        MINI_CAROUSEL_CONTENT.acetaminophenLiquid,
+        {
+          label: "acetaminophen products",
+          heading: '160 mg / 5 mL liquids',
+        }
+      );
+      const acetaminophenAlternateCarousel = renderMiniCarousel(
+        MINI_CAROUSEL_CONTENT.acetaminophenOther,
+        {
+          label: 'alternate acetaminophen products',
+          heading: 'Chewables, meltaways & more',
+        }
+      );
+      const acetaminophenCarouselGroup = [
+        acetaminophenLiquidCarousel,
+        acetaminophenAlternateCarousel,
+      ]
+        .filter(Boolean)
+        .join('');
+      const acetaminophenCarouselMarkup = acetaminophenCarouselGroup
+        ? `<div class="cdcalc-mini-carousel-stack cdcalc-mini-carousel-stack--split">${acetaminophenCarouselGroup}</div>`
+        : '';
 
       const group = [];
       group.push(`
@@ -924,6 +1448,7 @@
             mg: acetaMg.toFixed(0),
           })}</p>
           <p>${formatString(strings.warnings.acetaminophenMax, { max: ACETA_MAX_MG_INFANT })}</p>
+          ${acetaminophenCarouselMarkup}
           ${
             acetaCapped
               ? renderWarning(strings, {
@@ -959,6 +1484,60 @@
       const ibuCapped = ibuMg < ibuMgCalculated;
       const ibuMl50 = (ibuMg / 50) * 1.25;
       const ibuMl100 = (ibuMg / 100) * 5;
+      const acetaminophenLiquidCarousel = renderMiniCarousel(
+        MINI_CAROUSEL_CONTENT.acetaminophenLiquid,
+        {
+          label: "acetaminophen products",
+          heading: '160 mg / 5 mL liquids',
+        }
+      );
+      const acetaminophenAlternateCarousel = renderMiniCarousel(
+        MINI_CAROUSEL_CONTENT.acetaminophenOther,
+        {
+          label: 'alternate acetaminophen products',
+          heading: 'Chewables, meltaways & more',
+        }
+      );
+      const acetaminophenCarouselGroup = [
+        acetaminophenLiquidCarousel,
+        acetaminophenAlternateCarousel,
+      ]
+        .filter(Boolean)
+        .join('');
+      const acetaminophenCarouselMarkup = acetaminophenCarouselGroup
+        ? `<div class="cdcalc-mini-carousel-stack cdcalc-mini-carousel-stack--split">${acetaminophenCarouselGroup}</div>`
+        : '';
+      const ibuprofenChildrenCarousel = renderMiniCarousel(
+        MINI_CAROUSEL_CONTENT.ibuprofenChildren,
+        {
+          label: "children's ibuprofen products",
+          heading: "Children's 100 mg / 5 mL",
+        }
+      );
+      const ibuprofenInfantCarousel = renderMiniCarousel(
+        MINI_CAROUSEL_CONTENT.ibuprofenInfant,
+        {
+          label: "infant ibuprofen products",
+          heading: 'Infant 50 mg / 1.25 mL',
+        }
+      );
+      const ibuprofenOtherCarousel = renderMiniCarousel(
+        MINI_CAROUSEL_CONTENT.ibuprofenOther,
+        {
+          label: 'other ibuprofen products',
+          heading: 'Tablets, capsules & chewables',
+        }
+      );
+      const ibuprofenCarouselGroup = [
+        ibuprofenChildrenCarousel,
+        ibuprofenInfantCarousel,
+        ibuprofenOtherCarousel,
+      ]
+        .filter(Boolean)
+        .join('');
+      const ibuprofenCarouselMarkup = ibuprofenCarouselGroup
+        ? `<div class="cdcalc-mini-carousel-stack cdcalc-mini-carousel-stack--split">${ibuprofenCarouselGroup}</div>`
+        : '';
 
       const group = [];
       group.push(`
@@ -968,6 +1547,7 @@
             ml: acetaMl.toFixed(1),
             mg: acetaMg.toFixed(0),
           })}</p>
+          ${acetaminophenCarouselMarkup}
           ${renderWarning(strings, {
             body: formatString(strings.warnings.acetaminophenMax, { max: ACETA_MAX_SINGLE_DOSE_MG }),
             tone: 'orange',
@@ -995,6 +1575,7 @@
             ml: ibuMl50.toFixed(1),
             mg: ibuMg.toFixed(0),
           })}</p>
+          ${ibuprofenCarouselMarkup}
           ${renderWarning(strings, {
             body: formatString(strings.warnings.ibuprofenMax, { max: IBU_MAX_SINGLE_DOSE_MG }),
             tone: 'orange',
@@ -1026,6 +1607,7 @@
     }
 
     elements.results.innerHTML = resultBlocks.join('');
+    initializeMiniCarousels(elements.results);
   }
 
   function bindEvents(elements, strings) {
