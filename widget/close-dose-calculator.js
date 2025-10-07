@@ -678,13 +678,13 @@
       height: 100%;
       object-fit: contain;
       transition: transform 0.25s ease;
-      will-change: transform;
     }
 
     @media (hover: hover) {
       .cdcalc-mini-slide:hover .cdcalc-mini-image img,
       .cdcalc-mini-slide:focus-within .cdcalc-mini-image img {
         transform: scale(1.12);
+        will-change: transform;
       }
     }
 
