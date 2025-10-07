@@ -681,9 +681,11 @@
       will-change: transform;
     }
 
-    .cdcalc-mini-slide:hover .cdcalc-mini-image img,
-    .cdcalc-mini-slide:focus-within .cdcalc-mini-image img {
-      transform: scale(1.12);
+    @media (hover: hover) {
+      .cdcalc-mini-slide:hover .cdcalc-mini-image img,
+      .cdcalc-mini-slide:focus-within .cdcalc-mini-image img {
+        transform: scale(1.12);
+      }
     }
 
     .cdcalc-mini-figcaption {
