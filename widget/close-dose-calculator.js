@@ -92,6 +92,15 @@
     accessibility: {
       resultsRegion: 'Dosing results',
     },
+    support: {
+      heading: 'Support CloseDose',
+      label: 'support options',
+      donateButtonAria: 'Support CloseDose with a donation on Givebutter',
+      donateButtonLine1: 'Powered by Parents!',
+      donateButtonLine2: 'Help Support Us Today!',
+      donateButtonSub: 'Please consider donating today.',
+      donateCopy: 'Every contribution keeps CloseDose free for families.',
+    },
   };
 
   function createMiniProductBadge(options = {}) {
@@ -148,6 +157,12 @@
         src: 'images/Acetaminophen/Tylenol acetaminophen iso.png',
         alt: "Tylenol children's acetaminophen suspension 160 mg per 5 mL",
         caption: "Tylenol® Children's Oral Suspension",
+        meta: '160 mg / 5 mL',
+      },
+      {
+        src: 'https://pics.walgreens.com/prodimg/504869/2_100.jpg',
+        alt: 'Walgreens Adult Pain Reliever Liquid Cherry 160 mg per 5 mL bottle front',
+        caption: 'Walgreens® Adult Pain Reliever (Cherry)',
         meta: '160 mg / 5 mL',
       },
       {
@@ -292,6 +307,27 @@
       },
     ],
   };
+
+  const SUPPORT_PARTNER_SLIDES = [
+    {
+      src: 'https://pics.walgreens.com/prodimg/504869/2_100.jpg',
+      alt: 'Walgreens Adult Pain Reliever Liquid Cherry product front',
+      caption: 'Walgreens® Adult Pain Reliever (Cherry)',
+      meta: 'Acetaminophen 160 mg / 5 mL',
+    },
+    {
+      src: 'https://pics.walgreens.com/prodimg/504869/3_100.jpg',
+      alt: 'Walgreens Adult Pain Reliever Liquid Cherry back label and dosing chart',
+      caption: 'Back panel & ingredients',
+      meta: 'Review dosing instructions on the label',
+    },
+    {
+      src: 'https://pics.walgreens.com/prodimg/504869/4_100.jpg',
+      alt: 'Walgreens Adult Pain Reliever Liquid Cherry dosage cup',
+      caption: 'Includes measuring cup',
+      meta: 'Use the included cup for accuracy',
+    },
+  ];
 
   const BASE_STYLES = `
     .cdcalc-card {
@@ -660,6 +696,14 @@
       grid-template-columns: auto 1fr;
     }
 
+    .cdcalc-mini-slide--custom.is-active {
+      display: block;
+    }
+
+    .cdcalc-mini-slide--support {
+      text-align: center;
+    }
+
     .cdcalc-mini-image {
       width: 72px;
       height: 72px;
@@ -825,6 +869,88 @@
 
       .cdcalc-age-option {
         min-height: 92px;
+      }
+    }
+
+    .cdcalc-support-wrap {
+      border: 2px dashed rgba(18, 58, 55, 0.18);
+      border-radius: 16px;
+      padding: 12px;
+      background: rgba(228, 244, 240, 0.5);
+    }
+
+    .cdcalc-support-card {
+      display: grid;
+      gap: 12px;
+      justify-items: center;
+      text-align: center;
+    }
+
+    .cdcalc-support-button {
+      appearance: none;
+      border: 3px solid #0f2c2a;
+      border-radius: 999px;
+      background: linear-gradient(135deg, rgba(36, 166, 135, 0.95), rgba(18, 70, 67, 0.95));
+      color: #ffffff;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: none;
+      padding: 12px 18px;
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+      box-shadow: 0 4px 0 rgba(15, 44, 42, 0.25);
+      transition: transform 0.16s ease, box-shadow 0.16s ease, background 0.16s ease;
+    }
+
+    .cdcalc-support-button:hover,
+    .cdcalc-support-button:focus-visible {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 0 rgba(15, 44, 42, 0.28);
+      background: linear-gradient(135deg, rgba(36, 166, 135, 1), rgba(18, 70, 67, 0.9));
+    }
+
+    .cdcalc-support-button:focus-visible {
+      outline: 3px solid rgba(255, 232, 168, 0.6);
+      outline-offset: 3px;
+    }
+
+    .cdcalc-support-lines {
+      display: grid;
+      gap: 4px;
+      text-align: left;
+    }
+
+    .cdcalc-support-line {
+      font-size: 0.85rem;
+      font-weight: 800;
+    }
+
+    .cdcalc-support-sub {
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      font-weight: 700;
+      color: rgba(255, 255, 255, 0.9);
+    }
+
+    .cdcalc-support-button img {
+      width: 48px;
+      height: 48px;
+    }
+
+    .cdcalc-support-copy {
+      margin: 0;
+      font-size: 0.82rem;
+      line-height: 1.4;
+      color: #124643;
+    }
+
+    @media (min-width: 560px) {
+      .cdcalc-support-button img {
+        width: 56px;
+        height: 56px;
       }
     }
   `;
@@ -1158,6 +1284,22 @@
         if (!slide || typeof slide !== 'object') {
           return '';
         }
+        const classNames = ['cdcalc-mini-slide'];
+        const customMarkup = typeof slide.html === 'string' && slide.html.trim() !== '';
+        if (customMarkup) {
+          classNames.push('cdcalc-mini-slide--custom');
+        }
+        if (typeof slide.className === 'string' && slide.className.trim() !== '') {
+          classNames.push(slide.className.trim());
+        }
+        const classAttribute = classNames.join(' ');
+        if (customMarkup) {
+          return `
+          <div class="${classAttribute}" aria-hidden="true">
+            ${slide.html}
+          </div>
+        `;
+        }
         const caption = slide.caption
           ? `<span class="cdcalc-mini-caption">${escapeHtml(slide.caption)}</span>`
           : '';
@@ -1167,7 +1309,7 @@
         const altText = slide.alt ? escapeHtml(slide.alt) : '';
         const src = slide.src ? escapeHtml(slide.src) : '';
         return `
-          <figure class="cdcalc-mini-slide" aria-hidden="true">
+          <figure class="${classAttribute}" aria-hidden="true">
             <div class="cdcalc-mini-image">
               <img src="${src}" alt="${altText}" loading="lazy" decoding="async" />
             </div>
@@ -1196,6 +1338,77 @@
         </div>
       </div>
     `;
+  }
+
+  function renderSupportCarousel(strings) {
+    if (!strings || typeof strings !== 'object') {
+      return '';
+    }
+
+    const supportStrings = strings.support || {};
+    if (supportStrings.enabled === false) {
+      return '';
+    }
+
+    const slides = [];
+    const donateButtonAria = supportStrings.donateButtonAria || 'Support CloseDose with a donation on Givebutter';
+    const donateLine1 = supportStrings.donateButtonLine1 || '';
+    const donateLine2 = supportStrings.donateButtonLine2 || '';
+    const donateSub = supportStrings.donateButtonSub || '';
+    const donateCopy = supportStrings.donateCopy || '';
+
+    let donateLinesMarkup = [donateLine1, donateLine2]
+      .map((line) => (line ? `<span class="cdcalc-support-line">${escapeHtml(line)}</span>` : ''))
+      .join('');
+    const hasDonateSub = Boolean(donateSub && donateSub.trim());
+    const donateSubMarkup = hasDonateSub
+      ? `<span class="cdcalc-support-sub">${escapeHtml(donateSub)}</span>`
+      : '';
+
+    if (!donateLinesMarkup.trim() && !hasDonateSub) {
+      donateLinesMarkup = `<span class="cdcalc-support-line">${escapeHtml(
+        supportStrings.heading || 'Support CloseDose',
+      )}</span>`;
+    }
+
+    const donateButtonMarkup = `
+      <button
+        type="button"
+        class="cdcalc-support-button"
+        data-cdcalc-donate
+        data-gb-account="r8SGiZ0RhFRoIkXu"
+        data-gb-campaign="93Xrjv"
+        aria-label="${escapeHtml(donateButtonAria)}"
+      >
+        <span class="cdcalc-support-lines">
+          ${donateLinesMarkup}${donateSubMarkup}
+        </span>
+        <img src="images/Pig/piggybank-color.svg" alt="" aria-hidden="true" loading="lazy" decoding="async" />
+      </button>
+    `;
+
+    const donateCopyMarkup = donateCopy
+      ? `<p class="cdcalc-support-copy">${escapeHtml(donateCopy)}</p>`
+      : '';
+
+    slides.push({
+      className: 'cdcalc-mini-slide--support',
+      html: `
+        <div class="cdcalc-support-card">
+          ${donateButtonMarkup}
+          ${donateCopyMarkup}
+        </div>
+      `,
+    });
+
+    SUPPORT_PARTNER_SLIDES.forEach((slide) => {
+      slides.push(slide);
+    });
+
+    return renderMiniCarousel(slides, {
+      label: supportStrings.label || 'support options',
+      heading: supportStrings.heading || 'Support CloseDose',
+    });
   }
 
   function initializeMiniCarousels(scope) {
@@ -1301,6 +1514,46 @@
       goToSlide(0);
       carousel.dataset.miniCarouselReady = 'true';
       carousel.classList.add('cdcalc-mini-ready');
+    });
+  }
+
+  function initializeSupportInteractions(scope) {
+    const root = scope || document;
+    if (!root) {
+      return;
+    }
+
+    const donateButtons = root.querySelectorAll('[data-cdcalc-donate]');
+    donateButtons.forEach((button) => {
+      if (!button || button.dataset.cdcalcDonateReady === 'true') {
+        return;
+      }
+
+      const campaignId = button.getAttribute('data-gb-campaign') || '93Xrjv';
+      const fallbackUrl = `https://givebutter.com/${campaignId}`;
+      if (!button.getAttribute('data-fallback-href')) {
+        button.setAttribute('data-fallback-href', fallbackUrl);
+      }
+
+      if (button.dataset.cdcalcDonateFallbackHandled !== 'true') {
+        button.addEventListener('click', (event) => {
+          const givebutterReady =
+            typeof window !== 'undefined' &&
+            window.Givebutter &&
+            typeof window.Givebutter.invoke === 'function';
+          if (givebutterReady) {
+            return;
+          }
+          const fallback = button.getAttribute('data-fallback-href');
+          if (fallback) {
+            event.preventDefault();
+            window.open(fallback, '_blank', 'noopener');
+          }
+        });
+        button.dataset.cdcalcDonateFallbackHandled = 'true';
+      }
+
+      button.dataset.cdcalcDonateReady = 'true';
     });
   }
 
@@ -1608,8 +1861,14 @@
       resultBlocks.push(`<div class="cdcalc-result-group">${group.join('')}</div>`);
     }
 
+    const supportCarouselMarkup = renderSupportCarousel(strings);
+    if (supportCarouselMarkup) {
+      resultBlocks.push(`<div class="cdcalc-support-wrap">${supportCarouselMarkup}</div>`);
+    }
+
     elements.results.innerHTML = resultBlocks.join('');
     initializeMiniCarousels(elements.results);
+    initializeSupportInteractions(elements.results);
   }
 
   function bindEvents(elements, strings) {
