@@ -649,6 +649,92 @@
       gap: 10px;
     }
 
+    .cdcalc-result-card--with-guide {
+      position: relative;
+      overflow: visible;
+      z-index: 2;
+      --cdcalc-guide-peek: 18px;
+      --cdcalc-guide-slide: 84px;
+      --cdcalc-guide-reveal-scroll: 0;
+    }
+
+    .cdcalc-guide-tab {
+      position: absolute;
+      top: 50%;
+      right: 0;
+      transform: translateX(
+          calc(
+            100% - (
+              var(--cdcalc-guide-peek, 18px) +
+              var(--cdcalc-guide-reveal-scroll, 0) * var(--cdcalc-guide-slide, 84px)
+            )
+          )
+        )
+        translateY(-50%);
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 20px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-size: 0.82rem;
+      text-decoration: none;
+      color: #fff;
+      border-radius: 999px;
+      box-shadow:
+        inset 0 0 0 2px rgba(255, 255, 255, 0.28),
+        0 10px 18px rgba(17, 36, 34, 0.26);
+      transition: transform 0.28s ease, box-shadow 0.28s ease;
+      z-index: 1;
+      white-space: nowrap;
+      will-change: transform;
+    }
+
+    .cdcalc-guide-tab::after {
+      content: '➜';
+      font-size: 1rem;
+      font-weight: 900;
+    }
+
+    .cdcalc-guide-tab:focus-visible,
+    .cdcalc-result-card--with-guide:hover .cdcalc-guide-tab,
+    .cdcalc-result-card--with-guide:focus-within .cdcalc-guide-tab {
+      transform: translateX(0) translateY(-50%);
+      box-shadow:
+        inset 0 0 0 2px rgba(255, 255, 255, 0.28),
+        0 16px 24px rgba(17, 36, 34, 0.32);
+    }
+
+    .cdcalc-guide-tab--acetaminophen {
+      background: linear-gradient(135deg, #c81e1e 0%, #7f1d1d 100%);
+    }
+
+    .cdcalc-guide-tab--ibuprofen {
+      background: linear-gradient(135deg, #f97316 0%, #c2410c 100%);
+    }
+
+    @media (max-width: 640px) {
+      .cdcalc-guide-tab {
+        padding: 10px 16px;
+        font-size: 0.78rem;
+        transform: translateX(
+            calc(
+              100% - (
+                var(--cdcalc-guide-peek, 18px) +
+                var(--cdcalc-guide-reveal-scroll, 0) * var(--cdcalc-guide-slide, 72px)
+              )
+            )
+          )
+          translateY(-50%);
+      }
+
+      .cdcalc-result-card--with-guide {
+        --cdcalc-guide-peek: 16px;
+        --cdcalc-guide-slide: 72px;
+      }
+    }
+
     .cdcalc-result-card h3 {
       margin: 0;
       font-size: 1.1rem;
@@ -1253,6 +1339,142 @@
     };
   }
 
+  function createGuideTabRevealController(root) {
+    if (!root || typeof window === 'undefined') {
+      return {
+        sync() {},
+        destroy() {},
+      };
+    }
+
+    const cards = new Set();
+    let rafHandle = null;
+    let rafIsTimeout = false;
+
+    const cancelScheduledUpdate = () => {
+      if (rafHandle === null) {
+        return;
+      }
+      if (rafIsTimeout) {
+        clearTimeout(rafHandle);
+      } else if (typeof window.cancelAnimationFrame === 'function') {
+        window.cancelAnimationFrame(rafHandle);
+      }
+      rafHandle = null;
+      rafIsTimeout = false;
+    };
+
+    const updateReveals = () => {
+      rafHandle = null;
+      rafIsTimeout = false;
+      const docElement = window.document && window.document.documentElement;
+      const viewportHeight = Math.max(
+        window.innerHeight || 0,
+        (docElement && docElement.clientHeight) || 0
+      );
+      if (!viewportHeight) {
+        cards.forEach((card) => {
+          if (card instanceof HTMLElement) {
+            card.style.setProperty('--cdcalc-guide-reveal-scroll', '0');
+          }
+        });
+        return;
+      }
+
+      cards.forEach((card) => {
+        if (!(card instanceof HTMLElement) || !card.isConnected) {
+          if (card instanceof HTMLElement) {
+            card.style.removeProperty('--cdcalc-guide-reveal-scroll');
+          }
+          cards.delete(card);
+          return;
+        }
+        const rect = card.getBoundingClientRect();
+        const rawProgress = 1 - rect.top / viewportHeight;
+        const reveal = Math.min(Math.max(rawProgress, 0), 1);
+        card.style.setProperty('--cdcalc-guide-reveal-scroll', reveal.toFixed(3));
+      });
+    };
+
+    const scheduleUpdate = () => {
+      if (!cards.size) {
+        cancelScheduledUpdate();
+        return;
+      }
+      if (rafHandle !== null) {
+        return;
+      }
+      if (typeof window.requestAnimationFrame === 'function') {
+        rafIsTimeout = false;
+        rafHandle = window.requestAnimationFrame(() => {
+          updateReveals();
+        });
+      } else {
+        rafIsTimeout = true;
+        rafHandle = window.setTimeout(() => {
+          updateReveals();
+        }, 16);
+      }
+    };
+
+    const syncCards = () => {
+      const found = Array.from(root.querySelectorAll('.cdcalc-result-card--with-guide'));
+      const current = new Set();
+      found.forEach((card) => {
+        if (!(card instanceof HTMLElement)) {
+          return;
+        }
+        current.add(card);
+        if (!cards.has(card)) {
+          cards.add(card);
+          card.style.setProperty('--cdcalc-guide-reveal-scroll', '0');
+        }
+      });
+
+      cards.forEach((card) => {
+        if (!current.has(card)) {
+          if (card instanceof HTMLElement) {
+            card.style.removeProperty('--cdcalc-guide-reveal-scroll');
+          }
+          cards.delete(card);
+        }
+      });
+
+      if (!cards.size) {
+        cancelScheduledUpdate();
+        return;
+      }
+
+      scheduleUpdate();
+    };
+
+    const onScrollOrResize = () => {
+      scheduleUpdate();
+    };
+
+    window.addEventListener('scroll', onScrollOrResize, { passive: true });
+    window.addEventListener('resize', onScrollOrResize);
+
+    syncCards();
+
+    return {
+      sync() {
+        syncCards();
+      },
+      destroy() {
+        cancelScheduledUpdate();
+        window.removeEventListener('scroll', onScrollOrResize);
+        window.removeEventListener('resize', onScrollOrResize);
+        cards.forEach((card) => {
+          if (card instanceof HTMLElement) {
+            card.style.removeProperty('--cdcalc-guide-reveal-scroll');
+          }
+        });
+        cards.clear();
+      },
+    };
+  }
+
   function clearResults(elements) {
     if (elements.results) {
       elements.results.innerHTML = '';
@@ -1611,7 +1833,7 @@
     }
   }
 
-  function calculateDose(elements, strings) {
+  function calculateDose(elements, strings, onResultsRendered) {
     if (
       !elements ||
       !elements.ageSelect ||
@@ -1622,18 +1844,26 @@
       return;
     }
 
+    const notifyResultsRendered = () => {
+      if (typeof onResultsRendered === 'function') {
+        onResultsRendered();
+      }
+    };
+
     const age = elements.ageSelect.value;
     const gate = resolveAgeGate(age);
     const weightInput = parseFloat(elements.weightInput.value);
     const weightUnit = elements.unitSelect.value;
 
     clearResults(elements);
+    notifyResultsRendered();
 
     if (!age) {
       elements.results.innerHTML = renderWarning(strings, {
         title: strings.warnings.ageRequiredTitle,
         body: strings.warnings.ageRequiredBody,
       });
+      notifyResultsRendered();
       return;
     }
 
@@ -1642,6 +1872,7 @@
         title: strings.warnings.weightRequiredTitle,
         body: strings.warnings.weightRequiredBody,
       });
+      notifyResultsRendered();
       return;
     }
 
@@ -1696,7 +1927,7 @@
 
       const group = [];
       group.push(`
-        <article class="cdcalc-result-card">
+        <article class="cdcalc-result-card cdcalc-result-card--with-guide">
           <h3>${strings.results.acetaminophenInfantTitle}</h3>
           <p>${formatString(strings.results.acetaminophenInfantBody, {
             ml: acetaMl.toFixed(1),
@@ -1704,6 +1935,12 @@
           })}</p>
           <p>${formatString(strings.warnings.acetaminophenMax, { max: ACETA_MAX_MG_INFANT })}</p>
           ${acetaminophenCarouselMarkup}
+          <a
+            class="cdcalc-guide-tab cdcalc-guide-tab--acetaminophen"
+            href="/medication-guides.html#acetaminophen"
+          >
+            Other formulations
+          </a>
           ${
             acetaCapped
               ? renderWarning(strings, {
@@ -1796,13 +2033,19 @@
 
       const group = [];
       group.push(`
-        <article class="cdcalc-result-card">
+        <article class="cdcalc-result-card cdcalc-result-card--with-guide">
           <h3>${strings.results.acetaminophenOlderTitle}</h3>
           <p>${formatString(strings.results.acetaminophenOlderBody, {
             ml: acetaMl.toFixed(1),
             mg: acetaMg.toFixed(0),
           })}</p>
           ${acetaminophenCarouselMarkup}
+          <a
+            class="cdcalc-guide-tab cdcalc-guide-tab--acetaminophen"
+            href="/medication-guides.html#acetaminophen"
+          >
+            Other formulations
+          </a>
           ${renderWarning(strings, {
             body: formatString(strings.warnings.acetaminophenMax, { max: ACETA_MAX_SINGLE_DOSE_MG }),
             tone: 'orange',
@@ -1820,7 +2063,7 @@
       `);
 
       group.push(`
-        <article class="cdcalc-result-card">
+        <article class="cdcalc-result-card cdcalc-result-card--with-guide">
           <h3>${strings.results.ibuprofenTitle}</h3>
           <p>${formatString(strings.results.ibuprofenBody100, {
             ml: ibuMl100.toFixed(1),
@@ -1831,6 +2074,12 @@
             mg: ibuMg.toFixed(0),
           })}</p>
           ${ibuprofenCarouselMarkup}
+          <a
+            class="cdcalc-guide-tab cdcalc-guide-tab--ibuprofen"
+            href="/medication-guides.html#ibuprofen"
+          >
+            Other formulations
+          </a>
           ${renderWarning(strings, {
             body: formatString(strings.warnings.ibuprofenMax, { max: IBU_MAX_SINGLE_DOSE_MG }),
             tone: 'orange',
@@ -1869,9 +2118,10 @@
     elements.results.innerHTML = resultBlocks.join('');
     initializeMiniCarousels(elements.results);
     initializeSupportInteractions(elements.results);
+    notifyResultsRendered();
   }
 
-  function bindEvents(elements, strings) {
+  function bindEvents(elements, strings, onResultsRendered) {
     if (!elements || !elements.form) {
       return () => {};
     }
@@ -1952,6 +2202,9 @@
       elements.ageSelect.value = ageValue;
       updateForm(elements, strings);
       refreshGuidanceAnimations();
+      if (typeof onResultsRendered === 'function') {
+        onResultsRendered();
+      }
     };
 
     elements.ageButtons.forEach((button) => {
@@ -1964,6 +2217,9 @@
       elements.unitSelect.value = unitValue;
       updateForm(elements, strings);
       refreshGuidanceAnimations();
+      if (typeof onResultsRendered === 'function') {
+        onResultsRendered();
+      }
     };
 
     elements.unitButtons.forEach((button) => {
@@ -1973,10 +2229,16 @@
     const onAgeSelectChange = () => {
       updateForm(elements, strings);
       refreshGuidanceAnimations();
+      if (typeof onResultsRendered === 'function') {
+        onResultsRendered();
+      }
     };
     const onUnitSelectChange = () => {
       updateForm(elements, strings);
       refreshGuidanceAnimations();
+      if (typeof onResultsRendered === 'function') {
+        onResultsRendered();
+      }
     };
     const onWeightInput = () => {
       refreshGuidanceAnimations();
@@ -1996,13 +2258,16 @@
     const onSubmit = (event) => {
       event.preventDefault();
       clearButtonAttention(elements.submitButton);
-      calculateDose(elements, strings);
+      calculateDose(elements, strings, onResultsRendered);
     };
 
     elements.form.addEventListener('submit', onSubmit);
 
     updateForm(elements, strings);
     refreshGuidanceAnimations();
+    if (typeof onResultsRendered === 'function') {
+      onResultsRendered();
+    }
 
     return () => {
       elements.ageButtons.forEach((button) => {
@@ -2033,12 +2298,20 @@
     const styleElement = injectStyles(host, options);
 
     const card = host.querySelector('[data-calculator-card]');
+    const guideTabReveal = createGuideTabRevealController(card);
     const elements = getElements(card);
-    const teardown = bindEvents(elements, strings);
+    const teardown = bindEvents(elements, strings, () => {
+      if (guideTabReveal && typeof guideTabReveal.sync === 'function') {
+        guideTabReveal.sync();
+      }
+    });
 
     return {
       destroy() {
         teardown();
+        if (guideTabReveal && typeof guideTabReveal.destroy === 'function') {
+          guideTabReveal.destroy();
+        }
         if (styleElement && styleElement.parentNode) {
           styleElement.parentNode.removeChild(styleElement);
         }
