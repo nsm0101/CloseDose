@@ -653,85 +653,155 @@
       position: relative;
       overflow: visible;
       z-index: 2;
-      --cdcalc-guide-peek: 18px;
-      --cdcalc-guide-slide: 84px;
+      --cdcalc-guide-peek: 12px;
+      --cdcalc-guide-slide: 132px;
       --cdcalc-guide-reveal-scroll: 0;
+    }
+
+    .cdcalc-result-card--with-guide[data-guide-peeking='true'] {
+      --cdcalc-guide-peek: 26px;
     }
 
     .cdcalc-guide-tab {
       position: absolute;
-      top: 50%;
-      right: 0;
+      top: auto;
+      right: -16px;
+      bottom: -14px;
       transform: translateX(
           calc(
             100% - (
-              var(--cdcalc-guide-peek, 18px) +
-              var(--cdcalc-guide-reveal-scroll, 0) * var(--cdcalc-guide-slide, 84px)
+              var(--cdcalc-guide-peek, 12px) +
+              var(--cdcalc-guide-reveal-scroll, 0) * var(--cdcalc-guide-slide, 132px)
             )
           )
         )
-        translateY(-50%);
+        translateY(0);
       display: inline-flex;
       align-items: center;
-      gap: 10px;
-      padding: 12px 20px;
+      justify-content: flex-end;
+      gap: 12px;
+      padding: 14px 22px 14px 20px;
+      min-width: 168px;
       font-weight: 800;
-      letter-spacing: 0.08em;
+      letter-spacing: 0.12em;
       text-transform: uppercase;
-      font-size: 0.82rem;
+      font-size: 0.74rem;
+      line-height: 1;
       text-decoration: none;
       color: #fff;
-      border-radius: 999px;
+      border-radius: 36px;
+      border: 3px solid rgba(15, 44, 42, 0.9);
       box-shadow:
-        inset 0 0 0 2px rgba(255, 255, 255, 0.28),
-        0 10px 18px rgba(17, 36, 34, 0.26);
-      transition: transform 0.28s ease, box-shadow 0.28s ease;
+        inset 0 0 0 2px rgba(255, 255, 255, 0.32),
+        0 12px 20px rgba(17, 36, 34, 0.26),
+        0 0 0 4px rgba(15, 44, 42, 0.08);
+      background: linear-gradient(135deg, rgba(10, 46, 44, 0.92), rgba(15, 44, 42, 0.82));
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
       z-index: 1;
       white-space: nowrap;
       will-change: transform;
+      overflow: hidden;
+    }
+
+    .cdcalc-guide-tab__label {
+      display: block;
+      padding-right: 4px;
+      color: rgba(255, 255, 255, 0.92);
+      text-shadow: 0 2px 0 rgba(15, 44, 42, 0.45);
+      opacity: calc(0.25 + var(--cdcalc-guide-reveal-scroll, 0) * 0.75);
+      transform: translateX(calc(10px - 10px * var(--cdcalc-guide-reveal-scroll, 0)));
+      transition: transform 0.3s ease, opacity 0.3s ease;
+      pointer-events: none;
     }
 
     .cdcalc-guide-tab::after {
-      content: '➜';
-      font-size: 1rem;
-      font-weight: 900;
+      content: '';
+      width: 46px;
+      height: 24px;
+      flex-shrink: 0;
+      background: #fff;
+      border-radius: 16px 16px 16px 2px;
+      border: 3px solid rgba(15, 44, 42, 0.9);
+      box-shadow:
+        inset 0 -2px 0 rgba(15, 44, 42, 0.14),
+        0 4px 0 rgba(15, 44, 42, 0.28);
+      clip-path: polygon(0% 10%, 66% 10%, 66% 0%, 100% 50%, 66% 100%, 66% 90%, 0% 90%);
+      transform-origin: 30% 50%;
+    }
+
+    .cdcalc-result-card--with-guide[data-guide-peeking='true'] .cdcalc-guide-tab::after {
+      animation: cdcalc-guide-arrow-wave 2.8s ease-in-out infinite;
     }
 
     .cdcalc-guide-tab:focus-visible,
     .cdcalc-result-card--with-guide:hover .cdcalc-guide-tab,
     .cdcalc-result-card--with-guide:focus-within .cdcalc-guide-tab {
-      transform: translateX(0) translateY(-50%);
+      transform: translateX(0) translateY(0);
       box-shadow:
-        inset 0 0 0 2px rgba(255, 255, 255, 0.28),
-        0 16px 24px rgba(17, 36, 34, 0.32);
+        inset 0 0 0 2px rgba(255, 255, 255, 0.32),
+        0 18px 28px rgba(17, 36, 34, 0.32),
+        0 0 0 4px rgba(15, 44, 42, 0.12);
     }
 
     .cdcalc-guide-tab--acetaminophen {
-      background: linear-gradient(135deg, #c81e1e 0%, #7f1d1d 100%);
+      background: linear-gradient(135deg, #e14747 0%, #9f1b1b 100%);
     }
 
     .cdcalc-guide-tab--ibuprofen {
       background: linear-gradient(135deg, #f97316 0%, #c2410c 100%);
     }
 
+    .cdcalc-result-card--with-guide[data-guide-peeking='true'] .cdcalc-guide-tab--acetaminophen,
+    .cdcalc-result-card--with-guide[data-guide-peeking='true'] .cdcalc-guide-tab--ibuprofen {
+      background-position: 0 0;
+    }
+
+    @keyframes cdcalc-guide-arrow-wave {
+      0%,
+      60%,
+      100% {
+        transform: rotate(0deg) scaleX(1);
+      }
+      30% {
+        transform: rotate(3deg) scaleX(1.08);
+      }
+      45% {
+        transform: rotate(-2deg) scaleX(1.04);
+      }
+    }
+
     @media (max-width: 640px) {
       .cdcalc-guide-tab {
-        padding: 10px 16px;
-        font-size: 0.78rem;
+        right: -12px;
+        bottom: -10px;
+        padding: 12px 20px 12px 18px;
+        font-size: 0.72rem;
+        min-width: 156px;
         transform: translateX(
             calc(
               100% - (
-                var(--cdcalc-guide-peek, 18px) +
-                var(--cdcalc-guide-reveal-scroll, 0) * var(--cdcalc-guide-slide, 72px)
+                var(--cdcalc-guide-peek, 12px) +
+                var(--cdcalc-guide-reveal-scroll, 0) * var(--cdcalc-guide-slide, 112px)
               )
             )
           )
-          translateY(-50%);
+          translateY(0);
       }
 
       .cdcalc-result-card--with-guide {
-        --cdcalc-guide-peek: 16px;
-        --cdcalc-guide-slide: 72px;
+        --cdcalc-guide-peek: 14px;
+        --cdcalc-guide-slide: 112px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .cdcalc-guide-tab,
+      .cdcalc-guide-tab__label {
+        transition: none;
+      }
+
+      .cdcalc-result-card--with-guide[data-guide-peeking='true'] .cdcalc-guide-tab::after {
+        animation: none;
       }
     }
 
@@ -1376,6 +1446,7 @@
         cards.forEach((card) => {
           if (card instanceof HTMLElement) {
             card.style.setProperty('--cdcalc-guide-reveal-scroll', '0');
+            delete card.dataset.guidePeeking;
           }
         });
         return;
@@ -1385,6 +1456,7 @@
         if (!(card instanceof HTMLElement) || !card.isConnected) {
           if (card instanceof HTMLElement) {
             card.style.removeProperty('--cdcalc-guide-reveal-scroll');
+            delete card.dataset.guidePeeking;
           }
           cards.delete(card);
           return;
@@ -1393,6 +1465,11 @@
         const rawProgress = 1 - rect.top / viewportHeight;
         const reveal = Math.min(Math.max(rawProgress, 0), 1);
         card.style.setProperty('--cdcalc-guide-reveal-scroll', reveal.toFixed(3));
+        if (reveal > 0.18) {
+          card.dataset.guidePeeking = 'true';
+        } else {
+          delete card.dataset.guidePeeking;
+        }
       });
     };
 
@@ -1428,6 +1505,7 @@
         if (!cards.has(card)) {
           cards.add(card);
           card.style.setProperty('--cdcalc-guide-reveal-scroll', '0');
+          delete card.dataset.guidePeeking;
         }
       });
 
@@ -1435,6 +1513,7 @@
         if (!current.has(card)) {
           if (card instanceof HTMLElement) {
             card.style.removeProperty('--cdcalc-guide-reveal-scroll');
+            delete card.dataset.guidePeeking;
           }
           cards.delete(card);
         }
@@ -1468,6 +1547,7 @@
         cards.forEach((card) => {
           if (card instanceof HTMLElement) {
             card.style.removeProperty('--cdcalc-guide-reveal-scroll');
+            delete card.dataset.guidePeeking;
           }
         });
         cards.clear();
@@ -1938,8 +2018,9 @@
           <a
             class="cdcalc-guide-tab cdcalc-guide-tab--acetaminophen"
             href="/medication-guides.html#acetaminophen"
+            aria-label="More formulations"
           >
-            Other formulations
+            <span class="cdcalc-guide-tab__label" aria-hidden="true">More formulations</span>
           </a>
           ${
             acetaCapped
@@ -2043,8 +2124,9 @@
           <a
             class="cdcalc-guide-tab cdcalc-guide-tab--acetaminophen"
             href="/medication-guides.html#acetaminophen"
+            aria-label="More formulations"
           >
-            Other formulations
+            <span class="cdcalc-guide-tab__label" aria-hidden="true">More formulations</span>
           </a>
           ${renderWarning(strings, {
             body: formatString(strings.warnings.acetaminophenMax, { max: ACETA_MAX_SINGLE_DOSE_MG }),
@@ -2077,8 +2159,9 @@
           <a
             class="cdcalc-guide-tab cdcalc-guide-tab--ibuprofen"
             href="/medication-guides.html#ibuprofen"
+            aria-label="More formulations"
           >
-            Other formulations
+            <span class="cdcalc-guide-tab__label" aria-hidden="true">More formulations</span>
           </a>
           ${renderWarning(strings, {
             body: formatString(strings.warnings.ibuprofenMax, { max: IBU_MAX_SINGLE_DOSE_MG }),
