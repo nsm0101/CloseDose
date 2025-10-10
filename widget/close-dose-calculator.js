@@ -653,13 +653,12 @@
       position: relative;
       overflow: visible;
       z-index: 2;
-      --cdcalc-guide-peek: 12px;
-      --cdcalc-guide-slide: 132px;
       --cdcalc-guide-reveal-scroll: 0;
+      --cdcalc-guide-hidden-extra: 0.28;
     }
 
     .cdcalc-result-card--with-guide[data-guide-peeking='true'] {
-      --cdcalc-guide-peek: 26px;
+      --cdcalc-guide-hidden-extra: 0.08;
     }
 
     .cdcalc-guide-tab {
@@ -668,14 +667,11 @@
       right: -16px;
       bottom: -14px;
       transform: translateX(
-          calc(
-            100% - (
-              var(--cdcalc-guide-peek, 12px) +
-              var(--cdcalc-guide-reveal-scroll, 0) * var(--cdcalc-guide-slide, 132px)
-            )
-          )
+        calc(
+          (1 - var(--cdcalc-guide-reveal-scroll, 0)) *
+          (1 + var(--cdcalc-guide-hidden-extra, 0.28)) * 100%
         )
-        translateY(0);
+      );
       display: inline-flex;
       align-items: center;
       justify-content: flex-end;
@@ -736,7 +732,7 @@
     .cdcalc-guide-tab:focus-visible,
     .cdcalc-result-card--with-guide:hover .cdcalc-guide-tab,
     .cdcalc-result-card--with-guide:focus-within .cdcalc-guide-tab {
-      transform: translateX(0) translateY(0);
+      transform: translateX(0);
       box-shadow:
         inset 0 0 0 2px rgba(255, 255, 255, 0.32),
         0 18px 28px rgba(17, 36, 34, 0.32),
@@ -778,19 +774,15 @@
         font-size: 0.72rem;
         min-width: 156px;
         transform: translateX(
-            calc(
-              100% - (
-                var(--cdcalc-guide-peek, 12px) +
-                var(--cdcalc-guide-reveal-scroll, 0) * var(--cdcalc-guide-slide, 112px)
-              )
-            )
+          calc(
+            (1 - var(--cdcalc-guide-reveal-scroll, 0)) *
+            (1 + var(--cdcalc-guide-hidden-extra, 0.28)) * 100%
           )
-          translateY(0);
+        );
       }
 
       .cdcalc-result-card--with-guide {
-        --cdcalc-guide-peek: 14px;
-        --cdcalc-guide-slide: 112px;
+        --cdcalc-guide-hidden-extra: 0.24;
       }
     }
 
@@ -1462,10 +1454,10 @@
           return;
         }
         const rect = card.getBoundingClientRect();
-        const rawProgress = 1 - rect.top / viewportHeight;
+        const rawProgress = 1 - rect.bottom / viewportHeight;
         const reveal = Math.min(Math.max(rawProgress, 0), 1);
         card.style.setProperty('--cdcalc-guide-reveal-scroll', reveal.toFixed(3));
-        if (reveal > 0.18) {
+        if (reveal > 0.15) {
           card.dataset.guidePeeking = 'true';
         } else {
           delete card.dataset.guidePeeking;
