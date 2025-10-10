@@ -352,16 +352,38 @@
     }
 
     .card--disclaimer {
-      display: grid;
-      gap: 18px;
       position: relative;
-      overflow: hidden;
-      background: var(--card-bg);
+      align-self: center;
+      margin: 0 auto;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      padding: 12px 28px;
+      border-radius: 999px;
+      border: var(--card-border);
+      background: var(--white);
+      box-shadow: var(--shadow-card);
+      cursor: pointer;
+      color: var(--teal-600);
+      transition:
+        transform 0.18s ease,
+        box-shadow 0.18s ease,
+        background 0.18s ease,
+        color 0.18s ease;
     }
 
     .card--disclaimer > *:not(.trust-and-safety_background__A22kJ) {
       position: relative;
       z-index: 1;
+    }
+
+    .card--disclaimer .disclaimer-pill-label {
+      font-weight: 900;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      font-size: clamp(0.9rem, 2vw, 1rem);
+      color: inherit;
     }
 
     .card--disclaimer .trust-and-safety_background__A22kJ {
@@ -374,16 +396,27 @@
       background-repeat: no-repeat;
       background-blend-mode: screen;
       opacity: 0;
-      transform: scale(0.98);
+      transform: scale(0.96);
       transition: opacity 0.35s ease, transform 0.35s ease;
       pointer-events: none;
-      z-index: 0;
       visibility: hidden;
+      z-index: 0;
+    }
+
+    .card--disclaimer .disclaimer-header,
+    .card--disclaimer .disclaimer-content {
+      display: none;
     }
 
     .card--disclaimer:focus-visible {
       outline: 3px solid rgba(18, 70, 67, 0.45);
-      outline-offset: 8px;
+      outline-offset: 6px;
+    }
+
+    .card--disclaimer:hover,
+    .card--disclaimer:focus-visible {
+      background: #f0faf6;
+      box-shadow: 0 8px 20px rgba(15, 44, 42, 0.18);
     }
 
     .card--disclaimer h2 {
@@ -392,11 +425,9 @@
       font-weight: 900;
       letter-spacing: 0.14em;
       text-transform: uppercase;
-      color: var(--teal-600);
     }
 
     .card--disclaimer .disclaimer-header {
-      display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 18px;
@@ -417,8 +448,8 @@
       border-radius: 999px;
       cursor: pointer;
       transition: background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
-      display: none;
       white-space: nowrap;
+      display: none;
     }
 
     .card--disclaimer .disclaimer-close:hover,
@@ -434,7 +465,6 @@
     }
 
     .card--disclaimer .disclaimer-content {
-      display: grid;
       gap: 14px;
       text-align: left;
       width: min(960px, 100%);
@@ -446,7 +476,6 @@
       margin: 0;
       font-size: 0.98rem;
       line-height: 1.55;
-      color: var(--ink-900);
     }
 
     .card--disclaimer .disclaimer-updated {
@@ -454,7 +483,6 @@
       font-weight: 700;
       letter-spacing: 0.06em;
       text-transform: uppercase;
-      color: var(--ink-700);
     }
 
     .card--disclaimer .disclaimer-seek-care {
@@ -463,11 +491,21 @@
     }
 
     .card--disclaimer.is-expanded {
+      cursor: default;
+      align-self: stretch;
+      width: 100%;
+      max-width: min(720px, 100%);
+      display: grid;
+      gap: clamp(24px, 4vw, 36px);
+      padding: clamp(32px, 6vw, 64px) clamp(24px, 6vw, 56px);
+      border-radius: var(--card-radius);
       background: linear-gradient(140deg, rgba(15, 44, 42, 0.95), rgba(18, 70, 67, 0.98));
       color: var(--white);
-      padding: clamp(32px, 6vw, 64px) clamp(24px, 6vw, 56px);
       box-shadow: 0 18px 48px rgba(15, 44, 42, 0.35);
-      gap: clamp(24px, 4vw, 36px);
+    }
+
+    .card--disclaimer.is-expanded .disclaimer-pill-label {
+      display: none;
     }
 
     .card--disclaimer.is-expanded .trust-and-safety_background__A22kJ {
@@ -476,15 +514,15 @@
       visibility: visible;
     }
 
-    .card--disclaimer.is-expanded .disclaimer-header,
-    .card--disclaimer.is-expanded .disclaimer-content {
+    .card--disclaimer.is-expanded .disclaimer-header {
+      display: flex;
+      align-items: flex-start;
       width: 100%;
-      margin-left: auto;
-      margin-right: auto;
     }
 
-    .card--disclaimer.is-expanded .disclaimer-header {
-      align-items: flex-start;
+    .card--disclaimer.is-expanded .disclaimer-content {
+      display: grid;
+      width: 100%;
     }
 
     .card--disclaimer.is-expanded h2 {
@@ -520,6 +558,37 @@
 
     .card--disclaimer.is-expanded p {
       color: rgba(255, 255, 255, 0.92);
+    }
+
+    .card--disclaimer .disclaimer-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      text-decoration: none;
+      color: var(--teal-500);
+    }
+
+    .card--disclaimer .disclaimer-link::after {
+      content: '↗';
+      font-size: 0.85em;
+    }
+
+    .card--disclaimer .disclaimer-link:hover,
+    .card--disclaimer .disclaimer-link:focus-visible {
+      color: var(--teal-600);
+      text-decoration: underline;
+    }
+
+    .card--disclaimer.is-expanded .disclaimer-link {
+      color: #ffe8a8;
+    }
+
+    .card--disclaimer.is-expanded .disclaimer-link:hover,
+    .card--disclaimer.is-expanded .disclaimer-link:focus-visible {
+      color: #fff8d2;
     }
 
     .card--calculator {
@@ -1094,7 +1163,15 @@
           </ul>
         </div>
         </section>
-        <section class="card card--disclaimer" aria-labelledby="disclaimer-heading" aria-expanded="false" tabindex="-1">
+        <section
+          class="card card--disclaimer"
+          id="disclaimer-card"
+          aria-labelledby="disclaimer-heading"
+          aria-controls="disclaimer-panel"
+          aria-expanded="false"
+          tabindex="0"
+        >
+          <span class="disclaimer-pill-label">Disclaimer:</span>
           <div class="trust-and-safety_background__A22kJ" data-testid="value-prop" aria-hidden="true"></div>
           <div class="disclaimer-header">
             <h2 id="disclaimer-heading">Aviso</h2>
@@ -1102,20 +1179,23 @@
               Fechar
             </button>
           </div>
-          <div class="disclaimer-content" hidden>
-          <p>
-            Esta calculadora serve apenas como apoio educacional e não substitui a orientação do seu pediatra ou farmacêutico.
-            Sempre confirme a dose antes de administrar o medicamento.
-          </p>
-          <p>
-            O CloseDose foi criado com a intenção de fornecer informações de dosagem de medicamentos comuns vendidos sem prescrição para crianças geralmente saudáveis.
-          </p>
-          <p>
-            Se o seu filho tiver entre 0 e 2 meses de idade, antecedentes médicos ou cirúrgicos complexos, reações anteriores a medicamentos administrados, histórico de reações alérgicas ou histórico pessoal ou familiar significativo de doença hepática ou renal, consulte sua equipe de saúde antes de usar a calculadora de dosagem pediátrica do CloseDose.
-          </p>
-          <p class="disclaimer-seek-care"><strong>Quando procurar atendimento:</strong> ***</p>
-          <p class="disclaimer-updated">Atualizado em 22.9.2025 • Nickolas Mancini, MD, MBA</p>
-        </div>
+          <div class="disclaimer-content" id="disclaimer-panel" hidden>
+            <p>
+              Esta calculadora serve apenas como apoio educacional e não substitui a orientação do seu pediatra ou farmacêutico.
+              Sempre confirme a dose antes de administrar o medicamento.
+            </p>
+            <p>
+              O CloseDose foi criado com a intenção de fornecer informações de dosagem de medicamentos comuns vendidos sem prescrição para crianças geralmente saudáveis.
+            </p>
+            <p>
+              Se o seu filho tiver entre 0 e 2 meses de idade, antecedentes médicos ou cirúrgicos complexos, reações anteriores a medicamentos administrados, histórico de reações alérgicas ou histórico pessoal ou familiar significativo de doença hepática ou renal, consulte sua equipe de saúde antes de usar a calculadora de dosagem pediátrica do CloseDose.
+            </p>
+            <p class="disclaimer-seek-care"><strong>Quando procurar atendimento:</strong> ***</p>
+            <a class="disclaimer-link" href="https://nsm0101.github.io/CloseDoseAlt/legal/disclaimer">
+              Click to see full Medical &amp; Website Disclaimer Information
+            </a>
+            <p class="disclaimer-updated">Atualizado em 22.9.2025 • Nickolas Mancini, MD, MBA</p>
+          </div>
         </section>
       </div>
     </main>
@@ -1431,6 +1511,8 @@
         }
         disclaimerCard.classList.toggle('is-expanded', expanded);
         disclaimerCard.setAttribute('aria-expanded', String(expanded));
+        disclaimerCard.setAttribute('role', expanded ? 'region' : 'button');
+        disclaimerCard.setAttribute('tabindex', expanded ? '-1' : '0');
         if (disclaimerContent) {
           disclaimerContent.hidden = !expanded;
         }
@@ -1481,6 +1563,34 @@
       window.addEventListener('load', () => {
         updateDisclaimerState();
       });
+
+      if (disclaimerCard) {
+        const tryExpandDisclaimer = (event) => {
+          if (disclaimerCard.classList.contains('is-expanded')) {
+            return;
+          }
+          if (event) {
+            event.preventDefault();
+          }
+          setDisclaimerState(true, { manual: true });
+        };
+
+        disclaimerCard.setAttribute('role', 'button');
+        disclaimerCard.setAttribute('tabindex', '0');
+
+        disclaimerCard.addEventListener('click', (event) => {
+          if (event.target instanceof HTMLElement && event.target.closest('button, a')) {
+            return;
+          }
+          tryExpandDisclaimer(event);
+        });
+
+        disclaimerCard.addEventListener('keydown', (event) => {
+          if (event.key === 'Enter' || event.key === ' ') {
+            tryExpandDisclaimer(event);
+          }
+        });
+      }
 
       if (disclaimerClose) {
         disclaimerClose.addEventListener('click', () => {
