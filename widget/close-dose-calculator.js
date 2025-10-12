@@ -709,139 +709,141 @@
       --cdcalc-guide-hidden-extra: 0.08;
     }
 
-    .cdcalc-guide-tab {
-      position: absolute;
-      top: auto;
-      right: -16px;
-      bottom: -14px;
-      transform: translateX(
-        calc(
-          (1 - var(--cdcalc-guide-reveal-scroll, 0)) *
-          (1 + var(--cdcalc-guide-hidden-extra, 0.28)) * 100%
-        )
-      );
-      display: inline-flex;
-      align-items: center;
-      justify-content: flex-end;
-      gap: 12px;
-      padding: 14px 22px 14px 20px;
-      min-width: 168px;
-      font-weight: 800;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      font-size: 0.74rem;
-      line-height: 1;
-      text-decoration: none;
-      color: #fff;
-      border-radius: 36px;
-      border: 3px solid rgba(15, 44, 42, 0.9);
-      box-shadow:
-        inset 0 0 0 2px rgba(255, 255, 255, 0.32),
-        0 12px 20px rgba(17, 36, 34, 0.26),
-        0 0 0 4px rgba(15, 44, 42, 0.08);
-      background: linear-gradient(135deg, rgba(10, 46, 44, 0.92), rgba(15, 44, 42, 0.82));
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-      z-index: 1;
-      white-space: nowrap;
-      will-change: transform;
+    .cdcalc-guide-promo {
+      margin-top: 12px;
+      padding: 16px 18px;
+      border-radius: 16px;
+      border: 2px solid rgba(36, 166, 135, 0.38);
+      background: linear-gradient(
+          150deg,
+          rgba(228, 244, 240, calc(0.45 + var(--cdcalc-guide-reveal-scroll, 0) * 0.25)),
+          rgba(255, 255, 255, 0.96)
+        );
+      display: grid;
+      gap: 10px;
+      color: #0f2c2a;
+      box-shadow: 0 12px 24px rgba(15, 44, 42, 0.12);
+      position: relative;
       overflow: hidden;
+      transition: box-shadow 0.3s ease, transform 0.3s ease;
     }
 
-    .cdcalc-guide-tab__label {
-      display: block;
-      padding-right: 4px;
-      color: rgba(255, 255, 255, 0.92);
-      text-shadow: 0 2px 0 rgba(15, 44, 42, 0.45);
-      opacity: calc(0.25 + var(--cdcalc-guide-reveal-scroll, 0) * 0.75);
-      transform: translateX(calc(10px - 10px * var(--cdcalc-guide-reveal-scroll, 0)));
-      transition: transform 0.3s ease, opacity 0.3s ease;
+    .cdcalc-guide-promo::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 16px;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0));
+      opacity: calc(0.2 + var(--cdcalc-guide-reveal-scroll, 0) * 0.35);
       pointer-events: none;
     }
 
-    .cdcalc-guide-tab::after {
-      content: '';
-      width: 46px;
-      height: 24px;
-      flex-shrink: 0;
-      background: #fff;
-      border-radius: 16px 16px 16px 2px;
-      border: 3px solid rgba(15, 44, 42, 0.9);
-      box-shadow:
-        inset 0 -2px 0 rgba(15, 44, 42, 0.14),
-        0 4px 0 rgba(15, 44, 42, 0.28);
-      clip-path: polygon(0% 10%, 66% 10%, 66% 0%, 100% 50%, 66% 100%, 66% 90%, 0% 90%);
-      transform-origin: 30% 50%;
+    .cdcalc-guide-promo > * {
+      position: relative;
+      z-index: 1;
     }
 
-    .cdcalc-result-card--with-guide[data-guide-peeking='true'] .cdcalc-guide-tab::after {
-      animation: cdcalc-guide-arrow-wave 2.8s ease-in-out infinite;
+    .cdcalc-guide-promo__eyebrow {
+      margin: 0;
+      font-size: 0.75rem;
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #124643;
     }
 
-    .cdcalc-guide-tab:focus-visible,
-    .cdcalc-result-card--with-guide:hover .cdcalc-guide-tab,
-    .cdcalc-result-card--with-guide:focus-within .cdcalc-guide-tab {
-      transform: translateX(0);
-      box-shadow:
-        inset 0 0 0 2px rgba(255, 255, 255, 0.32),
-        0 18px 28px rgba(17, 36, 34, 0.32),
-        0 0 0 4px rgba(15, 44, 42, 0.12);
+    .cdcalc-guide-promo__body {
+      margin: 0;
+      font-size: 0.92rem;
+      line-height: 1.5;
     }
 
-    .cdcalc-guide-tab--acetaminophen {
-      background: linear-gradient(135deg, #e14747 0%, #9f1b1b 100%);
+    .cdcalc-guide-promo__link {
+      justify-self: start;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 18px;
+      border-radius: 999px;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      font-size: 0.78rem;
+      background: #0f2c2a;
+      color: #fff;
+      text-decoration: none;
+      box-shadow: 0 6px 0 rgba(15, 44, 42, 0.35);
+      transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
     }
 
-    .cdcalc-guide-tab--ibuprofen {
-      background: linear-gradient(135deg, #f97316 0%, #c2410c 100%);
+    .cdcalc-guide-promo__link:focus-visible,
+    .cdcalc-guide-promo__link:hover {
+      outline: none;
+      transform: translateY(-1px);
+      box-shadow: 0 8px 0 rgba(15, 44, 42, 0.4);
+      background: #124643;
     }
 
-    .cdcalc-result-card--with-guide[data-guide-peeking='true'] .cdcalc-guide-tab--acetaminophen,
-    .cdcalc-result-card--with-guide[data-guide-peeking='true'] .cdcalc-guide-tab--ibuprofen {
-      background-position: 0 0;
+    .cdcalc-guide-promo__arrow {
+      font-size: 1.2em;
+      line-height: 1;
     }
 
-    @keyframes cdcalc-guide-arrow-wave {
-      0%,
-      60%,
-      100% {
-        transform: rotate(0deg) scaleX(1);
-      }
-      30% {
-        transform: rotate(3deg) scaleX(1.08);
-      }
-      45% {
-        transform: rotate(-2deg) scaleX(1.04);
-      }
+    .cdcalc-result-card--with-guide[data-guide-peeking='true'] .cdcalc-guide-promo {
+      box-shadow: 0 18px 32px rgba(15, 44, 42, 0.18);
+      transform: translateY(-2px);
+    }
+
+    .cdcalc-guide-promo--acetaminophen {
+      border-color: rgba(225, 71, 71, 0.4);
+      background: linear-gradient(
+          150deg,
+          rgba(247, 226, 226, calc(0.42 + var(--cdcalc-guide-reveal-scroll, 0) * 0.25)),
+          rgba(255, 255, 255, 0.96)
+        );
+    }
+
+    .cdcalc-guide-promo--acetaminophen .cdcalc-guide-promo__link {
+      background: linear-gradient(135deg, #e14747, #9f1b1b);
+      box-shadow: 0 6px 0 rgba(137, 26, 26, 0.45);
+    }
+
+    .cdcalc-guide-promo--acetaminophen .cdcalc-guide-promo__link:hover,
+    .cdcalc-guide-promo--acetaminophen .cdcalc-guide-promo__link:focus-visible {
+      background: linear-gradient(135deg, #f86b6b, #b82020);
+      box-shadow: 0 8px 0 rgba(137, 26, 26, 0.5);
+    }
+
+    .cdcalc-guide-promo--ibuprofen {
+      border-color: rgba(249, 115, 22, 0.38);
+      background: linear-gradient(
+          150deg,
+          rgba(255, 236, 221, calc(0.42 + var(--cdcalc-guide-reveal-scroll, 0) * 0.25)),
+          rgba(255, 255, 255, 0.96)
+        );
+    }
+
+    .cdcalc-guide-promo--ibuprofen .cdcalc-guide-promo__link {
+      background: linear-gradient(135deg, #f97316, #c2410c);
+      box-shadow: 0 6px 0 rgba(161, 65, 12, 0.45);
+    }
+
+    .cdcalc-guide-promo--ibuprofen .cdcalc-guide-promo__link:hover,
+    .cdcalc-guide-promo--ibuprofen .cdcalc-guide-promo__link:focus-visible {
+      background: linear-gradient(135deg, #fb923c, #d35417);
+      box-shadow: 0 8px 0 rgba(161, 65, 12, 0.5);
     }
 
     @media (max-width: 640px) {
-      .cdcalc-guide-tab {
-        right: -12px;
-        bottom: -10px;
-        padding: 12px 20px 12px 18px;
-        font-size: 0.72rem;
-        min-width: 156px;
-        transform: translateX(
-          calc(
-            (1 - var(--cdcalc-guide-reveal-scroll, 0)) *
-            (1 + var(--cdcalc-guide-hidden-extra, 0.28)) * 100%
-          )
-        );
-      }
-
-      .cdcalc-result-card--with-guide {
-        --cdcalc-guide-hidden-extra: 0.24;
+      .cdcalc-guide-promo {
+        margin-top: 10px;
       }
     }
 
     @media (prefers-reduced-motion: reduce) {
-      .cdcalc-guide-tab,
-      .cdcalc-guide-tab__label {
+      .cdcalc-guide-promo,
+      .cdcalc-guide-promo__link {
         transition: none;
-      }
-
-      .cdcalc-result-card--with-guide[data-guide-peeking='true'] .cdcalc-guide-tab::after {
-        animation: none;
       }
     }
 
@@ -877,19 +879,16 @@
 
     .cdcalc-mini-carousel-track {
       position: relative;
-      min-height: 96px;
+      min-height: 220px;
     }
 
     .cdcalc-mini-slide {
       display: none;
       margin: 0;
-      align-items: center;
-      gap: 12px;
     }
 
     .cdcalc-mini-slide.is-active {
-      display: grid;
-      grid-template-columns: auto 1fr;
+      display: block;
     }
 
     .cdcalc-mini-slide--custom.is-active {
@@ -901,16 +900,27 @@
     }
 
     .cdcalc-mini-image {
-      width: 72px;
-      height: 72px;
+      width: 100%;
       aspect-ratio: 1 / 1;
-      border-radius: 12px;
-      background: rgba(255, 255, 255, 0.95);
-      box-shadow: 0 8px 18px rgba(15, 44, 42, 0.18);
-      display: grid;
-      place-items: center;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.96);
+      box-shadow: 0 10px 22px rgba(15, 44, 42, 0.18);
       padding: 6px;
       overflow: hidden;
+    }
+
+    .cdcalc-mini-link {
+      display: block;
+      width: 100%;
+      height: 100%;
+      border-radius: 12px;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .cdcalc-mini-link:focus-visible {
+      outline: 3px solid #0f2c2a;
+      outline-offset: 3px;
     }
 
     .cdcalc-mini-image img {
@@ -921,6 +931,8 @@
     }
 
     @media (hover: hover) {
+      .cdcalc-mini-link:hover img,
+      .cdcalc-mini-link:focus-visible img,
       .cdcalc-mini-slide:hover .cdcalc-mini-image img,
       .cdcalc-mini-slide:focus-within .cdcalc-mini-image img {
         transform: scale(1.12);
@@ -929,41 +941,36 @@
     }
 
     .cdcalc-mini-figcaption {
-      margin: 0;
-      font-size: 0.85rem;
+      margin: 12px 0 0;
+      font-size: 0.9rem;
       line-height: 1.4;
       color: #124643;
-      display: grid;
-      gap: 4px;
-    }
-
-    .cdcalc-mini-caption {
       font-weight: 700;
-    }
-
-    .cdcalc-mini-meta {
-      font-size: 0.75rem;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: #35635d;
+      text-align: center;
     }
 
     .cdcalc-mini-carousel-controls {
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
+      gap: 6px;
     }
 
     .cdcalc-mini-control {
-      border: 2px solid #0f2c2a;
-      background: #ffffff;
-      color: #0f2c2a;
-      border-radius: 12px;
-      padding: 4px 10px;
-      font-weight: 800;
+      border: none;
+      background: #0f2c2a;
+      color: #ffffff;
+      border-radius: 999px;
+      width: 34px;
+      height: 34px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      font-weight: 700;
       cursor: pointer;
-      box-shadow: 0 4px 0 rgba(15, 44, 42, 0.18);
+      box-shadow: 0 6px 12px rgba(15, 44, 42, 0.25);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
 
     .cdcalc-mini-control:focus-visible {
@@ -975,6 +982,14 @@
       opacity: 0.4;
       cursor: default;
       box-shadow: none;
+      transform: none;
+    }
+
+    @media (hover: hover) {
+      .cdcalc-mini-control:hover:not(:disabled) {
+        transform: translateY(-1px);
+        box-shadow: 0 8px 14px rgba(15, 44, 42, 0.25);
+      }
     }
 
     .cdcalc-mini-dots {
@@ -1611,8 +1626,44 @@
     return `<div class="${classes.join(' ')}">${titleMarkup}${body}</div>`;
   }
 
+  function renderGuidePromo(options = {}) {
+    const {
+      eyebrow = 'Parents',
+      body = 'Browse product photos and safety reminders in the medication guide.',
+      href = '',
+      label = 'Open medication guide',
+      tone = '',
+    } = options;
+
+    const trimmedHref = typeof href === 'string' ? href.trim() : '';
+    if (!trimmedHref) {
+      return '';
+    }
+
+    const classes = ['cdcalc-guide-promo'];
+    if (tone) {
+      classes.push(`cdcalc-guide-promo--${tone}`);
+    }
+
+    return `
+      <div class="${classes.join(' ')}">
+        <p class="cdcalc-guide-promo__eyebrow">${escapeHtml(eyebrow)}</p>
+        <p class="cdcalc-guide-promo__body">${escapeHtml(body)}</p>
+        <a class="cdcalc-guide-promo__link" href="${escapeHtml(trimmedHref)}">
+          <span>${escapeHtml(label)}</span>
+          <span class="cdcalc-guide-promo__arrow" aria-hidden="true">›</span>
+        </a>
+      </div>
+    `;
+  }
+
   function renderMiniCarousel(slides, options = {}) {
-    const { label = '', heading = '' } = options;
+    const {
+      label = '',
+      heading = '',
+      guideHref = '',
+      guideLabel = '',
+    } = options;
     if (!Array.isArray(slides) || slides.length === 0) {
       return '';
     }
@@ -1621,6 +1672,14 @@
     const headingMarkup = heading
       ? `<h4 class="cdcalc-mini-heading">${escapeHtml(heading)}</h4>`
       : '';
+    const trimmedGuideHref = typeof guideHref === 'string' ? guideHref.trim() : '';
+    const hasGuideLink = trimmedGuideHref !== '';
+    const guideHrefEscaped = hasGuideLink ? escapeHtml(trimmedGuideHref) : '';
+    const baseGuideLabel = guideLabel
+      ? guideLabel
+      : label
+      ? `Open medication guide for ${label}`
+      : 'Open medication guide';
     const slidesMarkup = slides
       .map((slide) => {
         if (!slide || typeof slide !== 'object') {
@@ -1642,23 +1701,34 @@
           </div>
         `;
         }
-        const caption = slide.caption
-          ? `<span class="cdcalc-mini-caption">${escapeHtml(slide.caption)}</span>`
-          : '';
-        const meta = slide.meta
-          ? `<span class="cdcalc-mini-meta">${escapeHtml(slide.meta)}</span>`
-          : '';
+        const subtitleTextRaw = [slide.caption, slide.meta]
+          .map((value) => (value ? String(value).trim() : ''))
+          .filter(Boolean)
+          .join(', ');
+        const subtitleText = subtitleTextRaw.replace(
+          /(\d+)\s*mg\s*\/\s*(\d+)\s*mL/gi,
+          (_, mg, ml) => `${mg}mg/${ml}mL`,
+        );
         const altText = slide.alt ? escapeHtml(slide.alt) : '';
         const src = slide.src ? escapeHtml(slide.src) : '';
+        const guideLabelForSlide = slide.caption
+          ? `${baseGuideLabel} — ${slide.caption}`
+          : baseGuideLabel;
+        const linkStart = hasGuideLink
+          ? `<a class="cdcalc-mini-link" href="${guideHrefEscaped}" aria-label="${escapeHtml(
+              guideLabelForSlide,
+            )}">`
+          : '';
+        const linkEnd = hasGuideLink ? '</a>' : '';
+        const figureAttributes = hasGuideLink
+          ? `class="${classAttribute}"`
+          : `class="${classAttribute}" aria-hidden="true"`;
         return `
-          <figure class="${classAttribute}" aria-hidden="true">
+          <figure ${figureAttributes}>
             <div class="cdcalc-mini-image">
-              <img src="${src}" alt="${altText}" loading="lazy" decoding="async" />
+              ${linkStart}<img src="${src}" alt="${altText}" loading="lazy" decoding="async" />${linkEnd}
             </div>
-            <figcaption class="cdcalc-mini-figcaption">
-              ${caption}
-              ${meta}
-            </figcaption>
+            ${subtitleText ? `<figcaption class="cdcalc-mini-figcaption">${escapeHtml(subtitleText)}</figcaption>` : ''}
           </figure>
         `;
       })
@@ -2026,6 +2096,8 @@
         {
           label: "acetaminophen products",
           heading: '160 mg / 5 mL liquids',
+          guideHref: '/medication-guides.html#acetaminophen',
+          guideLabel: 'View medication guide for acetaminophen products',
         }
       );
       const acetaminophenAlternateCarousel = renderMiniCarousel(
@@ -2033,6 +2105,8 @@
         {
           label: 'alternate acetaminophen products',
           heading: 'Chewables, meltaways & more',
+          guideHref: '/medication-guides.html#acetaminophen',
+          guideLabel: 'View medication guide for acetaminophen products',
         }
       );
       const acetaminophenCarouselGroup = [
@@ -2055,13 +2129,13 @@
           })}</p>
           <p>${formatString(strings.warnings.acetaminophenMax, { max: ACETA_MAX_MG_INFANT })}</p>
           ${acetaminophenCarouselMarkup}
-          <a
-            class="cdcalc-guide-tab cdcalc-guide-tab--acetaminophen"
-            href="/medication-guides.html#acetaminophen"
-            aria-label="More formulations"
-          >
-            <span class="cdcalc-guide-tab__label" aria-hidden="true">More formulations</span>
-          </a>
+          ${renderGuidePromo({
+            eyebrow: 'Parents',
+            body: 'Need product photos or extra dosing reminders? Open the acetaminophen medication guide for a closer look.',
+            href: '/medication-guides.html#acetaminophen',
+            label: 'View medication guide',
+            tone: 'acetaminophen',
+          })}
           ${
             acetaCapped
               ? renderWarning(strings, {
@@ -2102,6 +2176,8 @@
         {
           label: "acetaminophen products",
           heading: '160 mg / 5 mL liquids',
+          guideHref: '/medication-guides.html#acetaminophen',
+          guideLabel: 'View medication guide for acetaminophen products',
         }
       );
       const acetaminophenAlternateCarousel = renderMiniCarousel(
@@ -2109,6 +2185,8 @@
         {
           label: 'alternate acetaminophen products',
           heading: 'Chewables, meltaways & more',
+          guideHref: '/medication-guides.html#acetaminophen',
+          guideLabel: 'View medication guide for acetaminophen products',
         }
       );
       const acetaminophenCarouselGroup = [
@@ -2125,6 +2203,8 @@
         {
           label: "children's ibuprofen products",
           heading: "Children's 100 mg / 5 mL",
+          guideHref: '/medication-guides.html#ibuprofen-children',
+          guideLabel: "View children's ibuprofen medication guide",
         }
       );
       const ibuprofenInfantCarousel = renderMiniCarousel(
@@ -2132,6 +2212,8 @@
         {
           label: "infant ibuprofen products",
           heading: 'Infant 50 mg / 1.25 mL',
+          guideHref: '/medication-guides.html#ibuprofen-infant',
+          guideLabel: "View infant ibuprofen medication guide",
         }
       );
       const ibuprofenOtherCarousel = renderMiniCarousel(
@@ -2139,6 +2221,8 @@
         {
           label: 'other ibuprofen products',
           heading: 'Tablets, capsules & chewables',
+          guideHref: '/medication-guides.html#ibuprofen-children',
+          guideLabel: "View children's ibuprofen medication guide",
         }
       );
       const ibuprofenCarouselGroup = [
@@ -2161,13 +2245,13 @@
             mg: acetaMg.toFixed(0),
           })}</p>
           ${acetaminophenCarouselMarkup}
-          <a
-            class="cdcalc-guide-tab cdcalc-guide-tab--acetaminophen"
-            href="/medication-guides.html#acetaminophen"
-            aria-label="More formulations"
-          >
-            <span class="cdcalc-guide-tab__label" aria-hidden="true">More formulations</span>
-          </a>
+          ${renderGuidePromo({
+            eyebrow: 'Parents',
+            body: 'Compare formulations and safety reminders in the acetaminophen medication guide.',
+            href: '/medication-guides.html#acetaminophen',
+            label: 'View medication guide',
+            tone: 'acetaminophen',
+          })}
           ${renderWarning(strings, {
             body: formatString(strings.warnings.acetaminophenMax, { max: ACETA_MAX_SINGLE_DOSE_MG }),
             tone: 'orange',
@@ -2196,13 +2280,13 @@
             mg: ibuMg.toFixed(0),
           })}</p>
           ${ibuprofenCarouselMarkup}
-          <a
-            class="cdcalc-guide-tab cdcalc-guide-tab--ibuprofen"
-            href="/medication-guides.html#ibuprofen"
-            aria-label="More formulations"
-          >
-            <span class="cdcalc-guide-tab__label" aria-hidden="true">More formulations</span>
-          </a>
+          ${renderGuidePromo({
+            eyebrow: 'Parents',
+            body: 'Browse product photos and tips in the ibuprofen medication guide before you dose.',
+            href: '/medication-guides.html#ibuprofen-children',
+            label: 'View medication guide',
+            tone: 'ibuprofen',
+          })}
           ${renderWarning(strings, {
             body: formatString(strings.warnings.ibuprofenMax, { max: IBU_MAX_SINGLE_DOSE_MG }),
             tone: 'orange',
