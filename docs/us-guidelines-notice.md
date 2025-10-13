@@ -27,7 +27,7 @@ CloseDose currently implements **United States pediatric dosing guidelines** for
   - Children (6 months-11 years): 15 mg/kg, max 480 mg
   - Adolescents (12+ years): 15 mg/kg, max 1000 mg
 - **Ibuprofen**: 10 mg/kg per dose
-  - Children (6 months-11 years): max 400 mg
+  - Children (6 months-11 years): max 800 mg
   - Adolescents (12+ years): max 800 mg
 
 ---

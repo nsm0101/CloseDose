@@ -73,7 +73,7 @@ This report provides a comprehensive analysis of pediatric fever and pain medica
 
 #### United States (Current CloseDose Implementation)
 - **Infants (6+ months)**: 10 mg/kg per dose, maximum varies by age
-- **Children (6 months-11 years)**: 10 mg/kg per dose, maximum 400 mg per dose
+- **Children (6 months-11 years)**: 10 mg/kg per dose, maximum 800 mg per dose
 - **Adolescents (12+ years)**: 10 mg/kg per dose, maximum 800 mg per dose
 - **Dosing Interval**: Every 6-8 hours
 - **Age Restriction**: Not recommended under 6 months
@@ -405,7 +405,7 @@ This report provides a comprehensive analysis of pediatric fever and pain medica
 | **Dosing Method** | Weight-based | Weight-based | Age-based (weight alternative) | Weight-based |
 | **Dose per kg** | 10 mg/kg | 5-10 mg/kg | 5-10 mg/kg | 5-10 mg/kg |
 | **Min Age** | 6 months | 6 months | 3 months (with restrictions) | 6 months |
-| **Child Max Single** | 400 mg | 400 mg | 150-300 mg (age-based) | Variable |
+| **Child Max Single** | 800 mg | 400 mg | 150-300 mg (age-based) | Variable |
 | **Adolescent Max** | 800 mg | 600 mg | 300-400 mg | Variable |
 | **Dosing Interval** | 6-8 hours | 6-8 hours | 6-8 hours | 6-8 hours |
 | **Max Daily Doses** | 3-4 | 3-4 | 3 | 3 |
