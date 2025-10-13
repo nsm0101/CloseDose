@@ -321,12 +321,6 @@
       gap: clamp(18px, 3vw, 26px);
     }
 
-    @media (min-width: 860px) {
-      .guide-grid {
-        grid-template-columns: 1fr 1fr;
-      }
-    }
-
     .guide-card {
       background: #ffffff;
       border: 3px solid var(--ink-900);
@@ -335,6 +329,56 @@
       padding: clamp(18px, 3vw, 26px);
       display: grid;
       gap: 16px;
+    }
+
+    .guide-card--ibuprofen {
+      gap: clamp(18px, 3vw, 28px);
+    }
+
+    .ibuprofen-lede {
+      margin: 0;
+      font-size: 1rem;
+    }
+
+    .ibuprofen-comparison {
+      display: grid;
+      gap: clamp(18px, 3vw, 24px);
+      grid-template-columns: 1fr;
+    }
+
+    @media (min-width: 720px) {
+      .ibuprofen-comparison {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    .ibuprofen-panel {
+      background: rgba(255, 255, 255, 0.98);
+      border: 3px solid var(--ink-900);
+      border-radius: 16px;
+      box-shadow: 0 3px 0 rgba(15, 44, 42, 0.12);
+      padding: clamp(16px, 2.6vw, 22px);
+      display: grid;
+      gap: clamp(14px, 2.8vw, 20px);
+    }
+
+    .ibuprofen-panel h3 {
+      margin: 0;
+      font-size: clamp(1.2rem, 2.4vw, 1.4rem);
+    }
+
+    .ibuprofen-note {
+      margin: 0;
+    }
+
+    .ibuprofen-safety h4 {
+      margin: 0;
+      font-size: clamp(1.1rem, 2vw, 1.25rem);
+    }
+
+    .ibuprofen-safety ul {
+      margin: 8px 0 0;
+      padding-left: 20px;
     }
 
     .carousel-track {
@@ -739,7 +783,7 @@
           </div>
 
           <div class="guide-grid">
-            <article class="guide-card" id="acetaminophen" data-carousel>
+            <article class="guide-card guide-card--acetaminophen" id="acetaminophen" data-carousel>
               <h2>Acetaminophen <span class="medication-concentration">[160 mg / 5 mL]</span></h2>
               <div class="carousel-track">
                 <figure class="carousel-slide">
@@ -751,11 +795,11 @@
                   <figcaption>Amazon Basics® Children's Acetaminophen</figcaption>
                 </figure>
                 <figure class="carousel-slide">
-                  <img src="images/Acetaminophen/Target acetaminophen iso.png" alt="Target up & up children's acetaminophen 160 mg per 5 mL">
+                  <img src="images/Acetaminophen/Target acetaminophen iso.png" alt="Target up & up children's acetaminophen 160mg per 5 mL">
                   <figcaption>up &amp; up® Children's Acetaminophen</figcaption>
                 </figure>
                 <figure class="carousel-slide">
-                  <img src="images/Acetaminophen/Equate acetaminophen iso.png" alt="Walmart Equate children's acetaminophen 160 mg per 5 mL">
+                  <img src="images/Acetaminophen/Equate acetaminophen iso.png" alt="Walmart Equate children's acetaminophen 160mg per 5 mL">
                   <figcaption>Equate® Children's Acetaminophen</figcaption>
                 </figure>
               </div>
@@ -777,74 +821,82 @@
               </div>
             </article>
 
-            <article class="guide-card" id="ibuprofen-children" data-carousel>
-              <h2>Children's Ibuprofen <span class="medication-concentration">[100 mg / 5 mL]</span></h2>
-              <div class="carousel-track">
-                <figure class="carousel-slide">
-                  <img src="images/Ibuprofen/Children/Motrin Children ibuprofen iso.png" alt="Motrin Children's ibuprofen 100 mg per 5 mL">
-                  <figcaption>Motrin® Children's Suspension</figcaption>
-                </figure>
-                <figure class="carousel-slide">
-                  <img src="images/Ibuprofen/Children/Advil Children Ibuprofen iso.png" alt="Advil Children's ibuprofen 100 mg per 5 mL">
-                  <figcaption>Advil® Children's Suspension</figcaption>
-                </figure>
-                <figure class="carousel-slide">
-                  <img src="images/Ibuprofen/Children/Amazon Children ibuprofen iso.png" alt="Amazon Basics Children's ibuprofen 100 mg per 5 mL">
-                  <figcaption>Amazon Basics® Children's Ibuprofen</figcaption>
-                </figure>
-                <figure class="carousel-slide">
-                  <img src="images/Ibuprofen/Children/Target Children ibuprofen iso.png" alt="Target up &amp; up Children's ibuprofen 100 mg per 5 mL">
-                  <figcaption>up &amp; up® Children's Ibuprofen</figcaption>
-                </figure>
-                <figure class="carousel-slide">
-                  <img src="images/Ibuprofen/Children/Equate Children ibuprofen iso.png" alt="Equate Children's ibuprofen 100 mg per 5 mL">
-                  <figcaption>Equate® Children's Ibuprofen</figcaption>
-                </figure>
-              </div>
-              <div class="carousel-controls">
-                <button type="button" data-carousel-prev aria-label="Show previous children's ibuprofen product">←</button>
-                <div class="carousel-dots"></div>
-                <button type="button" data-carousel-next aria-label="Show next children's ibuprofen product">→</button>
-              </div>
-              <p>Standard children's suspension dosed using an oral syringe or medicine cup. Verify strength before dosing.</p>
-            </article>
+            <article class="guide-card guide-card--ibuprofen" id="ibuprofen">
+              <h2>Ibuprofen Comparisons</h2>
+              <p class="ibuprofen-lede">Review children's and infant ibuprofen suspensions side-by-side to ensure the correct strength for your patient.</p>
+              <div class="ibuprofen-comparison">
+                <section class="ibuprofen-panel" id="ibuprofen-children" data-carousel>
+                  <h3>Children's Ibuprofen <span class="medication-concentration">[100 mg / 5 mL]</span></h3>
+                  <div class="carousel-track">
+                    <figure class="carousel-slide">
+                      <img src="images/Ibuprofen/Children/Motrin Children ibuprofen iso.png" alt="Motrin Children's ibuprofen 100 mg per 5 mL">
+                      <figcaption>Motrin® Children's Suspension</figcaption>
+                    </figure>
+                    <figure class="carousel-slide">
+                      <img src="images/Ibuprofen/Children/Advil Children Ibuprofen iso.png" alt="Advil Children's ibuprofen 100 mg per 5 mL">
+                      <figcaption>Advil® Children's Suspension</figcaption>
+                    </figure>
+                    <figure class="carousel-slide">
+                      <img src="images/Ibuprofen/Children/Amazon Children ibuprofen iso.png" alt="Amazon Basics Children's ibuprofen 100 mg per 5 mL">
+                      <figcaption>Amazon Basics® Children's Ibuprofen</figcaption>
+                    </figure>
+                    <figure class="carousel-slide">
+                      <img src="images/Ibuprofen/Children/Target Children ibuprofen iso.png" alt="Target up &amp; up Children's ibuprofen 100 mg per 5 mL">
+                      <figcaption>up &amp; up® Children's Ibuprofen</figcaption>
+                    </figure>
+                    <figure class="carousel-slide">
+                      <img src="images/Ibuprofen/Children/Equate Children ibuprofen iso.png" alt="Equate Children's ibuprofen 100 mg per 5 mL">
+                      <figcaption>Equate® Children's Ibuprofen</figcaption>
+                    </figure>
+                  </div>
+                  <div class="carousel-controls">
+                    <button type="button" data-carousel-prev aria-label="Show previous children's ibuprofen product">←</button>
+                    <div class="carousel-dots"></div>
+                    <button type="button" data-carousel-next aria-label="Show next children's ibuprofen product">→</button>
+                  </div>
+                  <p class="ibuprofen-note">Standard children's suspension dosed using an oral syringe or medicine cup. Verify strength before dosing.</p>
+                </section>
 
-            <article class="guide-card" id="ibuprofen-infant" data-carousel>
-              <h2>Infant Ibuprofen <span class="medication-concentration">[50 mg / 1.25 mL]</span></h2>
-              <div class="carousel-track">
-                <figure class="carousel-slide">
-                  <img src="images/Ibuprofen/Infants/Motrin Infant ibuprofen iso.png" alt="Infant's Motrin concentrated ibuprofen 50 mg per 1.25 mL">
-                  <figcaption>Infant's Motrin® Concentrated Drops</figcaption>
-                </figure>
-                <figure class="carousel-slide">
-                  <img src="images/Ibuprofen/Infants/Advil Infant Ibuprofen iso.png" alt="Infants' Advil concentrated ibuprofen 50 mg per 1.25 mL">
-                  <figcaption>Infants' Advil® Concentrated Drops</figcaption>
-                </figure>
-                <figure class="carousel-slide">
-                  <img src="images/Ibuprofen/Infants/Amazon Infant ibuprofen iso.png" alt="Amazon Basics infant ibuprofen 50 mg per 1.25 mL">
-                  <figcaption>Amazon Basics® Infant Ibuprofen</figcaption>
-                </figure>
-                <figure class="carousel-slide">
-                  <img src="images/Ibuprofen/Infants/Target Infant ibuprofen iso.png" alt="Target up &amp; up infant ibuprofen 50 mg per 1.25 mL">
-                  <figcaption>up &amp; up® Infant Ibuprofen</figcaption>
-                </figure>
-                <figure class="carousel-slide">
-                  <img src="images/Ibuprofen/Infants/Equate Infant ibuprofen iso.png" alt="Equate infant ibuprofen 50 mg per 1.25 mL">
-                  <figcaption>Equate® Infant Ibuprofen</figcaption>
-                </figure>
+                <section class="ibuprofen-panel" id="ibuprofen-infant" data-carousel>
+                  <h3>Infant Ibuprofen <span class="medication-concentration">[50 mg / 1.25 mL]</span></h3>
+                  <div class="carousel-track">
+                    <figure class="carousel-slide">
+                      <img src="images/Ibuprofen/Infants/Motrin Infant ibuprofen iso.png" alt="Infant's Motrin concentrated ibuprofen 50 mg per 1.25 mL">
+                      <figcaption>Infant's Motrin® Concentrated Drops</figcaption>
+                    </figure>
+                    <figure class="carousel-slide">
+                      <img src="images/Ibuprofen/Infants/Advil Infant Ibuprofen iso.png" alt="Infants' Advil concentrated ibuprofen 50 mg per 1.25 mL">
+                      <figcaption>Infants' Advil® Concentrated Drops</figcaption>
+                    </figure>
+                    <figure class="carousel-slide">
+                      <img src="images/Ibuprofen/Infants/Amazon Infant ibuprofen iso.png" alt="Amazon Basics infant ibuprofen 50 mg per 1.25 mL">
+                      <figcaption>Amazon Basics® Infant Ibuprofen</figcaption>
+                    </figure>
+                    <figure class="carousel-slide">
+                      <img src="images/Ibuprofen/Infants/Target Infant ibuprofen iso.png" alt="Target up &amp; up infant ibuprofen 50 mg per 1.25 mL">
+                      <figcaption>up &amp; up® Infant Ibuprofen</figcaption>
+                    </figure>
+                    <figure class="carousel-slide">
+                      <img src="images/Ibuprofen/Infants/Equate Infant ibuprofen iso.png" alt="Equate infant ibuprofen 50 mg per 1.25 mL">
+                      <figcaption>Equate® Infant Ibuprofen</figcaption>
+                    </figure>
+                  </div>
+                  <div class="carousel-controls">
+                    <button type="button" data-carousel-prev aria-label="Show previous infant ibuprofen product">←</button>
+                    <div class="carousel-dots"></div>
+                    <button type="button" data-carousel-next aria-label="Show next infant ibuprofen product">→</button>
+                  </div>
+                  <div class="ibuprofen-safety">
+                    <h4>Safety Tips</h4>
+                    <ul>
+                      <li>Do not give to infants &lt;6 months unless directed by a doctor.</li>
+                      <li>Allow at least 6 hours between doses.</li>
+                      <li>Do not exceed 4 doses in 24 hours.</li>
+                      <li>Give with food or milk to lessen stomach upset.</li>
+                    </ul>
+                  </div>
+                </section>
               </div>
-              <div class="carousel-controls">
-                <button type="button" data-carousel-prev aria-label="Show previous infant ibuprofen product">←</button>
-                <div class="carousel-dots"></div>
-                <button type="button" data-carousel-next aria-label="Show next infant ibuprofen product">→</button>
-              </div>
-              <h3>Safety Tips</h3>
-              <ul>
-                <li>Do not give to infants &lt;6 months unless directed by a doctor.</li>
-                <li>Allow at least 6 hours between doses.</li>
-                <li>Do not exceed 4 doses in 24 hours.</li>
-                <li>Give with food or milk to lessen stomach upset.</li>
-              </ul>
             </article>
           </div>
         </section>
