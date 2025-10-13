@@ -67,6 +67,8 @@
       doseSpacingTitle: 'Dose spacing reminder',
       doseSpacingBody:
         'Never exceed {{acetaminophenMax}} mg of acetaminophen or {{ibuprofenMax}} mg of ibuprofen in a single dose, and allow at least 6 hours between doses.',
+      doseSpacingGeneralBody:
+        'Allow at least 6 hours between doses of acetaminophen or ibuprofen. Follow the product instructions for maximum amounts.',
       infantIbuprofen:
         '<em>Ibuprofen is not recommended for infants under six months. Consult your pediatrician before using ibuprofen for this age group.</em>',
       acetaminophenMax:
@@ -1347,7 +1349,7 @@
   // Implementation summary:
   // - 0–2 months: emergency redirect, calculator inputs disabled.
   // - 2–6 months: acetaminophen at 12.5 mg/kg (max 160 mg) with ibuprofen suppressed.
-  // - 6 months–11 years: pediatric caps of 480 mg acetaminophen and 400 mg ibuprofen.
+  // - 6 months–11 years: pediatric caps of 480 mg acetaminophen and 800 mg ibuprofen.
   // - 12+ years: adult ceilings of 1000 mg acetaminophen and 800 mg ibuprofen.
   // This replaces the previous catch-all 6+ pathway while leaving room to refine
   // segmentation further if future clinical guidance differentiates additional cohorts.
@@ -2336,7 +2338,7 @@
     } else if (gate === 'pediatric' || gate === 'adolescent') {
       const isPediatric = gate === 'pediatric';
       const ACETA_MAX_SINGLE_DOSE_MG = isPediatric ? 480 : 1000;
-      const IBU_MAX_SINGLE_DOSE_MG = isPediatric ? 400 : 800;
+      const IBU_MAX_SINGLE_DOSE_MG = 800;
 
       const acetaMgCalculated = 15 * weightKg;
       const acetaMg = Math.min(acetaMgCalculated, ACETA_MAX_SINGLE_DOSE_MG);
@@ -2429,10 +2431,14 @@
             label: 'View medication guide',
             tone: 'acetaminophen',
           })}
-          ${renderWarning(strings, {
-            body: formatString(strings.warnings.acetaminophenMax, { max: ACETA_MAX_SINGLE_DOSE_MG }),
-            tone: 'orange',
-          })}
+          ${
+            acetaCapped
+              ? renderWarning(strings, {
+                  body: formatString(strings.warnings.acetaminophenMax, { max: ACETA_MAX_SINGLE_DOSE_MG }),
+                  tone: 'orange',
+                })
+              : ''
+          }
           ${
             acetaCapped
               ? renderWarning(strings, {
@@ -2464,10 +2470,14 @@
             label: 'View medication guide',
             tone: 'ibuprofen',
           })}
-          ${renderWarning(strings, {
-            body: formatString(strings.warnings.ibuprofenMax, { max: IBU_MAX_SINGLE_DOSE_MG }),
-            tone: 'orange',
-          })}
+          ${
+            ibuCapped
+              ? renderWarning(strings, {
+                  body: formatString(strings.warnings.ibuprofenMax, { max: IBU_MAX_SINGLE_DOSE_MG }),
+                  tone: 'orange',
+                })
+              : ''
+          }
           ${
             ibuCapped
               ? renderWarning(strings, {
@@ -2480,13 +2490,17 @@
         </article>
       `);
 
+      const doseSpacingBody = acetaCapped || ibuCapped
+        ? formatString(strings.warnings.doseSpacingBody, {
+            acetaminophenMax: ACETA_MAX_SINGLE_DOSE_MG,
+            ibuprofenMax: IBU_MAX_SINGLE_DOSE_MG,
+          })
+        : strings.warnings.doseSpacingGeneralBody;
+
       group.push(
         renderWarning(strings, {
           title: strings.warnings.doseSpacingTitle,
-          body: formatString(strings.warnings.doseSpacingBody, {
-            acetaminophenMax: ACETA_MAX_SINGLE_DOSE_MG,
-            ibuprofenMax: IBU_MAX_SINGLE_DOSE_MG,
-          }),
+          body: doseSpacingBody,
           tone: 'teal',
         })
       );
