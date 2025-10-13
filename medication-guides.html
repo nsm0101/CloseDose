@@ -124,46 +124,21 @@
     header {
       position: relative;
       top: 0;
-      z-index: 100;
+      z-index: 1000;
       display: flex;
-      align-items: flex-start;
-      justify-content: flex-start;
-      gap: clamp(14px, 3vw, 24px);
+      align-items: center;
+      justify-content: center;
+      gap: clamp(12px, 3vw, 32px);
       padding: clamp(14px, 3vw, 26px) clamp(18px, 5vw, 48px) clamp(6px, 2vw, 14px);
       margin-bottom: 0;
     }
 
-    .brand {
-      display: flex;
-      align-items: stretch;
-      justify-content: flex-start;
-      flex: 1;
-      flex-wrap: nowrap;
-      gap: clamp(12px, 2.6vw, 22px);
-      min-width: 0;
-    }
-
-    .brand img {
+    .header-wordmark {
       display: block;
-      height: auto;
-      min-height: 58px;
-    }
-
-    .brand .logo {
-      width: clamp(128px, 22vw, 204px);
+      width: min(650px, 60vw);
       max-width: 100%;
-      flex-shrink: 0;
-    }
-
-    .brand .wordmark {
-      flex: 1 1 auto;
-      width: 100%;
-      max-width: none;
-      min-width: 180px;
-      min-height: 58px;
       height: auto;
-      object-fit: contain;
-      overflow: visible;
+      margin: 0 auto;
     }
 
     .menu-btn {
@@ -259,23 +234,11 @@
 
     @media (max-width: 640px) {
       header {
-        align-items: flex-start;
-        gap: 10px;
-        padding: clamp(10px, 3vw, 18px) clamp(16px, 6vw, 28px) clamp(4px, 2vw, 12px);
         background: transparent !important;
+        padding: clamp(10px, 3vw, 18px) clamp(16px, 6vw, 28px) clamp(4px, 2vw, 12px);
       }
-      .brand {
-        flex-direction: column;
-        gap: clamp(8px, 4vw, 16px);
-      }
-      .brand .logo {
-        width: clamp(120px, 42vw, 180px);
-      }
-      .brand .wordmark {
-        width: 100%;
-        min-width: 0;
-        max-width: none;
-        min-height: 54px;
+      .header-wordmark {
+        width: min(420px, 82vw);
       }
     }
 
@@ -304,41 +267,6 @@
     .hero {
       display: grid;
       gap: clamp(20px, 3vw, 28px);
-    }
-
-    .hero-header {
-      display: flex;
-      align-items: center;
-      gap: clamp(18px, 4vw, 28px);
-      flex-wrap: wrap;
-    }
-
-    .hero-header img {
-      display: block;
-      height: auto;
-    }
-
-    .hero-header .hero-logo {
-      width: clamp(150px, 20vw, 220px);
-    }
-
-    .hero-header .hero-wordmark {
-  flex: 1 1 clamp(320px, 60vw, 620px);
-  width: min(100%, clamp(320px, 60vw, 620px));
-  min-height: 69px;
-  height: auto;
-  object-fit: contain;
-  overflow: visible;
-    }
-
-    @media (max-width: 640px) {
-      .hero-header {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-      .hero-header .hero-wordmark {
-        width: 100%;
-      }
     }
 
     .hero h1 {
@@ -789,11 +717,8 @@
   <a class="skip-link" href="#guides">Skip to medication guides</a>
   <div class="wrap">
     <header>
-      <div class="brand">
-        <img class="logo" src="images/logo-hex2tone.png" alt="CloseDose logo">
-        <img class="wordmark" src="images/name.png" alt="CloseDose wordmark">
-      </div>
-      <button class="menu-btn" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="menuOverlay" aria-label="Open menu">
+      <img src="images/CD_Word.png" alt="CloseDose" class="header-wordmark" />
+      <button class="menu-btn" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="siteMenu" aria-label="Open menu">
         <span class="label">Menu</span>
         <span class="hamburger" aria-hidden="true"><span></span><span></span><span></span></span>
       </button>
@@ -802,10 +727,6 @@
     <main>
       <div class="page-content">
         <section class="card hero">
-          <div class="hero-header">
-            <img class="hero-logo" src="images/logo-hex2tone.png" alt="CloseDose logo">
-            <img class="hero-wordmark" src="images/name.png" alt="CloseDose wordmark">
-          </div>
           <div class="tab-stack" aria-hidden="true"><span></span><span></span><span></span></div>
           <h1>Fever &amp; Pain Medication Guides</h1>
           <p>Use these quick references to view common acetaminophen and ibuprofen products for infants and children. Double-check concentrations and dosing with your pediatrician or pharmacist.</p>
@@ -931,7 +852,7 @@
     </main>
   </div>
 
-  <div class="menu-overlay" id="menuOverlay" hidden>
+  <div class="menu-overlay" id="siteMenu" hidden>
     <div class="menu-panel" role="dialog" aria-modal="true" aria-labelledby="menuHeading">
       <h2 id="menuHeading" class="visually-hidden">Site menu</h2>
       <nav class="menu-links">
@@ -940,7 +861,6 @@
         <a href="about.html">About</a>
         <a href="donations.html">Support CloseDose</a>
         <a href="contact.html">Contact</a>
-        <a href="#" aria-disabled="true">Translate</a>
       </nav>
       <button class="close-menu" type="button">Close</button>
     </div>
@@ -996,7 +916,7 @@
   <script>
     (function(){
       const menuBtn = document.querySelector('.menu-btn');
-      const overlay = document.getElementById('menuOverlay');
+      const overlay = document.getElementById('siteMenu');
       const closeBtn = overlay ? overlay.querySelector('.close-menu') : null;
       const focusableSelector = 'a, button, [tabindex]:not([tabindex="-1"])';
       const mobileQuery = window.matchMedia('(max-width: 640px)');
