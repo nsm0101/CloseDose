@@ -7,3 +7,7 @@ CloseDose is a simple front-end prototype for a pediatric medication dosing calc
 ## Logo Files and License
 
 This repository contains several CloseDose logo files in SVG and PNG formats. The logos are the intellectual property of Nickolas Mancini, MD, MBA and are provided solely for use with the CloseDose project. Redistribution or modification of the logo assets is prohibited without express permission. Please see LOGO_LICENSE.md for the full license.
+
+## iOS wrapper app
+
+A SwiftUI skeleton for shipping the site as a standalone iPhone app lives in [`ios/CloseDoseApp`](ios/CloseDoseApp/README.md). It bundles the existing static site inside a `WKWebView` so the mobile experience mirrors the responsive web version while still letting you expand with native capabilities.
