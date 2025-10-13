@@ -100,6 +100,16 @@
       donateButtonLine2: 'Help Support Us Today!',
       donateButtonSub: 'Please consider donating today.',
       donateCopy: 'Every contribution keeps CloseDose free for families.',
+      koFiHref: 'https://ko-fi.com/drnsm',
+      koFiLabel: 'Support Dr. Nick on Ko-fi',
+      koFiIcon: '☕️',
+      koFiBody: 'Buy Dr. Nick a coffee to keep CloseDose growing.',
+      koFiAccent: '#fde68a',
+      givebutterHref: 'https://givebutter.com/93Xrjv',
+      givebutterLabel: 'Givebutter Campaign',
+      givebutterBody: 'Make a donation to support hosting and new features.',
+      givebutterIcon: '💚',
+      givebutterAccent: '#bbf7d0',
     },
   };
 
@@ -355,27 +365,6 @@
       },
     ],
   };
-
-  const SUPPORT_PARTNER_SLIDES = [
-    {
-      src: 'https://pics.walgreens.com/prodimg/504869/2_100.jpg',
-      alt: 'Walgreens Adult Pain Reliever Liquid Cherry product front',
-      caption: 'Walgreens® Adult Pain Reliever (Cherry)',
-      meta: 'Acetaminophen 160 mg / 5 mL',
-    },
-    {
-      src: 'https://pics.walgreens.com/prodimg/504869/3_100.jpg',
-      alt: 'Walgreens Adult Pain Reliever Liquid Cherry back label and dosing chart',
-      caption: 'Back panel & ingredients',
-      meta: 'Review dosing instructions on the label',
-    },
-    {
-      src: 'https://pics.walgreens.com/prodimg/504869/4_100.jpg',
-      alt: 'Walgreens Adult Pain Reliever Liquid Cherry dosage cup',
-      caption: 'Includes measuring cup',
-      meta: 'Use the included cup for accuracy',
-    },
-  ];
 
   const BASE_STYLES = `
     .cdcalc-card {
@@ -899,6 +888,12 @@
       text-align: center;
     }
 
+    .cdcalc-mini-slide--support-link {
+      display: flex;
+      justify-content: center;
+      align-items: stretch;
+    }
+
     .cdcalc-mini-image {
       width: 100%;
       aspect-ratio: 1 / 1;
@@ -938,6 +933,52 @@
         transform: scale(1.12);
         will-change: transform;
       }
+    }
+
+    .cdcalc-support-tile {
+      --cdcalc-support-accent: rgba(255, 255, 255, 0.96);
+      display: grid;
+      gap: 8px;
+      justify-items: center;
+      text-decoration: none;
+      color: #0f2c2a;
+      background: var(--cdcalc-support-accent);
+      border-radius: 20px;
+      border: 2px solid rgba(15, 44, 42, 0.2);
+      padding: 22px 18px;
+      width: 100%;
+      max-width: 280px;
+      box-shadow: 0 10px 22px rgba(15, 44, 42, 0.16);
+      transition: transform 0.18s ease, box-shadow 0.18s ease;
+    }
+
+    .cdcalc-support-tile:hover,
+    .cdcalc-support-tile:focus-visible {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 28px rgba(15, 44, 42, 0.2);
+    }
+
+    .cdcalc-support-tile:focus-visible {
+      outline: 3px solid rgba(255, 232, 168, 0.55);
+      outline-offset: 4px;
+    }
+
+    .cdcalc-support-tile__icon {
+      font-size: 2rem;
+      line-height: 1;
+    }
+
+    .cdcalc-support-tile__label {
+      font-weight: 900;
+      font-size: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .cdcalc-support-tile__body {
+      font-size: 0.85rem;
+      line-height: 1.4;
+      color: rgba(15, 44, 42, 0.8);
     }
 
     .cdcalc-mini-figcaption {
@@ -1097,6 +1138,40 @@
       text-align: center;
     }
 
+    .cdcalc-support-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+    }
+
+    .cdcalc-support-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border-radius: 999px;
+      border: 2px solid #0f2c2a;
+      padding: 8px 16px;
+      font-weight: 800;
+      text-decoration: none;
+      color: #0f2c2a;
+      background: #ffffff;
+      box-shadow: 0 3px 0 rgba(15, 44, 42, 0.18);
+      transition: transform 0.16s ease, box-shadow 0.16s ease, background 0.16s ease;
+    }
+
+    .cdcalc-support-secondary:hover,
+    .cdcalc-support-secondary:focus-visible {
+      transform: translateY(-1px);
+      box-shadow: 0 5px 0 rgba(15, 44, 42, 0.22);
+      background: rgba(255, 255, 255, 0.94);
+    }
+
+    .cdcalc-support-secondary:focus-visible {
+      outline: 3px solid rgba(255, 232, 168, 0.6);
+      outline-offset: 3px;
+    }
+
     .cdcalc-support-button {
       appearance: none;
       border: 3px solid #0f2c2a;
@@ -1176,6 +1251,48 @@
       .replace(/>/g, '&gt;')
       .replace(/"/g, '&quot;')
       .replace(/'/g, '&#39;');
+  }
+
+  function createSupportTile(options = {}) {
+    if (!options || typeof options !== 'object') {
+      return '';
+    }
+
+    const hrefRaw = options.href || '';
+    const href = typeof hrefRaw === 'string' ? hrefRaw.trim() : '';
+    if (!href) {
+      return '';
+    }
+
+    const labelRaw = options.label;
+    const label = typeof labelRaw === 'string' && labelRaw.trim() ? labelRaw.trim() : 'Learn more';
+    const bodyRaw = options.body;
+    const body = typeof bodyRaw === 'string' ? bodyRaw.trim() : '';
+    const iconRaw = options.icon;
+    const icon = typeof iconRaw === 'string' ? iconRaw.trim() : '';
+    const accentRaw = options.accent;
+    const accent = typeof accentRaw === 'string' ? accentRaw.trim() : '';
+
+    const safeHref = escapeHtml(href);
+    const safeLabel = escapeHtml(label);
+    const safeBody = escapeHtml(body);
+    const safeIcon = escapeHtml(icon);
+    const accentStyle = accent ? ` style="--cdcalc-support-accent: ${escapeHtml(accent)};"` : '';
+    const iconMarkup = icon
+      ? `<span class="cdcalc-support-tile__icon" aria-hidden="true">${safeIcon}</span>`
+      : '';
+    const bodyMarkup = body ? `<span class="cdcalc-support-tile__body">${safeBody}</span>` : '';
+    const isExternal = /^https?:/i.test(href);
+    const targetAttr = isExternal ? ' target="_blank"' : '';
+    const relAttr = isExternal ? ' rel="noopener noreferrer"' : '';
+
+    return `
+      <a class="cdcalc-support-tile" href="${safeHref}"${targetAttr}${relAttr}${accentStyle}>
+        ${iconMarkup}
+        <span class="cdcalc-support-tile__label">${safeLabel}</span>
+        ${bodyMarkup}
+      </a>
+    `;
   }
 
   function deepMerge(target, source) {
@@ -1768,6 +1885,20 @@
     const donateLine2 = supportStrings.donateButtonLine2 || '';
     const donateSub = supportStrings.donateButtonSub || '';
     const donateCopy = supportStrings.donateCopy || '';
+    const koFiHrefRaw = supportStrings.koFiHref || '';
+    const koFiHref = typeof koFiHrefRaw === 'string' ? koFiHrefRaw.trim() : '';
+    const koFiLabel = supportStrings.koFiLabel || 'Support on Ko-fi';
+    const koFiIcon = supportStrings.koFiIcon || '';
+    const koFiBody = supportStrings.koFiBody || '';
+    const koFiAccent = supportStrings.koFiAccent || '#fde68a';
+    const givebutterHrefRaw = supportStrings.givebutterHref || '';
+    const givebutterHref = typeof givebutterHrefRaw === 'string' && givebutterHrefRaw.trim()
+      ? givebutterHrefRaw.trim()
+      : 'https://givebutter.com/93Xrjv';
+    const givebutterLabel = supportStrings.givebutterLabel || 'Givebutter Campaign';
+    const givebutterIcon = supportStrings.givebutterIcon || '';
+    const givebutterBody = supportStrings.givebutterBody || '';
+    const givebutterAccent = supportStrings.givebutterAccent || '#bbf7d0';
 
     let donateLinesMarkup = [donateLine1, donateLine2]
       .map((line) => (line ? `<span class="cdcalc-support-line">${escapeHtml(line)}</span>` : ''))
@@ -1802,6 +1933,17 @@
     const donateCopyMarkup = donateCopy
       ? `<p class="cdcalc-support-copy">${escapeHtml(donateCopy)}</p>`
       : '';
+    const koFiLinkLabel = [koFiIcon, koFiLabel]
+      .map((value) => (value ? String(value).trim() : ''))
+      .filter(Boolean)
+      .join(' ');
+    const koFiLinkMarkup = koFiHref
+      ? `<div class="cdcalc-support-links"><a class="cdcalc-support-secondary" href="${escapeHtml(
+            koFiHref,
+          )}" target="_blank" rel="noopener noreferrer">${escapeHtml(
+            koFiLinkLabel || koFiLabel,
+          )}</a></div>`
+      : '';
 
     slides.push({
       className: 'cdcalc-mini-slide--support',
@@ -1809,11 +1951,46 @@
         <div class="cdcalc-support-card">
           ${donateButtonMarkup}
           ${donateCopyMarkup}
+          ${koFiLinkMarkup}
         </div>
       `,
     });
 
-    SUPPORT_PARTNER_SLIDES.forEach((slide) => {
+    const supportTileSlides = [];
+
+    if (koFiHref) {
+      const koFiTile = createSupportTile({
+        href: koFiHref,
+        label: koFiLabel,
+        body: koFiBody,
+        icon: koFiIcon,
+        accent: koFiAccent,
+      });
+      if (koFiTile.trim()) {
+        supportTileSlides.push({
+          className: 'cdcalc-mini-slide--support cdcalc-mini-slide--support-link',
+          html: koFiTile,
+        });
+      }
+    }
+
+    if (givebutterHref) {
+      const givebutterTile = createSupportTile({
+        href: givebutterHref,
+        label: givebutterLabel,
+        body: givebutterBody,
+        icon: givebutterIcon,
+        accent: givebutterAccent,
+      });
+      if (givebutterTile.trim()) {
+        supportTileSlides.push({
+          className: 'cdcalc-mini-slide--support cdcalc-mini-slide--support-link',
+          html: givebutterTile,
+        });
+      }
+    }
+
+    supportTileSlides.forEach((slide) => {
       slides.push(slide);
     });
 
