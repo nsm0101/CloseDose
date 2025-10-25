@@ -180,7 +180,7 @@ function calculateDose() {
     group.push(`
       <article class="result-card">
         <h3>Acetaminophen (160 mg / 5 mL)</h3>
-        <p>Give ${acetaMl.toFixed(1)} mL (${acetaMg.toFixed(0)} mg) every 4 hours as needed for fever/pain.</p>
+        <p>Give <strong><em>${acetaMl.toFixed(1)} mL</em></strong> (<em>${acetaMg.toFixed(0)} mg</em>) every 4 hours as needed for fever/pain.</p>
         <p class="dose-note">Maximum single dose for this age group is ${ACETA_MAX_MG_INFANT} mg.</p>
         ${
           acetaCapped
@@ -224,7 +224,7 @@ function calculateDose() {
     group.push(`
       <article class="result-card">
         <h3>Acetaminophen (160 mg / 5 mL)</h3>
-        <p>Give ${acetaMl.toFixed(1)} mL (${acetaMg.toFixed(0)} mg) every 6 hours as needed for fever/pain.</p>
+        <p>Give <strong><em>${acetaMl.toFixed(1)} mL</em></strong> (<em>${acetaMg.toFixed(0)} mg</em>) every 6 hours as needed for fever/pain.</p>
         ${
           acetaCapped
             ? renderWarning(
@@ -249,8 +249,8 @@ function calculateDose() {
     group.push(`
       <article class="result-card">
         <h3>Ibuprofen (oral)</h3>
-        <p><strong>Children's 100 mg / 5 mL:</strong> Give ${ibuMl100.toFixed(1)} mL (${ibuMg.toFixed(0)} mg) every 6 hours as needed for fever/pain.</p>
-        <p><strong>Infant's 50 mg / 1.25 mL:</strong> Give ${ibuMl50.toFixed(1)} mL (${ibuMg.toFixed(0)} mg) every 6 hours as needed for fever/pain.</p>
+        <p><strong>Children's 100 mg / 5 mL:</strong> Give <strong><em>${ibuMl100.toFixed(1)} mL</em></strong> (<em>${ibuMg.toFixed(0)} mg</em>) every 6 hours as needed for fever/pain.</p>
+        <p><strong>Infant's 50 mg / 1.25 mL:</strong> Give <strong><em>${ibuMl50.toFixed(1)} mL</em></strong> (<em>${ibuMg.toFixed(0)} mg</em>) every 6 hours as needed for fever/pain.</p>
         ${
           ibuCapped
             ? renderWarning(

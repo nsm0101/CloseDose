@@ -81,15 +81,15 @@
       patientWeightValue: '{{kg}} kg ({{lbs}} lbs)',
       acetaminophenInfantTitle: 'Acetaminophen (160 mg / 5 mL)',
       acetaminophenInfantBody:
-        'Give {{ml}} mL ({{mg}} mg) every 4 hours as needed for fever/pain.',
+        'Give <strong><em>{{ml}} mL</em></strong> (<em>{{mg}} mg</em>) every 4 hours as needed for fever/pain.',
       acetaminophenOlderTitle: 'Acetaminophen (160 mg / 5 mL)',
       acetaminophenOlderBody:
-        'Give {{ml}} mL ({{mg}} mg) every 6 hours as needed for fever/pain.',
+        'Give <strong><em>{{ml}} mL</em></strong> (<em>{{mg}} mg</em>) every 6 hours as needed for fever/pain.',
       ibuprofenTitle: "Ibuprofen (oral)",
       ibuprofenBody100:
-        "<strong>Children's 100 mg / 5 mL:</strong> Give {{ml}} mL ({{mg}} mg) every 6 hours as needed for fever/pain.",
+        "<strong>Children's 100 mg / 5 mL:</strong> Give <strong><em>{{ml}} mL</em></strong> (<em>{{mg}} mg</em>) every 6 hours as needed for fever/pain.",
       ibuprofenBody50:
-        "<strong>Infant's 50 mg / 1.25 mL:</strong> Give {{ml}} mL ({{mg}} mg) every 6 hours as needed for fever/pain.",
+        "<strong>Infant's 50 mg / 1.25 mL:</strong> Give <strong><em>{{ml}} mL</em></strong> (<em>{{mg}} mg</em>) every 6 hours as needed for fever/pain.",
     },
     accessibility: {
       resultsRegion: 'Dosing results',
@@ -163,210 +163,6 @@
     return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg.trim())}`;
   }
 
-  const MINI_CAROUSEL_CONTENT = {
-    acetaminophenLiquid: [
-      {
-        src: 'images/Carousel/ace/k/k1.png',
-        alt: "Children's acetaminophen product photo (variant 1)",
-        caption: "Children's Acetaminophen Suspension",
-        meta: '160 mg / 5 mL',
-      },
-      {
-        src: 'images/Carousel/ace/k/k2.png',
-        alt: "Children's acetaminophen product photo (variant 2)",
-        caption: "Children's Acetaminophen Suspension",
-        meta: '160 mg / 5 mL',
-      },
-      {
-        src: 'images/Carousel/ace/k/k3.png',
-        alt: "Children's acetaminophen product photo (variant 3)",
-        caption: "Children's Acetaminophen Suspension",
-        meta: '160 mg / 5 mL',
-      },
-      {
-        src: 'images/Carousel/ace/k/k4.png',
-        alt: "Children's acetaminophen product photo (variant 4)",
-        caption: "Children's Acetaminophen Suspension",
-        meta: '160 mg / 5 mL',
-      },
-      {
-        src: 'images/Carousel/ace/k/k5.png',
-        alt: "Children's acetaminophen product photo (variant 5)",
-        caption: "Children's Acetaminophen Suspension",
-        meta: '160 mg / 5 mL',
-      },
-      {
-        src: 'images/Carousel/ace/k/k6.png',
-        alt: "Children's acetaminophen product photo (variant 6)",
-        caption: "Children's Acetaminophen Suspension",
-        meta: '160 mg / 5 mL',
-      },
-      {
-        src: 'images/Carousel/ace/k/k7.png',
-        alt: "Children's acetaminophen product photo (variant 7)",
-        caption: "Children's Acetaminophen Suspension",
-        meta: '160 mg / 5 mL',
-      },
-      {
-        src: 'images/Carousel/ace/k/k8.png',
-        alt: "Children's acetaminophen product photo (variant 8)",
-        caption: "Children's Acetaminophen Suspension",
-        meta: '160 mg / 5 mL',
-      },
-      {
-        src: 'images/Carousel/ace/k/k9.png',
-        alt: "Children's acetaminophen product photo (variant 9)",
-        caption: "Children's Acetaminophen Suspension",
-        meta: '160 mg / 5 mL',
-      },
-    ],
-    acetaminophenOther: [
-      {
-        src: createMiniProductBadge({
-          title: "Meltaways",
-          subtitle: '160 mg each',
-          tone: '#fde68a',
-          glyph: '🍓',
-        }),
-        alt: "Illustration representing Tylenol Children's Meltaways acetaminophen tablets 160 mg each",
-        caption: "Tylenol® Children's Meltaways",
-        meta: '160 mg orally disintegrating tablet',
-      },
-      {
-        src: createMiniProductBadge({
-          title: 'Chewables',
-          subtitle: '160 mg each',
-          tone: '#fbcfe8',
-          glyph: '🧡',
-        }),
-        alt: "Illustration representing children's chewable acetaminophen tablets 160 mg each",
-        caption: "Generic Children's Chewables",
-        meta: '160 mg chewable tablet',
-      },
-      {
-        src: createMiniProductBadge({
-          title: 'Suppository',
-          subtitle: '80-160 mg',
-          tone: '#bfdbfe',
-          glyph: '🌙',
-        }),
-        alt: 'Illustration representing acetaminophen suppositories in the 80-160 mg range',
-        caption: 'Rectal Suppositories',
-        meta: '80-160 mg per dose (check label)',
-      },
-    ],
-    ibuprofenChildren: [
-      {
-        src: 'images/Carousel/ibu/k1.png',
-        alt: "Quality Choice children's ibuprofen oral suspension box showing 100 mg per 5 mL dosing information.",
-        caption: "Quality Choice® Children’s Ibuprofen",
-        meta: '100 mg / 5 mL oral suspension',
-      },
-      {
-        src: 'images/Carousel/ibu/k2.png',
-        alt: "Quality Choice children's ibuprofen packaging highlighting an alcohol-free, non-staining suspension.",
-        caption: "Quality Choice® Dye-Free Suspension",
-        meta: '100 mg / 5 mL oral suspension',
-      },
-      {
-        src: 'images/Carousel/ibu/k3.png',
-        alt: 'Dye-free children’s ibuprofen 100 mg per 5 mL box for ages 2 to 11 years.',
-        caption: 'Dye-Free Children’s Ibuprofen',
-        meta: '100 mg / 5 mL oral suspension',
-      },
-      {
-        src: 'images/Carousel/ibu/k4.png',
-        alt: "Equate children's ibuprofen oral suspension 100 mg per 5 mL packaging.",
-        caption: "Equate® Children’s Ibuprofen",
-        meta: '100 mg / 5 mL oral suspension',
-      },
-      {
-        src: 'images/Carousel/ibu/k5.png',
-        alt: "Children's Advil oral suspension 100 mg per 5 mL bottle and box.",
-        caption: "Children’s Advil® Suspension",
-        meta: '100 mg / 5 mL oral suspension',
-      },
-      {
-        src: 'images/Carousel/ibu/k6.png',
-        alt: "Generic children's ibuprofen packaging comparing to Children's Motrin for ages 2 to 11 years.",
-        caption: "Compare to Children’s Motrin®",
-        meta: '100 mg / 5 mL oral suspension',
-      },
-      {
-        src: 'images/Carousel/ibu/k7.png',
-        alt: "Children's ibuprofen dosing directions panel noting 100 mg per 5 mL oral suspension.",
-        caption: 'Children’s Ibuprofen Directions',
-        meta: 'Dosing guidance (100 mg / 5 mL)',
-      },
-      {
-        src: 'images/Carousel/ibu/k8.png',
-        alt: "Store-brand children's ibuprofen bubble gum flavor package comparing to Children's Motrin.",
-        caption: 'Store-Brand Bubble Gum Ibuprofen',
-        meta: '100 mg / 5 mL oral suspension',
-      },
-      {
-        src: 'images/Carousel/ibu/k9.png',
-        alt: "Children's ibuprofen oral suspension bottle with a lasts up to 8 hours callout.",
-        caption: 'Children’s Ibuprofen (8 Hour Relief)',
-        meta: '100 mg / 5 mL oral suspension',
-      },
-    ],
-    ibuprofenInfant: [
-      {
-        src: 'images/Ibuprofen/Infants/Motrin Infant ibuprofen iso.png',
-        alt: "Infant's Motrin concentrated ibuprofen 50 mg per 1.25 mL",
-        caption: "Infant's Motrin® Concentrated Drops",
-        meta: '50 mg / 1.25 mL',
-      },
-      {
-        src: 'images/Ibuprofen/Infants/Amazon Infant ibuprofen iso.png',
-        alt: 'Amazon Basics infant ibuprofen 50 mg per 1.25 mL',
-        caption: "Amazon Basics® Infant Ibuprofen",
-        meta: '50 mg / 1.25 mL',
-      },
-      {
-        src: 'images/Ibuprofen/Infants/Target Infant ibuprofen iso.png',
-        alt: 'Target up & up infant ibuprofen 50 mg per 1.25 mL',
-        caption: "up & up® Infant Ibuprofen",
-        meta: '50 mg / 1.25 mL',
-      },
-    ],
-    ibuprofenOther: [
-      {
-        src: createMiniProductBadge({
-          title: 'Chewables',
-          subtitle: '100 mg each',
-          tone: '#fecdd3',
-          glyph: '🍊',
-        }),
-        alt: "Illustration representing Motrin children's chewable ibuprofen tablets 100 mg each",
-        caption: "Motrin® Children's Chewables",
-        meta: '100 mg chewable tablet',
-      },
-      {
-        src: createMiniProductBadge({
-          title: 'Junior Tabs',
-          subtitle: '100 mg each',
-          tone: '#d8b4fe',
-          glyph: '⭐',
-        }),
-        alt: "Illustration representing Advil Junior Strength ibuprofen tablets 100 mg each",
-        caption: 'Advil® Junior Strength Tablets',
-        meta: '100 mg coated tablet',
-      },
-      {
-        src: createMiniProductBadge({
-          title: 'Caplets',
-          subtitle: '200 mg each',
-          tone: '#bbf7d0',
-          glyph: '💊',
-        }),
-        alt: 'Illustration representing generic ibuprofen caplets 200 mg each',
-        caption: 'Ibuprofen Caplets',
-        meta: '200 mg tablet/capsule (adolescents+)',
-      },
-    ],
-  };
 
   const BASE_STYLES = `
     .cdcalc-card {
@@ -778,6 +574,13 @@
     .cdcalc-guide-promo__arrow {
       font-size: 1.2em;
       line-height: 1;
+      transition: transform 0.2s ease, color 0.2s ease;
+    }
+
+    .cdcalc-guide-promo__link:hover .cdcalc-guide-promo__arrow,
+    .cdcalc-guide-promo__link:focus-visible .cdcalc-guide-promo__arrow {
+      transform: translateX(4px);
+      color: #fef3c7;
     }
 
     .cdcalc-result-card--with-guide[data-guide-peeking='true'] .cdcalc-guide-promo {
@@ -2270,34 +2073,6 @@
       const acetaMg = Math.min(acetaMgCalculated, ACETA_MAX_MG_INFANT);
       const acetaMl = (acetaMg / 160) * 5;
       const acetaCapped = acetaMg < acetaMgCalculated;
-      const acetaminophenLiquidCarousel = renderMiniCarousel(
-        MINI_CAROUSEL_CONTENT.acetaminophenLiquid,
-        {
-          label: "acetaminophen products",
-          heading: '160 mg / 5 mL liquids',
-          guideHref: '/medication-guides.html#acetaminophen',
-          guideLabel: 'View medication guide for acetaminophen products',
-        }
-      );
-      const acetaminophenAlternateCarousel = renderMiniCarousel(
-        MINI_CAROUSEL_CONTENT.acetaminophenOther,
-        {
-          label: 'alternate acetaminophen products',
-          heading: 'Chewables, meltaways & more',
-          guideHref: '/medication-guides.html#acetaminophen',
-          guideLabel: 'View medication guide for acetaminophen products',
-        }
-      );
-      const acetaminophenCarouselGroup = [
-        acetaminophenLiquidCarousel,
-        acetaminophenAlternateCarousel,
-      ]
-        .filter(Boolean)
-        .join('');
-      const acetaminophenCarouselMarkup = acetaminophenCarouselGroup
-        ? `<div class="cdcalc-mini-carousel-stack cdcalc-mini-carousel-stack--split">${acetaminophenCarouselGroup}</div>`
-        : '';
-
       const group = [];
       group.push(`
         <article class="cdcalc-result-card cdcalc-result-card--with-guide">
@@ -2307,7 +2082,6 @@
             mg: acetaMg.toFixed(0),
           })}</p>
           <p>${formatString(strings.warnings.acetaminophenMax, { max: ACETA_MAX_MG_INFANT })}</p>
-          ${acetaminophenCarouselMarkup}
           ${renderGuidePromo({
             eyebrow: 'Parents',
             body: 'Need product photos or extra dosing reminders? Open the acetaminophen medication guide for a closer look.',
@@ -2350,71 +2124,6 @@
       const ibuCapped = ibuMg < ibuMgCalculated;
       const ibuMl50 = (ibuMg / 50) * 1.25;
       const ibuMl100 = (ibuMg / 100) * 5;
-      const acetaminophenLiquidCarousel = renderMiniCarousel(
-        MINI_CAROUSEL_CONTENT.acetaminophenLiquid,
-        {
-          label: "acetaminophen products",
-          heading: '160 mg / 5 mL liquids',
-          guideHref: '/medication-guides.html#acetaminophen',
-          guideLabel: 'View medication guide for acetaminophen products',
-        }
-      );
-      const acetaminophenAlternateCarousel = renderMiniCarousel(
-        MINI_CAROUSEL_CONTENT.acetaminophenOther,
-        {
-          label: 'alternate acetaminophen products',
-          heading: 'Chewables, meltaways & more',
-          guideHref: '/medication-guides.html#acetaminophen',
-          guideLabel: 'View medication guide for acetaminophen products',
-        }
-      );
-      const acetaminophenCarouselGroup = [
-        acetaminophenLiquidCarousel,
-        acetaminophenAlternateCarousel,
-      ]
-        .filter(Boolean)
-        .join('');
-      const acetaminophenCarouselMarkup = acetaminophenCarouselGroup
-        ? `<div class="cdcalc-mini-carousel-stack cdcalc-mini-carousel-stack--split">${acetaminophenCarouselGroup}</div>`
-        : '';
-      const ibuprofenChildrenCarousel = renderMiniCarousel(
-        MINI_CAROUSEL_CONTENT.ibuprofenChildren,
-        {
-          label: "children's ibuprofen products",
-          heading: "Children's 100 mg / 5 mL",
-          guideHref: '/medication-guides.html#ibuprofen-children',
-          guideLabel: "View children's ibuprofen medication guide",
-        }
-      );
-      const ibuprofenInfantCarousel = renderMiniCarousel(
-        MINI_CAROUSEL_CONTENT.ibuprofenInfant,
-        {
-          label: "infant ibuprofen products",
-          heading: 'Infant 50 mg / 1.25 mL',
-          guideHref: '/medication-guides.html#ibuprofen-infant',
-          guideLabel: "View infant ibuprofen medication guide",
-        }
-      );
-      const ibuprofenOtherCarousel = renderMiniCarousel(
-        MINI_CAROUSEL_CONTENT.ibuprofenOther,
-        {
-          label: 'other ibuprofen products',
-          heading: 'Tablets, capsules & chewables',
-          guideHref: '/medication-guides.html#ibuprofen-children',
-          guideLabel: "View children's ibuprofen medication guide",
-        }
-      );
-      const ibuprofenCarouselGroup = [
-        ibuprofenChildrenCarousel,
-        ibuprofenInfantCarousel,
-        ibuprofenOtherCarousel,
-      ]
-        .filter(Boolean)
-        .join('');
-      const ibuprofenCarouselMarkup = ibuprofenCarouselGroup
-        ? `<div class="cdcalc-mini-carousel-stack cdcalc-mini-carousel-stack--split">${ibuprofenCarouselGroup}</div>`
-        : '';
-
       const group = [];
       group.push(`
         <article class="cdcalc-result-card cdcalc-result-card--with-guide">
@@ -2423,7 +2132,6 @@
             ml: acetaMl.toFixed(1),
             mg: acetaMg.toFixed(0),
           })}</p>
-          ${acetaminophenCarouselMarkup}
           ${renderGuidePromo({
             eyebrow: 'Parents',
             body: 'Compare formulations and safety reminders in the acetaminophen medication guide.',
@@ -2462,7 +2170,6 @@
             ml: ibuMl50.toFixed(1),
             mg: ibuMg.toFixed(0),
           })}</p>
-          ${ibuprofenCarouselMarkup}
           ${renderGuidePromo({
             eyebrow: 'Parents',
             body: 'Browse product photos and tips in the ibuprofen medication guide before you dose.',
