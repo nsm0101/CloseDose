@@ -34,6 +34,9 @@
       --inner-radius: 18px;
       --shadow-card: 0 6px 0 rgba(15, 44, 42, 0.18);
       --shadow-btn: 0 6px 0 rgba(15, 44, 42, 0.45);
+      --card-fg: var(--ink-900);
+      --card-muted: rgba(18, 58, 55, 0.75);
+      --card-accent: rgba(18, 58, 55, 0.8);
       --timeline-grid: rgba(18, 58, 55, 0.16);
       --timeline-major: rgba(18, 58, 55, 0.32);
       --timeline-selected-soft: rgba(36, 166, 135, 0.22);
@@ -479,6 +482,7 @@
       padding: clamp(24px, 4vw, 36px);
       display: grid;
       gap: clamp(18px, 3vw, 28px);
+      color: var(--card-fg);
     }
 
     .result-card h2 {
@@ -491,7 +495,7 @@
     .result-summary {
       margin: 0;
       font-weight: 600;
-      color: rgba(18, 58, 55, 0.75);
+      color: var(--card-muted);
     }
 
     .timeline-container {
@@ -746,7 +750,7 @@
       padding-left: 1.2rem;
       display: grid;
       gap: 6px;
-      color: rgba(18, 58, 55, 0.8);
+      color: var(--card-accent);
       font-weight: 600;
     }
 
@@ -897,12 +901,12 @@
       }
 
       .timeline-track {
-        --track-padding: clamp(16px, 6vw, 24px);
-        --track-top-gap: clamp(32px, 12vw, 52px);
-        --track-bottom-gap: clamp(36px, 14vw, 60px);
-        --axis-offset: clamp(120px, 62vw, 180px);
-        --axis-gap: clamp(22px, 14vw, 36px);
-        min-height: clamp(560px, 120vh, 760px);
+        --track-padding: clamp(16px, 5vw, 24px);
+        --track-top-gap: clamp(32px, 10vw, 52px);
+        --track-bottom-gap: clamp(36px, 12vw, 60px);
+        --axis-offset: calc(var(--track-padding) + clamp(72px, 38vw, 120px));
+        --axis-gap: clamp(20px, 12vw, 32px);
+        min-height: clamp(560px, 115vh, 760px);
       }
 
       .timeline-marker-label {
@@ -931,6 +935,9 @@
         --footer-border: #1b263b;
         --med-acetaminophen-ink: #fcbf6c;
         --med-ibuprofen-ink: #fca5a5;
+        --card-fg: #ffffff;
+        --card-muted: rgba(255, 255, 255, 0.82);
+        --card-accent: rgba(255, 255, 255, 0.9);
       }
 
       body {
