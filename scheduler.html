@@ -4,8 +4,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="color-scheme" content="light" />
-  <title>CloseDose – 48 Hour Scheduler</title>
-  <meta name="description" content="Plot a 48-hour dosing timeline for acetaminophen or ibuprofen using the CloseDose scheduler." />
+  <title>CloseDose – 36 Hour Scheduler</title>
+  <meta name="description" content="Plot a 36-hour dosing timeline for acetaminophen or ibuprofen using the CloseDose scheduler." />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -326,6 +326,46 @@
       outline-offset: 3px;
     }
 
+    .time-entry-controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .time-entry-controls input[type="datetime-local"] {
+      flex: 1 1 240px;
+      min-width: 200px;
+    }
+
+    .time-entry-controls button {
+      appearance: none;
+      border: 3px solid var(--ink-900);
+      border-radius: 14px;
+      background: var(--teal-400);
+      color: var(--white);
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 12px 18px;
+      font-size: 0.95rem;
+      cursor: pointer;
+      box-shadow: var(--shadow-btn);
+      transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
+    }
+
+    .time-entry-controls button:hover,
+    .time-entry-controls button:focus-visible {
+      background: var(--teal-500);
+      transform: translateY(1px);
+      box-shadow: 0 4px 0 rgba(15, 44, 42, 0.55);
+    }
+
+    .time-entry-controls button:focus-visible {
+      outline: 3px solid var(--white);
+      outline-offset: 3px;
+    }
+
     .time-entry .hint {
       margin: 0;
       color: rgba(18, 58, 55, 0.75);
@@ -522,7 +562,7 @@
         var(--timeline-grid),
         var(--timeline-grid) 1px,
         transparent 1px,
-        transparent calc(100% / 48)
+        transparent calc(100% / 36)
       );
       pointer-events: none;
     }
@@ -573,7 +613,7 @@
       transform: translateY(0);
     }
 
-    .axis-label[data-hour="48"] {
+    .axis-label[data-hour="36"] {
       transform: translateY(-100%);
     }
 
@@ -911,6 +951,11 @@
         color: #e6f7f3;
       }
 
+      .time-entry-controls button {
+        background: var(--teal-500);
+        color: #e6f7f3;
+      }
+
       .timeline-track {
         background: linear-gradient(180deg, rgba(17, 38, 41, 0.9), rgba(12, 32, 35, 0.92));
         border-color: rgba(56, 189, 248, 0.14);
@@ -984,9 +1029,9 @@
       <div class="scheduler-shell">
         <section class="card" aria-labelledby="scheduler-heading">
           <div class="card-header">
-            <h1 id="scheduler-heading">48-Hour Scheduler</h1>
+            <h1 id="scheduler-heading">36-Hour Scheduler</h1>
             <p>
-              Visualize the next 48 hours of dosing for acetaminophen or ibuprofen. Enter the most recent dose to see when the
+              Visualize the next 36 hours of dosing for acetaminophen or ibuprofen. Enter the most recent dose to see when the
               next doses are due and optionally add an alternating schedule.
             </p>
           </div>
@@ -1049,8 +1094,11 @@
             </fieldset>
             <div class="time-entry">
               <label for="lastDose">Step 3: Last dose given at</label>
-              <input type="datetime-local" id="lastDose" name="lastDose" required />
-              <p class="hint">Use your local time. The timeline will cover the next 48 hours from this moment.</p>
+              <div class="time-entry-controls">
+                <input type="datetime-local" id="lastDose" name="lastDose" required step="900" />
+                <button type="button" id="setNow">Now</button>
+              </div>
+              <p class="hint">Use your local time. The timeline will cover the next 36 hours from this moment.</p>
             </div>
             <div class="action">
               <button type="submit">Plot Schedule</button>
@@ -1058,7 +1106,7 @@
           </form>
         </section>
         <section id="results" aria-live="polite" aria-atomic="true">
-          <p class="placeholder">Complete the steps above to generate a 48-hour dosing timeline.</p>
+          <p class="placeholder">Complete the steps above to generate a 36-hour dosing timeline.</p>
         </section>
       </div>
     </main>
@@ -1169,9 +1217,31 @@
     (function () {
       const form = document.getElementById('schedulerForm');
       const results = document.getElementById('results');
+      const lastDoseField = document.getElementById('lastDose');
+      const setNowButton = document.getElementById('setNow');
+      const ROUNDING_MINUTES = 15;
       let alternateControl = null;
       let alternateToggle = null;
       let alternateLabel = null;
+
+      function toInputValue(date) {
+        const offsetMs = date.getTimezoneOffset() * 60 * 1000;
+        const local = new Date(date.getTime() - offsetMs);
+        return local.toISOString().slice(0, 16);
+      }
+
+      function roundToInterval(date, minutes = ROUNDING_MINUTES) {
+        const intervalMs = minutes * 60 * 1000;
+        return new Date(Math.round(date.getTime() / intervalMs) * intervalMs);
+      }
+
+      if (setNowButton && lastDoseField) {
+        setNowButton.addEventListener('click', () => {
+          const now = roundToInterval(new Date());
+          lastDoseField.value = toInputValue(now);
+          lastDoseField.focus();
+        });
+      }
 
       const AGE_LABELS = {
         '0-2': '0 to 2 Months',
@@ -1211,7 +1281,7 @@
       };
 
       const HALF_INTERVAL = 3; // Half of a 6 hour spacing for alternating schedules
-      const DURATION_HOURS = 48;
+      const DURATION_HOURS = 36;
       let lastContext = null;
       let showAlternate = false;
 
@@ -1264,7 +1334,7 @@
       }
 
       function resetResults() {
-        results.innerHTML = '<p class="placeholder">Complete the steps above to generate a 48-hour dosing timeline.</p>';
+        results.innerHTML = '<p class="placeholder">Complete the steps above to generate a 36-hour dosing timeline.</p>';
         removeAlternateControl();
         showAlternate = false;
       }
@@ -1284,12 +1354,13 @@
         return {
           ageGroup,
           medication,
-          lastDoseDate,
+          lastDoseDate: roundToInterval(lastDoseDate),
         };
       }
 
       function formatDateTime(date) {
-        return date.toLocaleString(undefined, {
+        const rounded = roundToInterval(new Date(date.getTime()));
+        return rounded.toLocaleString(undefined, {
           weekday: 'short',
           month: 'short',
           day: 'numeric',
@@ -1299,7 +1370,7 @@
       }
 
       function formatTimeShort(baseDate, offsetHours) {
-        const target = new Date(baseDate.getTime() + offsetHours * 60 * 60 * 1000);
+        const target = roundToInterval(new Date(baseDate.getTime() + offsetHours * 60 * 60 * 1000));
         return target.toLocaleString(undefined, {
           hour: 'numeric',
           minute: '2-digit',
@@ -1312,7 +1383,7 @@
         const endTime = startDate.getTime() + durationMs;
         if (includeStart) {
           events.push({
-            time: new Date(startDate.getTime()),
+            time: roundToInterval(new Date(startDate.getTime())),
             label: 'Last dose',
             type: 'last',
           });
@@ -1323,7 +1394,7 @@
         let step = 1;
         let nextTime = startDate.getTime() + intervalHours * 60 * 60 * 1000;
         while (nextTime <= endTime + 1) {
-          const instance = new Date(nextTime);
+          const instance = roundToInterval(new Date(nextTime));
           events.push({
             time: instance,
             label: `Dose ${step}`,
@@ -1343,7 +1414,7 @@
         let time = startDate.getTime() + offsetHours * 60 * 60 * 1000;
         while (time <= endTime + 1) {
           events.push({
-            time: new Date(time),
+            time: roundToInterval(new Date(time)),
             label: step === 0 ? 'First alternate' : `Alternate ${step}`,
             type: 'alternate',
           });
@@ -1362,13 +1433,14 @@
         if (event.type === 'alternate') {
           marker.classList.add('timeline-marker--alternate');
         }
+        const eventTime = roundToInterval(new Date(event.time.getTime()));
         const durationMs = durationHours * 60 * 60 * 1000;
-        const offset = Math.max(0, Math.min(durationMs, event.time.getTime() - startDate.getTime()));
+        const offset = Math.max(0, Math.min(durationMs, eventTime.getTime() - startDate.getTime()));
         const percent = (offset / durationMs) * 100;
         marker.style.top = `${percent}%`;
         const label = document.createElement('span');
         label.className = 'timeline-marker-label';
-        const labelTime = formatDateTime(event.time);
+        const labelTime = formatDateTime(eventTime);
         label.textContent = `${event.label} • ${labelTime}`;
         marker.appendChild(label);
         return marker;
@@ -1470,7 +1542,7 @@
         const card = document.createElement('article');
         card.className = 'result-card';
         const heading = document.createElement('h2');
-        heading.textContent = '48-hour dosing timeline';
+        heading.textContent = '36-hour dosing timeline';
         const summary = document.createElement('p');
         const ageLabel = AGE_LABELS[ageGroup] || ageGroup;
         summary.className = 'result-summary';
