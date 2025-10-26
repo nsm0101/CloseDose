@@ -28,22 +28,26 @@
       --ink-500: #205b57;
       --bg: #f5f9f9;
       --white: #ffffff;
-      --card-bg: rgba(255, 255, 255, 0.95);
+      --card-bg: rgba(255, 255, 255, 0.92);
       --card-border: 3px solid var(--ink-900);
       --card-radius: 26px;
       --inner-radius: 18px;
-      --shadow-card: 0 12px 34px rgba(18, 58, 55, 0.16);
+      --shadow-card: 0 6px 0 rgba(15, 44, 42, 0.18);
       --shadow-btn: 0 6px 0 rgba(15, 44, 42, 0.45);
       --timeline-grid: rgba(18, 58, 55, 0.16);
       --timeline-major: rgba(18, 58, 55, 0.32);
-      --timeline-alt: #f97316;
-      --timeline-alt-soft: rgba(249, 115, 22, 0.18);
       --timeline-selected-soft: rgba(36, 166, 135, 0.22);
       --footer-bg: #f8f9fa;
       --footer-fg: #111111;
       --footer-muted: #666666;
       --footer-link: #0369a1;
       --footer-border: #e5e7eb;
+      --med-acetaminophen: #ff9500;
+      --med-acetaminophen-soft: rgba(255, 149, 0, 0.24);
+      --med-acetaminophen-ink: #b45309;
+      --med-ibuprofen: #dc2626;
+      --med-ibuprofen-soft: rgba(220, 38, 38, 0.24);
+      --med-ibuprofen-ink: #8b1111;
     }
 
     *,
@@ -55,8 +59,9 @@
     body {
       margin: 0;
       font-family: "Nunito", system-ui, -apple-system, "Segoe UI", sans-serif;
-      background: var(--bg) url("images/light-bg.png") repeat;
-      background-size: 520px auto;
+      background: var(--bg) url("images/bg4k.png");
+      background-size: cover;
+      background-attachment: fixed;
       color: var(--ink-900);
       min-height: 100vh;
       display: flex;
@@ -451,128 +456,191 @@
 
     .timeline-container {
       display: grid;
-      gap: 16px;
+      gap: 20px;
+      --timeline-primary: var(--med-acetaminophen);
+      --timeline-primary-soft: var(--med-acetaminophen-soft);
+      --timeline-primary-ink: var(--med-acetaminophen-ink);
+      --timeline-alternate: var(--med-ibuprofen);
+      --timeline-alternate-soft: var(--med-ibuprofen-soft);
+      --timeline-alternate-ink: var(--med-ibuprofen-ink);
+    }
+
+    .timeline-container.timeline--acetaminophen {
+      --timeline-primary: var(--med-acetaminophen);
+      --timeline-primary-soft: var(--med-acetaminophen-soft);
+      --timeline-primary-ink: var(--med-acetaminophen-ink);
+      --timeline-alternate: var(--med-ibuprofen);
+      --timeline-alternate-soft: var(--med-ibuprofen-soft);
+      --timeline-alternate-ink: var(--med-ibuprofen-ink);
+    }
+
+    .timeline-container.timeline--ibuprofen {
+      --timeline-primary: var(--med-ibuprofen);
+      --timeline-primary-soft: var(--med-ibuprofen-soft);
+      --timeline-primary-ink: var(--med-ibuprofen-ink);
+      --timeline-alternate: var(--med-acetaminophen);
+      --timeline-alternate-soft: var(--med-acetaminophen-soft);
+      --timeline-alternate-ink: var(--med-acetaminophen-ink);
     }
 
     .timeline-track {
+      --track-padding: clamp(18px, 4vw, 28px);
+      --track-top-gap: clamp(36px, 8vw, 60px);
+      --track-bottom-gap: clamp(40px, 8vw, 68px);
+      --axis-offset: clamp(108px, 28vw, 164px);
+      --axis-gap: clamp(18px, 6vw, 32px);
       position: relative;
-      height: 150px;
-      border-radius: 18px;
-      background: linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(240, 248, 246, 0.96));
+      min-height: clamp(520px, 78vh, 720px);
+      border-radius: var(--inner-radius);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(240, 248, 246, 0.92));
       border: 2px solid rgba(18, 58, 55, 0.18);
-      overflow: hidden;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.65);
+      padding: var(--track-top-gap) var(--track-padding) var(--track-bottom-gap) var(--track-padding);
+      overflow: visible;
     }
 
     .timeline-track::before {
       content: "";
       position: absolute;
-      inset: 58px 0 44px;
-      border-top: 2px solid rgba(18, 58, 55, 0.5);
+      top: var(--track-top-gap);
+      bottom: var(--track-bottom-gap);
+      left: var(--axis-offset);
+      width: 4px;
+      border-radius: 999px;
+      background: rgba(18, 58, 55, 0.22);
+    }
+
+    .timeline-track::after {
+      content: "";
+      position: absolute;
+      top: var(--track-top-gap);
+      bottom: var(--track-bottom-gap);
+      left: var(--axis-offset);
+      right: var(--track-padding);
       background-image: repeating-linear-gradient(
-        to right,
+        to bottom,
         var(--timeline-grid),
         var(--timeline-grid) 1px,
         transparent 1px,
         transparent calc(100% / 48)
       );
-      background-size: calc(100% / 48) 100%;
-      background-repeat: repeat-x;
+      pointer-events: none;
     }
 
-    .timeline-axis {
+    .timeline-axis,
+    .timeline-markers {
       position: absolute;
-      inset: 0;
+      top: var(--track-top-gap);
+      bottom: var(--track-bottom-gap);
+      left: var(--track-padding);
+      right: var(--track-padding);
       pointer-events: none;
+    }
+
+    .timeline-markers {
+      left: var(--axis-offset);
     }
 
     .axis-label {
       position: absolute;
-      top: 12px;
-      transform: translateX(-50%);
-      text-align: center;
-      font-size: 0.75rem;
-      color: rgba(18, 58, 55, 0.7);
+      left: var(--track-padding);
+      width: calc(var(--axis-offset) - var(--track-padding));
+      transform: translateY(-50%);
+      text-align: right;
+      font-size: 0.8rem;
+      color: rgba(18, 58, 55, 0.75);
       font-weight: 700;
       letter-spacing: 0.04em;
-      min-width: 68px;
+      padding-right: clamp(8px, 2vw, 14px);
     }
 
     .axis-label::after {
       content: "";
       position: absolute;
-      top: 36px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 2px;
-      height: 20px;
+      top: 50%;
+      right: -12px;
+      width: 12px;
+      height: 2px;
       background: var(--timeline-major);
+      transform: translateY(-50%);
     }
 
     .axis-label span {
       display: block;
     }
 
-    .timeline-markers {
-      position: absolute;
-      inset: 0;
+    .axis-label[data-hour="0"] {
+      transform: translateY(0);
+    }
+
+    .axis-label[data-hour="48"] {
+      transform: translateY(-100%);
     }
 
     .timeline-marker {
       position: absolute;
-      bottom: 44px;
-      left: var(--position);
-      transform: translateX(-50%);
-      width: 18px;
-      height: 18px;
+      left: 0;
+      transform: translate(-50%, -50%);
+      width: 20px;
+      height: 20px;
       border-radius: 50%;
-      background: var(--teal-500);
-      box-shadow: 0 0 0 6px var(--timeline-selected-soft);
+      background: var(--timeline-primary);
+      box-shadow: 0 0 0 8px var(--timeline-primary-soft);
+      pointer-events: auto;
     }
 
     .timeline-marker::after {
       content: "";
       position: absolute;
-      left: 50%;
-      bottom: -42px;
-      transform: translateX(-50%);
-      width: 2px;
-      height: 42px;
+      top: 50%;
+      left: 100%;
+      width: var(--axis-gap);
+      height: 2px;
       background: rgba(18, 58, 55, 0.28);
+      transform: translateY(-50%);
     }
 
     .timeline-marker-label {
       position: absolute;
-      bottom: calc(100% + 10px);
-      left: 50%;
-      transform: translateX(-50%);
+      top: 50%;
+      left: calc(100% + var(--axis-gap));
+      transform: translateY(-50%);
       background: var(--white);
-      color: var(--ink-700);
-      padding: 6px 10px;
-      border-radius: 12px;
+      color: var(--timeline-primary-ink);
+      padding: 10px 14px;
+      border-radius: 14px;
       border: 2px solid rgba(18, 58, 55, 0.18);
-      font-size: 0.75rem;
+      font-size: 0.85rem;
       font-weight: 700;
-      white-space: nowrap;
-      box-shadow: 0 6px 16px rgba(18, 58, 55, 0.12);
+      line-height: 1.45;
+      box-shadow: 0 10px 24px rgba(18, 58, 55, 0.14);
+      max-width: min(360px, 72vw);
+      text-align: left;
+      white-space: normal;
     }
 
     .timeline-marker--last {
       background: var(--ink-900);
-      box-shadow: 0 0 0 6px rgba(15, 44, 42, 0.2);
+      box-shadow: 0 0 0 8px rgba(15, 44, 42, 0.18);
+    }
+
+    .timeline-marker--last .timeline-marker-label {
+      color: var(--ink-700);
+      border-color: rgba(18, 58, 55, 0.24);
     }
 
     .timeline-marker--alternate {
-      background: var(--timeline-alt);
-      box-shadow: 0 0 0 6px var(--timeline-alt-soft);
+      background: var(--timeline-alternate);
+      box-shadow: 0 0 0 8px var(--timeline-alternate-soft);
     }
 
     .timeline-marker--alternate::after {
-      background: rgba(249, 115, 22, 0.35);
+      background: var(--timeline-alternate-soft);
     }
 
     .timeline-marker--alternate .timeline-marker-label {
-      color: #b45309;
-      border-color: rgba(249, 115, 22, 0.28);
+      color: var(--timeline-alternate-ink);
+      border-color: var(--timeline-alternate-soft);
     }
 
     .timeline-legend {
@@ -589,6 +657,14 @@
       gap: 10px;
     }
 
+    .legend-item--primary {
+      color: var(--timeline-primary-ink);
+    }
+
+    .legend-item--alternate {
+      color: var(--timeline-alternate-ink);
+    }
+
     .legend-dot {
       width: 16px;
       height: 16px;
@@ -598,13 +674,13 @@
     }
 
     .legend-dot--selected {
-      background: var(--teal-500);
-      box-shadow: 0 0 0 4px var(--timeline-selected-soft);
+      background: var(--timeline-primary);
+      box-shadow: 0 0 0 4px var(--timeline-primary-soft);
     }
 
     .legend-dot--alternate {
-      background: var(--timeline-alt);
-      box-shadow: 0 0 0 4px var(--timeline-alt-soft);
+      background: var(--timeline-alternate);
+      box-shadow: 0 0 0 4px var(--timeline-alternate-soft);
     }
 
     .dose-lists {
@@ -780,8 +856,23 @@
         grid-template-columns: repeat(1, minmax(0, 1fr));
       }
 
+      .timeline-track {
+        --track-padding: clamp(16px, 6vw, 24px);
+        --track-top-gap: clamp(32px, 12vw, 52px);
+        --track-bottom-gap: clamp(36px, 14vw, 60px);
+        --axis-offset: clamp(120px, 62vw, 180px);
+        --axis-gap: clamp(22px, 14vw, 36px);
+        min-height: clamp(560px, 120vh, 760px);
+      }
+
       .timeline-marker-label {
-        font-size: 0.7rem;
+        font-size: 0.8rem;
+        max-width: min(300px, 80vw);
+      }
+
+      .timeline-legend {
+        flex-direction: column;
+        align-items: flex-start;
       }
     }
 
@@ -798,6 +889,8 @@
         --footer-muted: #a8b3bd;
         --footer-link: #4dd0e1;
         --footer-border: #1b263b;
+        --med-acetaminophen-ink: #fcbf6c;
+        --med-ibuprofen-ink: #fca5a5;
       }
 
       body {
@@ -823,10 +916,44 @@
         border-color: rgba(56, 189, 248, 0.14);
       }
 
+      .timeline-track::before {
+        background: rgba(148, 210, 203, 0.35);
+      }
+
+      .axis-label {
+        color: rgba(210, 234, 232, 0.8);
+      }
+
+      .axis-label::after {
+        background: rgba(148, 210, 203, 0.35);
+      }
+
       .timeline-marker-label {
         background: rgba(12, 33, 36, 0.94);
-        color: #d4f3ee;
+        color: var(--timeline-primary-ink);
         border-color: rgba(148, 210, 203, 0.24);
+      }
+
+      .timeline-marker::after {
+        background: rgba(148, 210, 203, 0.35);
+      }
+
+      .timeline-marker--alternate::after {
+        background: rgba(248, 113, 113, 0.35);
+      }
+
+      .timeline-marker--alternate .timeline-marker-label {
+        color: var(--timeline-alternate-ink);
+        border-color: rgba(248, 113, 113, 0.45);
+      }
+
+      .timeline-marker--last .timeline-marker-label {
+        color: #d4f3ee;
+      }
+
+      .legend-dot {
+        border-color: rgba(148, 210, 203, 0.32);
+        box-shadow: 0 0 0 4px rgba(148, 210, 203, 0.12);
       }
 
       .result-card {
@@ -929,13 +1056,6 @@
               <button type="submit">Plot Schedule</button>
             </div>
           </form>
-          <div class="alternate-toggle" id="alternateControl" hidden>
-            <label class="toggle-switch">
-              <input type="checkbox" id="alternateToggle" />
-              <span class="toggle-visual" aria-hidden="true"></span>
-              <span id="alternateLabel">Add alternating medication reminders</span>
-            </label>
-          </div>
         </section>
         <section id="results" aria-live="polite" aria-atomic="true">
           <p class="placeholder">Complete the steps above to generate a 48-hour dosing timeline.</p>
@@ -1049,9 +1169,9 @@
     (function () {
       const form = document.getElementById('schedulerForm');
       const results = document.getElementById('results');
-      const alternateControl = document.getElementById('alternateControl');
-      const alternateToggle = document.getElementById('alternateToggle');
-      const alternateLabel = document.getElementById('alternateLabel');
+      let alternateControl = null;
+      let alternateToggle = null;
+      let alternateLabel = null;
 
       const AGE_LABELS = {
         '0-2': '0 to 2 Months',
@@ -1095,10 +1215,57 @@
       let lastContext = null;
       let showAlternate = false;
 
+      function removeAlternateControl() {
+        if (alternateControl) {
+          alternateControl.hidden = true;
+        }
+        if (alternateControl && alternateControl.parentElement) {
+          alternateControl.parentElement.removeChild(alternateControl);
+        }
+        if (alternateToggle) {
+          alternateToggle.checked = false;
+        }
+      }
+
+      function ensureAlternateControl() {
+        if (!alternateControl) {
+          alternateControl = document.createElement('div');
+          alternateControl.className = 'alternate-toggle';
+          alternateControl.id = 'alternateControl';
+
+          const labelWrapper = document.createElement('label');
+          labelWrapper.className = 'toggle-switch';
+
+          alternateToggle = document.createElement('input');
+          alternateToggle.type = 'checkbox';
+          alternateToggle.id = 'alternateToggle';
+
+          const visual = document.createElement('span');
+          visual.className = 'toggle-visual';
+          visual.setAttribute('aria-hidden', 'true');
+
+          alternateLabel = document.createElement('span');
+          alternateLabel.id = 'alternateLabel';
+
+          labelWrapper.appendChild(alternateToggle);
+          labelWrapper.appendChild(visual);
+          labelWrapper.appendChild(alternateLabel);
+          alternateControl.appendChild(labelWrapper);
+
+          alternateToggle.addEventListener('change', () => {
+            showAlternate = alternateToggle.checked;
+            if (lastContext) {
+              renderResults(lastContext);
+            }
+          });
+        }
+
+        return alternateControl;
+      }
+
       function resetResults() {
         results.innerHTML = '<p class="placeholder">Complete the steps above to generate a 48-hour dosing timeline.</p>';
-        alternateControl.hidden = true;
-        alternateToggle.checked = false;
+        removeAlternateControl();
         showAlternate = false;
       }
 
@@ -1198,7 +1365,7 @@
         const durationMs = durationHours * 60 * 60 * 1000;
         const offset = Math.max(0, Math.min(durationMs, event.time.getTime() - startDate.getTime()));
         const percent = (offset / durationMs) * 100;
-        marker.style.setProperty('--position', `${percent}%`);
+        marker.style.top = `${percent}%`;
         const label = document.createElement('span');
         label.className = 'timeline-marker-label';
         const labelTime = formatDateTime(event.time);
@@ -1214,7 +1381,8 @@
           const tick = document.createElement('div');
           tick.className = 'axis-label';
           const percent = (hour / DURATION_HOURS) * 100;
-          tick.style.setProperty('left', `${percent}%`);
+          tick.style.top = `${percent}%`;
+          tick.dataset.hour = String(hour);
           const spanHours = document.createElement('span');
           spanHours.textContent = `+${hour}h`;
           const spanTime = document.createElement('span');
@@ -1258,7 +1426,7 @@
         const alternateInterval = alternateMed.intervals[ageGroup];
 
         results.innerHTML = '';
-        alternateControl.hidden = true;
+        removeAlternateControl();
 
         if (interval === null) {
           const note = document.createElement('article');
@@ -1271,7 +1439,9 @@
           note.appendChild(message);
           results.appendChild(note);
           showAlternate = false;
-          alternateToggle.checked = false;
+          if (alternateToggle) {
+            alternateToggle.checked = false;
+          }
           return;
         }
 
@@ -1279,15 +1449,22 @@
         const selectedEvents = buildDoseEvents(lastDoseDate, interval, durationHours, true);
         let alternateEvents = [];
         const canShowAlternate = interval === 6 && (ageGroup === '6-11' || ageGroup === '12+') && alternateInterval === 6;
+        let toggleControl = null;
         if (canShowAlternate) {
-          alternateControl.hidden = false;
+          toggleControl = ensureAlternateControl();
           alternateLabel.textContent = `Add alternating ${alternateMed.label} reminders`;
+          alternateControl.hidden = false;
+          alternateToggle.checked = showAlternate;
           if (showAlternate) {
             alternateEvents = buildAlternateEvents(lastDoseDate, 6, HALF_INTERVAL, durationHours);
+          } else {
+            alternateToggle.checked = false;
           }
         } else {
           showAlternate = false;
-          alternateToggle.checked = false;
+          if (alternateToggle) {
+            alternateToggle.checked = false;
+          }
         }
 
         const card = document.createElement('article');
@@ -1301,8 +1478,13 @@
         card.appendChild(heading);
         card.appendChild(summary);
 
+        if (toggleControl) {
+          card.appendChild(toggleControl);
+        }
+
         const timelineContainer = document.createElement('div');
         timelineContainer.className = 'timeline-container';
+        timelineContainer.classList.add(`timeline--${medication}`);
         const track = document.createElement('div');
         track.className = 'timeline-track';
         const axis = createAxis(lastDoseDate);
@@ -1323,7 +1505,7 @@
         const legend = document.createElement('div');
         legend.className = 'timeline-legend';
         const primaryLegend = document.createElement('span');
-        primaryLegend.className = 'legend-item';
+        primaryLegend.className = 'legend-item legend-item--primary';
         const primaryDot = document.createElement('span');
         primaryDot.className = 'legend-dot legend-dot--selected';
         const primaryLabel = document.createElement('span');
@@ -1333,7 +1515,7 @@
         legend.appendChild(primaryLegend);
         if (alternateEvents.length) {
           const altLegend = document.createElement('span');
-          altLegend.className = 'legend-item';
+          altLegend.className = 'legend-item legend-item--alternate';
           const altDot = document.createElement('span');
           altDot.className = 'legend-dot legend-dot--alternate';
           const altLabel = document.createElement('span');
@@ -1363,15 +1545,8 @@
           return;
         }
         lastContext = context;
-        showAlternate = alternateToggle.checked && !alternateControl.hidden;
+        showAlternate = alternateToggle ? alternateToggle.checked : false;
         renderResults(context);
-      });
-
-      alternateToggle.addEventListener('change', () => {
-        showAlternate = alternateToggle.checked;
-        if (lastContext) {
-          renderResults(lastContext);
-        }
       });
     })();
   </script>
