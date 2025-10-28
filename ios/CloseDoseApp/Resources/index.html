@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>CloseDose – Calculadora de Dosis Pediátricas</title>
+  <title>CloseDose – Pediatric Medication Dosing Calculator</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
@@ -15,6 +15,16 @@
   <meta property="og:image" content="/images/OG-image.png">
   <meta property="og:image:type" content="image/png">
   <meta property="og:image:alt" content="CloseDose pediatric dosing calculator preview">
+  <!-- Preload the children's ibuprofen carousel imagery so the widget renders instantly -->
+  <link rel="prefetch" href="images/Carousel/ibu/k1.png">
+  <link rel="prefetch" href="images/Carousel/ibu/k2.png">
+  <link rel="prefetch" href="images/Carousel/ibu/k3.png">
+  <link rel="prefetch" href="images/Carousel/ibu/k4.png">
+  <link rel="prefetch" href="images/Carousel/ibu/k5.png">
+  <link rel="prefetch" href="images/Carousel/ibu/k6.png">
+  <link rel="prefetch" href="images/Carousel/ibu/k7.png">
+  <link rel="prefetch" href="images/Carousel/ibu/k8.png">
+  <link rel="prefetch" href="images/Carousel/ibu/k9.png">
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-WYY1QFRPYP"></script>
   <script>
@@ -25,6 +35,7 @@
     gtag('js', new Date());
     gtag('config', 'G-WYY1QFRPYP');
   </script>
+  <script async src="https://widgets.givebutter.com/latest.umd.cjs?acct=r8SGiZ0RhFRoIkXu&p=other"></script>
   <style>
     :root {
       --teal-400: #24a687;
@@ -280,12 +291,14 @@
       box-shadow: 0 10px 0 rgba(15, 44, 42, 0.42);
       display: grid;
       gap: clamp(16px, 3vw, 24px);
-      text-align: left;
+      text-align: center;
+      justify-items: center;
     }
 
     .donate-card .donate-header {
       display: grid;
       gap: 8px;
+      justify-items: center;
     }
 
     .donate-card h2 {
@@ -301,9 +314,9 @@
       margin: 0;
       font-size: clamp(0.85rem, 2vw, 1rem);
       font-weight: 700;
-      letter-spacing: 0.08em;
+      letter-spacing: 0.12em;
       text-transform: uppercase;
-      color: rgba(255, 255, 255, 0.86);
+      color: #ffe8a8;
     }
 
     .donate-card .donate-intro {
@@ -313,9 +326,116 @@
       color: rgba(255, 255, 255, 0.94);
     }
 
+    .donate-card .donate-primary {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      perspective: 900px;
+      width: 100%;
+    }
+
+    .donate-card .donate-pill {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: clamp(18px, 4vw, 22px) clamp(48px, 10vw, 74px) clamp(20px, 4vw, 24px) clamp(32px, 8vw, 48px);
+      border-radius: 999px;
+      appearance: none;
+      border: 3px solid rgba(255, 255, 255, 0.82);
+      background: rgba(255, 255, 255, 0.16);
+      color: #ffffff;
+      font-weight: 900;
+      letter-spacing: 0.04em;
+      font-size: clamp(1rem, 2.6vw, 1.22rem);
+      font-family: inherit;
+      line-height: 1.1;
+      text-transform: none;
+      text-decoration: none;
+      box-shadow: 0 6px 0 rgba(15, 44, 42, 0.35);
+      transition:
+        transform 0.22s ease,
+        box-shadow 0.22s ease,
+        background 0.22s ease,
+        border-color 0.22s ease;
+      isolation: isolate;
+      transform-style: preserve-3d;
+      cursor: pointer;
+    }
+
+    .donate-card .donate-pill:hover,
+    .donate-card .donate-pill:focus-visible {
+      background: rgba(255, 255, 255, 0.28);
+      border-color: rgba(255, 255, 255, 0.95);
+      transform: translateY(-4px) scale(1.03) rotateX(6deg);
+      box-shadow: 0 12px 0 rgba(15, 44, 42, 0.48);
+      outline: none;
+    }
+
+    .donate-card .donate-pill:active {
+      transform: translateY(2px) scale(0.98);
+      box-shadow: inset 0 6px 12px rgba(15, 44, 42, 0.35);
+      background: rgba(255, 255, 255, 0.18);
+    }
+
+    .donate-card .donate-pill-lines {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .donate-card .donate-pill-line {
+      display: block;
+      font-size: clamp(1rem, 2.6vw, 1.22rem);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      text-shadow: 0 2px 6px rgba(15, 44, 42, 0.35);
+    }
+
+    .donate-card .donate-pill-sub {
+      display: block;
+      font-size: clamp(0.75rem, 1.8vw, 0.9rem);
+      font-weight: 800;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: #ffe8a8;
+      text-shadow: 0 2px 6px rgba(15, 44, 42, 0.35);
+    }
+
+    .donate-card .donate-pill img {
+      position: absolute;
+      right: clamp(0px, 2.4vw, 14px);
+      top: 50%;
+      transform: translate(45%, -50%) rotate(-4deg);
+      width: clamp(70px, 22vw, 108px);
+      height: auto;
+      filter: drop-shadow(0 6px 6px rgba(12, 38, 36, 0.35));
+      transition: transform 0.22s ease, filter 0.22s ease;
+      transform-style: preserve-3d;
+    }
+
+    .donate-card .donate-pill:hover img,
+    .donate-card .donate-pill:focus-visible img {
+      transform: translate(48%, -58%) rotate(-1deg) translateZ(26px) scale(1.12);
+      filter: drop-shadow(0 16px 18px rgba(12, 38, 36, 0.45));
+    }
+
+    .donate-card .donate-pill:active img {
+      transform: translate(40%, -44%) rotate(-6deg) translateZ(8px) scale(0.96);
+      filter: drop-shadow(0 6px 10px rgba(12, 38, 36, 0.38));
+    }
+
     .donate-card .donate-content {
       display: grid;
       gap: clamp(14px, 3vw, 20px);
+      width: 100%;
+      justify-items: center;
     }
 
     .donate-card .donate-links {
@@ -324,44 +444,103 @@
       padding: 0;
       display: grid;
       gap: 12px;
+      width: 100%;
     }
 
     .donate-card .donate-links a {
-      display: inline-flex;
+      display: flex;
       align-items: center;
       justify-content: center;
       gap: 10px;
-      padding: 12px 18px;
+      padding: 14px 18px;
       border-radius: 16px;
-      border: 2px solid rgba(255, 255, 255, 0.65);
-      background: rgba(255, 255, 255, 0.12);
-      color: #ffffff;
+      border: 2px solid var(--link-border, rgba(255, 255, 255, 0.65));
+      background: var(--link-bg, rgba(255, 255, 255, 0.12));
+      color: var(--link-color, #ffffff);
       font-weight: 800;
-      letter-spacing: 0.06em;
+      letter-spacing: 0.08em;
       text-transform: uppercase;
       text-decoration: none;
-      transition: background 0.2s ease, transform 0.2s ease, border-color 0.2s ease;
+      transition:
+        background 0.2s ease,
+        transform 0.2s ease,
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        color 0.2s ease;
+      width: 100%;
     }
 
     .donate-card .donate-links a:hover,
     .donate-card .donate-links a:focus-visible {
-      background: rgba(255, 255, 255, 0.28);
-      border-color: rgba(255, 255, 255, 0.85);
-      transform: translateY(-2px);
+      background: var(--link-bg-hover, rgba(255, 255, 255, 0.22));
+      color: var(--link-color-hover, #ffffff);
+      transform: translateY(-3px);
+      border-color: rgba(255, 255, 255, 0.95);
+      box-shadow: 0 8px 0 rgba(15, 44, 42, 0.42);
       outline: none;
     }
 
+    .donate-card .donate-links a.donate-link--kofi {
+      --link-bg: linear-gradient(135deg, rgba(41, 171, 224, 0.96), rgba(41, 171, 224, 0.78));
+      --link-bg-hover: linear-gradient(135deg, rgba(41, 171, 224, 1), rgba(41, 171, 224, 0.9));
+      --link-border: rgba(255, 255, 255, 0.85);
+      --link-color: #082d35;
+      --link-color-hover: #04191e;
+    }
+
+    .donate-card .donate-links a.donate-link--givebutter {
+      --link-bg: linear-gradient(135deg, rgba(255, 222, 89, 0.94), rgba(253, 200, 64, 0.88));
+      --link-bg-hover: linear-gradient(135deg, rgba(255, 230, 120, 1), rgba(253, 211, 90, 0.95));
+      --link-border: rgba(255, 255, 255, 0.9);
+      --link-color: #0f2c2a;
+      --link-color-hover: #061312;
+    }
+
+    @media (max-width: 540px) {
+      .donate-card .donate-primary {
+        justify-content: center;
+      }
+
+      .donate-card .donate-pill img {
+        right: clamp(6px, 4vw, 18px);
+        transform: translate(35%, -50%);
+        width: clamp(62px, 30vw, 88px);
+      }
+    }
+
     .card--disclaimer {
-      display: grid;
-      gap: 18px;
       position: relative;
-      overflow: hidden;
-      background: var(--card-bg);
+      align-self: center;
+      margin: 0 auto;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      padding: 12px 28px;
+      border-radius: 999px;
+      border: var(--card-border);
+      background: var(--white);
+      box-shadow: var(--shadow-card);
+      cursor: pointer;
+      color: var(--teal-600);
+      transition:
+        transform 0.18s ease,
+        box-shadow 0.18s ease,
+        background 0.18s ease,
+        color 0.18s ease;
     }
 
     .card--disclaimer > *:not(.trust-and-safety_background__A22kJ) {
       position: relative;
       z-index: 1;
+    }
+
+    .card--disclaimer .disclaimer-pill-label {
+      font-weight: 900;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      font-size: clamp(0.9rem, 2vw, 1rem);
+      color: inherit;
     }
 
     .card--disclaimer .trust-and-safety_background__A22kJ {
@@ -374,16 +553,27 @@
       background-repeat: no-repeat;
       background-blend-mode: screen;
       opacity: 0;
-      transform: scale(0.98);
+      transform: scale(0.96);
       transition: opacity 0.35s ease, transform 0.35s ease;
       pointer-events: none;
-      z-index: 0;
       visibility: hidden;
+      z-index: 0;
+    }
+
+    .card--disclaimer .disclaimer-header,
+    .card--disclaimer .disclaimer-content {
+      display: none;
     }
 
     .card--disclaimer:focus-visible {
       outline: 3px solid rgba(18, 70, 67, 0.45);
-      outline-offset: 8px;
+      outline-offset: 6px;
+    }
+
+    .card--disclaimer:hover,
+    .card--disclaimer:focus-visible {
+      background: #f0faf6;
+      box-shadow: 0 8px 20px rgba(15, 44, 42, 0.18);
     }
 
     .card--disclaimer h2 {
@@ -392,11 +582,9 @@
       font-weight: 900;
       letter-spacing: 0.14em;
       text-transform: uppercase;
-      color: var(--teal-600);
     }
 
     .card--disclaimer .disclaimer-header {
-      display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 18px;
@@ -417,8 +605,8 @@
       border-radius: 999px;
       cursor: pointer;
       transition: background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
-      display: none;
       white-space: nowrap;
+      display: none;
     }
 
     .card--disclaimer .disclaimer-close:hover,
@@ -434,7 +622,6 @@
     }
 
     .card--disclaimer .disclaimer-content {
-      display: grid;
       gap: 14px;
       text-align: left;
       width: min(960px, 100%);
@@ -446,7 +633,6 @@
       margin: 0;
       font-size: 0.98rem;
       line-height: 1.55;
-      color: var(--ink-900);
     }
 
     .card--disclaimer .disclaimer-updated {
@@ -454,7 +640,6 @@
       font-weight: 700;
       letter-spacing: 0.06em;
       text-transform: uppercase;
-      color: var(--ink-700);
     }
 
     .card--disclaimer .disclaimer-seek-care {
@@ -463,11 +648,21 @@
     }
 
     .card--disclaimer.is-expanded {
+      cursor: default;
+      align-self: stretch;
+      width: 100%;
+      max-width: min(720px, 100%);
+      display: grid;
+      gap: clamp(24px, 4vw, 36px);
+      padding: clamp(32px, 6vw, 64px) clamp(24px, 6vw, 56px);
+      border-radius: var(--card-radius);
       background: linear-gradient(140deg, rgba(15, 44, 42, 0.95), rgba(18, 70, 67, 0.98));
       color: var(--white);
-      padding: clamp(32px, 6vw, 64px) clamp(24px, 6vw, 56px);
       box-shadow: 0 18px 48px rgba(15, 44, 42, 0.35);
-      gap: clamp(24px, 4vw, 36px);
+    }
+
+    .card--disclaimer.is-expanded .disclaimer-pill-label {
+      display: none;
     }
 
     .card--disclaimer.is-expanded .trust-and-safety_background__A22kJ {
@@ -476,15 +671,15 @@
       visibility: visible;
     }
 
-    .card--disclaimer.is-expanded .disclaimer-header,
-    .card--disclaimer.is-expanded .disclaimer-content {
+    .card--disclaimer.is-expanded .disclaimer-header {
+      display: flex;
+      align-items: flex-start;
       width: 100%;
-      margin-left: auto;
-      margin-right: auto;
     }
 
-    .card--disclaimer.is-expanded .disclaimer-header {
-      align-items: flex-start;
+    .card--disclaimer.is-expanded .disclaimer-content {
+      display: grid;
+      width: 100%;
     }
 
     .card--disclaimer.is-expanded h2 {
@@ -520,6 +715,37 @@
 
     .card--disclaimer.is-expanded p {
       color: rgba(255, 255, 255, 0.92);
+    }
+
+    .card--disclaimer .disclaimer-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      text-decoration: none;
+      color: var(--teal-500);
+    }
+
+    .card--disclaimer .disclaimer-link::after {
+      content: '↗';
+      font-size: 0.85em;
+    }
+
+    .card--disclaimer .disclaimer-link:hover,
+    .card--disclaimer .disclaimer-link:focus-visible {
+      color: var(--teal-600);
+      text-decoration: underline;
+    }
+
+    .card--disclaimer.is-expanded .disclaimer-link {
+      color: #ffe8a8;
+    }
+
+    .card--disclaimer.is-expanded .disclaimer-link:hover,
+    .card--disclaimer.is-expanded .disclaimer-link:focus-visible {
+      color: #fff8d2;
     }
 
     .card--calculator {
@@ -1053,93 +1279,115 @@
   </style>
 </head>
 <body>
-  <a class="skip-link" href="#calculator-card">Saltar a la calculadora</a>
+  <a class="skip-link" href="#calculator-card">Skip to calculator</a>
   <div class="wrap">
     <header>
-      <img src="images/CloseDose_ExtendedLogo.svg" alt="CloseDose" class="header-wordmark" />
-      <button class="menu-btn" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="siteMenu" aria-label="Abrir menú">
-        <span class="label">Menú</span>
+      <img src="images/CD_Word.png" alt="CloseDose" class="header-wordmark" />
+      <button class="menu-btn" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="siteMenu" aria-label="Open menu">
+        <span class="label">Menu</span>
         <span class="hamburger" aria-hidden="true"><span></span><span></span><span></span></span>
-      </button>
     </header>
-
     <main>
       <div class="layout">
         <div class="calculator-widget-host" id="calculator-card" data-calculator-root></div>
         <section class="card donate-card" aria-labelledby="donate-heading">
-          <div class="donate-header">
-            <h2 id="donate-heading">¡Dona!</h2>
-            <p class="donate-subtitle">Ayuda a mantener CloseDose gratuito para las familias.</p>
-          </div>
           <div class="donate-content">
-          <p class="donate-intro">
-            CloseDose sigue siendo un recurso gratuito gracias al apoyo de nuestra comunidad. Si te es posible, considera donar mediante una de las opciones a continuación; cada contribución nos ayuda a mantener y ampliar herramientas confiables de dosificación pediátrica.
-          </p>
-          <ul class="donate-links">
-            <li>
-              <a href="https://www.paypal.com/donate?business=donate%40closedose.com&currency_code=USD" target="_blank" rel="noopener">
-                Donar con PayPal
-              </a>
-            </li>
-            <li>
-              <a href="https://www.buymeacoffee.com/closedose" target="_blank" rel="noopener">
-                Invítanos un café
-              </a>
-            </li>
-            <li>
-              <a href="mailto:hello@closedose.com?subject=CloseDose%20Support" rel="noopener">
-                Conectar para patrocinios
-              </a>
-            </li>
-          </ul>
-        </div>
+            <div class="donate-primary">
+              <button
+                class="donate-pill"
+                type="button"
+                id="donateBtn"
+                data-gb-account="r8SGiZ0RhFRoIkXu"
+                data-gb-campaign="93Xrjv"
+                data-fallback-href="https://givebutter.com/93Xrjv">
+                <span class="donate-pill-lines">
+                  <span class="donate-pill-line">Powered by Parents!</span>
+                  <span class="donate-pill-line">Help Support Us Today!</span>
+                  <span class="donate-pill-sub">Please consider donating today.</span>
+                </span>
+                <img src="images/piggyFINAL.svg" alt="" aria-hidden="true" />
+              </button>
+            </div>
+            <p class="donate-intro">
+              Please consider supporting me in the continued development of this tool!
+              Every contribution helps!
+            </p>
+            <ul class="donate-links">
+              <li>
+                <a class="donate-link--kofi" href="https://ko-fi.com/drnsm" target="_blank" rel="noopener">
+                  Support on Ko-fi
+                </a>
+              </li>
+              <li>
+                <a class="donate-link--givebutter" href="https://givebutter.com/93Xrjv" target="_blank" rel="noopener">
+                  GiveButter Campaign
+                </a>
+              </li>
+              <li>
+                <a href="mailto:hello@closedose.com?subject=CloseDose%20Support" rel="noopener">
+                  Connect for Sponsorships
+                </a>
+              </li>
+            </ul>
+          </div>
         </section>
-        <section class="card card--disclaimer" aria-labelledby="disclaimer-heading" aria-expanded="false" tabindex="-1">
+        <section
+          class="card card--disclaimer"
+          id="disclaimer-card"
+          aria-labelledby="disclaimer-heading"
+          aria-controls="disclaimer-panel"
+          aria-expanded="false"
+          tabindex="0"
+        >
+          <span class="disclaimer-pill-label">Disclaimer:</span>
           <div class="trust-and-safety_background__A22kJ" data-testid="value-prop" aria-hidden="true"></div>
           <div class="disclaimer-header">
-            <h2 id="disclaimer-heading">Aviso legal</h2>
-            <button type="button" class="disclaimer-close" aria-label="Cerrar aviso legal">
-              Cerrar
+            <h2 id="disclaimer-heading">Disclaimer</h2>
+            <button type="button" class="disclaimer-close" aria-label="Close disclaimer">
+              Close
             </button>
           </div>
-          <div class="disclaimer-content" hidden>
-          <p>
-            Esta calculadora es solo para apoyo educativo y no reemplaza la orientación de su pediatra o farmacéutico.
-            Confirme siempre la dosis antes de administrar un medicamento.
-          </p>
-          <p>
-            CloseDose se creó con la intención de proporcionar información de dosificación de medicamentos de venta libre comunes para niños generalmente sanos.
-          </p>
-          <p>
-            Si su hijo tiene entre 0 y 2 meses de edad, antecedentes médicos o quirúrgicos complejos, reacciones previas a medicamentos administrados, antecedentes de reacciones alérgicas o antecedentes personales o familiares significativos de enfermedad hepática o renal, consulte con su equipo médico antes de usar la calculadora de dosificación pediátrica de CloseDose.
-          </p>
-          <p class="disclaimer-seek-care"><strong>Cuándo buscar atención:</strong> ***</p>
-          <p class="disclaimer-updated">Actualizado 22.9.2025 • Nickolas Mancini, MD, MBA</p>
-        </div>
+          <div class="disclaimer-content" id="disclaimer-panel" hidden>
+            <p>
+              This calculator is for educational support only and does not replace guidance from your pediatrician or pharmacist.
+              Always confirm dosing before administering medication.
+            </p>
+            <p>
+              CloseDose was created with the intention of providing dosing information of common over-the-counter medications for generally healthy children.
+            </p>
+            <p>
+              If your child is 0-2 months of age, has any complex past medical history or past surgical history, any previous reactions to administered medications, history of allergic reaction, or has significant personal or family history of liver/kidney disease please consult with your medical care team prior to use of CloseDose pediatric medication dosing calculator.
+            </p>
+            <p class="disclaimer-seek-care"><strong>When to seek care:</strong> Call your pediatrician or seek urgent care for trouble breathing, persistent vomiting, signs of dehydration, seizures, or fever lasting more than 3 days.</p>
+            <a class="disclaimer-link" href="https://nsm0101.github.io/CloseDose/legal/disclaimer">
+              Click to see full Medical &amp; Website Disclaimer Information
+            </a>
+            <p class="disclaimer-updated">Updated 9.22.2025 • Nickolas Mancini, MD, MBA</p>
+          </div>
         </section>
       </div>
     </main>
   </div>
 
   <footer class="cd-footer" role="contentinfo" aria-label="Site footer">
-    <p class="cd-copy">© 2025 CloseDose. All rights reserved.</p>
+    <p class="cd-copy">2025 CloseDose. All rights reserved.</p>
 
     <nav class="cd-legal cd-legal--full" aria-label="Legal and policy links">
-      <a href="https://nsm0101.github.io/CloseDoseAlt/legal/terms">Terms of Use</a>
-      <a href="https://nsm0101.github.io/CloseDoseAlt/legal/privacy">Privacy Policy</a>
-      <a href="https://nsm0101.github.io/CloseDoseAlt/legal/disclaimer">Disclaimer</a>
-      <a href="https://nsm0101.github.io/CloseDoseAlt/legal/linking">Acceptable Use</a>
-      <a href="https://nsm0101.github.io/CloseDoseAlt/legal/dmca">DMCA Policy</a>
+      <a href="https://nsm0101.github.io/CloseDose/legal/terms">Terms of Use</a>
+      <a href="https://nsm0101.github.io/CloseDose/legal/privacy">Privacy Policy</a>
+      <a href="https://nsm0101.github.io/CloseDose/legal/disclaimer">Disclaimer</a>
+      <a href="https://nsm0101.github.io/CloseDose/legal/linking">Acceptable Use</a>
+      <a href="https://nsm0101.github.io/CloseDose/legal/dmca">DMCA Policy</a>
     </nav>
 
     <details class="cd-legal cd-legal--accordion">
       <summary aria-controls="legal-links">Legal &amp; Policies ▾</summary>
       <nav id="legal-links" aria-label="Legal and policy links">
-        <a href="https://nsm0101.github.io/CloseDoseAlt/legal/terms">Terms of Use</a>
-        <a href="https://nsm0101.github.io/CloseDoseAlt/legal/privacy">Privacy Policy</a>
-        <a href="https://nsm0101.github.io/CloseDoseAlt/legal/disclaimer">Disclaimer</a>
-        <a href="https://nsm0101.github.io/CloseDoseAlt/legal/linking">Acceptable Use</a>
-        <a href="https://nsm0101.github.io/CloseDoseAlt/legal/dmca">DMCA Policy</a>
+        <a href="https://nsm0101.github.io/CloseDose/legal/terms">Terms of Use</a>
+        <a href="https://nsm0101.github.io/CloseDose/legal/privacy">Privacy Policy</a>
+        <a href="https://nsm0101.github.io/CloseDose/legal/disclaimer">Disclaimer</a>
+        <a href="https://nsm0101.github.io/CloseDose/legal/linking">Acceptable Use</a>
+        <a href="https://nsm0101.github.io/CloseDose/legal/dmca">DMCA Policy</a>
       </nav>
     </details>
 
@@ -1156,90 +1404,23 @@
 
   <div class="menu-overlay" id="siteMenu" hidden>
     <div class="menu-panel" role="dialog" aria-modal="true" aria-labelledby="menuHeading">
-      <h2 id="menuHeading" class="visually-hidden">Menú del sitio</h2>
+      <h2 id="menuHeading" class="visually-hidden">Site menu</h2>
       <nav class="menu-links">
-        <a href="index.html" aria-current="page">Calculadora</a>
-        <a href="medication-guides.html">Guías de medicamentos</a>
-        <a href="about.html">Acerca de</a>
-        <a href="donations.html">Apoyar CloseDose</a>
-        <a href="contact.html">Contacto</a>
+        <a href="index.html" aria-current="page">Calculator</a>
+        <a href="medication-guides.html">Medication Guides</a>
+        <a href="about.html">About</a>
+        <a href="donations.html">Support CloseDose</a>
+        <a href="contact.html">Contact</a>
       </nav>
-      <button class="close-menu" type="button">Cerrar</button>
+      <button class="close-menu" type="button">Close</button>
     </div>
   </div>
-
   <script src="widget/close-dose-calculator.js"></script>
   <script>
     window.addEventListener('DOMContentLoaded', function () {
       var host = document.querySelector('[data-calculator-root]');
       if (host && window.CloseDoseCalculator) {
-        window.CloseDoseCalculator.mount(host, {
-          id: 'main-calculator-es',
-          strings: {
-            title: 'Calculadora de Medicamentos para Fiebre/Dolor',
-            form: {
-              ageLabel: 'Paso 1: Toque el grupo de edad',
-              ageGroupAria: 'Seleccionar edad del paciente',
-              agePrompt: 'Paso 1: ¡Elige un grupo de edad para comenzar!',
-              ageOptions: {
-                '0-2': { primary: '0 meses', secondary: '2 meses', align: 'start', accessible: '0 a 2 meses' },
-                '2-6': { primary: '2 meses', secondary: '6 meses', align: 'start', accessible: '2 a 6 meses' },
-                '6-11': { primary: '6 meses', secondary: '11 años', align: 'start', accessible: '6 meses a 11 años' },
-                '12+': { primary: '12 años', secondary: 'o más', align: 'center', accessible: '12 años o más' },
-                '2y+': { primary: '12 años', secondary: 'o más', align: 'center', accessible: '12 años o más' },
-              },
-              ageSelectLabel: 'Seleccione la edad',
-              infantCriticalMessage:
-                '<strong>Busque atención médica inmediata.</strong> Si un niño menor de 60 días tiene fiebre es una emergencia médica. Comuníquese con su pediatra o busque atención con un profesional de la salud de inmediato.',
-              weightLabel: 'Paso 2: Introducir peso',
-              weightInputLabel: 'Introducir peso',
-              weightPlaceholder: 'Introducir peso',
-              weightUnitAria: 'Seleccionar unidad de peso',
-              calculate: 'Calcular',
-              calculateStep: 'Paso 3: ¡Calcular!',
-            },
-            units: {
-              lbs: 'lbs',
-              kg: 'kg',
-            },
-            warnings: {
-              ageRequiredTitle: 'Edad requerida',
-              ageRequiredBody: 'Seleccione un grupo de edad para continuar.',
-              weightRequiredTitle: 'Peso requerido',
-              weightRequiredBody: 'Ingrese un peso válido para calcular la dosis.',
-              maxDoseReachedTitle: 'Dosis máxima alcanzada',
-              maxDoseReachedBody:
-                'La dosis basada en el peso se limitó a este máximo. Considere hablar con su pediatra.',
-              doseSpacingTitle: 'Recordatorio de intervalos',
-              doseSpacingBody:
-                'Nunca exceda {{acetaminophenMax}} mg de acetaminofén o {{ibuprofenMax}} mg de ibuprofeno en una sola dosis y deje al menos 6 horas entre dosis.',
-              infantIbuprofen:
-                '<em>El ibuprofeno no se recomienda para lactantes menores de seis meses. Consulte a su pediatra antes de usar ibuprofeno en este grupo de edad.</em>',
-              acetaminophenMax:
-                'La dosis máxima única para este grupo de edad es de {{max}} mg de acetaminofén cada 6 horas.',
-              ibuprofenMax:
-                'La dosis máxima única para este grupo de edad es de {{max}} mg de ibuprofeno cada 6 horas.',
-            },
-            results: {
-              patientWeightLabel: 'Peso del paciente',
-              patientWeightValue: '{{kg}} kg ({{lbs}} lbs)',
-              acetaminophenInfantTitle: 'Acetaminofén (160 mg / 5 mL)',
-              acetaminophenInfantBody:
-                'Administre {{ml}} mL ({{mg}} mg) cada 4 horas según sea necesario para fiebre/dolor.',
-              acetaminophenOlderTitle: 'Acetaminofén (160 mg / 5 mL)',
-              acetaminophenOlderBody:
-                'Administre {{ml}} mL ({{mg}} mg) cada 6 horas según sea necesario para fiebre/dolor.',
-              ibuprofenTitle: 'Ibuprofeno (oral)',
-              ibuprofenBody100:
-                '<strong>Niños 100 mg / 5 mL:</strong> Administre {{ml}} mL ({{mg}} mg) cada 6 horas según sea necesario para fiebre/dolor.',
-              ibuprofenBody50:
-                '<strong>Lactantes 50 mg / 1.25 mL:</strong> Administre {{ml}} mL ({{mg}} mg) cada 6 horas según sea necesario para fiebre/dolor.',
-            },
-            accessibility: {
-              resultsRegion: 'Resultados de dosificación',
-            },
-          },
-        });
+        window.CloseDoseCalculator.mount(host, { id: 'main-calculator' });
       }
     });
   </script>
@@ -1270,7 +1451,7 @@
         overlay.hidden = false;
         requestAnimationFrame(() => overlay.classList.add('open'));
         menuButton.setAttribute('aria-expanded', 'true');
-        menuButton.setAttribute('aria-label', 'Cerrar menú');
+        menuButton.setAttribute('aria-label', 'Close menu');
         closeButton.focus();
       }
 
@@ -1278,7 +1459,7 @@
         overlay.classList.remove('open');
         overlay.hidden = true;
         menuButton.setAttribute('aria-expanded', 'false');
-        menuButton.setAttribute('aria-label', 'Abrir menú');
+        menuButton.setAttribute('aria-label', 'Open menu');
         menuButton.focus();
       }
 
@@ -1321,6 +1502,16 @@
         }
       });
 
+      const donateButton = document.querySelector('.donate-pill[data-gb-account][data-gb-campaign]');
+      if (donateButton) {
+        const accountId = donateButton.getAttribute('data-gb-account') || 'r8SGiZ0RhFRoIkXu&p';
+        const campaignId = (donateButton.getAttribute('data-gb-campaign') || '93Xrjv');
+        const fallbackUrl = `https://givebutter.com/${campaignId}`;
+        donateButton.setAttribute('data-fallback-href', fallbackUrl);
+
+      
+      }
+
       updateMenuPresentation();
       window.addEventListener('scroll', updateMenuPresentation, { passive: true });
       window.addEventListener('resize', updateMenuPresentation);
@@ -1334,7 +1525,7 @@
     document.addEventListener('DOMContentLoaded', () => {
       const ageSelect = document.getElementById('age');
       const ageButtons = document.querySelectorAll('.age-option');
-      const unitSelect = document.getElementById('weight-unit');
+                const unitSelect = document.getElementById('weight-unit');
       const unitButtons = document.querySelectorAll('.unit-option');
       const calculateButton = document.querySelector('.action button');
 
@@ -1431,6 +1622,8 @@
         }
         disclaimerCard.classList.toggle('is-expanded', expanded);
         disclaimerCard.setAttribute('aria-expanded', String(expanded));
+        disclaimerCard.setAttribute('role', expanded ? 'region' : 'button');
+        disclaimerCard.setAttribute('tabindex', expanded ? '-1' : '0');
         if (disclaimerContent) {
           disclaimerContent.hidden = !expanded;
         }
@@ -1482,6 +1675,34 @@
         updateDisclaimerState();
       });
 
+      if (disclaimerCard) {
+        const tryExpandDisclaimer = (event) => {
+          if (disclaimerCard.classList.contains('is-expanded')) {
+            return;
+          }
+          if (event) {
+            event.preventDefault();
+          }
+          setDisclaimerState(true, { manual: true });
+        };
+
+        disclaimerCard.setAttribute('role', 'button');
+        disclaimerCard.setAttribute('tabindex', '0');
+
+        disclaimerCard.addEventListener('click', (event) => {
+          if (event.target instanceof HTMLElement && event.target.closest('button, a')) {
+            return;
+          }
+          tryExpandDisclaimer(event);
+        });
+
+        disclaimerCard.addEventListener('keydown', (event) => {
+          if (event.key === 'Enter' || event.key === ' ') {
+            tryExpandDisclaimer(event);
+          }
+        });
+      }
+
       if (disclaimerClose) {
         disclaimerClose.addEventListener('click', () => {
           setDisclaimerState(false, { manual: true });
@@ -1498,8 +1719,8 @@
   <script>
     // Read simple tracking params from the URL
     const u = new URL(location.href);
-    const SRC = (u.searchParams.get('src') || 'na').toLowerCase();
-    const ID = (u.searchParams.get('id') || 'na').toLowerCase();
+    const SRC = (u.searchParams.get('src') || 'na').toLowerCase(); // nfc | qr | link
+    const ID = (u.searchParams.get('id') || 'na').toLowerCase(); // 01..22 or short label
 
     // Helper to fire GA4 events
     function track(event, params = {}) {

@@ -19,7 +19,7 @@ const ATTENTION_CLASS = 'button--attention';
 //   directed to seek immediate care.
 // - 2–6 months: acetaminophen at 12.5 mg/kg (maximum 160 mg) and no ibuprofen.
 // - 6 months–11 years: pediatric caps limiting acetaminophen to 480 mg and
-//   ibuprofen to 400 mg per single dose.
+//   ibuprofen to 800 mg per single dose.
 // - 12+ years: adult dosing ceilings of 1000 mg acetaminophen and 800 mg
 //   ibuprofen per single dose.
 // This replaces the prior combined 6+ pathway while keeping the structure ready
@@ -180,7 +180,7 @@ function calculateDose() {
     group.push(`
       <article class="result-card">
         <h3>Acetaminophen (160 mg / 5 mL)</h3>
-        <p>Give ${acetaMl.toFixed(1)} mL (${acetaMg.toFixed(0)} mg) every 4 hours as needed for fever/pain.</p>
+        <p>Give <strong><em>${acetaMl.toFixed(1)} mL</em></strong> (<em>${acetaMg.toFixed(0)} mg</em>) every 4 hours as needed for fever/pain.</p>
         <p class="dose-note">Maximum single dose for this age group is ${ACETA_MAX_MG_INFANT} mg.</p>
         ${
           acetaCapped
@@ -206,7 +206,7 @@ function calculateDose() {
   } else if (gate === 'pediatric' || gate === 'adolescent') {
     const isPediatric = gate === 'pediatric';
     const ACETA_MAX_SINGLE_DOSE_MG = isPediatric ? 480 : 1000;
-    const IBU_MAX_SINGLE_DOSE_MG = isPediatric ? 400 : 800;
+    const IBU_MAX_SINGLE_DOSE_MG = 800;
 
     const acetaMgCalculated = 15 * weightKg;
     const acetaMg = Math.min(acetaMgCalculated, ACETA_MAX_SINGLE_DOSE_MG);
@@ -224,12 +224,16 @@ function calculateDose() {
     group.push(`
       <article class="result-card">
         <h3>Acetaminophen (160 mg / 5 mL)</h3>
-        <p>Give ${acetaMl.toFixed(1)} mL (${acetaMg.toFixed(0)} mg) every 6 hours as needed for fever/pain.</p>
-        ${renderWarning(
-          '',
-          `Maximum single dose for this age group is ${ACETA_MAX_SINGLE_DOSE_MG} mg of acetaminophen every 6 hours.`,
-          'warning-card--orange'
-        )}
+        <p>Give <strong><em>${acetaMl.toFixed(1)} mL</em></strong> (<em>${acetaMg.toFixed(0)} mg</em>) every 6 hours as needed for fever/pain.</p>
+        ${
+          acetaCapped
+            ? renderWarning(
+                '',
+                `Maximum single dose for this age group is ${ACETA_MAX_SINGLE_DOSE_MG} mg of acetaminophen every 6 hours.`,
+                'warning-card--orange'
+              )
+            : ''
+        }
         ${
           acetaCapped
             ? renderWarning(
@@ -245,13 +249,17 @@ function calculateDose() {
     group.push(`
       <article class="result-card">
         <h3>Ibuprofen (oral)</h3>
-        <p><strong>Children's 100 mg / 5 mL:</strong> Give ${ibuMl100.toFixed(1)} mL (${ibuMg.toFixed(0)} mg) every 6 hours as needed for fever/pain.</p>
-        <p><strong>Infant's 50 mg / 1.25 mL:</strong> Give ${ibuMl50.toFixed(1)} mL (${ibuMg.toFixed(0)} mg) every 6 hours as needed for fever/pain.</p>
-        ${renderWarning(
-          '',
-          `Maximum single dose for this age group is ${IBU_MAX_SINGLE_DOSE_MG} mg of ibuprofen every 6 hours.`,
-          'warning-card--orange'
-        )}
+        <p><strong>Children's 100 mg / 5 mL:</strong> Give <strong><em>${ibuMl100.toFixed(1)} mL</em></strong> (<em>${ibuMg.toFixed(0)} mg</em>) every 6 hours as needed for fever/pain.</p>
+        <p><strong>Infant's 50 mg / 1.25 mL:</strong> Give <strong><em>${ibuMl50.toFixed(1)} mL</em></strong> (<em>${ibuMg.toFixed(0)} mg</em>) every 6 hours as needed for fever/pain.</p>
+        ${
+          ibuCapped
+            ? renderWarning(
+                '',
+                `Maximum single dose for this age group is ${IBU_MAX_SINGLE_DOSE_MG} mg of ibuprofen every 6 hours.`,
+                'warning-card--orange'
+              )
+            : ''
+        }
         ${
           ibuCapped
             ? renderWarning(
@@ -264,13 +272,11 @@ function calculateDose() {
       </article>
     `);
 
-    group.push(
-      renderWarning(
-        'Dose spacing reminder',
-        `Never exceed ${ACETA_MAX_SINGLE_DOSE_MG} mg of acetaminophen or ${IBU_MAX_SINGLE_DOSE_MG} mg of ibuprofen in a single dose, and allow at least 6 hours between doses.`,
-        'warning-card--teal'
-      )
-    );
+    const doseSpacingBody = acetaCapped || ibuCapped
+      ? `Never exceed ${ACETA_MAX_SINGLE_DOSE_MG} mg of acetaminophen or ${IBU_MAX_SINGLE_DOSE_MG} mg of ibuprofen in a single dose, and allow at least 6 hours between doses.`
+      : 'Allow at least 6 hours between doses of acetaminophen or ibuprofen. Follow the product instructions for maximum amounts.';
+
+    group.push(renderWarning('Dose spacing reminder', doseSpacingBody, 'warning-card--teal'));
 
     resultBlocks.push(`<div class="result-group">${group.join('')}</div>`);
   }
