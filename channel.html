@@ -131,11 +131,26 @@
     .contacting-provider-group {
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 10px;
+    }
+
+    .contacting-provider-group .group-heading {
+      font-weight: 800;
+      color: var(--ink-700);
+      font-size: 1.05rem;
+      display: block;
     }
 
     .contacting-provider-group label {
       margin: 0;
+    }
+
+    .contacting-provider-name .field-label {
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: var(--ink-900);
+      display: block;
+      margin-bottom: 2px;
     }
 
     .contacting-provider-phone .subheading {
@@ -238,7 +253,7 @@
 
     .patient-age-row {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: minmax(0, 0.8fr) repeat(2, minmax(0, 1fr));
       gap: 14px;
       align-items: end;
     }
@@ -457,11 +472,12 @@
               <input type="text" id="clinician" name="clinician" autocomplete="name" />
             </label>
             <div class="contacting-provider-group">
-              <label class="contacting-provider-name">Contacting Provider
-                <input type="text" id="referring-provider" name="referringProvider" autocomplete="off" />
+              <span class="group-heading">Contacting Provider</span>
+              <label class="contacting-provider-name"><span class="field-label">Name</span>
+                <input type="text" id="referring-provider" name="referringProvider" autocomplete="off" aria-label="Contacting provider name" />
               </label>
               <label class="contacting-provider-phone"><span class="subheading">Phone</span>
-                <input type="tel" id="referring-phone" name="referringPhone" autocomplete="tel" />
+                <input type="tel" id="referring-phone" name="referringPhone" autocomplete="tel" aria-label="Contacting provider phone" />
               </label>
             </div>
           </div>
@@ -478,9 +494,9 @@
                 <div class="age-input-group">
                   <input type="number" id="age" name="age" min="0" inputmode="numeric" />
                   <select id="age-unit" name="ageUnit">
-                    <option value="years">Years</option>
-                    <option value="months">Months</option>
-                    <option value="days">Days</option>
+                    <option value="years">Year</option>
+                    <option value="months">Month</option>
+                    <option value="days">Day</option>
                   </select>
                 </div>
               </label>
