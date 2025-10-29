@@ -204,7 +204,7 @@
       display: flex;
       flex-direction: column;
       gap: 16px;
-      align-items: flex-start;
+      align-items: stretch;
       text-align: left;
       width: 100%;
     }
@@ -280,13 +280,25 @@
       display: flex;
       flex-direction: column;
       gap: 12px;
-      align-items: flex-start;
+      align-items: stretch;
       width: 100%;
     }
 
     .plan-option .checkbox-label {
       font-size: 1.2rem;
       line-height: 1.4;
+    }
+
+    .plan-option-details {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      align-items: flex-start;
+      width: 100%;
+    }
+
+    .plan-option-details[hidden] {
+      display: none !important;
     }
 
     .checkbox-label {
@@ -487,16 +499,16 @@
                 <span class="unit">bpm</span>
               </div>
             </label>
-            <label>RR
-              <div class="input-with-unit">
-                <input type="text" id="rr" name="rr" />
-                <span class="unit">bpm</span>
-              </div>
-            </label>
             <label>BP
               <div class="input-with-unit">
                 <input type="text" id="bp" name="bp" />
                 <span class="unit">mmHg</span>
+              </div>
+            </label>
+            <label>RR
+              <div class="input-with-unit">
+                <input type="text" id="rr" name="rr" />
+                <span class="unit">bpm</span>
               </div>
             </label>
             <label>SpO<sub>2</sub>
@@ -570,13 +582,15 @@
           <div class="plan-options" role="group" aria-label="Plan options">
             <div class="plan-option">
               <label class="checkbox-label"><input type="checkbox" name="plan" value="PEM Recommendations provided"> PEM Recommendations provided</label>
-              <label class="plan-textarea pem-recs-wrapper" hidden>PEM recommendations provided
-                <textarea id="pem-recs" name="pemRecs"></textarea>
-              </label>
+              <div class="plan-option-details pem-recs-wrapper" hidden>
+                <label class="plan-textarea">PEM recommendations provided
+                  <textarea id="pem-recs" name="pemRecs"></textarea>
+                </label>
+              </div>
             </div>
-              <div class="plan-option">
+            <div class="plan-option">
               <label class="checkbox-label"><input type="checkbox" name="plan" value="Accept Transfer"> Accept Transfer</label>
-              <div class="plan-conditional accept-transfer-details" hidden>
+              <div class="plan-option-details plan-conditional accept-transfer-details" hidden>
                 <div class="inline-group" role="radiogroup" aria-label="Mode of arrival">
                   <span class="group-title">Mode:</span>
                   <div class="inline-options horizontal">
@@ -612,18 +626,22 @@
             </div>
             <div class="plan-option">
               <label class="checkbox-label"><input type="checkbox" name="plan" value="HCH Subspecialist Phone Consultation"> HCH Subspecialist Phone Consultation</label>
-              <label class="plan-input subspecialist-wrapper" hidden>HCH Subspecialist Phone consultation
-                <input type="text" id="subspecialist" name="subspecialist" />
-              </label>
+              <div class="plan-option-details subspecialist-wrapper" hidden>
+                <label class="plan-input">HCH Subspecialist Phone consultation
+                  <input type="text" id="subspecialist" name="subspecialist" />
+                </label>
+              </div>
             </div>
             <div class="plan-option">
               <label class="checkbox-label"><input type="checkbox" name="plan" value="Follow-up HCHED PRN"> Follow-up HCHED PRN</label>
             </div>
             <div class="plan-option">
               <label class="checkbox-label"><input type="checkbox" name="plan" value="Other"> Other</label>
-              <label class="plan-textarea other-plan-wrapper" hidden>Other Plan Details
-                <textarea id="other-plan" name="otherPlan"></textarea>
-              </label>
+              <div class="plan-option-details other-plan-wrapper" hidden>
+                <label class="plan-textarea">Other Plan Details
+                  <textarea id="other-plan" name="otherPlan"></textarea>
+                </label>
+              </div>
             </div>
           </div>
         </fieldset>
