@@ -153,11 +153,24 @@
       margin-top: 6px;
     }
 
+    .inline-options.horizontal {
+      flex-direction: row;
+      flex-wrap: wrap;
+      gap: 12px 18px;
+      justify-content: flex-start;
+    }
+
     .inline-options label {
       flex-direction: row;
       align-items: center;
       font-weight: 600;
       gap: 8px;
+      font-size: 1.1rem;
+    }
+
+    .inline-options.horizontal label {
+      flex-direction: row;
+      white-space: nowrap;
     }
 
     .inline-options input[type="radio"],
@@ -165,6 +178,134 @@
       width: 20px;
       height: 20px;
       accent-color: var(--teal-500);
+    }
+
+    .group-title {
+      font-weight: 800;
+      color: var(--ink-700);
+      white-space: nowrap;
+    }
+
+    .inline-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      align-items: flex-start;
+    }
+
+    .inline-group .inline-options {
+      margin-top: 0;
+    }
+
+    .patient-details-list,
+    .medical-history-list,
+    .workup-list,
+    .plan-options {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .patient-details-list label,
+    .medical-history-list label,
+    .workup-list label,
+    .plan-options label {
+      margin: 0;
+    }
+
+    .patient-details-list {
+      gap: 18px;
+    }
+
+    .patient-details-list .mrn-field {
+      margin-bottom: 6px;
+    }
+
+    .brief-hpi {
+      margin-top: 12px;
+    }
+
+    .call-location-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px 18px;
+      margin-bottom: 12px;
+    }
+
+    .call-location-row .group-title {
+      font-weight: 800;
+      color: var(--ink-900);
+    }
+
+    .vitals-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 16px;
+      margin: 18px 0 22px;
+    }
+
+    .input-with-unit {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .input-with-unit input {
+      flex: 1 1 auto;
+      min-width: 0;
+    }
+
+    .input-with-unit select,
+    .input-with-unit .unit {
+      flex: 0 0 auto;
+      font-weight: 700;
+      color: var(--ink-700);
+    }
+
+    .input-with-unit .unit {
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: rgba(18, 58, 55, 0.08);
+    }
+
+    .pe-findings {
+      margin-top: 8px;
+    }
+
+    .plan-option {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .checkbox-label {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      color: var(--ink-900);
+    }
+
+    .checkbox-label input {
+      width: 20px;
+      height: 20px;
+      accent-color: var(--teal-500);
+    }
+
+    .plan-conditional {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      padding-left: 0;
+    }
+
+    .plan-textarea textarea {
+      min-height: 80px;
+    }
+
+    .plan-input input {
+      max-width: 320px;
     }
 
     .two-column {
@@ -182,6 +323,13 @@
       margin-top: clamp(18px, 3vw, 32px);
       font-weight: 600;
       line-height: 1.5;
+    }
+
+    .trauma-alert {
+      color: #c62828;
+      font-weight: 900;
+      text-transform: uppercase;
+      margin-bottom: 12px;
     }
 
     .actions {
@@ -230,7 +378,7 @@
         <fieldset>
           <legend>Caller Information</legend>
           <div class="field-group">
-            <label><strong>Physician/Clinician User</strong>
+            <label><strong>Physician taking call:</strong>
               <input type="text" id="clinician" name="clinician" autocomplete="name" />
             </label>
             <label>Referring Provider
@@ -244,18 +392,20 @@
 
         <fieldset>
           <legend>Patient Details</legend>
-          <div class="field-group">
-            <label>Patient Name
+          <div class="patient-details-list">
+            <label>Name
               <input type="text" id="patient-name" name="patientName" autocomplete="name" />
             </label>
             <label>Age
               <input type="text" id="age" name="age" />
             </label>
-            <label>Sex</label>
-            <div class="inline-options" role="radiogroup" aria-label="Patient sex">
-              <label><input type="radio" name="sex" value="male" required> Male</label>
-              <label><input type="radio" name="sex" value="female"> Female</label>
-              <label><input type="radio" name="sex" value="sex unknown"> Sex Unknown</label>
+            <div class="inline-group" role="radiogroup" aria-label="Patient sex">
+              <span class="group-title">Sex</span>
+              <div class="inline-options horizontal">
+                <label><input type="radio" name="sex" value="male" required> Male</label>
+                <label><input type="radio" name="sex" value="female"> Female</label>
+                <label><input type="radio" name="sex" value="unknown"> Unknown</label>
+              </div>
             </div>
             <label>Reason for call
               <input type="text" id="reason" name="reason" />
@@ -263,94 +413,129 @@
             <label>DOB
               <input type="text" id="dob" name="dob" />
             </label>
-            <label>MRN
+            <label class="mrn-field">MRN
               <input type="text" id="mrn" name="mrn" />
             </label>
           </div>
-          <label>Brief HPI
+          <label class="brief-hpi">Brief HPI
             <textarea id="hpi" name="hpi"></textarea>
           </label>
         </fieldset>
 
         <fieldset>
-          <legend>Call Logistics</legend>
-          <div class="field-group">
-            <label>Call Location</label>
-            <div class="inline-options" role="radiogroup" aria-label="Call location">
+          <legend>Call Information</legend>
+          <div class="call-location-row" role="radiogroup" aria-label="Patient location">
+            <span class="group-title">Patient Location:</span>
+            <div class="inline-options horizontal">
               <label><input type="radio" name="location" value="ExpressCare" required> ExpressCare</label>
               <label><input type="radio" name="location" value="TMH"> TMH</label>
               <label><input type="radio" name="location" value="Newport"> Newport</label>
               <label><input type="radio" name="location" value="Anderson"> Anderson</label>
               <label><input type="radio" name="location" value="Other"> Other</label>
             </div>
-            <label class="other-location" hidden>Specify Other Location
-              <input type="text" id="other-location" name="otherLocation" />
-            </label>
           </div>
+          <label class="other-location" hidden>Specify Other Location:
+            <input type="text" id="other-location" name="otherLocation" />
+          </label>
         </fieldset>
 
         <fieldset>
           <legend>Vitals</legend>
-          <label>Overall Vitals Status</label>
-          <div class="inline-options" role="radiogroup" aria-label="Vitals status">
-            <label><input type="radio" name="vitalsStatus" value="AVSS" required> AVSS</label>
-            <label><input type="radio" name="vitalsStatus" value="Custom"> Provide Details</label>
+          <div class="inline-group" role="radiogroup" aria-label="Vitals status">
+            <span class="group-title">Status</span>
+            <div class="inline-options horizontal vitals-status-options">
+              <label><input type="radio" name="vitalsStatus" value="AVSS" required> AVSS</label>
+              <label><input type="radio" name="vitalsStatus" value="abnormal"> Abnormal</label>
+            </div>
           </div>
-          <label class="custom-vitals" hidden>Describe Vitals
+          <label class="custom-vitals" hidden>Details
             <textarea id="vitals-text" name="vitalsText"></textarea>
           </label>
-          <div class="field-group">
+          <div class="vitals-grid">
             <label>Weight
-              <input type="text" id="weight" name="weight" />
+              <div class="input-with-unit">
+                <input type="text" id="weight" name="weight" />
+                <select id="weight-unit" name="weightUnit">
+                  <option value="lb">lb</option>
+                  <option value="kg">kg</option>
+                </select>
+              </div>
             </label>
             <label>Temp
-              <input type="text" id="temp" name="temp" />
+              <div class="input-with-unit">
+                <input type="text" id="temp" name="temp" />
+                <select id="temp-unit" name="tempUnit">
+                  <option value="°C">°C</option>
+                  <option value="°F">°F</option>
+                </select>
+              </div>
             </label>
             <label>HR
-              <input type="text" id="hr" name="hr" />
+              <div class="input-with-unit">
+                <input type="text" id="hr" name="hr" />
+                <span class="unit">bpm</span>
+              </div>
             </label>
             <label>RR
-              <input type="text" id="rr" name="rr" />
+              <div class="input-with-unit">
+                <input type="text" id="rr" name="rr" />
+                <span class="unit">bpm</span>
+              </div>
             </label>
             <label>BP
-              <input type="text" id="bp" name="bp" />
+              <div class="input-with-unit">
+                <input type="text" id="bp" name="bp" />
+                <span class="unit">mmHg</span>
+              </div>
             </label>
-            <label>SpO<sub>2</sub> (%)
-              <input type="text" id="spo2" name="spo2" />
+            <label>SpO<sub>2</sub>
+              <div class="input-with-unit">
+                <input type="text" id="spo2" name="spo2" />
+                <span class="unit">%</span>
+              </div>
             </label>
-            <label>FiO<sub>2</sub> (%)
-              <input type="text" id="fio2" name="fio2" />
+            <label>FiO<sub>2</sub>
+              <div class="input-with-unit">
+                <input type="text" id="fio2" name="fio2" />
+                <span class="unit">%</span>
+              </div>
             </label>
             <label>ETCO<sub>2</sub>
-              <input type="text" id="etco2" name="etco2" />
+              <div class="input-with-unit">
+                <input type="text" id="etco2" name="etco2" />
+                <span class="unit">mmHg</span>
+              </div>
             </label>
           </div>
-          <label>Significant PE findings
+          <label class="pe-findings">Significant PE findings
             <textarea id="pe-findings" name="peFindings"></textarea>
           </label>
         </fieldset>
 
         <fieldset>
           <legend>Medical History</legend>
-          <div class="field-group">
+          <div class="medical-history-list">
             <label>PMHx
               <textarea id="pmhx" name="pmhx"></textarea>
             </label>
             <label>PSHx
               <textarea id="pshx" name="pshx"></textarea>
             </label>
-            <label>Meds
+            <label>Home Medications
               <textarea id="meds" name="meds"></textarea>
             </label>
             <label>Allergies
               <textarea id="allergies" name="allergies"></textarea>
             </label>
+            <label>Social History
+              <textarea id="social-history" name="socialHistory"></textarea>
+            </label>
           </div>
         </fieldset>
 
         <fieldset>
-          <legend>Investigations &amp; Support</legend>
-          <div class="field-group">
+          <legend>Field/OSH Work-up</legend>
+          <div class="workup-list">
             <label>Access
               <input type="text" id="access" name="access" />
             </label>
@@ -371,46 +556,64 @@
 
         <fieldset>
           <legend>Plan</legend>
-          <div class="inline-options" role="group" aria-label="Plan options">
-            <label><input type="checkbox" name="plan" value="PEM Recommendations provided"> PEM Recommendations provided</label>
-            <label><input type="checkbox" name="plan" value="Accept Transfer"> Accept Transfer</label>
-            <label><input type="checkbox" name="plan" value="HCH Subspecialist Phone Consultation"> HCH Subspecialist Phone Consultation</label>
-            <label><input type="checkbox" name="plan" value="Follow-up HCHED PRN"> Follow-up HCHED PRN</label>
-            <label><input type="checkbox" name="plan" value="Other"> Other</label>
-          </div>
-          <div class="field-group">
-            <label>PEM Recommendations provided
-              <textarea id="pem-recs" name="pemRecs"></textarea>
-            </label>
-            <label>Mode of Arrival</label>
-            <div class="inline-options" role="radiogroup" aria-label="Mode of arrival">
-              <label><input type="radio" name="arrivalMode" value="Private Vehicle"> Private Vehicle</label>
-              <label><input type="radio" name="arrivalMode" value="BLS"> BLS</label>
-              <label><input type="radio" name="arrivalMode" value="ALS"> ALS</label>
-              <label><input type="radio" name="arrivalMode" value="LifePACT"> LifePACT</label>
-              <label><input type="radio" name="arrivalMode" value="Other"> Other</label>
+          <div class="plan-options" role="group" aria-label="Plan options">
+            <div class="plan-option">
+              <label class="checkbox-label"><input type="checkbox" name="plan" value="PEM Recommendations provided"> PEM Recommendations provided</label>
+              <label class="plan-textarea pem-recs-wrapper" hidden>PEM recommendations provided
+                <textarea id="pem-recs" name="pemRecs"></textarea>
+              </label>
             </div>
-            <label class="other-arrival" hidden>Specify Other Mode
-              <input type="text" id="other-arrival" name="otherArrival" />
-            </label>
-            <label>Trauma Activation?</label>
-            <div class="inline-options" role="radiogroup" aria-label="Trauma activation level">
-              <label><input type="radio" name="trauma" value="Level A"> Level A</label>
-              <label><input type="radio" name="trauma" value="Level B"> Level B</label>
-              <label><input type="radio" name="trauma" value="Level C"> Level C</label>
+              <div class="plan-option">
+              <label class="checkbox-label"><input type="checkbox" name="plan" value="Accept Transfer"> Accept Transfer</label>
+              <div class="plan-conditional accept-transfer-details" hidden>
+                <div class="inline-group" role="radiogroup" aria-label="Mode of arrival">
+                  <span class="group-title">Mode:</span>
+                  <div class="inline-options horizontal">
+                    <label><input type="radio" name="arrivalMode" value="Private Vehicle"> Private Vehicle</label>
+                    <label><input type="radio" name="arrivalMode" value="BLS"> BLS</label>
+                    <label><input type="radio" name="arrivalMode" value="ALS"> ALS</label>
+                    <label><input type="radio" name="arrivalMode" value="LifePACT"> LifePACT</label>
+                    <label><input type="radio" name="arrivalMode" value="Other"> Other</label>
+                  </div>
+                </div>
+                <label class="other-arrival" hidden>Other Mode of Arrival
+                  <input type="text" id="other-arrival" name="otherArrival" />
+                </label>
+                <label class="plan-textarea pre-arrival" hidden>Pre-arrival Consultations
+                  <textarea id="pre-arrival" name="preArrival"></textarea>
+                </label>
+                <label class="plan-input eta" hidden>Reported ETA
+                  <input type="text" id="eta" name="eta" />
+                </label>
+                <div class="inline-group trauma-section" role="radiogroup" aria-label="Trauma activation">
+                  <span class="group-title">Trauma Activation?</span>
+                  <div class="inline-options horizontal">
+                    <label><input type="radio" name="traumaStatus" value="yes"> Yes</label>
+                    <label><input type="radio" name="traumaStatus" value="no"> No</label>
+                  </div>
+                </div>
+                <div class="inline-options horizontal trauma-level-options" role="radiogroup" aria-label="Trauma activation level" hidden>
+                  <label><input type="radio" name="traumaLevel" value="Level A"> Level A</label>
+                  <label><input type="radio" name="traumaLevel" value="Level B"> Level B</label>
+                  <label><input type="radio" name="traumaLevel" value="Level C"> Level C</label>
+                </div>
+              </div>
             </div>
-            <label>Pre-arrival Consultations
-              <textarea id="pre-arrival" name="preArrival"></textarea>
-            </label>
-            <label>ETA
-              <input type="text" id="eta" name="eta" />
-            </label>
-            <label>HCH Subspecialist Phone Consultation with
-              <input type="text" id="subspecialist" name="subspecialist" />
-            </label>
-            <label>Other Plan Details
-              <textarea id="other-plan" name="otherPlan"></textarea>
-            </label>
+            <div class="plan-option">
+              <label class="checkbox-label"><input type="checkbox" name="plan" value="HCH Subspecialist Phone Consultation"> HCH Subspecialist Phone Consultation</label>
+              <label class="plan-input subspecialist-wrapper" hidden>HCH Subspecialist Phone consultation
+                <input type="text" id="subspecialist" name="subspecialist" />
+              </label>
+            </div>
+            <div class="plan-option">
+              <label class="checkbox-label"><input type="checkbox" name="plan" value="Follow-up HCHED PRN"> Follow-up HCHED PRN</label>
+            </div>
+            <div class="plan-option">
+              <label class="checkbox-label"><input type="checkbox" name="plan" value="Other"> Other</label>
+              <label class="plan-textarea other-plan-wrapper" hidden>Other Plan Details
+                <textarea id="other-plan" name="otherPlan"></textarea>
+              </label>
+            </div>
           </div>
         </fieldset>
 
@@ -448,7 +651,7 @@
     const customVitalsWrapper = document.querySelector('.custom-vitals');
     vitalsRadios.forEach(radio => {
       radio.addEventListener('change', () => {
-        if (radio.value === 'Custom' && radio.checked) {
+        if (radio.value === 'abnormal' && radio.checked) {
           customVitalsWrapper.hidden = false;
           document.getElementById('vitals-text').focus();
         } else if (radio.checked) {
@@ -472,6 +675,86 @@
       });
     });
 
+    const planCheckboxes = document.querySelectorAll('input[name="plan"]');
+    const pemRecsWrapper = document.querySelector('.pem-recs-wrapper');
+    const acceptTransferDetails = document.querySelector('.accept-transfer-details');
+    const preArrivalWrapper = document.querySelector('.pre-arrival');
+    const etaWrapper = document.querySelector('.eta');
+    const subspecialistWrapper = document.querySelector('.subspecialist-wrapper');
+    const otherPlanWrapper = document.querySelector('.other-plan-wrapper');
+    const traumaStatusRadios = document.querySelectorAll('input[name="traumaStatus"]');
+    const traumaLevelOptions = document.querySelector('.trauma-level-options');
+    const traumaLevelRadios = document.querySelectorAll('input[name="traumaLevel"]');
+
+    function resetArrivalDetails() {
+      arrivalRadios.forEach(radio => {
+        radio.checked = false;
+      });
+      otherArrivalWrapper.hidden = true;
+      document.getElementById('other-arrival').value = '';
+      traumaStatusRadios.forEach(radio => {
+        radio.checked = false;
+      });
+      traumaLevelRadios.forEach(radio => {
+        radio.checked = false;
+      });
+      traumaLevelOptions.hidden = true;
+      document.getElementById('pre-arrival').value = '';
+      document.getElementById('eta').value = '';
+      preArrivalWrapper.hidden = true;
+      etaWrapper.hidden = true;
+    }
+
+    planCheckboxes.forEach(checkbox => {
+      checkbox.addEventListener('change', () => {
+        const { value, checked } = checkbox;
+        switch (value) {
+          case 'PEM Recommendations provided':
+            pemRecsWrapper.hidden = !checked;
+            if (!checked) {
+              document.getElementById('pem-recs').value = '';
+            }
+            break;
+          case 'Accept Transfer':
+            acceptTransferDetails.hidden = !checked;
+            if (checked) {
+              preArrivalWrapper.hidden = false;
+              etaWrapper.hidden = false;
+            } else {
+              resetArrivalDetails();
+            }
+            break;
+          case 'HCH Subspecialist Phone Consultation':
+            subspecialistWrapper.hidden = !checked;
+            if (!checked) {
+              document.getElementById('subspecialist').value = '';
+            }
+            break;
+          case 'Other':
+            otherPlanWrapper.hidden = !checked;
+            if (!checked) {
+              document.getElementById('other-plan').value = '';
+            }
+            break;
+          default:
+            break;
+        }
+      });
+    });
+
+    traumaStatusRadios.forEach(radio => {
+      radio.addEventListener('change', () => {
+        if (radio.value === 'yes' && radio.checked) {
+          traumaLevelOptions.hidden = false;
+        } else if (radio.checked) {
+          traumaLevelOptions.hidden = true;
+          traumaLevelRadios.forEach(level => {
+            level.checked = false;
+          });
+        }
+      });
+    });
+
     const form = document.getElementById('notes-form');
     const summaryEl = document.getElementById('summary');
 
@@ -482,7 +765,6 @@
         return;
       }
 
-      const clinician = document.getElementById('clinician').value.trim();
       const patientName = document.getElementById('patient-name').value.trim();
       const age = document.getElementById('age').value.trim();
       const sex = form.querySelector('input[name="sex"]:checked')?.value || '';
@@ -495,7 +777,9 @@
       const vitalsStatus = form.querySelector('input[name="vitalsStatus"]:checked')?.value || '';
       const vitalsText = document.getElementById('vitals-text').value.trim();
       const weight = document.getElementById('weight').value.trim();
+      const weightUnit = document.getElementById('weight-unit').value;
       const temp = document.getElementById('temp').value.trim();
+      const tempUnit = document.getElementById('temp-unit').value;
       const hr = document.getElementById('hr').value.trim();
       const rr = document.getElementById('rr').value.trim();
       const bp = document.getElementById('bp').value.trim();
@@ -504,8 +788,10 @@
       const etco2 = document.getElementById('etco2').value.trim();
       const peFindings = document.getElementById('pe-findings').value.trim();
       const pmhx = document.getElementById('pmhx').value.trim();
+      const pshx = document.getElementById('pshx').value.trim();
       const meds = document.getElementById('meds').value.trim();
       const allergies = document.getElementById('allergies').value.trim();
+      const socialHistory = document.getElementById('social-history').value.trim();
       const access = document.getElementById('access').value.trim();
       const ekg = document.getElementById('ekg').value.trim();
       const labs = document.getElementById('labs').value.trim();
@@ -514,7 +800,8 @@
       const pemRecs = document.getElementById('pem-recs').value.trim();
       const arrivalMode = form.querySelector('input[name="arrivalMode"]:checked')?.value || '';
       const otherArrival = document.getElementById('other-arrival').value.trim();
-      const trauma = form.querySelector('input[name="trauma"]:checked')?.value || '';
+      const traumaStatus = form.querySelector('input[name="traumaStatus"]:checked')?.value || '';
+      const traumaLevel = traumaStatus === 'yes' ? form.querySelector('input[name="traumaLevel"]:checked')?.value || '' : '';
       const preArrival = document.getElementById('pre-arrival').value.trim();
       const eta = document.getElementById('eta').value.trim();
       const subspecialist = document.getElementById('subspecialist').value.trim();
@@ -539,6 +826,11 @@
         return;
       }
 
+      if (selectedPlans.includes('Accept Transfer') && traumaStatus === 'yes' && !traumaLevel) {
+        alert('Please select a trauma activation level.');
+        return;
+      }
+
       let locationPhrase = '';
       if (location === 'ExpressCare') {
         locationPhrase = 'connected with ExpressCare';
@@ -553,14 +845,14 @@
       } else {
         const parts = [];
         if (vitalsText) parts.push(vitalsText);
-        if (weight) parts.push(`Weight ${weight}`);
-        if (temp) parts.push(`Temp ${temp}`);
-        if (hr) parts.push(`HR ${hr}`);
-        if (rr) parts.push(`RR ${rr}`);
-        if (bp) parts.push(`BP ${bp}`);
+        if (weight) parts.push(`Weight ${weight} ${weightUnit}`);
+        if (temp) parts.push(`Temp ${temp} ${tempUnit}`);
+        if (hr) parts.push(`HR ${hr} bpm`);
+        if (rr) parts.push(`RR ${rr} bpm`);
+        if (bp) parts.push(`BP ${bp} mmHg`);
         if (spo2) parts.push(`SpO₂ ${spo2}%`);
         if (fio2) parts.push(`FiO₂ ${fio2}%`);
-        if (etco2) parts.push(`ETCO₂ ${etco2}`);
+        if (etco2) parts.push(`ETCO₂ ${etco2} mmHg`);
         vitalsSummary = parts.join('; ');
       }
 
@@ -574,7 +866,11 @@
             const modeText = arrivalMode === 'Other' && otherArrival ? otherArrival : arrivalMode;
             const acceptParts = [];
             if (modeText) acceptParts.push(`Mode: ${modeText}`);
-            if (trauma) acceptParts.push(`Trauma Activation ${trauma}`);
+            if (traumaStatus === 'yes') {
+              acceptParts.push(`Trauma Activation ${traumaLevel || ''}`.trim());
+            } else if (traumaStatus === 'no') {
+              acceptParts.push('No trauma activation');
+            }
             if (preArrival) acceptParts.push(`Pre-arrival consults: ${preArrival}`);
             if (eta) acceptParts.push(`ETA ${eta}`);
             planDetails.push(`Transfer accepted${acceptParts.length ? ` (${acceptParts.join('; ')})` : ''}`);
@@ -603,24 +899,38 @@
       const labsDisplay = labs || 'not reported';
       const imagingDisplay = imaging || 'not reported';
       const pmhxDisplay = pmhx || 'not reported';
+      const pshxDisplay = pshx || 'not reported';
       const allergiesDisplay = allergies || 'not reported';
       const medsDisplay = meds || 'not reported';
+      const socialDisplay = socialHistory || 'not reported';
 
       const summaryLines = [
         `${formattedTimestamp}`,
         referringProvider || referringPhone ? `Referring provider: ${referringProvider || 'not specified'}${referringPhone ? ` (Phone: ${referringPhone})` : ''}.` : '',
-        `Patient is a ${age || '___'} ${sex ? sex.split(' ').map(part => part.charAt(0).toUpperCase() + part.slice(1)).join(' ') : 'patient'} with PMHx significant for ${pmhxDisplay} who ${locationPhrase || 'was evaluated'} for ${reason || '___'}.`,
+        patientName ? `Patient: ${patientName}` : '',
+        `Patient is a ${age || '___'} ${sex ? sex.split(' ').map(part => part.charAt(0).toUpperCase() + part.slice(1)).join(' ') : 'patient'} with PMHx significant for ${pmhxDisplay} and PSHx of ${pshxDisplay} who ${locationPhrase || 'was evaluated'} for ${reason || '___'}.`,
+        dob ? `DOB: ${dob}` : '',
+        mrn ? `MRN: ${mrn}` : '',
         '',
         `${hpi || ''}`.trim() || 'Brief HPI: ___',
         `OSH Vitals: ${vitalsDisplay}. OSH PE reported significant for ${peFindings || 'not reported'}.`,
         `Current access: ${accessDisplay}.${tubes ? ` (Tubes: ${tubes})` : ''}`,
         `Work-up at OSH significant for: ${ekgDisplay}, ${labsDisplay}, ${imagingDisplay}.`,
         `Reported allergies: ${allergiesDisplay}, Current medications: ${medsDisplay}.`,
+        `Social history: ${socialDisplay}.`,
         '',
         `Plan for ${planDetails.join('; ')}.`
       ];
 
-      summaryEl.textContent = summaryLines.filter(Boolean).join('\n');
+      summaryEl.innerHTML = '';
+      if (selectedPlans.includes('Accept Transfer') && traumaStatus === 'yes' && traumaLevel) {
+        const traumaBanner = document.createElement('div');
+        traumaBanner.className = 'trauma-alert';
+        traumaBanner.textContent = `${traumaLevel.toUpperCase()} TRAUMA ACTIVATION`;
+        summaryEl.appendChild(traumaBanner);
+      }
+
+      summaryEl.appendChild(document.createTextNode(summaryLines.filter(Boolean).join('\n')));
     });
   </script>
 </body>
