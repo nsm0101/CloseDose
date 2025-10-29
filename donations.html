@@ -323,6 +323,21 @@
       height: auto;
     }
 
+    .donation-logo--wide {
+      width: min(240px, 100%);
+      height: auto;
+      padding: clamp(12px, 2vw, 18px);
+      border-radius: 18px;
+      background: var(--bg-accent);
+    }
+
+    .donation-logo--wide img {
+      width: 100%;
+      height: auto;
+      max-width: 100%;
+      object-fit: contain;
+    }
+
     .impact-card {
       background: rgba(255, 255, 255, 0.9);
       border-radius: 24px;
@@ -595,18 +610,15 @@
             </span>
             <small>Buy Dr. Nick a coffee via Ko-Fi!</small>
           </a>
-        <givebutter-widget id="gOeyDj">
-          <a
-            class="donation-card"
-            aria-label="Donate through Givebutter"
-          >
-            <span class="donation-card" aria-hidden="true">
-              <img src="Donations/Givebutter-stack-logo.png" alt="" />
-            </span>
-            <small>Supports major credit cards, Paypal, Venmo, CashApp, Mobile wallet payments</small>
-          </a>
+          <givebutter-widget id="gOeyDj">
+            <a class="donation-card" aria-label="Donate through Givebutter">
+              <span class="donation-logo donation-logo--wide" aria-hidden="true">
+                <img src="Donations/Givebutter-stack-logo.png" alt="" />
+              </span>
+              <small>Supports major credit cards, Paypal, Venmo, CashApp, Mobile wallet payments</small>
+            </a>
+          </givebutter-widget>
         </section>
-        </givebutter-widget>
 
         <section class="impact-card" aria-labelledby="impact-heading">
           <h2 id="impact-heading">How your donation helps</h2>
