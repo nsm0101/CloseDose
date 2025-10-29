@@ -1,319 +1,872 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>PALS Multi-Timer Cardiac Arrest Webapp</title>
-  <style>
-    body { font-family: Arial, sans-serif; background: #f8fafc; margin: 0; padding: 0; }
-    .container { max-width: 800px; margin: auto; padding: 20px; }
-    h1 { color: #0176c9; margin-bottom: 8px; }
-    #timers { display: flex; flex-direction: column; gap: 16px; }
-    .timer-row { border-radius: 6px; display: flex; align-items: center; padding: 10px; margin-bottom: 2px; transition: background 0.2s; }
-    .red { border-left: 8px solid #e53935; }
-    .orange { border-left: 8px solid #ff9800; }
-    .grey { border-left: 8px solid #9e9e9e; }
-    .timer-controls { margin-left: auto; display: flex; gap: 6px; }
-    .hidden { display: none; }
-    .bold { font-weight: bold; }
-    .accent-color { width: 24px; height: 24px; border-radius: 50%; border: 2px solid #ccc; margin: 2px; cursor: pointer; display: inline-block; }
-    .footer { position: fixed; bottom: 6px; left: 0; right: 0; background: #fff; display: flex; justify-content: center; gap: 10px; padding: 8px; box-shadow: 0 -2px 8px #e8e8e8; }
-    #addTimerBtn { background: #0176c9; color: #fff; border: none; border-radius: 5px; padding: 8px 14px; cursor: pointer; }
-    .dose-log { background: #f3f4f7; padding: 6px 10px; border-radius: 6px; margin-top: 6px; }
-    .input-label { border: none; background: #fafafa; border-radius: 3px; font-size: 1em; padding: 4px 8px; width: 120px; margin-right: 8px; }
-    .collapse { background: #f2f3f6; cursor: pointer; padding: 0 8px; border-radius: 4px; margin-right: 8px; }
-    .popup { position: fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.25); display:flex; align-items:center; justify-content:center; z-index:10; }
-    .popup-content { background:#fff; border-radius:10px; padding:28px; box-shadow:0 0 16px #bbb; min-width:320px; max-width:90vw; }
-    .color-picker { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
-    .visual-done { font-weight: bold; color: #e53935; } /* Show when CPR timer expires */
-    .pulse-check { font-size: 1.1em; color: #e53935; margin-left: 12px; }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <h1>PALS Cardiac Arrest Multi-Timer Webapp</h1>
-    <div id="timers"></div>
-    <button id="addTimerBtn">+ Add Timer</button>
-    <div id="doseLog" class="dose-log hidden"></div>
-  </div>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>CloseDose – PALS Cardiac Arrest Multi‑Timer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32.png" />
+    <link rel="apple-touch-icon" href="images/logo-teal.png" />
+    <link rel="stylesheet" href="style.css" />
+    <style>
+      :root {
+        --accent-red: #e53935;
+        --accent-orange: #ff9800;
+        --accent-grey: #9e9e9e;
+        --accent-blue: #0176c9;
+        --accent-green: #43a047;
+        --accent-purple: #7e57c2;
+        --accent-yellow: #fdd835;
+        --accent-pink: #ec407a;
+        --card-max-width: min(960px, 92vw);
+      }
 
-  <!-- Timer Popup -->
-  <div id="timerPopup" class="popup hidden">
-    <div class="popup-content">
-      <div><b>New Timer Setup</b></div>
-      <div style="margin-top:8px;">
-        <label>Timer Name:</label> <input type="text" id="timerNameInput" maxlength="24" style="width:150px;">
-      </div>
-      <div style="margin-top:8px;">
-        <label>Type:</label>
-        <select id="timerTypeOption">
-          <option value="countUp">Count Up</option>
-          <option value="countDown">Count Down</option>
-        </select>
-      </div>
-      <div style="margin-top:8px;">
-        <label>Minutes:</label> <input type="number" min="1" max="60" id="timerMinutesInput" value="2" style="width:60px;">
-      </div>
-      <div style="margin-top:8px;">
-        <button id="colorToggleBtn" onclick="toggleColorPicker()">Show Color Picker</button>
-        <div id="colorPicker" class="color-picker hidden"></div>
-      </div>
-      <div style="margin-top:18px;">
-        <button onclick="createNewTimer()">Create Timer</button>
-        <button onclick="closePopup()">Cancel</button>
+      body {
+        font-family: "Nunito", system-ui, -apple-system, "Segoe UI", sans-serif;
+      }
+
+      .wrap {
+        min-height: 100vh;
+      }
+
+      main.page {
+        padding: clamp(16px, 4vw, 48px) 16px 72px;
+      }
+
+      .timer-app {
+        width: var(--card-max-width);
+        margin: 0 auto;
+        padding: clamp(18px, 3vw, 32px);
+        background: rgba(255, 255, 255, 0.92);
+        border-radius: 26px;
+        border: 3px solid rgba(15, 44, 42, 0.12);
+        box-shadow: 0 18px 36px rgba(13, 52, 82, 0.18);
+        backdrop-filter: blur(12px);
+      }
+
+      .timer-app h1 {
+        margin: 0 0 8px;
+        font-size: clamp(1.6rem, 1.2rem + 2vw, 2.4rem);
+        color: #0f2c2a;
+        text-align: center;
+      }
+
+      .timer-app p.lead {
+        margin: 0 0 24px;
+        text-align: center;
+        color: rgba(15, 44, 42, 0.78);
+        font-size: clamp(1rem, 0.9rem + 0.4vw, 1.2rem);
+      }
+
+      #timers {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      .timer-row {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        padding: 14px clamp(14px, 4vw, 20px);
+        background: rgba(236, 244, 248, 0.92);
+        border-radius: 18px;
+        border-left: 10px solid var(--accent-grey);
+        box-shadow: 0 6px 16px rgba(15, 44, 42, 0.18);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+      }
+
+      .timer-row:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 28px rgba(15, 44, 42, 0.25);
+      }
+
+      .timer-row.red {
+        border-left-color: var(--accent-red);
+      }
+
+      .timer-row.orange {
+        border-left-color: var(--accent-orange);
+      }
+
+      .timer-row.grey {
+        border-left-color: var(--accent-grey);
+      }
+
+      .timer-row.blue {
+        border-left-color: var(--accent-blue);
+      }
+
+      .timer-row.green {
+        border-left-color: var(--accent-green);
+      }
+
+      .timer-row.purple {
+        border-left-color: var(--accent-purple);
+      }
+
+      .timer-row.yellow {
+        border-left-color: var(--accent-yellow);
+      }
+
+      .timer-row.pink {
+        border-left-color: var(--accent-pink);
+      }
+
+      .collapse {
+        background: rgba(255, 255, 255, 0.8);
+        border-radius: 10px;
+        padding: 4px 10px;
+        font-weight: 700;
+        cursor: pointer;
+        border: 1px solid rgba(15, 44, 42, 0.2);
+      }
+
+      .input-label {
+        border: none;
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 999px;
+        padding: 6px 16px;
+        min-width: 160px;
+        font-size: 1rem;
+        font-weight: 700;
+      }
+
+      .input-label:disabled {
+        opacity: 0.8;
+      }
+
+      .timer-header {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .timer-header .collapse {
+        flex-shrink: 0;
+      }
+
+      .timer-header .input-label {
+        flex: 1 1 220px;
+      }
+
+      .timer-header .timer-display {
+        margin-left: auto;
+      }
+
+      .timer-controls {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+
+      .summary-controls {
+        justify-content: flex-start;
+      }
+
+      .timer-display {
+        font-size: clamp(1.1rem, 1vw + 1rem, 1.45rem);
+        font-weight: 700;
+        color: #0f2c2a;
+      }
+
+      .timer-summary {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: 12px;
+        width: 100%;
+        align-items: center;
+      }
+
+      .summary-item {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        font-size: 0.95rem;
+      }
+
+      .summary-item strong {
+        font-size: 1rem;
+      }
+
+      .timer-body {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .timer-controls button,
+      .footer-actions button,
+      .popup-content button {
+        appearance: none;
+        background: linear-gradient(140deg, #24a687, #123a37);
+        color: #fff;
+        border: none;
+        border-radius: 999px;
+        padding: 8px 18px;
+        font-weight: 700;
+        cursor: pointer;
+        box-shadow: 0 6px 14px rgba(15, 44, 42, 0.22);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+      }
+
+      .timer-controls button:hover,
+      .footer-actions button:hover,
+      .popup-content button:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 10px 20px rgba(15, 44, 42, 0.25);
+      }
+
+      .timer-controls button.secondary,
+      .popup-content button.secondary {
+        background: rgba(15, 44, 42, 0.08);
+        color: #0f2c2a;
+        box-shadow: none;
+      }
+
+      .timer-controls button.secondary:hover,
+      .popup-content button.secondary:hover {
+        background: rgba(15, 44, 42, 0.15);
+      }
+
+      .dose-log {
+        background: rgba(255, 255, 255, 0.9);
+        padding: 10px 14px;
+        border-radius: 14px;
+        margin-top: 6px;
+        box-shadow: inset 0 0 0 1px rgba(15, 44, 42, 0.08);
+        width: 100%;
+        font-size: 0.95rem;
+      }
+
+      .dose-log b {
+        display: block;
+        margin-bottom: 4px;
+      }
+
+      .bold {
+        font-weight: 700;
+      }
+
+      .footer-actions {
+        margin-top: 24px;
+        display: flex;
+        justify-content: center;
+      }
+
+      #doseLog {
+        position: fixed;
+        bottom: clamp(20px, 6vw, 42px);
+        right: clamp(16px, 5vw, 48px);
+        background: rgba(0, 0, 0, 0.8);
+        color: #fff;
+        padding: 14px 18px;
+        border-radius: 16px;
+        box-shadow: 0 14px 28px rgba(0, 0, 0, 0.35);
+        max-width: min(280px, 90vw);
+        z-index: 50;
+      }
+
+      .popup {
+        position: fixed;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(7, 18, 28, 0.6);
+        z-index: 1000;
+      }
+
+      .popup-content {
+        background: rgba(255, 255, 255, 0.98);
+        border-radius: 20px;
+        padding: clamp(24px, 4vw, 32px);
+        width: min(420px, 92vw);
+        box-shadow: 0 24px 40px rgba(12, 44, 72, 0.28);
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+      }
+
+      .popup-content h2 {
+        margin: 0;
+        font-size: 1.35rem;
+        text-align: center;
+      }
+
+      .popup-field {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+
+      .popup-field label {
+        font-weight: 700;
+        color: rgba(15, 44, 42, 0.85);
+      }
+
+      .popup-field input,
+      .popup-field select {
+        border-radius: 12px;
+        border: 1px solid rgba(15, 44, 42, 0.18);
+        padding: 10px 14px;
+        font-size: 1rem;
+        font-family: inherit;
+      }
+
+      .popup-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        margin-top: 6px;
+      }
+
+      #accentPickerOverlay .popup-content {
+        align-items: center;
+        text-align: center;
+      }
+
+      .color-picker {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(42px, 1fr));
+        gap: 8px;
+        margin-top: 8px;
+      }
+
+      .accent-color {
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        border: 3px solid transparent;
+        cursor: pointer;
+        background-clip: padding-box;
+        transition: transform 0.15s ease, border-color 0.15s ease;
+      }
+
+      .accent-color[data-selected="true"] {
+        border-color: rgba(15, 44, 42, 0.6);
+        transform: scale(1.05);
+      }
+
+      .accent-color:focus-visible {
+        outline: 3px solid rgba(15, 44, 42, 0.75);
+        outline-offset: 2px;
+      }
+
+      .visual-done {
+        font-weight: 800;
+        color: var(--accent-red);
+      }
+
+      .hidden {
+        display: none !important;
+      }
+
+      @media (max-width: 640px) {
+        .timer-row {
+          padding: 12px;
+        }
+
+        .timer-controls {
+          margin-left: 0;
+          width: 100%;
+          justify-content: flex-start;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <div class="wrap">
+      <header class="brand-header">
+        <div class="brand-logo">
+          <img src="images/logo-teal.png" alt="CloseDose logo" />
+        </div>
+        <h1 class="brand-title">
+          <span class="brand-title-dark">Close</span>
+          <span class="brand-title-teal">Dose</span>
+        </h1>
+      </header>
+      <main id="main" class="page">
+        <section class="timer-app" aria-label="PALS cardiac arrest timers">
+          <h1>PALS Cardiac Arrest Multi‑Timer</h1>
+          <p class="lead">
+            Track CPR cycles, epinephrine dosing, and custom reminders during high-acuity pediatric resuscitations.
+          </p>
+          <div id="timers"></div>
+          <div class="footer-actions">
+            <button id="addTimerBtn" type="button">+ Add Timer</button>
+          </div>
+        </section>
+      </main>
+    </div>
+    <div id="doseLog" class="hidden" role="status" aria-live="polite"></div>
+
+    <div id="timerPopup" class="popup hidden" role="dialog" aria-modal="true" aria-labelledby="popupTitle">
+      <div class="popup-content">
+        <h2 id="popupTitle">New Timer Setup</h2>
+        <div class="popup-field">
+          <label for="timerNameInput">Timer name</label>
+          <input id="timerNameInput" type="text" maxlength="24" placeholder="Custom reminder" />
+        </div>
+        <div class="popup-field">
+          <label for="timerTypeOption">Type</label>
+          <select id="timerTypeOption">
+            <option value="countUp">Count Up</option>
+            <option value="countDown">Count Down</option>
+          </select>
+        </div>
+        <div class="popup-field">
+          <label for="timerMinutesInput">Minutes (count down only)</label>
+          <input id="timerMinutesInput" type="number" min="1" max="60" value="2" />
+        </div>
+        <div class="popup-field">
+          <button id="colorToggleBtn" type="button" class="secondary">Choose Accent Color</button>
+          <div id="colorPicker" class="color-picker hidden" role="listbox" aria-label="Timer accent color"></div>
+        </div>
+        <div class="popup-actions">
+          <button type="button" class="secondary" onclick="closePopup()">Cancel</button>
+          <button type="button" onclick="createNewTimer()">Create Timer</button>
+        </div>
       </div>
     </div>
-  </div>
-  <script>
-    // Accent color palette for 8 colors
-    const accentColors = [
-      {name:'Red',val:'#e53935',class:'red'},
-      {name:'Orange',val:'#ff9800',class:'orange'},
-      {name:'Grey',val:'#9e9e9e',class:'grey'},
-      {name:'Blue',val:'#0176c9',class:'blue'},
-      {name:'Green',val:'#43a047',class:'green'},
-      {name:'Purple',val:'#7e57c2',class:'purple'},
-      {name:'Yellow',val:'#fdd835',class:'yellow'},
-      {name:'Pink',val:'#ec407a',class:'pink'},
-    ];
-    // CPR/Pulse Check logic
-    let cprIntervals = 0;
-    const timers = [
-      {
-        label: 'CPR', editable: true, accent: 'red',
-        collapsed: false, type: 'countDown', total: 120,
-        remaining: 120, interval: null, doses: [], log: [], ref: null,
-        id: 'CPR', default: true
-      },
-      {
-        label: 'Epinephrine', editable: true, accent: 'orange',
-        collapsed: false, type: 'countUp', total: 0,
-        remaining: 0, interval: null, doses: [], log: [], ref: null,
-        id: 'Epi', default: true
-      }
-    ];
-    let timerIdNum = 0;
-    let lastPulseTime = null;
-    let colorPickerSelected = 'grey';
-    // Render Timers in main UI, collapsed/expanded
-    function renderTimers() {
-      const container = document.getElementById('timers');
-      container.innerHTML = '';
-      timers.forEach((T, idx) => {
-        const collapsed = T.collapsed;
-        let accentClass = accentColors.find(c => c.class === T.accent)?.class ?? 'grey';
-        const timerRow = document.createElement('div');
-        timerRow.className = `timer-row ${accentClass}`;
-        // collapse button
-        const collapseBtn = document.createElement('span');
-        collapseBtn.textContent = collapsed ? '▶' : '▼';
-        collapseBtn.className = 'collapse';
-        collapseBtn.onclick = () => { T.collapsed = !T.collapsed; renderTimers(); };
-        timerRow.appendChild(collapseBtn);
-        // editable label
-        const label = document.createElement('input');
-        label.value = T.label;
-        label.className = 'bold input-label';
-        label.disabled = !T.editable;
-        label.onchange = e => { T.label = e.target.value; renderTimers(); };
-        timerRow.appendChild(label);
-        // timer display
-        let timerDisplay = document.createElement('span');
-        timerDisplay.style.fontWeight = collapsed ? 'bold':'normal';
 
-        // Timer logic/collapse content
-        if (collapsed) {
-          timerDisplay.textContent = `${formatTime(T.remaining, T.type)} `;
-          timerRow.appendChild(timerDisplay);
-          // Last dose
-          const lastDose = T.doses.length ? Math.floor((Date.now()-T.doses[T.doses.length-1])/60000)+'m ago':'Never';
-          const lastDoseDisp = document.createElement('span');
-          lastDoseDisp.innerHTML = `<b>Last dose:</b> ${lastDose}`;
-          lastDoseDisp.style.marginLeft = '12px';
-          timerRow.appendChild(lastDoseDisp);
+    <div
+      id="accentPickerOverlay"
+      class="popup hidden"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="accentPickerTitle"
+    >
+      <div class="popup-content">
+        <h2 id="accentPickerTitle">Choose Accent Color</h2>
+        <div id="accentPickerList" class="color-picker" role="listbox" aria-label="Accent colors"></div>
+        <div class="popup-actions">
+          <button type="button" class="secondary" onclick="closeAccentPicker()">Close</button>
+        </div>
+      </div>
+    </div>
 
-          // Count of doses
-          const doseCount = document.createElement('span');
-          doseCount.innerHTML = `<b>Doses:</b> ${T.doses.length}`;
-          doseCount.style.marginLeft = '12px';
-          timerRow.appendChild(doseCount);
+    <script>
+      const accentColors = [
+        { name: 'Red', val: '#e53935', class: 'red' },
+        { name: 'Orange', val: '#ff9800', class: 'orange' },
+        { name: 'Grey', val: '#9e9e9e', class: 'grey' },
+        { name: 'Blue', val: '#0176c9', class: 'blue' },
+        { name: 'Green', val: '#43a047', class: 'green' },
+        { name: 'Purple', val: '#7e57c2', class: 'purple' },
+        { name: 'Yellow', val: '#fdd835', class: 'yellow' },
+        { name: 'Pink', val: '#ec407a', class: 'pink' }
+      ];
 
-          // Log Dose
-          const logBtn = document.createElement('button');
-          logBtn.textContent = 'Log Dose';
-          logBtn.onclick = () => { logDose(idx); };
-          logBtn.style.marginLeft = '16px';
-          timerRow.appendChild(logBtn);
-
-          // Collapse to header/footer row only
-        } else {
-          // Main expanded timer UI
-          timerDisplay.innerHTML = `<span>${T.label}</span> <span class="bold">${formatTime(T.remaining,T.type)}</span>`;
-          timerRow.appendChild(timerDisplay);
-          // Controls & Actions
-          const controls = document.createElement('div');
-          controls.className = 'timer-controls';
-          // CPR controls
-          if (T.label.toLowerCase() === 'cpr') {
-            if (T.interval) {
-              controls.innerHTML += `<span class="visual-done hidden" id="done-${T.id}">Rhythm/Pulse Check!</span>`;
-            } else {
-              controls.innerHTML += `<button onclick="startCprTimer(${idx})">Start CPR</button>`;
-            }
-          } else if (T.label.toLowerCase()==='epinephrine') {
-            controls.innerHTML += `<button onclick="logDose(${idx})">Log Dose</button>`;
-          } else {
-            controls.innerHTML += `<button onclick="startCustomTimer(${idx})">Start Timer</button>
-            <button onclick="logDose(${idx})">Log Dose</button>
-            <button onclick="changeAccent(${idx})">Accent</button>`;
-          }
-          timerRow.appendChild(controls);
-          // Dose log below timer
-          if (T.doses.length){
-            const doseLog = document.createElement('div');
-            doseLog.className = 'dose-log';
-            doseLog.innerHTML = `<b>Dose Log:</b> `+T.doses.map(d=>
-              `${new Date(d).toLocaleString()}`).join('<br>');
-            timerRow.appendChild(doseLog);
-          }
+      let cprIntervals = 0;
+      const timers = [
+        {
+          label: 'CPR',
+          editable: true,
+          accent: 'red',
+          collapsed: false,
+          type: 'countDown',
+          total: 120,
+          remaining: 120,
+          interval: null,
+          doses: [],
+          log: [],
+          ref: null,
+          id: 'CPR',
+          default: true
+        },
+        {
+          label: 'Epinephrine',
+          editable: true,
+          accent: 'orange',
+          collapsed: false,
+          type: 'countUp',
+          total: 0,
+          remaining: 0,
+          interval: null,
+          doses: [],
+          log: [],
+          ref: null,
+          id: 'Epi',
+          default: true
         }
-        container.appendChild(timerRow);
-      });
-    }
-    // Formatting timer
-    function formatTime(s,type){
-      if(type==='countUp') s = s;
-      let min = Math.floor(s/60), sec=s%60;
-      return `${min}:${sec<10?'0'+sec:sec}`;
-    }
-    // CPR specific logic
-    function startCprTimer(idx){
-      let T = timers[idx];
-      if (T.interval) return;
-      T.remaining = 120;
-      let pulseChecks = cprIntervals;
-      T.interval = setInterval(()=>{
-        T.remaining--;
-        renderTimers();
-        if(T.remaining<=0){
-          clearInterval(T.interval);
-          T.interval=null;
-          cprIntervals++;
-          document.getElementById(`done-${T.id}`)?.classList.remove('hidden');
-          setTimeout(()=>{
-            document.getElementById(`done-${T.id}`)?.classList.add('hidden');
+      ];
+
+      let timerIdNum = 0;
+      let colorPickerSelected = 'grey';
+      let activeAccentTimer = null;
+
+      function renderTimers() {
+        const container = document.getElementById('timers');
+        container.innerHTML = '';
+
+        timers.forEach((timer, idx) => {
+          const timerRow = document.createElement('div');
+          timerRow.className = `timer-row ${timer.accent ?? 'grey'}`;
+
+          const header = document.createElement('div');
+          header.className = 'timer-header';
+
+          const collapseBtn = document.createElement('button');
+          collapseBtn.type = 'button';
+          collapseBtn.textContent = timer.collapsed ? '▶' : '▼';
+          collapseBtn.className = 'collapse';
+          collapseBtn.setAttribute('aria-expanded', String(!timer.collapsed));
+          collapseBtn.onclick = () => {
+            timer.collapsed = !timer.collapsed;
             renderTimers();
-          },4000);
-          // Prompt for Epi every 2nd cycle
-          if(cprIntervals%2===0){
-            promptEpiDose();
+          };
+          header.appendChild(collapseBtn);
+
+          const label = document.createElement('input');
+          label.value = timer.label;
+          label.className = 'input-label';
+          label.disabled = !timer.editable;
+          label.onchange = (event) => {
+            timer.label = event.target.value.trim() || timer.label;
+            renderTimers();
+          };
+          label.setAttribute('aria-label', `Timer label for ${timer.label}`);
+          header.appendChild(label);
+
+          const timeBadge = document.createElement('span');
+          timeBadge.className = 'timer-display';
+          timeBadge.textContent = formatTime(timer.remaining);
+          header.appendChild(timeBadge);
+
+          timerRow.appendChild(header);
+
+          if (timer.collapsed) {
+            const summary = document.createElement('div');
+            summary.className = 'timer-summary';
+
+            const timeItem = document.createElement('div');
+            timeItem.className = 'summary-item';
+            timeItem.innerHTML = `<strong>Timer</strong><span>${formatTime(timer.remaining)}</span>`;
+            summary.appendChild(timeItem);
+
+            const lastDoseTs = timer.doses.length ? timer.doses[timer.doses.length - 1] : null;
+            const lastDoseText = lastDoseTs
+              ? `${Math.floor((Date.now() - lastDoseTs) / 60000)}m ago`
+              : 'Never';
+            const lastDose = document.createElement('div');
+            lastDose.className = 'summary-item';
+            lastDose.innerHTML = `<strong>Last Dose</strong><span>${lastDoseText}</span>`;
+            summary.appendChild(lastDose);
+
+            const doseCount = document.createElement('div');
+            doseCount.className = 'summary-item';
+            doseCount.innerHTML = `<strong>Doses</strong><span>${timer.doses.length}</span>`;
+            summary.appendChild(doseCount);
+
+            timerRow.appendChild(summary);
+
+            const controls = buildControls(timer, idx);
+            controls.classList.add('summary-controls');
+            timerRow.appendChild(controls);
+          } else {
+            const body = document.createElement('div');
+            body.className = 'timer-body';
+
+            const controls = buildControls(timer, idx);
+            body.appendChild(controls);
+
+            if (timer.doses.length) {
+              const doseLog = document.createElement('div');
+              doseLog.className = 'dose-log';
+              doseLog.innerHTML = `<b>Dose Log</b>${timer.doses
+                .map((d) => new Date(d).toLocaleString())
+                .join('<br />')}`;
+              body.appendChild(doseLog);
+            }
+
+            timerRow.appendChild(body);
           }
-        }
-      },1000);
-      renderTimers();
-    }
-    function promptEpiDose(){
-      const epiTimer = timers.find(t=>t.label.toLowerCase().includes('epinephrine'));
-      if (epiTimer) {
-        let lastEpi = epiTimer.doses.length?epiTimer.doses[epiTimer.doses.length-1]:0;
-        let lastCprDone = Date.now();
-        setTimeout(()=>{
-          if (epiTimer.doses.length===0 || (Date.now()-epiTimer.doses[epiTimer.doses.length-1])>30000) {
-            alert('Consider Code-dose Epinephrine!');
-          }
-        }, 30000);  // 30 seconds after CPR timer ends
+
+          container.appendChild(timerRow);
+        });
       }
-    }
-    // Dose logging
-    function logDose(idx){
-      let T = timers[idx];
-      T.doses.push(Date.now());
-      T.log.push({timestamp:Date.now()});
-      if(T.type==='countUp'){T.remaining=0;}
-      renderTimers();
-      showDoseLog(T);
-    }
-    function showDoseLog(T){
-      const logBox = document.getElementById('doseLog');
-      logBox.innerHTML = `<b>Doses for ${T.label}</b><br>`+T.doses.map(ts=>new Date(ts).toLocaleString()).join('<br>');
-      logBox.classList.remove('hidden');
-      setTimeout(()=>{logBox.classList.add('hidden');},3500);
-    }
-    // Custom timer logic
-    function startCustomTimer(idx){
-      let T = timers[idx];
-      if(T.interval)return;
-      T.remaining = T.type==='countDown'?T.total:0;
-      T.interval = setInterval(()=>{
-        if(T.type==='countDown'){
-          T.remaining--;
-          if(T.remaining<=0){
-            clearInterval(T.interval); T.interval=null;
-          }
+
+      function buildControls(timer, idx) {
+        const controls = document.createElement('div');
+        controls.className = 'timer-controls';
+
+        if (timer.id === 'CPR') {
+          const cprAction = document.createElement('button');
+          cprAction.type = 'button';
+          cprAction.textContent = timer.interval ? 'Running…' : 'Start CPR';
+          cprAction.disabled = Boolean(timer.interval);
+          cprAction.onclick = () => startCprTimer(idx);
+          controls.appendChild(cprAction);
+
+          const rhythmPrompt = document.createElement('span');
+          rhythmPrompt.id = `done-${timer.id}`;
+          rhythmPrompt.className = 'visual-done hidden';
+          rhythmPrompt.textContent = 'Rhythm / Pulse Check!';
+          controls.appendChild(rhythmPrompt);
+        } else if (timer.id === 'Epi') {
+          const doseBtn = document.createElement('button');
+          doseBtn.type = 'button';
+          doseBtn.textContent = 'Log Dose';
+          doseBtn.onclick = () => logDose(idx);
+          controls.appendChild(doseBtn);
         } else {
-          T.remaining++;
+          const startBtn = document.createElement('button');
+          startBtn.type = 'button';
+          startBtn.textContent = timer.interval ? 'Running…' : 'Start Timer';
+          startBtn.disabled = Boolean(timer.interval);
+          startBtn.onclick = () => startCustomTimer(idx);
+          controls.appendChild(startBtn);
+
+          const doseBtn = document.createElement('button');
+          doseBtn.type = 'button';
+          doseBtn.textContent = 'Log Dose';
+          doseBtn.onclick = () => logDose(idx);
+          controls.appendChild(doseBtn);
+
+          const accentBtn = document.createElement('button');
+          accentBtn.type = 'button';
+          accentBtn.classList.add('secondary');
+          accentBtn.textContent = 'Accent';
+          accentBtn.onclick = () => changeAccent(idx);
+          controls.appendChild(accentBtn);
+        }
+
+        return controls;
+      }
+
+      function formatTime(totalSeconds) {
+        const safeSeconds = Math.max(0, Math.floor(totalSeconds ?? 0));
+        const minutes = Math.floor(safeSeconds / 60);
+        const seconds = safeSeconds % 60;
+        return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+      }
+
+      function startCprTimer(idx) {
+        const timer = timers[idx];
+        if (timer.interval) return;
+
+        timer.remaining = 120;
+        timer.interval = setInterval(() => {
+          timer.remaining -= 1;
+          renderTimers();
+
+          if (timer.remaining <= 0) {
+            clearInterval(timer.interval);
+            timer.interval = null;
+            cprIntervals += 1;
+
+            const doneBanner = document.getElementById(`done-${timer.id}`);
+            if (doneBanner) {
+              doneBanner.classList.remove('hidden');
+              setTimeout(() => {
+                doneBanner.classList.add('hidden');
+              }, 4000);
+            }
+
+            if (cprIntervals % 2 === 0) {
+              promptEpiDose();
+            }
+          }
+        }, 1000);
+
+        renderTimers();
+      }
+
+      function promptEpiDose() {
+        const epiTimer = timers.find((t) => t.id === 'Epi' || t.label.toLowerCase().includes('epinephrine'));
+        if (!epiTimer) return;
+
+        setTimeout(() => {
+          const lastDose = epiTimer.doses.length ? epiTimer.doses[epiTimer.doses.length - 1] : 0;
+          if (!lastDose || Date.now() - lastDose > 30000) {
+            alert('Consider code-dose epinephrine.');
+          }
+        }, 30000);
+      }
+
+      function logDose(idx) {
+        const timer = timers[idx];
+        const timestamp = Date.now();
+        timer.doses.push(timestamp);
+        timer.log.push({ timestamp });
+        if (timer.type === 'countUp') {
+          timer.remaining = 0;
+          if (!timer.interval) {
+            timer.interval = setInterval(() => {
+              timer.remaining += 1;
+              renderTimers();
+            }, 1000);
+          }
         }
         renderTimers();
-      },1000);
-      renderTimers();
-    }
-    // Accent color picker dialog
-    function changeAccent(idx){
-      showColorPicker(idx);
-    }
-    function showColorPicker(idx){
-      colorPickerSelected = timers[idx].accent;
-      document.getElementById('colorPicker').classList.remove('hidden');
-      renderColorPicker(idx);
-    }
-    function renderColorPicker(idx){
-      let picker = document.getElementById('colorPicker');
-      picker.innerHTML = '';
-      accentColors.forEach(accent=>{
-        let btn = document.createElement('span');
-        btn.className = 'accent-color';
-        btn.style.background = accent.val;
-        btn.onclick = ()=>{
-          timers[idx].accent = accent.class;
-          document.getElementById('colorPicker').classList.add('hidden');
+        showDoseLog(timer);
+      }
+
+      function showDoseLog(timer) {
+        const logBox = document.getElementById('doseLog');
+        logBox.innerHTML = `<strong>${timer.label} doses</strong><br />${timer.doses
+          .map((ts) => new Date(ts).toLocaleString())
+          .join('<br />')}`;
+        logBox.classList.remove('hidden');
+        setTimeout(() => {
+          logBox.classList.add('hidden');
+        }, 3500);
+      }
+
+      function startCustomTimer(idx) {
+        const timer = timers[idx];
+        if (timer.interval) return;
+
+        timer.remaining = timer.type === 'countDown' ? timer.total : 0;
+        timer.interval = setInterval(() => {
+          if (timer.type === 'countDown') {
+            timer.remaining -= 1;
+            if (timer.remaining <= 0) {
+              clearInterval(timer.interval);
+              timer.interval = null;
+            }
+          } else {
+            timer.remaining += 1;
+          }
           renderTimers();
-        };
-        picker.appendChild(btn);
+        }, 1000);
+
+        renderTimers();
+      }
+
+      function changeAccent(idx) {
+        activeAccentTimer = idx;
+        renderAccentPicker();
+        document.getElementById('accentPickerOverlay').classList.remove('hidden');
+      }
+
+      function renderColorPicker() {
+        const picker = document.getElementById('colorPicker');
+        picker.innerHTML = '';
+
+        accentColors.forEach((accent) => {
+          const swatch = document.createElement('button');
+          swatch.type = 'button';
+          swatch.className = 'accent-color';
+          swatch.style.background = accent.val;
+          swatch.setAttribute('aria-label', `${accent.name} accent`);
+          if (colorPickerSelected === accent.class) {
+            swatch.setAttribute('data-selected', 'true');
+          }
+          swatch.onclick = () => {
+            colorPickerSelected = accent.class;
+            renderColorPicker();
+          };
+          picker.appendChild(swatch);
+        });
+      }
+
+      function toggleColorPicker() {
+        const picker = document.getElementById('colorPicker');
+        if (picker.classList.contains('hidden')) {
+          renderColorPicker();
+          picker.classList.remove('hidden');
+        } else {
+          picker.classList.add('hidden');
+        }
+      }
+
+      function openTimerPopup() {
+        document.getElementById('timerPopup').classList.remove('hidden');
+        document.getElementById('timerNameInput').value = '';
+        document.getElementById('timerTypeOption').value = 'countUp';
+        document.getElementById('timerMinutesInput').value = 2;
+        colorPickerSelected = 'grey';
+        document.getElementById('colorPicker').classList.add('hidden');
+      }
+
+      function closePopup() {
+        document.getElementById('timerPopup').classList.add('hidden');
+        document.getElementById('colorPicker').classList.add('hidden');
+      }
+
+      function createNewTimer() {
+        const nameInput = document.getElementById('timerNameInput');
+        const type = document.getElementById('timerTypeOption').value;
+        const minutes = parseInt(document.getElementById('timerMinutesInput').value, 10) || 2;
+        const accent = colorPickerSelected || 'grey';
+        const label = nameInput.value.trim() || 'Custom Timer';
+
+        timers.push({
+          label,
+          editable: true,
+          accent,
+          collapsed: false,
+          type,
+          total: minutes * 60,
+          remaining: type === 'countDown' ? minutes * 60 : 0,
+          interval: null,
+          doses: [],
+          log: [],
+          id: `custom-${++timerIdNum}`,
+          default: false
+        });
+
+        closePopup();
+        renderTimers();
+      }
+
+      document.getElementById('addTimerBtn').addEventListener('click', openTimerPopup);
+      document.getElementById('colorToggleBtn').addEventListener('click', toggleColorPicker);
+
+      function renderAccentPicker() {
+        const pickerList = document.getElementById('accentPickerList');
+        pickerList.innerHTML = '';
+        const activeAccent = activeAccentTimer !== null ? timers[activeAccentTimer].accent : 'grey';
+
+        accentColors.forEach((accent) => {
+          const swatch = document.createElement('button');
+          swatch.type = 'button';
+          swatch.className = 'accent-color';
+          swatch.style.background = accent.val;
+          swatch.setAttribute('aria-label', `${accent.name} accent`);
+          if (activeAccent === accent.class) {
+            swatch.setAttribute('data-selected', 'true');
+          }
+          swatch.onclick = () => {
+            if (activeAccentTimer !== null) {
+              timers[activeAccentTimer].accent = accent.class;
+              renderTimers();
+            }
+            closeAccentPicker();
+          };
+          pickerList.appendChild(swatch);
+        });
+      }
+
+      function closeAccentPicker() {
+        document.getElementById('accentPickerOverlay').classList.add('hidden');
+        activeAccentTimer = null;
+      }
+
+      document.getElementById('accentPickerOverlay').addEventListener('click', (event) => {
+        if (event.target.id === 'accentPickerOverlay') {
+          closeAccentPicker();
+        }
       });
-    }
-    function toggleColorPicker(){
-      document.getElementById('colorPicker').classList.toggle('hidden');
-    }
-    // Timer popup overlay
-    document.getElementById('addTimerBtn').onclick = ()=>openTimerPopup();
-    function openTimerPopup(){
-      document.getElementById('timerPopup').classList.remove('hidden');
-      document.getElementById('timerNameInput').value = '';
-      document.getElementById('timerTypeOption').value = 'countUp';
-      document.getElementById('timerMinutesInput').value = 2;
-      document.getElementById('colorPicker').classList.add('hidden');
-      colorPickerSelected = 'grey';
-      renderColorPicker(-1);
-    }
-    function closePopup(){
-      document.getElementById('timerPopup').classList.add('hidden');
-    }
-    function createNewTimer(){
-      let name = document.getElementById('timerNameInput').value || 'Custom';
-      let type = document.getElementById('timerTypeOption').value;
-      let mins = parseInt(document.getElementById('timerMinutesInput').value)||2;
-      let accent = colorPickerSelected || 'grey';
-      timers.push({
-        label: name, editable: true, accent,
-        collapsed: true, type, total: mins*60, remaining: type==='countDown'?mins*60:0,
-        interval: null, doses: [], log: [], id: 'custom-'+(++timerIdNum), default: false
+
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') {
+          closePopup();
+          document.getElementById('colorPicker').classList.add('hidden');
+          closeAccentPicker();
+        }
       });
-      closePopup();
+
       renderTimers();
-    }
-    // Initial colorPicker setup
-    renderColorPicker(-1);
-    // Show timers at start
-    renderTimers();
-  </script>
-</body>
+    </script>
+  </body>
 </html>
