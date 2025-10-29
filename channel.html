@@ -128,6 +128,22 @@
       font-size: 1.05rem;
     }
 
+    .contacting-provider-group {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .contacting-provider-group label {
+      margin: 0;
+    }
+
+    .contacting-provider-phone .subheading {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--ink-700);
+    }
+
     input,
     select,
     textarea {
@@ -218,6 +234,29 @@
 
     .patient-details-list {
       gap: 18px;
+    }
+
+    .patient-age-row {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+      align-items: end;
+    }
+
+    .age-input-group {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .age-input-group input {
+      flex: 0 0 30%;
+      min-width: 56px;
+    }
+
+    .age-input-group select {
+      flex: 1;
+      min-width: 110px;
     }
 
     .patient-details-list .mrn-field {
@@ -386,12 +425,25 @@
       .field-group {
         grid-template-columns: 1fr;
       }
+
+      .patient-age-row {
+        grid-template-columns: 1fr;
+      }
+
+      .age-input-group {
+        flex-wrap: wrap;
+      }
+
+      .age-input-group input,
+      .age-input-group select {
+        flex: 1 1 120px;
+      }
     }
   </style>
 </head>
 <body>
   <header>
-    <img src="logo-dark.svg" alt="CloseDose" class="header-wordmark" />
+    <img src="images/CD_Word.png" alt="CloseDose" class="header-wordmark" />
   </header>
   <main>
     <section class="card" aria-labelledby="page-title">
@@ -404,12 +456,14 @@
             <label><strong>Physician taking call:</strong>
               <input type="text" id="clinician" name="clinician" autocomplete="name" />
             </label>
-            <label>Referring Provider
-              <input type="text" id="referring-provider" name="referringProvider" autocomplete="off" />
-            </label>
-            <label>Phone
-              <input type="tel" id="referring-phone" name="referringPhone" autocomplete="tel" />
-            </label>
+            <div class="contacting-provider-group">
+              <label class="contacting-provider-name">Contacting Provider
+                <input type="text" id="referring-provider" name="referringProvider" autocomplete="off" />
+              </label>
+              <label class="contacting-provider-phone"><span class="subheading">Phone</span>
+                <input type="tel" id="referring-phone" name="referringPhone" autocomplete="tel" />
+              </label>
+            </div>
           </div>
         </fieldset>
 
@@ -419,9 +473,24 @@
             <label>Name
               <input type="text" id="patient-name" name="patientName" autocomplete="name" />
             </label>
-            <label>Age
-              <input type="text" id="age" name="age" />
-            </label>
+            <div class="patient-age-row">
+              <label class="age-field">Age
+                <div class="age-input-group">
+                  <input type="number" id="age" name="age" min="0" inputmode="numeric" />
+                  <select id="age-unit" name="ageUnit">
+                    <option value="years">Years</option>
+                    <option value="months">Months</option>
+                    <option value="days">Days</option>
+                  </select>
+                </div>
+              </label>
+              <label>DOB
+                <input type="text" id="dob" name="dob" />
+              </label>
+              <label class="mrn-field">MRN
+                <input type="text" id="mrn" name="mrn" />
+              </label>
+            </div>
             <div class="inline-group" role="radiogroup" aria-label="Patient sex">
               <span class="group-title">Sex</span>
               <div class="inline-options horizontal">
@@ -432,12 +501,6 @@
             </div>
             <label>Reason for call
               <input type="text" id="reason" name="reason" />
-            </label>
-            <label>DOB
-              <input type="text" id="dob" name="dob" />
-            </label>
-            <label class="mrn-field">MRN
-              <input type="text" id="mrn" name="mrn" />
             </label>
           </div>
           <label class="brief-hpi">Brief HPI
@@ -833,6 +896,21 @@
     const form = document.getElementById('notes-form');
     const summaryEl = document.getElementById('summary');
 
+    function formatAge(ageValue, unit) {
+      const trimmedAge = ageValue.trim();
+      if (!trimmedAge) {
+        return '___';
+      }
+      const unitLabel = {
+        years: 'year',
+        months: 'month',
+        days: 'day'
+      }[unit] || 'year';
+      const ageNumber = Number(trimmedAge);
+      const pluralSuffix = ageNumber === 1 ? '' : 's';
+      return `${trimmedAge} ${unitLabel}${pluralSuffix}`;
+    }
+
     document.getElementById('generate').addEventListener('click', () => {
       const requiredPlan = Array.from(form.querySelectorAll('input[name="plan"]')).some(cb => cb.checked);
       if (!requiredPlan) {
@@ -842,6 +920,7 @@
 
       const patientName = document.getElementById('patient-name').value.trim();
       const age = document.getElementById('age').value.trim();
+      const ageUnit = document.getElementById('age-unit').value;
       const sex = form.querySelector('input[name="sex"]:checked')?.value || '';
       const reason = document.getElementById('reason').value.trim();
       const dob = document.getElementById('dob').value.trim();
@@ -981,9 +1060,9 @@
 
       const summaryLines = [
         `${formattedTimestamp}`,
-        referringProvider || referringPhone ? `Referring provider: ${referringProvider || 'not specified'}${referringPhone ? ` (Phone: ${referringPhone})` : ''}.` : '',
+        referringProvider || referringPhone ? `Contacting provider: ${referringProvider || 'not specified'}${referringPhone ? ` (Phone: ${referringPhone})` : ''}.` : '',
         patientName ? `Patient: ${patientName}` : '',
-        `Patient is a ${age || '___'} ${sex ? sex.split(' ').map(part => part.charAt(0).toUpperCase() + part.slice(1)).join(' ') : 'patient'} with PMHx significant for ${pmhxDisplay} and PSHx of ${pshxDisplay} who ${locationPhrase || 'was evaluated'} for ${reason || '___'}.`,
+        `Patient is a ${formatAge(age, ageUnit)} ${sex ? sex.split(' ').map(part => part.charAt(0).toUpperCase() + part.slice(1)).join(' ') : 'patient'} with PMHx significant for ${pmhxDisplay} and PSHx of ${pshxDisplay} who ${locationPhrase || 'was evaluated'} for ${reason || '___'}.`,
         dob ? `DOB: ${dob}` : '',
         mrn ? `MRN: ${mrn}` : '',
         '',
