@@ -657,7 +657,7 @@
     const timestampEl = document.getElementById('timestamp');
     const openedAt = new Date();
     const formattedTimestamp = new Intl.DateTimeFormat('en-US', {
-      dateStyle: 'full',
+      dateStyle: 'short',
       timeStyle: 'short'
     }).format(openedAt);
     timestampEl.innerHTML = `<strong><u>${formattedTimestamp}</u></strong>`;
