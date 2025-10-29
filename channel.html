@@ -204,6 +204,9 @@
       display: flex;
       flex-direction: column;
       gap: 16px;
+      align-items: flex-start;
+      text-align: left;
+      width: 100%;
     }
 
     .patient-details-list label,
@@ -277,6 +280,13 @@
       display: flex;
       flex-direction: column;
       gap: 12px;
+      align-items: flex-start;
+      width: 100%;
+    }
+
+    .plan-option .checkbox-label {
+      font-size: 1.2rem;
+      line-height: 1.4;
     }
 
     .checkbox-label {
@@ -298,6 +308,7 @@
       flex-direction: column;
       gap: 16px;
       padding-left: 0;
+      width: 100%;
     }
 
     .plan-textarea textarea {
@@ -635,44 +646,71 @@
 
     const locationRadios = document.querySelectorAll('input[name="location"]');
     const otherLocationWrapper = document.querySelector('.other-location');
-    locationRadios.forEach(radio => {
-      radio.addEventListener('change', () => {
-        if (radio.value === 'Other' && radio.checked) {
-          otherLocationWrapper.hidden = false;
+    function updateLocationRadio(radio, { fromInit = false } = {}) {
+      if (radio.value === 'Other' && radio.checked) {
+        otherLocationWrapper.hidden = false;
+        if (!fromInit) {
           document.getElementById('other-location').focus();
-        } else if (radio.checked) {
-          otherLocationWrapper.hidden = true;
+        }
+      } else if (radio.checked) {
+        otherLocationWrapper.hidden = true;
+        if (!fromInit) {
           document.getElementById('other-location').value = '';
         }
-      });
+      }
+    }
+
+    locationRadios.forEach(radio => {
+      radio.addEventListener('change', () => updateLocationRadio(radio));
+      if (radio.checked) {
+        updateLocationRadio(radio, { fromInit: true });
+      }
     });
 
     const vitalsRadios = document.querySelectorAll('input[name="vitalsStatus"]');
     const customVitalsWrapper = document.querySelector('.custom-vitals');
-    vitalsRadios.forEach(radio => {
-      radio.addEventListener('change', () => {
-        if (radio.value === 'abnormal' && radio.checked) {
-          customVitalsWrapper.hidden = false;
+    function updateVitalsRadio(radio, { fromInit = false } = {}) {
+      if (radio.value === 'abnormal' && radio.checked) {
+        customVitalsWrapper.hidden = false;
+        if (!fromInit) {
           document.getElementById('vitals-text').focus();
-        } else if (radio.checked) {
-          customVitalsWrapper.hidden = true;
+        }
+      } else if (radio.checked) {
+        customVitalsWrapper.hidden = true;
+        if (!fromInit) {
           document.getElementById('vitals-text').value = '';
         }
-      });
+      }
+    }
+
+    vitalsRadios.forEach(radio => {
+      radio.addEventListener('change', () => updateVitalsRadio(radio));
+      if (radio.checked) {
+        updateVitalsRadio(radio, { fromInit: true });
+      }
     });
 
     const arrivalRadios = document.querySelectorAll('input[name="arrivalMode"]');
     const otherArrivalWrapper = document.querySelector('.other-arrival');
-    arrivalRadios.forEach(radio => {
-      radio.addEventListener('change', () => {
-        if (radio.value === 'Other' && radio.checked) {
-          otherArrivalWrapper.hidden = false;
+    function updateArrivalRadio(radio, { fromInit = false } = {}) {
+      if (radio.value === 'Other' && radio.checked) {
+        otherArrivalWrapper.hidden = false;
+        if (!fromInit) {
           document.getElementById('other-arrival').focus();
-        } else if (radio.checked) {
-          otherArrivalWrapper.hidden = true;
+        }
+      } else if (radio.checked) {
+        otherArrivalWrapper.hidden = true;
+        if (!fromInit) {
           document.getElementById('other-arrival').value = '';
         }
-      });
+      }
+    }
+
+    arrivalRadios.forEach(radio => {
+      radio.addEventListener('change', () => updateArrivalRadio(radio));
+      if (radio.checked) {
+        updateArrivalRadio(radio, { fromInit: true });
+      }
     });
 
     const planCheckboxes = document.querySelectorAll('input[name="plan"]');
@@ -705,54 +743,73 @@
       etaWrapper.hidden = true;
     }
 
-    planCheckboxes.forEach(checkbox => {
-      checkbox.addEventListener('change', () => {
-        const { value, checked } = checkbox;
-        switch (value) {
-          case 'PEM Recommendations provided':
-            pemRecsWrapper.hidden = !checked;
-            if (!checked) {
-              document.getElementById('pem-recs').value = '';
+    function updatePlanCheckboxState(checkbox, { fromInit = false } = {}) {
+      const { value, checked } = checkbox;
+      switch (value) {
+        case 'PEM Recommendations provided':
+          pemRecsWrapper.hidden = !checked;
+          if (!checked && !fromInit) {
+            document.getElementById('pem-recs').value = '';
+          }
+          break;
+        case 'Accept Transfer':
+          acceptTransferDetails.hidden = !checked;
+          if (checked) {
+            preArrivalWrapper.hidden = false;
+            etaWrapper.hidden = false;
+            const activeTraumaStatus = Array.from(traumaStatusRadios).find(radio => radio.checked);
+            if (activeTraumaStatus) {
+              updateTraumaStatus(activeTraumaStatus, { fromInit: true });
             }
-            break;
-          case 'Accept Transfer':
-            acceptTransferDetails.hidden = !checked;
-            if (checked) {
-              preArrivalWrapper.hidden = false;
-              etaWrapper.hidden = false;
-            } else {
+          } else {
+            preArrivalWrapper.hidden = true;
+            etaWrapper.hidden = true;
+            traumaLevelOptions.hidden = true;
+            if (!fromInit) {
               resetArrivalDetails();
             }
-            break;
-          case 'HCH Subspecialist Phone Consultation':
-            subspecialistWrapper.hidden = !checked;
-            if (!checked) {
-              document.getElementById('subspecialist').value = '';
-            }
-            break;
-          case 'Other':
-            otherPlanWrapper.hidden = !checked;
-            if (!checked) {
-              document.getElementById('other-plan').value = '';
-            }
-            break;
-          default:
-            break;
-        }
-      });
+          }
+          break;
+        case 'HCH Subspecialist Phone Consultation':
+          subspecialistWrapper.hidden = !checked;
+          if (!checked && !fromInit) {
+            document.getElementById('subspecialist').value = '';
+          }
+          break;
+        case 'Other':
+          otherPlanWrapper.hidden = !checked;
+          if (!checked && !fromInit) {
+            document.getElementById('other-plan').value = '';
+          }
+          break;
+        default:
+          break;
+      }
+    }
+
+    planCheckboxes.forEach(checkbox => {
+      checkbox.addEventListener('change', () => updatePlanCheckboxState(checkbox));
+      updatePlanCheckboxState(checkbox, { fromInit: true });
     });
 
-    traumaStatusRadios.forEach(radio => {
-      radio.addEventListener('change', () => {
-        if (radio.value === 'yes' && radio.checked) {
-          traumaLevelOptions.hidden = false;
-        } else if (radio.checked) {
-          traumaLevelOptions.hidden = true;
+    function updateTraumaStatus(radio, { fromInit = false } = {}) {
+      if (radio.value === 'yes' && radio.checked) {
+        traumaLevelOptions.hidden = false;
+      } else if (radio.checked) {
+        traumaLevelOptions.hidden = true;
+        if (!fromInit) {
           traumaLevelRadios.forEach(level => {
             level.checked = false;
           });
         }
-      });
+      }
+    }
+
+    traumaStatusRadios.forEach(radio => {
+      radio.addEventListener('change', () => updateTraumaStatus(radio));
+      if (radio.checked) {
+        updateTraumaStatus(radio, { fromInit: true });
+      }
     });
 
     const form = document.getElementById('notes-form');
