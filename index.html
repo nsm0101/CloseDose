@@ -285,6 +285,175 @@
       margin: 0 auto;
     }
 
+    .account-card {
+      display: grid;
+      gap: clamp(16px, 3vw, 24px);
+    }
+
+    .account-card__header {
+      display: grid;
+      gap: 0.2rem;
+    }
+
+    .account-card__eyebrow {
+      margin: 0;
+      font-size: 0.85rem;
+      font-weight: 800;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--teal-500);
+    }
+
+    .account-card__header h2 {
+      margin: 0;
+      font-size: clamp(1.2rem, 3vw, 1.6rem);
+    }
+
+    .account-card__header p {
+      margin: 0;
+      color: var(--ink-700);
+      line-height: 1.5;
+    }
+
+    .account-status {
+      margin: 0;
+      padding: 0.85rem 1rem;
+      border-radius: 14px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      background: rgba(18, 70, 67, 0.08);
+      color: var(--ink-900);
+    }
+
+    .account-status[hidden] {
+      display: none !important;
+    }
+
+    .account-status--success {
+      background: rgba(36, 166, 135, 0.12);
+      color: var(--teal-500);
+    }
+
+    .account-status--error {
+      background: rgba(199, 58, 80, 0.12);
+      color: #a52834;
+    }
+
+    .account-forms {
+      display: grid;
+      gap: clamp(16px, 3vw, 24px);
+    }
+
+    @media (min-width: 720px) {
+      .account-forms {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    .account-form {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      padding: 20px;
+      border-radius: 20px;
+      border: 2px dashed rgba(15, 44, 42, 0.15);
+      background: rgba(255, 255, 255, 0.8);
+    }
+
+    .account-form h3 {
+      margin: 0;
+      font-size: 1.05rem;
+    }
+
+    .account-form label {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+
+    .account-form input {
+      border-radius: 999px;
+      border: var(--card-border);
+      padding: 0.65rem 1rem;
+      font-size: 1rem;
+      font-family: inherit;
+      background: #fff;
+    }
+
+    .account-form input:focus-visible {
+      outline: 3px solid rgba(36, 166, 135, 0.45);
+      outline-offset: 2px;
+    }
+
+    .account-form button {
+      align-self: flex-start;
+      border-radius: 999px;
+      border: var(--card-border);
+      background: var(--teal-400);
+      color: #fff;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 0.6rem 1.4rem;
+      cursor: pointer;
+      box-shadow: var(--shadow-btn);
+    }
+
+    .account-form button:focus-visible {
+      outline: 3px solid rgba(18, 70, 67, 0.8);
+      outline-offset: 2px;
+    }
+
+    .account-form small {
+      margin: -4px 0 0;
+      color: var(--ink-700);
+      font-size: 0.82rem;
+    }
+
+    .account-session {
+      border-radius: 22px;
+      border: 2px solid rgba(15, 44, 42, 0.15);
+      padding: clamp(16px, 3vw, 22px);
+      display: grid;
+      gap: 10px;
+      background: rgba(245, 249, 249, 0.75);
+    }
+
+    .account-session__meta {
+      margin: 0;
+      color: var(--ink-700);
+    }
+
+    .account-session__actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .account-session__actions button {
+      border-radius: 999px;
+      border: var(--card-border);
+      background: #fff;
+      color: var(--ink-900);
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 0.55rem 1.4rem;
+      cursor: pointer;
+      box-shadow: var(--shadow-btn);
+    }
+
+    .account-session__actions button:focus-visible {
+      outline: 3px solid rgba(18, 70, 67, 0.8);
+      outline-offset: 2px;
+    }
+
+    .account-session[hidden] {
+      display: none !important;
+    }
+
     .donate-card {
       background: linear-gradient(145deg, rgba(36, 166, 135, 0.94), rgba(18, 70, 67, 0.96));
       color: #ffffff;
@@ -1290,6 +1459,57 @@
     </header>
     <main>
       <div class="layout">
+        <section class="card account-card" aria-labelledby="account-heading">
+          <header class="account-card__header">
+            <p class="account-card__eyebrow">Your profile</p>
+            <h2 id="account-heading">Create a CloseDose account</h2>
+            <p>
+              Save your preferred calculator settings and keep dosing notes tied to an account that lives directly on this
+              device. Nothing is sent to a server — everything is stored privately in your browser.
+            </p>
+          </header>
+          <p id="accountStatus" class="account-status" role="status" aria-live="polite" hidden></p>
+          <div class="account-session" data-auth-view="logged-in" hidden>
+            <p class="account-session__meta">
+              Signed in as <strong id="accountUserBadge"></strong>. Your information stays on this browser unless you clear it.
+            </p>
+            <div class="account-session__actions">
+              <button type="button" id="logoutBtn">Log out</button>
+            </div>
+          </div>
+          <div class="account-forms" data-auth-view="logged-out">
+            <form id="signupForm" class="account-form" autocomplete="off" novalidate>
+              <h3>New here?</h3>
+              <label for="signupName">
+                Full name
+                <input id="signupName" name="name" type="text" minlength="2" required />
+              </label>
+              <label for="signupEmail">
+                Email address
+                <input id="signupEmail" name="email" type="email" required />
+              </label>
+              <label for="signupPassword">
+                Create password
+                <input id="signupPassword" name="password" type="password" minlength="8" required />
+              </label>
+              <small>Passwords are hashed locally before they are saved.</small>
+              <button type="submit">Create account</button>
+            </form>
+            <form id="loginForm" class="account-form" autocomplete="off" novalidate>
+              <h3>Already have one?</h3>
+              <label for="loginEmail">
+                Email address
+                <input id="loginEmail" name="email" type="email" required />
+              </label>
+              <label for="loginPassword">
+                Password
+                <input id="loginPassword" name="password" type="password" minlength="8" required />
+              </label>
+              <small>Logins never leave this device; there is no remote server involved.</small>
+              <button type="submit">Sign in</button>
+            </form>
+          </div>
+        </section>
         <div class="calculator-widget-host" id="calculator-card" data-calculator-root></div>
         <section class="card donate-card" aria-labelledby="donate-heading">
           <div class="donate-content">

@@ -604,9 +604,234 @@ function initTranslations() {
   });
 }
 
+const ACCOUNT_STORAGE_KEY = 'closedose.accounts.v1';
+const ACCOUNT_SESSION_KEY = 'closedose.session.v1';
+
+function getStorage() {
+  try {
+    if (typeof window === 'undefined' || !window.localStorage) {
+      return null;
+    }
+    return window.localStorage;
+  } catch (error) {
+    console.warn('localStorage is not available', error);
+    return null;
+  }
+}
+
+function normalizeEmail(email = '') {
+  return email.trim().toLowerCase();
+}
+
+function hashSecret(value) {
+  let hash = 5381;
+  for (let i = 0; i < value.length; i += 1) {
+    hash = (hash * 33) ^ value.charCodeAt(i);
+  }
+  return `cd_${(hash >>> 0).toString(16)}`;
+}
+
+function readAccounts() {
+  const storage = getStorage();
+  if (!storage) {
+    return {};
+  }
+  try {
+    const stored = storage.getItem(ACCOUNT_STORAGE_KEY);
+    return stored ? JSON.parse(stored) : {};
+  } catch (error) {
+    console.warn('Unable to read stored accounts', error);
+    return {};
+  }
+}
+
+function writeAccounts(accounts) {
+  const storage = getStorage();
+  if (!storage) {
+    return;
+  }
+  try {
+    storage.setItem(ACCOUNT_STORAGE_KEY, JSON.stringify(accounts));
+  } catch (error) {
+    console.warn('Unable to save accounts', error);
+  }
+}
+
+function getActiveSession() {
+  const storage = getStorage();
+  if (!storage) {
+    return null;
+  }
+  try {
+    const session = storage.getItem(ACCOUNT_SESSION_KEY);
+    return session ? JSON.parse(session) : null;
+  } catch (error) {
+    console.warn('Unable to read session', error);
+    return null;
+  }
+}
+
+function setActiveSession(session) {
+  const storage = getStorage();
+  if (!storage) {
+    return;
+  }
+  try {
+    storage.setItem(ACCOUNT_SESSION_KEY, JSON.stringify(session));
+  } catch (error) {
+    console.warn('Unable to save session', error);
+  }
+}
+
+function clearActiveSession() {
+  const storage = getStorage();
+  if (!storage) {
+    return;
+  }
+  try {
+    storage.removeItem(ACCOUNT_SESSION_KEY);
+  } catch (error) {
+    console.warn('Unable to clear session', error);
+  }
+}
+
+function initAccountCenter() {
+  const signupForm = document.getElementById('signupForm');
+  const loginForm = document.getElementById('loginForm');
+  const logoutButton = document.getElementById('logoutBtn');
+  const statusElement = document.getElementById('accountStatus');
+  const badgeElement = document.getElementById('accountUserBadge');
+  const authViews = document.querySelectorAll('[data-auth-view]');
+
+  if (!signupForm && !loginForm && !logoutButton) {
+    return;
+  }
+
+  const setStatus = (variant, message) => {
+    if (!statusElement) {
+      return;
+    }
+    statusElement.classList.remove('account-status--success', 'account-status--error');
+    if (!message) {
+      statusElement.hidden = true;
+      statusElement.textContent = '';
+      return;
+    }
+    statusElement.hidden = false;
+    statusElement.textContent = message;
+    if (variant === 'success') {
+      statusElement.classList.add('account-status--success');
+    } else if (variant === 'error') {
+      statusElement.classList.add('account-status--error');
+    }
+  };
+
+  const renderSessionState = () => {
+    const session = getActiveSession();
+    authViews.forEach((view) => {
+      if (!(view instanceof HTMLElement)) {
+        return;
+      }
+      const shouldShow =
+        session && view.dataset.authView === 'logged-in'
+          ? true
+          : !session && view.dataset.authView === 'logged-out';
+      view.hidden = !shouldShow;
+    });
+    if (session && badgeElement) {
+      badgeElement.textContent = session.name || session.email;
+    }
+  };
+
+  if (signupForm) {
+    signupForm.addEventListener('submit', (event) => {
+      event.preventDefault();
+      const formData = new FormData(signupForm);
+      const name = (formData.get('name') || '').toString().trim();
+      const email = normalizeEmail((formData.get('email') || '').toString());
+      const password = (formData.get('password') || '').toString();
+
+      if (name.length < 2) {
+        setStatus('error', 'Please enter your full name to continue.');
+        return;
+      }
+      if (!email) {
+        setStatus('error', 'A valid email address is required.');
+        return;
+      }
+      if (password.length < 8) {
+        setStatus('error', 'Password must be at least 8 characters long.');
+        return;
+      }
+
+      const accounts = readAccounts();
+      if (accounts[email]) {
+        setStatus('error', 'An account already exists for that email. Try signing in.');
+        return;
+      }
+
+      accounts[email] = {
+        email,
+        name,
+        passwordHash: hashSecret(password),
+        createdAt: new Date().toISOString(),
+      };
+      writeAccounts(accounts);
+      setActiveSession({ email, name });
+      setStatus('success', 'Account created! You are now signed in on this device.');
+      signupForm.reset();
+      if (loginForm) {
+        loginForm.reset();
+      }
+      renderSessionState();
+    });
+  }
+
+  if (loginForm) {
+    loginForm.addEventListener('submit', (event) => {
+      event.preventDefault();
+      const formData = new FormData(loginForm);
+      const email = normalizeEmail((formData.get('email') || '').toString());
+      const password = (formData.get('password') || '').toString();
+
+      if (!email || !password) {
+        setStatus('error', 'Please enter both your email and password.');
+        return;
+      }
+
+      const accounts = readAccounts();
+      const account = accounts[email];
+      if (!account) {
+        setStatus('error', 'No account found for that email address.');
+        return;
+      }
+      if (account.passwordHash !== hashSecret(password)) {
+        setStatus('error', 'Incorrect password. Please try again.');
+        return;
+      }
+
+      setActiveSession({ email, name: account.name });
+      setStatus('success', `Welcome back, ${account.name || 'friend'}!`);
+      loginForm.reset();
+      renderSessionState();
+    });
+  }
+
+  if (logoutButton) {
+    logoutButton.addEventListener('click', () => {
+      clearActiveSession();
+      setStatus('success', 'You have been signed out on this browser.');
+      renderSessionState();
+    });
+  }
+
+  renderSessionState();
+}
+
 window.addEventListener('DOMContentLoaded', () => {
   initCarousels();
   initCalculator();
   updateForm();
   initTranslations();
+  initAccountCenter();
 });
