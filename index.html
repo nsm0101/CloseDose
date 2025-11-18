@@ -287,12 +287,39 @@
 
     .account-card {
       display: grid;
-      gap: clamp(16px, 3vw, 24px);
+      gap: clamp(14px, 3vw, 20px);
+      transition: padding 0.2s ease;
     }
 
-    .account-card__header {
-      display: grid;
-      gap: 0.2rem;
+    .account-card--collapsed {
+      padding: 18px 24px;
+    }
+
+    .account-card__toggle {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      justify-content: space-between;
+      padding: 0;
+      border: none;
+      background: none;
+      font: inherit;
+      color: inherit;
+      cursor: pointer;
+      width: 100%;
+      text-align: left;
+    }
+
+    .account-card__toggle:focus-visible {
+      outline: 3px solid rgba(18, 70, 67, 0.8);
+      outline-offset: 4px;
+    }
+
+    .account-card__label {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      text-align: left;
     }
 
     .account-card__eyebrow {
@@ -304,12 +331,39 @@
       color: var(--teal-500);
     }
 
-    .account-card__header h2 {
+    .account-card__title {
       margin: 0;
       font-size: clamp(1.2rem, 3vw, 1.6rem);
     }
 
-    .account-card__header p {
+    .account-card__toggle-icon {
+      margin-left: auto;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      border: var(--card-border);
+      display: grid;
+      place-items: center;
+      font-size: 1.25rem;
+      line-height: 1;
+      transition: transform 0.18s ease;
+      background: rgba(255, 255, 255, 0.8);
+    }
+
+    .account-card__toggle[aria-expanded="true"] .account-card__toggle-icon {
+      transform: rotate(45deg);
+    }
+
+    .account-card__panel {
+      display: grid;
+      gap: clamp(14px, 3vw, 18px);
+    }
+
+    .account-card__panel[hidden] {
+      display: none !important;
+    }
+
+    .account-card__intro {
       margin: 0;
       color: var(--ink-700);
       line-height: 1.5;
@@ -339,15 +393,33 @@
       color: #a52834;
     }
 
-    .account-forms {
-      display: grid;
-      gap: clamp(16px, 3vw, 24px);
+    .account-card__actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
     }
 
-    @media (min-width: 720px) {
-      .account-forms {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
+    .account-card__action {
+      border-radius: 999px;
+      border: var(--card-border);
+      background: var(--teal-400);
+      color: #fff;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 0.6rem 1.4rem;
+      cursor: pointer;
+      box-shadow: var(--shadow-btn);
+    }
+
+    .account-card__action.account-card__action--secondary {
+      background: #fff;
+      color: var(--ink-900);
+    }
+
+    .account-card__action:focus-visible {
+      outline: 3px solid rgba(18, 70, 67, 0.8);
+      outline-offset: 2px;
     }
 
     .account-form {
@@ -452,6 +524,67 @@
 
     .account-session[hidden] {
       display: none !important;
+    }
+
+    .account-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 1500;
+      background: rgba(15, 44, 42, 0.6);
+      backdrop-filter: blur(4px);
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      animation: fadeIn 0.2s ease;
+    }
+
+    .account-modal[hidden] {
+      display: none !important;
+    }
+
+    .account-modal__dialog {
+      width: min(460px, 100%);
+      background: #fff;
+      border: var(--card-border);
+      border-radius: 24px;
+      box-shadow: 0 12px 0 rgba(15, 44, 42, 0.4);
+      padding: clamp(20px, 4vw, 30px);
+      display: grid;
+      gap: 16px;
+      position: relative;
+    }
+
+    .account-modal__title {
+      margin: 0;
+      font-size: 1.35rem;
+    }
+
+    .account-modal__close {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      border: var(--card-border);
+      border-radius: 50%;
+      width: 36px;
+      height: 36px;
+      display: grid;
+      place-items: center;
+      background: #fff;
+      cursor: pointer;
+    }
+
+    .account-modal__close:focus-visible {
+      outline: 3px solid rgba(18, 70, 67, 0.8);
+      outline-offset: 2px;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
     }
 
     .donate-card {
@@ -1459,27 +1592,53 @@
     </header>
     <main>
       <div class="layout">
-        <section class="card account-card" aria-labelledby="account-heading">
-          <header class="account-card__header">
-            <p class="account-card__eyebrow">Your profile</p>
-            <h2 id="account-heading">Create a CloseDose account</h2>
-            <p>
-              Save your preferred calculator settings and keep dosing notes tied to an account that lives directly on this
-              device. Nothing is sent to a server — everything is stored privately in your browser.
+        <section class="card account-card account-card--collapsed" aria-labelledby="account-heading" data-dashboard-card>
+          <button
+            class="account-card__toggle"
+            type="button"
+            aria-expanded="false"
+            aria-controls="accountPanel"
+            data-dashboard-toggle>
+            <span class="account-card__label">
+              <span class="account-card__eyebrow">CloseDose Dashboard</span>
+              <span class="account-card__title" id="account-heading">CloseDose Dashboard</span>
+            </span>
+            <span class="account-card__toggle-icon" aria-hidden="true">+</span>
+          </button>
+          <div class="account-card__panel" id="accountPanel" data-dashboard-panel hidden>
+            <p class="account-card__intro">
+              Save calculator preferences, dosing notes, and future family sharing tools inside your personal dashboard.
+              Everything stays on this device until you opt into cloud sync.
             </p>
-          </header>
-          <p id="accountStatus" class="account-status" role="status" aria-live="polite" hidden></p>
-          <div class="account-session" data-auth-view="logged-in" hidden>
-            <p class="account-session__meta">
-              Signed in as <strong id="accountUserBadge"></strong>. Your information stays on this browser unless you clear it.
-            </p>
-            <div class="account-session__actions">
-              <button type="button" id="logoutBtn">Log out</button>
+            <p id="accountStatus" class="account-status" role="status" aria-live="polite" hidden></p>
+            <div class="account-session" data-auth-view="logged-in" hidden>
+              <p class="account-session__meta">
+                Signed in as <strong id="accountUserBadge"></strong>. Your information stays on this browser unless you clear it.
+              </p>
+              <div class="account-session__actions">
+                <button type="button" id="logoutBtn">Log out</button>
+              </div>
+            </div>
+            <div class="account-card__actions" data-auth-view="logged-out">
+              <button type="button" class="account-card__action account-card__action--secondary" data-open-modal="login">
+                Log in
+              </button>
+              <button type="button" class="account-card__action" data-open-modal="signup">
+                Create an account
+              </button>
             </div>
           </div>
-          <div class="account-forms" data-auth-view="logged-out">
+        </section>
+        <div class="account-modal" data-modal="signup" role="dialog" aria-modal="true" aria-labelledby="signupTitle" hidden>
+          <div class="account-modal__dialog" tabindex="-1">
+            <button class="account-modal__close" type="button" data-close-modal aria-label="Close sign up form">
+              &times;
+            </button>
+            <h3 class="account-modal__title" id="signupTitle">Create your CloseDose account</h3>
+            <p class="account-card__intro">
+              Your secure dashboard lives right in this browser. We hash your password locally before it is saved.
+            </p>
             <form id="signupForm" class="account-form" autocomplete="off" novalidate>
-              <h3>New here?</h3>
               <label for="signupName">
                 Full name
                 <input id="signupName" name="name" type="text" minlength="2" required />
@@ -1492,11 +1651,19 @@
                 Create password
                 <input id="signupPassword" name="password" type="password" minlength="8" required />
               </label>
-              <small>Passwords are hashed locally before they are saved.</small>
-              <button type="submit">Create account</button>
+              <small>Use a unique passphrase; you will need it to unlock encrypted family data later.</small>
+              <button type="submit">Sign up</button>
             </form>
+          </div>
+        </div>
+        <div class="account-modal" data-modal="login" role="dialog" aria-modal="true" aria-labelledby="loginTitle" hidden>
+          <div class="account-modal__dialog" tabindex="-1">
+            <button class="account-modal__close" type="button" data-close-modal aria-label="Close login form">
+              &times;
+            </button>
+            <h3 class="account-modal__title" id="loginTitle">Log into CloseDose</h3>
+            <p class="account-card__intro">Welcome back! Sign in to access your saved dashboard data on this device.</p>
             <form id="loginForm" class="account-form" autocomplete="off" novalidate>
-              <h3>Already have one?</h3>
               <label for="loginEmail">
                 Email address
                 <input id="loginEmail" name="email" type="email" required />
@@ -1505,11 +1672,11 @@
                 Password
                 <input id="loginPassword" name="password" type="password" minlength="8" required />
               </label>
-              <small>Logins never leave this device; there is no remote server involved.</small>
-              <button type="submit">Sign in</button>
+              <small>Accounts run locally today; future sync support will require this login.</small>
+              <button type="submit">Log in</button>
             </form>
           </div>
-        </section>
+        </div>
         <div class="calculator-widget-host" id="calculator-card" data-calculator-root></div>
         <section class="card donate-card" aria-labelledby="donate-heading">
           <div class="donate-content">

@@ -606,6 +606,8 @@ function initTranslations() {
 
 const ACCOUNT_STORAGE_KEY = 'closedose.accounts.v1';
 const ACCOUNT_SESSION_KEY = 'closedose.session.v1';
+const CLOSE_ACCOUNT_MODALS_EVENT = 'closedose:close-account-modals';
+let setDashboardCollapsed = () => {};
 
 function getStorage() {
   try {
@@ -695,6 +697,111 @@ function clearActiveSession() {
   }
 }
 
+function initDashboardCardToggle() {
+  const card = document.querySelector('[data-dashboard-card]');
+  const toggle = document.querySelector('[data-dashboard-toggle]');
+  const panel = document.querySelector('[data-dashboard-panel]');
+  if (!card || !toggle || !panel) {
+    setDashboardCollapsed = () => {};
+    return;
+  }
+
+  const applyState = (collapsed) => {
+    const isCollapsed = Boolean(collapsed);
+    card.classList.toggle('account-card--collapsed', isCollapsed);
+    panel.hidden = isCollapsed;
+    toggle.setAttribute('aria-expanded', String(!isCollapsed));
+  };
+
+  setDashboardCollapsed = (collapsed) => {
+    if (typeof collapsed === 'boolean') {
+      applyState(collapsed);
+    }
+  };
+
+  applyState(true);
+
+  toggle.addEventListener('click', () => {
+    const collapsed = panel.hidden;
+    applyState(!collapsed);
+  });
+}
+
+function initAccountModals() {
+  const modals = new Map();
+  document.querySelectorAll('[data-modal]').forEach((modal) => {
+    const key = modal.getAttribute('data-modal');
+    if (key) {
+      modals.set(key, modal);
+    }
+  });
+
+  if (modals.size === 0) {
+    return;
+  }
+
+  let activeModal = null;
+  let lastFocusedElement = null;
+
+  const closeModal = () => {
+    if (!activeModal) {
+      return;
+    }
+    activeModal.hidden = true;
+    document.body.style.overflow = '';
+    if (lastFocusedElement && typeof lastFocusedElement.focus === 'function') {
+      lastFocusedElement.focus();
+    }
+    activeModal = null;
+    lastFocusedElement = null;
+  };
+
+  const openModal = (key) => {
+    const modal = modals.get(key);
+    if (!modal || !modal.hidden) {
+      return;
+    }
+    lastFocusedElement = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    modal.hidden = false;
+    document.body.style.overflow = 'hidden';
+    const dialog = modal.querySelector('.account-modal__dialog');
+    if (dialog && typeof dialog.focus === 'function') {
+      dialog.focus();
+    }
+    activeModal = modal;
+  };
+
+  document.querySelectorAll('[data-open-modal]').forEach((trigger) => {
+    trigger.addEventListener('click', () => {
+      const key = trigger.getAttribute('data-open-modal');
+      if (key) {
+        openModal(key);
+      }
+    });
+  });
+
+  modals.forEach((modal) => {
+    modal.addEventListener('click', (event) => {
+      if (event.target === modal) {
+        closeModal();
+      }
+    });
+    modal.querySelectorAll('[data-close-modal]').forEach((closer) => {
+      closer.addEventListener('click', () => closeModal());
+    });
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && activeModal) {
+      closeModal();
+    }
+  });
+
+  document.addEventListener(CLOSE_ACCOUNT_MODALS_EVENT, () => {
+    closeModal();
+  });
+}
+
 function initAccountCenter() {
   const signupForm = document.getElementById('signupForm');
   const loginForm = document.getElementById('loginForm');
@@ -724,6 +831,7 @@ function initAccountCenter() {
     } else if (variant === 'error') {
       statusElement.classList.add('account-status--error');
     }
+    setDashboardCollapsed(false);
   };
 
   const renderSessionState = () => {
@@ -740,6 +848,9 @@ function initAccountCenter() {
     });
     if (session && badgeElement) {
       badgeElement.textContent = session.name || session.email;
+    }
+    if (session) {
+      setDashboardCollapsed(false);
     }
   };
 
@@ -783,6 +894,7 @@ function initAccountCenter() {
       if (loginForm) {
         loginForm.reset();
       }
+      document.dispatchEvent(new Event(CLOSE_ACCOUNT_MODALS_EVENT));
       renderSessionState();
     });
   }
@@ -813,6 +925,7 @@ function initAccountCenter() {
       setActiveSession({ email, name: account.name });
       setStatus('success', `Welcome back, ${account.name || 'friend'}!`);
       loginForm.reset();
+      document.dispatchEvent(new Event(CLOSE_ACCOUNT_MODALS_EVENT));
       renderSessionState();
     });
   }
@@ -833,5 +946,7 @@ window.addEventListener('DOMContentLoaded', () => {
   initCalculator();
   updateForm();
   initTranslations();
+  initDashboardCardToggle();
+  initAccountModals();
   initAccountCenter();
 });
