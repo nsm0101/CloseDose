@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Patient Manager</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32.png">
+  <link rel="apple-touch-icon" href="images/logo-teal.png">
+  <style>
+    :root {
+      --teal-500: #1f8f7b;
+      --teal-600: #123a37;
+      --ink-900: #0f2c2a;
+      --ink-700: #124643;
+      --bg: #f5f9f9;
+      --surface: rgba(255, 255, 255, 0.94);
+      --surface-soft: rgba(235, 244, 249, 0.94);
+      --card-border: 2px solid var(--ink-900);
+      --inner-border: 1px dashed rgba(12, 44, 72, 0.18);
+      --shadow-card: 0 14px 28px rgba(14, 58, 94, 0.2);
+      --shadow-btn: 0 6px 0 rgba(15, 44, 42, 0.25);
+      --muted: rgba(18, 70, 67, 0.75);
+      --pill-bg: linear-gradient(160deg, rgba(255, 255, 255, 0.92), rgba(225, 243, 243, 0.98));
+      --pill-border: 2px solid rgba(15, 44, 42, 0.28);
+      --pill-hover: rgba(196, 229, 229, 0.6);
+      --visit: #9fc8ff;
+      --orders: #fba0e8;
+      --note: #fef6b2;
+      --dispo: #c2f3c5;
+      --danger: #e63946;
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: 'Nunito', system-ui, -apple-system, 'Segoe UI', sans-serif;
+      color: var(--ink-900);
+      background: var(--bg) url('images/bg4k.png');
+      background-size: cover;
+      background-attachment: fixed;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .wrap {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 26px 14px 120px;
+      gap: 18px;
+    }
+
+    .brand-header {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      padding: 14px 20px;
+      width: min(900px, 100%);
+      border-radius: 22px;
+      border: 1px solid rgba(12, 44, 72, 0.12);
+      background: linear-gradient(120deg, rgba(255, 255, 255, 0.92), rgba(219, 239, 247, 0.85));
+      box-shadow: 0 16px 30px rgba(13, 52, 82, 0.18);
+      flex-wrap: wrap;
+    }
+
+    .brand-title {
+      margin: 0;
+      font-size: clamp(1.6rem, 2vw + 1.1rem, 2.3rem);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      display: flex;
+      gap: 0.5ch;
+      align-items: flex-end;
+      color: var(--ink-900);
+    }
+
+    .brand-title strong {
+      color: var(--teal-500);
+      text-decoration: underline;
+      text-decoration-thickness: 0.18em;
+      text-underline-offset: 0.22em;
+    }
+
+    .page {
+      width: min(1080px, 100%);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      padding: 18px;
+      background: var(--surface);
+      border-radius: 24px;
+      border: var(--card-border);
+      box-shadow: var(--shadow-card);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .page::after {
+      content: '';
+      position: absolute;
+      inset: 10px;
+      border-radius: 18px;
+      border: var(--inner-border);
+      pointer-events: none;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      position: relative;
+      z-index: 1;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(1.6rem, 2.6vw, 2.2rem);
+      letter-spacing: 0.02em;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .subhead {
+      margin: 0;
+      color: var(--muted);
+      font-weight: 600;
+      font-size: 0.98rem;
+    }
+
+    .controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    button,
+    select,
+    input,
+    textarea,
+    label {
+      font: inherit;
+    }
+
+    .pill-btn {
+      background: var(--pill-bg);
+      border: var(--pill-border);
+      padding: 10px 16px;
+      border-radius: 14px;
+      cursor: pointer;
+      transition: transform 0.1s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+      color: var(--ink-900);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 800;
+      box-shadow: var(--shadow-btn);
+    }
+
+    .pill-btn:hover,
+    .pill-btn:focus {
+      transform: translateY(-1px);
+      background-color: var(--pill-hover);
+      outline: none;
+    }
+
+    .pill-btn.primary {
+      background: linear-gradient(150deg, #e5fbf2, #e5f4ff);
+      border-color: rgba(13, 143, 138, 0.35);
+      color: var(--ink-900);
+    }
+
+    .pill-btn.danger {
+      background: #fff5f6;
+      border-color: rgba(230, 57, 70, 0.4);
+      color: #b10f1f;
+    }
+
+    .patient-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .patient-card {
+      position: relative;
+      background: var(--surface-soft);
+      border: var(--card-border);
+      border-radius: 20px;
+      padding: 16px;
+      box-shadow: 0 18px 32px rgba(15, 68, 109, 0.16);
+      overflow: hidden;
+    }
+
+    .patient-card::before {
+      content: '';
+      position: absolute;
+      inset: 10px;
+      border-radius: 16px;
+      border: var(--inner-border);
+      pointer-events: none;
+    }
+
+    .patient-grid {
+      display: grid;
+      grid-template-columns: minmax(140px, 160px) 1fr minmax(160px, 190px);
+      gap: 12px;
+      align-items: start;
+    }
+
+    .room-select {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 6px;
+    }
+
+    .room-select label {
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: var(--muted);
+    }
+
+    select,
+    input[type="text"],
+    input[type="number"],
+    textarea {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(12, 44, 72, 0.18);
+      background: #f8fbff;
+      color: var(--ink-900);
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    select:focus,
+    input:focus,
+    textarea:focus {
+      outline: none;
+      border-color: rgba(13, 143, 138, 0.5);
+      box-shadow: 0 0 0 3px rgba(6, 156, 180, 0.2);
+    }
+
+    .patient-info {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 10px;
+      align-items: center;
+    }
+
+    .patient-info .field label {
+      display: block;
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    .patient-info .field textarea {
+      min-height: 78px;
+      resize: vertical;
+    }
+
+    .status-panel {
+      justify-self: flex-end;
+      background: #f7fbff;
+      border-radius: 16px;
+      padding: 12px;
+      border: 1px dashed rgba(12, 44, 72, 0.2);
+      display: grid;
+      gap: 10px;
+      align-content: start;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
+    }
+
+    .status-title {
+      font-weight: 800;
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .status-time {
+      font-family: 'Roboto Mono', 'SFMono-Regular', ui-monospace, monospace;
+      font-size: 0.95rem;
+      color: var(--ink-900);
+      background: #fff;
+      border-radius: 10px;
+      padding: 8px 10px;
+      border: 1px dashed rgba(15, 31, 51, 0.12);
+      text-align: center;
+    }
+
+    .checkbox-row,
+    .chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 2px solid rgba(15, 31, 51, 0.16);
+      background: #f9fbfd;
+      cursor: pointer;
+      transition: transform 0.08s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+      font-weight: 700;
+      color: var(--ink-900);
+    }
+
+    .chip:hover,
+    .chip:focus-within {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 12px rgba(15, 31, 51, 0.12);
+      border-color: rgba(13, 143, 138, 0.4);
+    }
+
+    .chip input {
+      width: 16px;
+      height: 16px;
+      accent-color: var(--ink-900);
+    }
+
+    .chip.visit { background: var(--visit); }
+    .chip.orders { background: var(--orders); }
+    .chip.note { background: var(--note); }
+    .chip.dispo { background: var(--dispo); }
+
+    .dispo-options {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 8px;
+    }
+
+    .dispo-pill {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 2px dashed rgba(15, 31, 51, 0.14);
+      background: #f8fbff;
+      cursor: pointer;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+      font-weight: 700;
+      color: var(--ink-900);
+    }
+
+    .dispo-pill input {
+      width: 16px;
+      height: 16px;
+      accent-color: var(--ink-900);
+    }
+
+    .dispo-pill.active {
+      border-color: rgba(13, 143, 138, 0.6);
+      background: linear-gradient(120deg, #e5fbf2, #e5f4ff);
+      box-shadow: 0 8px 18px rgba(13, 143, 138, 0.18);
+    }
+
+    .add-card {
+      border: 2px dashed rgba(15, 31, 51, 0.2);
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.7);
+      padding: 14px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9);
+    }
+
+    .muted {
+      color: var(--muted);
+      font-weight: 700;
+      font-size: 0.94rem;
+    }
+
+    @media (max-width: 960px) {
+      .page {
+        padding: 16px 14px;
+      }
+    }
+
+    @media (max-width: 860px) {
+      .patient-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .status-panel {
+        justify-self: stretch;
+        order: 3;
+      }
+    }
+
+    @media (max-width: 540px) {
+      .wrap { padding: 16px 10px 100px; }
+
+      .patient-card {
+        padding: 14px;
+      }
+
+      .patient-info {
+        grid-template-columns: 1fr;
+      }
+
+      textarea {
+        min-height: 110px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="brand-header">
+      <h1 class="brand-title">Patient <strong>Manager</strong></h1>
+      <p class="subhead">Borrowing CloseDose's look while keeping the quick-glance shift board feel.</p>
+    </div>
+
+    <div class="page">
+      <header>
+        <div>
+          <h1>Patient Manager</h1>
+          <p class="subhead">Track active patients during shift—rooms, plans, and dispo at a glance.</p>
+        </div>
+        <div class="controls">
+          <button class="pill-btn danger" id="clear-list">Clear List</button>
+          <button class="pill-btn primary" id="add-patient">+ Add Patient</button>
+        </div>
+      </header>
+
+      <div class="patient-list" id="patient-list"></div>
+
+      <div class="add-card">
+        <button class="pill-btn primary" id="add-patient-bottom" aria-label="Add another patient">+</button>
+      </div>
+    </div>
+  </div>
+
+  <template id="patient-template">
+    <div class="patient-card">
+      <div class="patient-grid">
+        <div class="room-select">
+          <label>Room</label>
+          <select class="room-field"></select>
+        </div>
+
+        <div class="patient-info">
+          <div class="field">
+            <label for="initials">Initials</label>
+            <input type="text" class="initials-field" placeholder="e.g., J.D." maxlength="12" />
+          </div>
+          <div class="field">
+            <label for="age">Age</label>
+            <input type="number" class="age-field" min="0" max="120" placeholder="yrs" />
+          </div>
+          <div class="field">
+            <label for="gender">Gender</label>
+            <select class="gender-field">
+              <option value="">–</option>
+              <option value="female">♀ Female</option>
+              <option value="male">♂ Male</option>
+              <option value="other">∅ Other</option>
+            </select>
+          </div>
+          <div class="field" style="grid-column: 1 / -1;">
+            <label for="notes">Pertinent info</label>
+            <textarea class="notes-field" placeholder="Presentation, plan, follow-ups..."></textarea>
+          </div>
+          <div class="field" style="grid-column: 1 / -1;">
+            <div class="chip-row">
+              <label class="chip visit">
+                <input type="checkbox" class="seen-field" />
+                Visit done
+              </label>
+              <label class="chip orders">
+                <input type="checkbox" class="labs-field" />
+                Labs/Imaging
+              </label>
+              <label class="chip note">
+                <input type="checkbox" class="meds-field" />
+                Meds Ordered
+              </label>
+            </div>
+          </div>
+          <div class="field" style="grid-column: 1 / -1;">
+            <div class="muted">Dispo decision</div>
+            <div class="dispo-options">
+              <label class="dispo-pill">
+                <input type="radio" name="dispo" value="floor" />
+                Admit Floor
+              </label>
+              <label class="dispo-pill">
+                <input type="radio" name="dispo" value="picu" />
+                Admit PICU
+              </label>
+              <label class="dispo-pill">
+                <input type="radio" name="dispo" value="discharge" />
+                Discharge
+              </label>
+              <label class="dispo-pill">
+                <input type="radio" name="dispo" value="transfer" />
+                Transfer
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="status-panel">
+          <div class="status-title">Last Update</div>
+          <div class="status-time" data-time>--:--:--</div>
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <script>
+    const roomOptions = [
+      'A1', 'A2', 'A3', 'A4', 'A5', 'A6', 'A7', 'A8', 'A9', 'A10', 'A11', 'A12', 'A13',
+      'B14', 'B15', 'B16', 'B17', 'B18', 'B19', 'B20', 'B21', 'B22', 'B23', 'B24',
+      'V25', 'V26', 'V27', 'V28', 'V29', 'V30', 'V31', 'APACE-50', 'APACE-51', 'BPACE-52', 'PACE-53',
+      'OV-A', 'OV-B', 'OV-C', 'OV-D', 'OV-E', 'OV-F', 'OV-G'
+    ];
+
+    const listEl = document.getElementById('patient-list');
+    const addBtns = [document.getElementById('add-patient'), document.getElementById('add-patient-bottom')];
+    const clearBtn = document.getElementById('clear-list');
+    const template = document.getElementById('patient-template');
+    const STORAGE_KEY = 'patient-manager-list';
+
+    let patients = [];
+
+    function persist() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(patients));
+    }
+
+    function load() {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      patients = stored ? JSON.parse(stored) : [];
+    }
+
+    function formattedElapsed(timestamp) {
+      if (!timestamp) return '--:--:--';
+      const diff = Math.max(0, Date.now() - timestamp);
+      const hours = Math.floor(diff / 1000 / 3600).toString().padStart(2, '0');
+      const mins = Math.floor((diff / 1000 / 60) % 60).toString().padStart(2, '0');
+      const secs = Math.floor((diff / 1000) % 60).toString().padStart(2, '0');
+      return `${hours}:${mins}:${secs}`;
+    }
+
+    function updateTimers() {
+      document.querySelectorAll('[data-time]').forEach((el) => {
+        const id = el.closest('.patient-card').dataset.id;
+        const patient = patients.find((p) => p.id === id);
+        el.textContent = formattedElapsed(patient?.updatedAt);
+      });
+    }
+
+    function createRoomOptions(selectEl, value = '') {
+      selectEl.innerHTML = '<option value="">Select room</option>' + roomOptions.map((room) => `<option value="${room}">${room}</option>`).join('');
+      selectEl.value = value;
+    }
+
+    function markDispoSelections(container, value) {
+      container.querySelectorAll('.dispo-pill').forEach((pill) => {
+        const input = pill.querySelector('input');
+        input.checked = input.value === value;
+        pill.classList.toggle('active', input.checked);
+      });
+    }
+
+    function handleChange(id, updater) {
+      const idx = patients.findIndex((p) => p.id === id);
+      if (idx === -1) return;
+      patients[idx] = { ...patients[idx], ...updater, updatedAt: Date.now() };
+      persist();
+      updateTimers();
+    }
+
+    function renderPatient(patient) {
+      const card = template.content.firstElementChild.cloneNode(true);
+      card.dataset.id = patient.id;
+
+      const roomField = card.querySelector('.room-field');
+      const initialsField = card.querySelector('.initials-field');
+      const ageField = card.querySelector('.age-field');
+      const genderField = card.querySelector('.gender-field');
+      const notesField = card.querySelector('.notes-field');
+      const seenField = card.querySelector('.seen-field');
+      const labsField = card.querySelector('.labs-field');
+      const medsField = card.querySelector('.meds-field');
+      const dispoContainer = card.querySelector('.dispo-options');
+
+      createRoomOptions(roomField, patient.room || '');
+      initialsField.value = patient.initials || '';
+      ageField.value = patient.age || '';
+      genderField.value = patient.gender || '';
+      notesField.value = patient.notes || '';
+      seenField.checked = Boolean(patient.seen);
+      labsField.checked = Boolean(patient.labsOrdered);
+      medsField.checked = Boolean(patient.medsOrdered);
+      markDispoSelections(dispoContainer, patient.dispo || '');
+
+      roomField.addEventListener('change', (e) => handleChange(patient.id, { room: e.target.value }));
+      initialsField.addEventListener('input', (e) => handleChange(patient.id, { initials: e.target.value }));
+      ageField.addEventListener('input', (e) => handleChange(patient.id, { age: e.target.value }));
+      genderField.addEventListener('change', (e) => handleChange(patient.id, { gender: e.target.value }));
+      notesField.addEventListener('input', (e) => handleChange(patient.id, { notes: e.target.value }));
+      seenField.addEventListener('change', (e) => handleChange(patient.id, { seen: e.target.checked }));
+      labsField.addEventListener('change', (e) => handleChange(patient.id, { labsOrdered: e.target.checked }));
+      medsField.addEventListener('change', (e) => handleChange(patient.id, { medsOrdered: e.target.checked }));
+
+      dispoContainer.querySelectorAll('input[type="radio"]').forEach((radio) => {
+        radio.name = `dispo-${patient.id}`;
+        radio.addEventListener('change', (e) => {
+          markDispoSelections(dispoContainer, e.target.value);
+          handleChange(patient.id, { dispo: e.target.value });
+        });
+      });
+
+      card.querySelector('[data-time]').textContent = formattedElapsed(patient.updatedAt);
+      return card;
+    }
+
+    function renderAll() {
+      listEl.innerHTML = '';
+      patients.forEach((patient) => {
+        listEl.appendChild(renderPatient(patient));
+      });
+      updateTimers();
+    }
+
+    function addPatient() {
+      const newPatient = {
+        id: crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random().toString(16).slice(2)}`,
+        room: '',
+        initials: '',
+        age: '',
+        gender: '',
+        notes: '',
+        seen: false,
+        labsOrdered: false,
+        medsOrdered: false,
+        dispo: '',
+        updatedAt: Date.now(),
+      };
+      patients.unshift(newPatient);
+      persist();
+      renderAll();
+    }
+
+    addBtns.forEach((btn) => btn.addEventListener('click', addPatient));
+
+    clearBtn.addEventListener('click', () => {
+      const confirmClear = confirm('Clear the entire patient list? This cannot be undone.');
+      if (!confirmClear) return;
+      patients = [];
+      persist();
+      renderAll();
+    });
+
+    load();
+    renderAll();
+    updateTimers();
+    setInterval(updateTimers, 1000);
+  </script>
+</body>
+</html>
