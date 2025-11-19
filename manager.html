@@ -203,7 +203,7 @@
       background: var(--surface-soft);
       border: var(--card-border);
       border-radius: 20px;
-      padding: 16px;
+      padding: 0;
       box-shadow: 0 18px 32px rgba(15, 68, 109, 0.16);
       overflow: hidden;
     }
@@ -215,6 +215,111 @@
       border-radius: 16px;
       border: var(--inner-border);
       pointer-events: none;
+    }
+
+    .patient-card[open] {
+      padding-bottom: 16px;
+    }
+
+    .card-summary {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 18px 20px 16px 20px;
+      background: rgba(255, 255, 255, 0.7);
+      border-bottom: 1px solid rgba(12, 44, 72, 0.08);
+      cursor: pointer;
+      list-style: none;
+      position: relative;
+      z-index: 2;
+    }
+
+    .card-summary::-webkit-details-marker { display: none; }
+
+    .card-summary::after {
+      content: '';
+      flex: 0 0 auto;
+      width: 12px;
+      height: 12px;
+      border-right: 2px solid var(--ink-700);
+      border-bottom: 2px solid var(--ink-700);
+      transform: rotate(45deg);
+      transition: transform 0.2s ease;
+      margin-left: auto;
+    }
+
+    .patient-card[open] .card-summary::after {
+      transform: rotate(225deg);
+    }
+
+    .summary-left,
+    .summary-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .summary-left {
+      flex: 2;
+    }
+
+    .summary-right {
+      flex: 1.5;
+      justify-content: flex-end;
+      text-align: right;
+    }
+
+    .summary-room {
+      padding: 6px 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(12, 44, 72, 0.18);
+      background: #fff;
+      font-weight: 800;
+      font-size: 0.95rem;
+      letter-spacing: 0.04em;
+    }
+
+    .summary-name {
+      font-weight: 800;
+      font-size: 1.05rem;
+    }
+
+    .summary-meta {
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .summary-flags {
+      font-weight: 700;
+      font-size: 0.92rem;
+    }
+
+    .summary-dispo {
+      font-size: 0.9rem;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(31, 143, 123, 0.12);
+      border: 1px dashed rgba(31, 143, 123, 0.4);
+    }
+
+    .summary-dispo[data-empty="true"] {
+      opacity: 0.6;
+      background: transparent;
+      border-style: dotted;
+    }
+
+    .summary-time {
+      font-family: 'Roboto Mono', 'SFMono-Regular', ui-monospace, monospace;
+      font-size: 0.85rem;
+      color: var(--ink-700);
+    }
+
+    .patient-card[open] .patient-grid {
+      margin-top: 10px;
+      padding: 0 16px 0 16px;
     }
 
     .patient-grid {
@@ -418,16 +523,26 @@
     @media (max-width: 540px) {
       .wrap { padding: 16px 10px 100px; }
 
-      .patient-card {
-        padding: 14px;
-      }
-
       .patient-info {
         grid-template-columns: 1fr;
       }
 
       textarea {
         min-height: 110px;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .card-summary {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+      }
+
+      .summary-right {
+        justify-content: space-between;
+        width: 100%;
+        text-align: left;
       }
     }
   </style>
@@ -460,7 +575,19 @@
   </div>
 
   <template id="patient-template">
-    <div class="patient-card">
+    <details class="patient-card" open>
+      <summary class="card-summary" aria-label="Toggle condensed patient view">
+        <div class="summary-left">
+          <span class="summary-room" data-summary-room>--</span>
+          <span class="summary-name" data-summary-name>New patient</span>
+          <span class="summary-meta" data-summary-meta>Age · Gender</span>
+        </div>
+        <div class="summary-right">
+          <span class="summary-flags" data-summary-flags>Waiting for updates</span>
+          <span class="summary-dispo" data-summary-dispo data-empty="true">No dispo</span>
+          <span class="summary-time" data-summary-time>--:--:--</span>
+        </div>
+      </summary>
       <div class="patient-grid">
         <div class="room-select">
           <label>Room</label>
@@ -533,7 +660,7 @@
           <div class="status-time" data-time>--:--:--</div>
         </div>
       </div>
-    </div>
+    </details>
   </template>
 
   <script>
@@ -549,16 +676,52 @@
     const clearBtn = document.getElementById('clear-list');
     const template = document.getElementById('patient-template');
     const STORAGE_KEY = 'patient-manager-list';
+    // Shared document hosted by jsonstorage.net so every device sees the same board.
+    const REMOTE_ENDPOINT = 'https://jsonstorage.net/api/items/b4f278c7-6c45-4a87-9c41-0baa0ed1c9c7';
+    const REMOTE_POLL_INTERVAL = 15000;
+    const REMOTE_SAVE_DEBOUNCE = 600;
+
+    const genderSymbols = {
+      female: '♀',
+      male: '♂',
+      other: '∅',
+    };
+
+    const dispoLabels = {
+      floor: 'Admit Floor',
+      picu: 'Admit PICU',
+      discharge: 'Discharge',
+      transfer: 'Transfer',
+    };
 
     let patients = [];
+    let remoteSaveHandle = null;
+    let isApplyingRemote = false;
 
-    function persist() {
+    function persistLocal() {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(patients));
     }
 
+    function queueRemotePersist() {
+      persistLocal();
+      if (!REMOTE_ENDPOINT) return;
+      if (remoteSaveHandle) {
+        clearTimeout(remoteSaveHandle);
+      }
+      remoteSaveHandle = setTimeout(() => {
+        remoteSaveHandle = null;
+        syncRemote();
+      }, REMOTE_SAVE_DEBOUNCE);
+    }
+
     function load() {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      patients = stored ? JSON.parse(stored) : [];
+      try {
+        const stored = localStorage.getItem(STORAGE_KEY);
+        patients = stored ? JSON.parse(stored) : [];
+      } catch (err) {
+        patients = [];
+      }
+      patients = patients.map(normalizePatient);
     }
 
     function formattedElapsed(timestamp) {
@@ -570,12 +733,138 @@
       return `${hours}:${mins}:${secs}`;
     }
 
-    function updateTimers() {
-      document.querySelectorAll('[data-time]').forEach((el) => {
-        const id = el.closest('.patient-card').dataset.id;
-        const patient = patients.find((p) => p.id === id);
-        el.textContent = formattedElapsed(patient?.updatedAt);
+    function normalizePatient(patient = {}) {
+      const fallbackId = crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random().toString(16).slice(2)}`;
+      return {
+        id: patient.id || fallbackId,
+        room: patient.room || '',
+        initials: typeof patient.initials === 'string' ? patient.initials : '',
+        age: typeof patient.age === 'number' || typeof patient.age === 'string' ? patient.age : '',
+        gender: typeof patient.gender === 'string' ? patient.gender : '',
+        notes: typeof patient.notes === 'string' ? patient.notes : '',
+        seen: Boolean(patient.seen),
+        labsOrdered: Boolean(patient.labsOrdered),
+        medsOrdered: Boolean(patient.medsOrdered),
+        dispo: typeof patient.dispo === 'string' ? patient.dispo : '',
+        updatedAt: typeof patient.updatedAt === 'number' ? patient.updatedAt : Date.now(),
+      };
+    }
+
+    function sortPatientsInPlace() {
+      patients.sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
+    }
+
+    function mergePatientLists(localList, remoteList) {
+      const map = new Map();
+      localList.forEach((patient) => {
+        const normalized = normalizePatient(patient);
+        map.set(normalized.id, normalized);
       });
+      remoteList.forEach((patient) => {
+        const normalized = normalizePatient(patient);
+        const existing = map.get(normalized.id);
+        if (!existing || normalized.updatedAt > existing.updatedAt) {
+          map.set(normalized.id, normalized);
+        }
+      });
+      return Array.from(map.values()).sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
+    }
+
+    async function syncRemote() {
+      if (!REMOTE_ENDPOINT) return;
+      try {
+        await fetch(REMOTE_ENDPOINT, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(patients),
+        });
+      } catch (error) {
+        console.warn('Unable to sync shared list', error);
+      }
+    }
+
+    async function hydrateFromRemote() {
+      if (!REMOTE_ENDPOINT) return;
+      if (isApplyingRemote) return;
+      try {
+        const response = await fetch(`${REMOTE_ENDPOINT}?t=${Date.now()}`, { cache: 'no-store' });
+        if (response.status === 404) return;
+        if (!response.ok) throw new Error('Unable to fetch shared list');
+        const data = await response.json();
+        if (!Array.isArray(data)) return;
+        const merged = mergePatientLists(patients, data);
+        if (JSON.stringify(merged) === JSON.stringify(patients)) return;
+        isApplyingRemote = true;
+        patients = merged;
+        persistLocal();
+        renderAll();
+      } catch (error) {
+        console.warn('Unable to refresh shared list', error);
+      } finally {
+        isApplyingRemote = false;
+      }
+    }
+
+    function updateTimers() {
+      document.querySelectorAll('.patient-card').forEach((card) => {
+        const id = card.dataset.id;
+        const patient = patients.find((p) => p.id === id);
+        const timeText = formattedElapsed(patient?.updatedAt);
+        const timeEl = card.querySelector('[data-time]');
+        const summaryTimeEl = card.querySelector('[data-summary-time]');
+        if (timeEl) timeEl.textContent = timeText;
+        if (summaryTimeEl) summaryTimeEl.textContent = timeText;
+      });
+    }
+
+    function populateCardSummary(card, patient) {
+      if (!card) return;
+      const roomEl = card.querySelector('[data-summary-room]');
+      const nameEl = card.querySelector('[data-summary-name]');
+      const metaEl = card.querySelector('[data-summary-meta]');
+      const flagsEl = card.querySelector('[data-summary-flags]');
+      const dispoEl = card.querySelector('[data-summary-dispo]');
+
+      if (roomEl) roomEl.textContent = patient.room || '--';
+      if (nameEl) nameEl.textContent = patient.initials || 'New patient';
+
+      if (metaEl) {
+        const metaBits = [];
+        if (patient.age !== '' && patient.age !== null && patient.age !== undefined) {
+          metaBits.push(`${patient.age} yrs`);
+        }
+        const genderSymbol = genderSymbols[patient.gender];
+        if (genderSymbol) metaBits.push(genderSymbol);
+        else if (patient.gender) metaBits.push(patient.gender);
+        metaEl.textContent = metaBits.length ? metaBits.join(' · ') : 'Details pending';
+      }
+
+      if (flagsEl) {
+        const flags = [];
+        if (patient.seen) flags.push('Visit done');
+        if (patient.labsOrdered) flags.push('Labs/Imaging');
+        if (patient.medsOrdered) flags.push('Meds ordered');
+        flagsEl.textContent = flags.length ? flags.join(' · ') : 'No tasks marked';
+      }
+
+      if (dispoEl) {
+        if (patient.dispo) {
+          dispoEl.textContent = dispoLabels[patient.dispo] || patient.dispo;
+          dispoEl.dataset.empty = 'false';
+        } else {
+          dispoEl.textContent = 'No dispo';
+          dispoEl.dataset.empty = 'true';
+        }
+      }
+
+      const summaryTimeEl = card.querySelector('[data-summary-time]');
+      if (summaryTimeEl) summaryTimeEl.textContent = formattedElapsed(patient.updatedAt);
+    }
+
+    function updateSummaryForPatient(patient) {
+      if (!patient) return;
+      const card = document.querySelector(`.patient-card[data-id="${patient.id}"]`);
+      populateCardSummary(card, patient);
     }
 
     function createRoomOptions(selectEl, value = '') {
@@ -588,6 +877,7 @@
         const input = pill.querySelector('input');
         input.checked = input.value === value;
         pill.classList.toggle('active', input.checked);
+        input.dataset.wasChecked = input.checked ? 'true' : 'false';
       });
     }
 
@@ -595,7 +885,9 @@
       const idx = patients.findIndex((p) => p.id === id);
       if (idx === -1) return;
       patients[idx] = { ...patients[idx], ...updater, updatedAt: Date.now() };
-      persist();
+      sortPatientsInPlace();
+      updateSummaryForPatient(patients[idx]);
+      queueRemotePersist();
       updateTimers();
     }
 
@@ -634,13 +926,30 @@
 
       dispoContainer.querySelectorAll('input[type="radio"]').forEach((radio) => {
         radio.name = `dispo-${patient.id}`;
-        radio.addEventListener('change', (e) => {
-          markDispoSelections(dispoContainer, e.target.value);
-          handleChange(patient.id, { dispo: e.target.value });
+        const captureState = () => {
+          radio.dataset.wasChecked = radio.checked ? 'true' : 'false';
+        };
+        if (typeof window !== 'undefined' && 'PointerEvent' in window) {
+          radio.addEventListener('pointerdown', captureState);
+        } else {
+          radio.addEventListener('mousedown', captureState);
+          radio.addEventListener('touchstart', captureState);
+        }
+        radio.addEventListener('click', (e) => {
+          if (radio.dataset.wasChecked === 'true') {
+            e.preventDefault();
+            radio.checked = false;
+            markDispoSelections(dispoContainer, '');
+            handleChange(patient.id, { dispo: '' });
+          } else {
+            markDispoSelections(dispoContainer, radio.value);
+            handleChange(patient.id, { dispo: radio.value });
+          }
         });
       });
 
       card.querySelector('[data-time]').textContent = formattedElapsed(patient.updatedAt);
+      populateCardSummary(card, patient);
       return card;
     }
 
@@ -653,21 +962,10 @@
     }
 
     function addPatient() {
-      const newPatient = {
-        id: crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random().toString(16).slice(2)}`,
-        room: '',
-        initials: '',
-        age: '',
-        gender: '',
-        notes: '',
-        seen: false,
-        labsOrdered: false,
-        medsOrdered: false,
-        dispo: '',
-        updatedAt: Date.now(),
-      };
+      const newPatient = normalizePatient({ id: crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random().toString(16).slice(2)}`, updatedAt: Date.now() });
       patients.unshift(newPatient);
-      persist();
+      sortPatientsInPlace();
+      queueRemotePersist();
       renderAll();
     }
 
@@ -677,14 +975,17 @@
       const confirmClear = confirm('Clear the entire patient list? This cannot be undone.');
       if (!confirmClear) return;
       patients = [];
-      persist();
+      queueRemotePersist();
       renderAll();
     });
 
     load();
+    sortPatientsInPlace();
     renderAll();
     updateTimers();
+    hydrateFromRemote();
     setInterval(updateTimers, 1000);
+    setInterval(hydrateFromRemote, REMOTE_POLL_INTERVAL);
   </script>
 </body>
 </html>
