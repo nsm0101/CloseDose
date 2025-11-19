@@ -30,6 +30,10 @@
       --orders: #fba0e8;
       --note: #fef6b2;
       --dispo: #c2f3c5;
+      --note-dim: #f3eecb;
+      --timer-green: #e3f8ea;
+      --timer-orange: #fff0da;
+      --timer-red: #ffe0de;
       --danger: #e63946;
     }
 
@@ -198,9 +202,13 @@
       z-index: 1;
     }
 
+    .patient-wrapper {
+      position: relative;
+    }
+
     .patient-card {
       position: relative;
-      background: var(--surface-soft);
+      background: linear-gradient(180deg, var(--timer-tint, rgba(255, 255, 255, 0.85)), var(--surface-soft));
       border: var(--card-border);
       border-radius: 20px;
       padding: 0;
@@ -233,6 +241,60 @@
       list-style: none;
       position: relative;
       z-index: 2;
+    }
+
+    .note-toggle {
+      position: absolute;
+      top: 8px;
+      right: 12px;
+      border: 2px solid rgba(15, 31, 51, 0.2);
+      background: var(--note-dim);
+      border-radius: 12px;
+      padding: 6px;
+      width: 38px;
+      height: 38px;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      transition: transform 0.1s ease, box-shadow 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+      box-shadow: 0 6px 12px rgba(15, 31, 51, 0.14);
+    }
+
+    .note-toggle span {
+      display: block;
+      width: 18px;
+      height: 22px;
+      background: linear-gradient(180deg, #fffbe0, #f5e9a5);
+      border: 1px solid rgba(15, 31, 51, 0.18);
+      border-radius: 4px;
+      box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.9);
+      position: relative;
+    }
+
+    .note-toggle span::before,
+    .note-toggle span::after {
+      content: '';
+      position: absolute;
+      left: 3px;
+      right: 3px;
+      height: 2px;
+      background: rgba(15, 31, 51, 0.25);
+      border-radius: 2px;
+    }
+
+    .note-toggle span::before { top: 6px; }
+    .note-toggle span::after { top: 12px; }
+
+    .note-toggle.active {
+      background: var(--note);
+      border-color: rgba(180, 146, 18, 0.5);
+      box-shadow: 0 10px 20px rgba(180, 146, 18, 0.25);
+    }
+
+    .note-toggle:hover,
+    .note-toggle:focus-visible {
+      transform: translateY(-1px);
+      outline: none;
     }
 
     .card-summary::-webkit-details-marker { display: none; }
@@ -294,6 +356,19 @@
     .summary-flags {
       font-weight: 700;
       font-size: 0.92rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .flag-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(15, 31, 51, 0.16);
+      box-shadow: 0 2px 6px rgba(15, 31, 51, 0.08);
     }
 
     .summary-dispo {
@@ -315,6 +390,18 @@
       font-family: 'Roboto Mono', 'SFMono-Regular', ui-monospace, monospace;
       font-size: 0.85rem;
       color: var(--ink-700);
+    }
+
+    .summary-notes {
+      display: block;
+      color: var(--ink-700);
+      font-weight: 700;
+      font-size: 0.9rem;
+      margin-top: 4px;
+      max-width: 520px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .patient-card[open] .patient-grid {
@@ -449,10 +536,10 @@
       accent-color: var(--ink-900);
     }
 
-    .chip.visit { background: var(--visit); }
-    .chip.orders { background: var(--orders); }
-    .chip.note { background: var(--note); }
-    .chip.dispo { background: var(--dispo); }
+    .chip.visit, .flag-pill.visit { background: var(--visit); }
+    .chip.orders, .flag-pill.orders { background: var(--orders); }
+    .chip.note, .flag-pill.note { background: var(--note); }
+    .chip.dispo, .flag-pill.dispo { background: var(--dispo); }
 
     .dispo-options {
       display: grid;
@@ -478,6 +565,27 @@
       width: 16px;
       height: 16px;
       accent-color: var(--ink-900);
+      appearance: none;
+      border: 2px solid rgba(15, 31, 51, 0.32);
+      border-radius: 50%;
+      display: grid;
+      place-content: center;
+      background: #fff;
+      position: relative;
+    }
+
+    .dispo-pill input::after {
+      content: '';
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: rgba(15, 31, 51, 0.26);
+      transition: background-color 0.2s ease, transform 0.2s ease;
+    }
+
+    .dispo-pill input:checked::after {
+      background: var(--teal-500);
+      transform: scale(1.1);
     }
 
     .dispo-pill.active {
@@ -501,6 +609,65 @@
       color: var(--muted);
       font-weight: 700;
       font-size: 0.94rem;
+    }
+
+    .timer-stack {
+      margin-top: -14px;
+      padding: 0 10px 8px 10px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .timer-card {
+      background: rgba(255, 255, 255, 0.9);
+      border: 1px dashed rgba(12, 44, 72, 0.2);
+      border-radius: 14px;
+      padding: 10px 12px;
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 8px 16px rgba(12, 44, 72, 0.12);
+    }
+
+    .timer-title {
+      border: 1px solid rgba(12, 44, 72, 0.2);
+      border-radius: 10px;
+      padding: 8px 10px;
+      font-weight: 700;
+      background: #f7fbff;
+    }
+
+    .timer-display {
+      font-family: 'Roboto Mono', 'SFMono-Regular', ui-monospace, monospace;
+      font-weight: 800;
+      color: var(--ink-900);
+      min-width: 110px;
+      text-align: right;
+    }
+
+    .timer-actions {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .timer-actions button {
+      padding: 8px 10px;
+      border-radius: 10px;
+      border: 1px solid rgba(12, 44, 72, 0.18);
+      background: #f3f8fb;
+      cursor: pointer;
+      font-weight: 800;
+      color: var(--ink-900);
+      transition: transform 0.08s ease, box-shadow 0.18s ease;
+    }
+
+    .timer-actions button:hover,
+    .timer-actions button:focus-visible {
+      transform: translateY(-1px);
+      outline: none;
+      box-shadow: 0 8px 14px rgba(12, 44, 72, 0.14);
     }
 
     @media (max-width: 960px) {
@@ -575,92 +742,105 @@
   </div>
 
   <template id="patient-template">
-    <details class="patient-card" open>
-      <summary class="card-summary" aria-label="Toggle condensed patient view">
-        <div class="summary-left">
-          <span class="summary-room" data-summary-room>--</span>
-          <span class="summary-name" data-summary-name>New patient</span>
-          <span class="summary-meta" data-summary-meta>Age · Gender</span>
-        </div>
-        <div class="summary-right">
-          <span class="summary-flags" data-summary-flags>Waiting for updates</span>
-          <span class="summary-dispo" data-summary-dispo data-empty="true">No dispo</span>
-          <span class="summary-time" data-summary-time>--:--:--</span>
-        </div>
-      </summary>
-      <div class="patient-grid">
-        <div class="room-select">
-          <label>Room</label>
-          <select class="room-field"></select>
-        </div>
+    <div class="patient-wrapper">
+      <details class="patient-card" open>
+        <summary class="card-summary" aria-label="Toggle condensed patient view">
+          <button class="note-toggle" type="button" aria-label="Mark note priority"><span aria-hidden="true"></span></button>
+          <div class="summary-left">
+            <span class="summary-room" data-summary-room>--</span>
+            <span class="summary-name" data-summary-name>New patient</span>
+            <span class="summary-meta" data-summary-meta>Age · Gender</span>
+            <span class="summary-notes" data-summary-notes></span>
+          </div>
+          <div class="summary-right">
+            <span class="summary-flags" data-summary-flags>Waiting for updates</span>
+            <span class="summary-dispo" data-summary-dispo data-empty="true">No dispo</span>
+            <span class="summary-time" data-summary-time>--:--:--</span>
+          </div>
+        </summary>
+        <div class="patient-grid">
+          <div class="room-select">
+            <label>Room</label>
+            <select class="room-field"></select>
+          </div>
 
-        <div class="patient-info">
-          <div class="field">
-            <label for="initials">Initials</label>
-            <input type="text" class="initials-field" placeholder="e.g., J.D." maxlength="12" />
-          </div>
-          <div class="field">
-            <label for="age">Age</label>
-            <input type="number" class="age-field" min="0" max="120" placeholder="yrs" />
-          </div>
-          <div class="field">
-            <label for="gender">Gender</label>
-            <select class="gender-field">
-              <option value="">–</option>
-              <option value="female">♀ Female</option>
-              <option value="male">♂ Male</option>
-              <option value="other">∅ Other</option>
-            </select>
-          </div>
-          <div class="field" style="grid-column: 1 / -1;">
-            <label for="notes">Pertinent info</label>
-            <textarea class="notes-field" placeholder="Presentation, plan, follow-ups..."></textarea>
-          </div>
-          <div class="field" style="grid-column: 1 / -1;">
-            <div class="chip-row">
-              <label class="chip visit">
-                <input type="checkbox" class="seen-field" />
-                Visit done
-              </label>
-              <label class="chip orders">
-                <input type="checkbox" class="labs-field" />
-                Labs/Imaging
-              </label>
-              <label class="chip note">
-                <input type="checkbox" class="meds-field" />
-                Meds Ordered
-              </label>
+          <div class="patient-info">
+            <div class="field">
+              <label for="initials">Initials</label>
+              <input type="text" class="initials-field" placeholder="e.g., J.D." maxlength="12" />
+            </div>
+            <div class="field">
+              <label for="age">Age</label>
+              <input type="number" class="age-field" min="0" max="120" placeholder="yrs" />
+            </div>
+            <div class="field">
+              <label for="gender">Gender</label>
+              <select class="gender-field">
+                <option value="">–</option>
+                <option value="female">♀ Female</option>
+                <option value="male">♂ Male</option>
+                <option value="other">∅ Other</option>
+              </select>
+            </div>
+            <div class="field" style="grid-column: 1 / -1;">
+              <label for="notes">Pertinent info</label>
+              <textarea class="notes-field" placeholder="Presentation, plan, follow-ups..."></textarea>
+            </div>
+            <div class="field" style="grid-column: 1 / -1;">
+              <div class="chip-row">
+                <label class="chip visit">
+                  <input type="checkbox" class="seen-field" />
+                  Visit
+                </label>
+                <label class="chip orders">
+                  <input type="checkbox" class="labs-field" />
+                  Orders
+                </label>
+                <label class="chip note">
+                  <input type="checkbox" class="meds-field" />
+                  Meds Ordered
+                </label>
+              </div>
+            </div>
+            <div class="field" style="grid-column: 1 / -1;">
+              <div class="muted">Dispo decision</div>
+              <div class="dispo-options">
+                <label class="dispo-pill">
+                  <input type="radio" name="dispo" value="floor" />
+                  Admit Floor
+                </label>
+                <label class="dispo-pill">
+                  <input type="radio" name="dispo" value="picu" />
+                  Admit PICU
+                </label>
+                <label class="dispo-pill">
+                  <input type="radio" name="dispo" value="discharge" />
+                  Discharge
+                </label>
+                <label class="dispo-pill">
+                  <input type="radio" name="dispo" value="transfer" />
+                  Transfer
+                </label>
+                <label class="dispo-pill">
+                  <input type="radio" name="dispo" value="ed_observation" />
+                  ED Observation
+                </label>
+                <label class="dispo-pill">
+                  <input type="radio" name="dispo" value="cdu" />
+                  CDU
+                </label>
+              </div>
             </div>
           </div>
-          <div class="field" style="grid-column: 1 / -1;">
-            <div class="muted">Dispo decision</div>
-            <div class="dispo-options">
-              <label class="dispo-pill">
-                <input type="radio" name="dispo" value="floor" />
-                Admit Floor
-              </label>
-              <label class="dispo-pill">
-                <input type="radio" name="dispo" value="picu" />
-                Admit PICU
-              </label>
-              <label class="dispo-pill">
-                <input type="radio" name="dispo" value="discharge" />
-                Discharge
-              </label>
-              <label class="dispo-pill">
-                <input type="radio" name="dispo" value="transfer" />
-                Transfer
-              </label>
-            </div>
+
+          <div class="status-panel">
+            <div class="status-title">Reassess Timer</div>
+            <div class="status-time" data-time>--:--:--</div>
           </div>
         </div>
-
-        <div class="status-panel">
-          <div class="status-title">Last Update</div>
-          <div class="status-time" data-time>--:--:--</div>
-        </div>
-      </div>
-    </details>
+      </details>
+      <div class="timer-stack" data-timer-stack></div>
+    </div>
   </template>
 
   <script>
@@ -692,6 +872,8 @@
       picu: 'Admit PICU',
       discharge: 'Discharge',
       transfer: 'Transfer',
+      ed_observation: 'ED Observation',
+      cdu: 'CDU',
     };
 
     let patients = [];
@@ -733,6 +915,14 @@
       return `${hours}:${mins}:${secs}`;
     }
 
+    function formatDuration(ms = 0) {
+      const safe = Math.max(0, ms);
+      const hours = Math.floor(safe / 1000 / 3600).toString().padStart(2, '0');
+      const mins = Math.floor((safe / 1000 / 60) % 60).toString().padStart(2, '0');
+      const secs = Math.floor((safe / 1000) % 60).toString().padStart(2, '0');
+      return `${hours}:${mins}:${secs}`;
+    }
+
     function normalizePatient(patient = {}) {
       const fallbackId = crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random().toString(16).slice(2)}`;
       return {
@@ -747,6 +937,18 @@
         medsOrdered: Boolean(patient.medsOrdered),
         dispo: typeof patient.dispo === 'string' ? patient.dispo : '',
         updatedAt: typeof patient.updatedAt === 'number' ? patient.updatedAt : Date.now(),
+        reassessStartedAt: typeof patient.reassessStartedAt === 'number' ? patient.reassessStartedAt : (typeof patient.updatedAt === 'number' ? patient.updatedAt : Date.now()),
+        notePinned: Boolean(patient.notePinned),
+        timers: Array.isArray(patient.timers)
+          ? patient.timers.map((timer) => ({
+            id: timer.id || (crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random().toString(16).slice(2)}`),
+            title: typeof timer.title === 'string' ? timer.title : 'Timer',
+            startedAt: typeof timer.startedAt === 'number' ? timer.startedAt : Date.now(),
+            accumulated: typeof timer.accumulated === 'number' ? timer.accumulated : 0,
+            pausedAt: typeof timer.pausedAt === 'number' ? timer.pausedAt : null,
+            paused: Boolean(timer.paused),
+          }))
+          : [],
       };
     }
 
@@ -805,25 +1007,58 @@
       }
     }
 
+    function timerTint(elapsedMs) {
+      const target = 2 * 60 * 60 * 1000;
+      const ratio = Math.min(1, elapsedMs / target);
+      if (ratio < 0.5) {
+        return '--timer-green';
+      }
+      if (ratio < 0.85) {
+        return '--timer-orange';
+      }
+      return '--timer-red';
+    }
+
+    function computeTimerElapsed(timer) {
+      if (!timer) return 0;
+      if (timer.paused) return timer.accumulated;
+      return timer.accumulated + Math.max(0, Date.now() - (timer.startedAt || Date.now()));
+    }
+
     function updateTimers() {
-      document.querySelectorAll('.patient-card').forEach((card) => {
-        const id = card.dataset.id;
+      document.querySelectorAll('.patient-wrapper').forEach((wrapper) => {
+        const id = wrapper.dataset.id;
         const patient = patients.find((p) => p.id === id);
-        const timeText = formattedElapsed(patient?.updatedAt);
-        const timeEl = card.querySelector('[data-time]');
-        const summaryTimeEl = card.querySelector('[data-summary-time]');
+        const reassessElapsed = patient ? Math.max(0, Date.now() - (patient.reassessStartedAt || patient.updatedAt)) : 0;
+        const timeText = formattedElapsed(patient?.reassessStartedAt);
+        const card = wrapper.querySelector('.patient-card');
+        const timeEl = wrapper.querySelector('[data-time]');
+        const summaryTimeEl = wrapper.querySelector('[data-summary-time]');
         if (timeEl) timeEl.textContent = timeText;
         if (summaryTimeEl) summaryTimeEl.textContent = timeText;
+        if (card) card.style.setProperty('--timer-tint', `var(${timerTint(reassessElapsed)})`);
+
+        const stack = wrapper.querySelector('[data-timer-stack]');
+        if (stack && patient?.timers) {
+          patient.timers.forEach((timer) => {
+            const row = stack.querySelector(`[data-timer-id="${timer.id}"]`);
+            const display = row?.querySelector('[data-timer-display]');
+            if (display) display.textContent = formatDuration(computeTimerElapsed(timer));
+            const pauseBtn = row?.querySelector('[data-timer-pause]');
+            if (pauseBtn) pauseBtn.textContent = timer.paused ? 'Resume' : 'Pause';
+          });
+        }
       });
     }
 
-    function populateCardSummary(card, patient) {
-      if (!card) return;
-      const roomEl = card.querySelector('[data-summary-room]');
-      const nameEl = card.querySelector('[data-summary-name]');
-      const metaEl = card.querySelector('[data-summary-meta]');
-      const flagsEl = card.querySelector('[data-summary-flags]');
-      const dispoEl = card.querySelector('[data-summary-dispo]');
+    function populateCardSummary(wrapper, patient) {
+      if (!wrapper) return;
+      const roomEl = wrapper.querySelector('[data-summary-room]');
+      const nameEl = wrapper.querySelector('[data-summary-name]');
+      const metaEl = wrapper.querySelector('[data-summary-meta]');
+      const flagsEl = wrapper.querySelector('[data-summary-flags]');
+      const dispoEl = wrapper.querySelector('[data-summary-dispo]');
+      const notesEl = wrapper.querySelector('[data-summary-notes]');
 
       if (roomEl) roomEl.textContent = patient.room || '--';
       if (nameEl) nameEl.textContent = patient.initials || 'New patient';
@@ -841,10 +1076,20 @@
 
       if (flagsEl) {
         const flags = [];
-        if (patient.seen) flags.push('Visit done');
-        if (patient.labsOrdered) flags.push('Labs/Imaging');
-        if (patient.medsOrdered) flags.push('Meds ordered');
-        flagsEl.textContent = flags.length ? flags.join(' · ') : 'No tasks marked';
+        if (patient.seen) flags.push({ text: 'Visit', className: 'visit' });
+        if (patient.labsOrdered) flags.push({ text: 'Orders', className: 'orders' });
+        if (patient.medsOrdered) flags.push({ text: 'Meds ordered', className: 'note' });
+        if (flags.length) {
+          flagsEl.innerHTML = '';
+          flags.forEach((flag) => {
+            const pill = document.createElement('span');
+            pill.className = `flag-pill ${flag.className}`;
+            pill.textContent = flag.text;
+            flagsEl.appendChild(pill);
+          });
+        } else {
+          flagsEl.textContent = 'No tasks marked';
+        }
       }
 
       if (dispoEl) {
@@ -857,14 +1102,24 @@
         }
       }
 
-      const summaryTimeEl = card.querySelector('[data-summary-time]');
-      if (summaryTimeEl) summaryTimeEl.textContent = formattedElapsed(patient.updatedAt);
+      if (notesEl) {
+        if (patient.notes?.trim()) {
+          notesEl.textContent = patient.notes.trim();
+          notesEl.style.display = 'block';
+        } else {
+          notesEl.textContent = '';
+          notesEl.style.display = 'none';
+        }
+      }
+
+      const summaryTimeEl = wrapper.querySelector('[data-summary-time]');
+      if (summaryTimeEl) summaryTimeEl.textContent = formattedElapsed(patient.reassessStartedAt);
     }
 
     function updateSummaryForPatient(patient) {
       if (!patient) return;
-      const card = document.querySelector(`.patient-card[data-id="${patient.id}"]`);
-      populateCardSummary(card, patient);
+      const wrapper = document.querySelector(`.patient-wrapper[data-id="${patient.id}"]`);
+      populateCardSummary(wrapper, patient);
     }
 
     function createRoomOptions(selectEl, value = '') {
@@ -881,29 +1136,120 @@
       });
     }
 
-    function handleChange(id, updater) {
+    function handleChange(id, updater, options = {}) {
       const idx = patients.findIndex((p) => p.id === id);
       if (idx === -1) return;
-      patients[idx] = { ...patients[idx], ...updater, updatedAt: Date.now() };
+      const now = Date.now();
+      patients[idx] = {
+        ...patients[idx],
+        ...updater,
+        updatedAt: options.skipUpdateStamp ? patients[idx].updatedAt : now,
+        reassessStartedAt: options.touchReassess ? now : patients[idx].reassessStartedAt,
+      };
       sortPatientsInPlace();
       updateSummaryForPatient(patients[idx]);
       queueRemotePersist();
       updateTimers();
     }
 
+    function renderPatientTimers(patient, stackEl) {
+      if (!stackEl) return;
+      stackEl.innerHTML = '';
+      patient.timers.forEach((timer, idx) => {
+        const row = document.createElement('div');
+        row.className = 'timer-card';
+        row.dataset.timerId = timer.id;
+
+        const title = document.createElement('input');
+        title.className = 'timer-title';
+        title.value = timer.title || `Timer ${idx + 1}`;
+        title.addEventListener('input', (e) => {
+          const current = patients.find((p) => p.id === patient.id) || patient;
+          handleChange(patient.id, {
+            timers: current.timers.map((t) => (t.id === timer.id ? { ...t, title: e.target.value } : t)),
+          }, { skipUpdateStamp: true });
+        });
+
+        const display = document.createElement('div');
+        display.className = 'timer-display';
+        display.dataset.timerDisplay = 'true';
+        display.textContent = formatDuration(computeTimerElapsed(timer));
+
+        const actions = document.createElement('div');
+        actions.className = 'timer-actions';
+
+        const pauseBtn = document.createElement('button');
+        pauseBtn.dataset.timerPause = 'true';
+        pauseBtn.textContent = timer.paused ? 'Resume' : 'Pause';
+        pauseBtn.addEventListener('click', () => {
+          const current = patients.find((p) => p.id === patient.id) || patient;
+          const nextTimers = current.timers.map((t) => {
+            if (t.id !== timer.id) return t;
+            if (t.paused) {
+              const now = Date.now();
+              return { ...t, paused: false, pausedAt: null, startedAt: now };
+            }
+            return { ...t, paused: true, pausedAt: Date.now(), accumulated: computeTimerElapsed(t) };
+          });
+          handleChange(patient.id, { timers: nextTimers }, { skipUpdateStamp: true });
+        });
+
+        const resetBtn = document.createElement('button');
+        resetBtn.textContent = 'Reset';
+        resetBtn.addEventListener('click', () => {
+          const now = Date.now();
+          const current = patients.find((p) => p.id === patient.id) || patient;
+          const nextTimers = current.timers.map((t) => (t.id === timer.id ? {
+            ...t,
+            startedAt: now,
+            accumulated: 0,
+            pausedAt: null,
+            paused: false,
+          } : t));
+          handleChange(patient.id, { timers: nextTimers }, { skipUpdateStamp: true });
+        });
+
+        actions.append(pauseBtn, resetBtn);
+        row.append(title, display, actions);
+        stackEl.appendChild(row);
+      });
+    }
+
+    function addTimer(patientId) {
+      const idx = patients.findIndex((p) => p.id === patientId);
+      if (idx === -1) return;
+      if (patients[idx].timers.length >= 5) return;
+      const now = Date.now();
+      const newTimer = {
+        id: crypto.randomUUID ? crypto.randomUUID() : `${now}-${Math.random().toString(16).slice(2)}`,
+        title: `Timer ${patients[idx].timers.length + 1}`,
+        startedAt: now,
+        accumulated: 0,
+        pausedAt: null,
+        paused: false,
+      };
+      patients[idx] = { ...patients[idx], timers: [...patients[idx].timers, newTimer] };
+      renderAll();
+      queueRemotePersist();
+    }
+
     function renderPatient(patient) {
-      const card = template.content.firstElementChild.cloneNode(true);
+      const wrapper = template.content.firstElementChild.cloneNode(true);
+      const card = wrapper.querySelector('.patient-card');
+      wrapper.dataset.id = patient.id;
       card.dataset.id = patient.id;
 
-      const roomField = card.querySelector('.room-field');
-      const initialsField = card.querySelector('.initials-field');
-      const ageField = card.querySelector('.age-field');
-      const genderField = card.querySelector('.gender-field');
-      const notesField = card.querySelector('.notes-field');
-      const seenField = card.querySelector('.seen-field');
-      const labsField = card.querySelector('.labs-field');
-      const medsField = card.querySelector('.meds-field');
-      const dispoContainer = card.querySelector('.dispo-options');
+      const roomField = wrapper.querySelector('.room-field');
+      const initialsField = wrapper.querySelector('.initials-field');
+      const ageField = wrapper.querySelector('.age-field');
+      const genderField = wrapper.querySelector('.gender-field');
+      const notesField = wrapper.querySelector('.notes-field');
+      const seenField = wrapper.querySelector('.seen-field');
+      const labsField = wrapper.querySelector('.labs-field');
+      const medsField = wrapper.querySelector('.meds-field');
+      const dispoContainer = wrapper.querySelector('.dispo-options');
+      const noteToggle = wrapper.querySelector('.note-toggle');
+      const timerStack = wrapper.querySelector('[data-timer-stack]');
 
       createRoomOptions(roomField, patient.room || '');
       initialsField.value = patient.initials || '';
@@ -914,15 +1260,24 @@
       labsField.checked = Boolean(patient.labsOrdered);
       medsField.checked = Boolean(patient.medsOrdered);
       markDispoSelections(dispoContainer, patient.dispo || '');
+      noteToggle.classList.toggle('active', patient.notePinned);
 
       roomField.addEventListener('change', (e) => handleChange(patient.id, { room: e.target.value }));
       initialsField.addEventListener('input', (e) => handleChange(patient.id, { initials: e.target.value }));
       ageField.addEventListener('input', (e) => handleChange(patient.id, { age: e.target.value }));
       genderField.addEventListener('change', (e) => handleChange(patient.id, { gender: e.target.value }));
-      notesField.addEventListener('input', (e) => handleChange(patient.id, { notes: e.target.value }));
-      seenField.addEventListener('change', (e) => handleChange(patient.id, { seen: e.target.checked }));
-      labsField.addEventListener('change', (e) => handleChange(patient.id, { labsOrdered: e.target.checked }));
-      medsField.addEventListener('change', (e) => handleChange(patient.id, { medsOrdered: e.target.checked }));
+      notesField.addEventListener('input', (e) => handleChange(patient.id, { notes: e.target.value }, { skipUpdateStamp: true }));
+      seenField.addEventListener('change', (e) => handleChange(patient.id, { seen: e.target.checked }, { skipUpdateStamp: true }));
+      labsField.addEventListener('change', (e) => handleChange(patient.id, { labsOrdered: e.target.checked }, { skipUpdateStamp: true }));
+      medsField.addEventListener('change', (e) => handleChange(patient.id, { medsOrdered: e.target.checked }, { skipUpdateStamp: true }));
+
+      noteToggle.addEventListener('click', (event) => {
+        event.stopPropagation();
+        const current = patients.find((p) => p.id === patient.id) || patient;
+        const next = !current.notePinned;
+        noteToggle.classList.toggle('active', next);
+        handleChange(patient.id, { notePinned: next }, { skipUpdateStamp: true });
+      });
 
       dispoContainer.querySelectorAll('input[type="radio"]').forEach((radio) => {
         radio.name = `dispo-${patient.id}`;
@@ -940,17 +1295,46 @@
             e.preventDefault();
             radio.checked = false;
             markDispoSelections(dispoContainer, '');
-            handleChange(patient.id, { dispo: '' });
+            handleChange(patient.id, { dispo: '' }, { skipUpdateStamp: true });
           } else {
             markDispoSelections(dispoContainer, radio.value);
-            handleChange(patient.id, { dispo: radio.value });
+            handleChange(patient.id, { dispo: radio.value }, { skipUpdateStamp: true });
           }
         });
       });
 
-      card.querySelector('[data-time]').textContent = formattedElapsed(patient.updatedAt);
-      populateCardSummary(card, patient);
-      return card;
+      card.querySelector('[data-time]').textContent = formattedElapsed(patient.reassessStartedAt);
+      populateCardSummary(wrapper, patient);
+      renderPatientTimers(patient, timerStack);
+
+      let lastTap = 0;
+      card.addEventListener('pointerdown', (e) => {
+        const now = Date.now();
+        if (now - lastTap < 350) {
+          e.preventDefault();
+          handleChange(patient.id, {}, { touchReassess: true });
+        }
+        lastTap = now;
+      });
+
+      let startX = null;
+      let startY = null;
+      card.addEventListener('pointerdown', (e) => {
+        startX = e.clientX;
+        startY = e.clientY;
+      });
+      card.addEventListener('pointerup', (e) => {
+        if (startX === null || startY === null) return;
+        const dx = e.clientX - startX;
+        const dy = e.clientY - startY;
+        if (dx < -50 && Math.abs(dy) < 30) {
+          addTimer(patient.id);
+        }
+        startX = null;
+        startY = null;
+      });
+
+      return wrapper;
     }
 
     function renderAll() {
@@ -962,7 +1346,8 @@
     }
 
     function addPatient() {
-      const newPatient = normalizePatient({ id: crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random().toString(16).slice(2)}`, updatedAt: Date.now() });
+      const now = Date.now();
+      const newPatient = normalizePatient({ id: crypto.randomUUID ? crypto.randomUUID() : `${now}-${Math.random().toString(16).slice(2)}`, updatedAt: now, reassessStartedAt: now });
       patients.unshift(newPatient);
       sortPatientsInPlace();
       queueRemotePersist();
