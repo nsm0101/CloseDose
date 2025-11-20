@@ -1512,32 +1512,53 @@
         }, GESTURE.longPressMs);
       });
 
+      let startX = null;
+      let startY = null;
+      let swipeDetected = false;
+
+      card.addEventListener('pointerdown', (e) => {
+        startX = e.clientX;
+        startY = e.clientY;
+        swipeDetected = false;
+      });
+
       card.addEventListener('pointermove', (e) => {
-        if (!startPoint) return;
-        const dx = e.clientX - startPoint.x;
-        const dy = e.clientY - startPoint.y;
-        if (Math.max(Math.abs(dx), Math.abs(dy)) > GESTURE.motionCancel) {
-          clearTimeout(longPressTimer);
-        }
-        if (Math.abs(dx) > Math.abs(dy)) {
-          setSwipeOffset(dx);
+        if (startX === null || startY === null || swipeDetected) return;
+        const dx = e.clientX - startX;
+        const dy = e.clientY - startY;
+        if (dx > 50 && Math.abs(dy) < 30) {
+          swipeDetected = true;
+          if (typeof card.setPointerCapture === 'function') {
+            try {
+              card.setPointerCapture(e.pointerId);
+            } catch (err) {
+              // ignore failures to capture
+            }
+          }
         }
       });
 
-      const completePointer = (e) => {
-        clearTimeout(longPressTimer);
-        if (!startPoint) return resetSwipe();
-        const dx = e.clientX - startPoint.x;
-        const dy = e.clientY - startPoint.y;
-        if (dx < GESTURE.swipeActivate && Math.abs(dy) < GESTURE.verticalLeeway) {
-          addTimer(patient.id);
-        }
-        resetSwipe();
+      const resetSwipeTracking = () => {
+        startX = null;
+        startY = null;
+        swipeDetected = false;
       };
 
-      card.addEventListener('pointerup', completePointer);
-      card.addEventListener('pointercancel', resetSwipe);
-      card.addEventListener('pointerleave', resetSwipe);
+      card.addEventListener('pointerup', (e) => {
+        if (startX === null || startY === null) return resetSwipeTracking();
+        const dx = e.clientX - startX;
+        const dy = e.clientY - startY;
+        const isSwipe = swipeDetected || (dx > 50 && Math.abs(dy) < 30);
+        if (isSwipe) {
+          e.preventDefault();
+          e.stopPropagation();
+          addTimer(patient.id);
+        }
+        resetSwipeTracking();
+      });
+
+      card.addEventListener('pointercancel', resetSwipeTracking);
+      card.addEventListener('pointerleave', resetSwipeTracking);
 
       return wrapper;
     }
