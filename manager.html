@@ -1484,7 +1484,15 @@
         summary.addEventListener('click', (event) => event.preventDefault());
       }
 
+      card.addEventListener('contextmenu', (e) => {
+        if (isInteractiveTarget(e.target)) return;
+        e.preventDefault();
+        card.open = true;
+        card.classList.add('editing');
+      });
+
       card.addEventListener('pointerdown', (e) => {
+        if (e.button !== 0) return;
         if (isInteractiveTarget(e.target)) return;
 
         const now = Date.now();
