@@ -354,6 +354,20 @@
       text-align: right;
     }
 
+    .summary-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      justify-content: flex-end;
+      flex-wrap: wrap;
+    }
+
+    .edit-info-btn {
+      padding: 8px 14px;
+      font-weight: 800;
+      box-shadow: 0 4px 0 rgba(15, 44, 42, 0.22);
+    }
+
     .summary-quick {
       display: flex;
       flex-wrap: wrap;
@@ -829,6 +843,9 @@
             <span class="summary-notes" data-summary-notes></span>
           </div>
           <div class="summary-right">
+            <div class="summary-actions">
+              <button type="button" class="pill-btn edit-info-btn" data-edit-info>Edit info</button>
+            </div>
             <span class="summary-flags" data-summary-flags>Waiting for updates</span>
             <span class="summary-dispo" data-summary-dispo data-empty="true">No dispo</span>
             <span class="summary-time" data-summary-time>--:--:--</span>
@@ -1268,6 +1285,19 @@
         row.className = 'timer-card';
         row.dataset.timerId = timer.id;
 
+        const resetTimer = () => {
+          const nowTs = Date.now();
+          const current = patients.find((p) => p.id === patient.id) || patient;
+          const nextTimers = current.timers.map((t) => (t.id === timer.id ? {
+            ...t,
+            startedAt: nowTs,
+            accumulated: 0,
+            pausedAt: null,
+            paused: false,
+          } : t));
+          handleChange(patient.id, { timers: nextTimers }, { skipUpdateStamp: true });
+        };
+
         const title = document.createElement('input');
         title.className = 'timer-title';
         title.value = timer.title || `Timer ${idx + 1}`;
@@ -1308,18 +1338,7 @@
         resetBtn.className = 'reset-btn';
         resetBtn.textContent = '↺';
         resetBtn.setAttribute('aria-label', 'Reset timer');
-        resetBtn.addEventListener('click', () => {
-          const now = Date.now();
-          const current = patients.find((p) => p.id === patient.id) || patient;
-          const nextTimers = current.timers.map((t) => (t.id === timer.id ? { 
-            ...t,
-            startedAt: now,
-            accumulated: 0,
-            pausedAt: null,
-            paused: false,
-          } : t));
-          handleChange(patient.id, { timers: nextTimers }, { skipUpdateStamp: true });
-        });
+        resetBtn.addEventListener('click', resetTimer);
 
         const deleteBtn = document.createElement('button');
         deleteBtn.className = 'delete-btn';
@@ -1333,6 +1352,20 @@
 
         actions.append(pauseBtn, resetBtn, deleteBtn);
         row.append(title, display, actions);
+        let lastTimerTap = 0;
+        row.addEventListener('pointerdown', (event) => {
+          if (event.button !== 0) return;
+          if (event.target.closest('input, button, select, textarea')) return;
+          event.stopPropagation();
+          const now = Date.now();
+          if (now - lastTimerTap < GESTURE.doubleTapMs) {
+            event.preventDefault();
+            resetTimer();
+            lastTimerTap = 0;
+            return;
+          }
+          lastTimerTap = now;
+        });
         stackEl.appendChild(row);
       });
     }
@@ -1376,6 +1409,7 @@
       const quickOrders = wrapper.querySelector('[data-summary-orders]');
       const quickDispo = wrapper.querySelector('[data-summary-dispo-select]');
       const summary = wrapper.querySelector('.card-summary');
+      const editInfoBtn = wrapper.querySelector('[data-edit-info]');
 
       createRoomOptions(roomField, patient.room || '');
       initialsField.value = patient.initials || '';
@@ -1463,25 +1497,28 @@
       renderPatientTimers(patient, timerStack);
 
       let lastTap = 0;
-      let startPoint = null;
       let longPressTimer = null;
 
-      const setSwipeOffset = (distance) => {
-        const clamped = Math.max(Math.min(distance, 0), GESTURE.swipeClamp);
-        card.style.setProperty('--swipe-offset', `${clamped}px`);
-      };
-
-      const resetSwipe = () => {
-        clearTimeout(longPressTimer);
-        card.classList.remove('is-swiping');
-        card.style.removeProperty('--swipe-offset');
-        startPoint = null;
+      const clearLongPress = () => {
+        if (longPressTimer) {
+          clearTimeout(longPressTimer);
+          longPressTimer = null;
+        }
       };
 
       const isInteractiveTarget = (target) => Boolean(target.closest('.quick-toggle, .quick-dispo, .note-toggle, input, select, textarea, button'));
 
       if (summary) {
         summary.addEventListener('click', (event) => event.preventDefault());
+      }
+
+      if (editInfoBtn) {
+        editInfoBtn.addEventListener('click', (event) => {
+          event.stopPropagation();
+          card.open = true;
+          card.classList.add('editing');
+          roomField?.focus();
+        });
       }
 
       card.addEventListener('contextmenu', (e) => {
@@ -1498,67 +1535,25 @@
         const now = Date.now();
         if (now - lastTap < GESTURE.doubleTapMs) {
           e.preventDefault();
-          handleChange(patient.id, {}, { touchReassess: true });
+          card.open = true;
+          card.classList.add('editing');
+          addTimer(patient.id);
+          lastTap = 0;
+          clearLongPress();
           return;
         }
         lastTap = now;
 
-        startPoint = { x: e.clientX, y: e.clientY };
-        card.classList.add('is-swiping');
-
         longPressTimer = setTimeout(() => {
           card.open = !card.open;
           card.classList.toggle('editing', card.open);
+          clearLongPress();
         }, GESTURE.longPressMs);
       });
 
-      let startX = null;
-      let startY = null;
-      let swipeDetected = false;
-
-      card.addEventListener('pointerdown', (e) => {
-        startX = e.clientX;
-        startY = e.clientY;
-        swipeDetected = false;
-      });
-
-      card.addEventListener('pointermove', (e) => {
-        if (startX === null || startY === null || swipeDetected) return;
-        const dx = e.clientX - startX;
-        const dy = e.clientY - startY;
-        if (dx > 50 && Math.abs(dy) < 30) {
-          swipeDetected = true;
-          if (typeof card.setPointerCapture === 'function') {
-            try {
-              card.setPointerCapture(e.pointerId);
-            } catch (err) {
-              // ignore failures to capture
-            }
-          }
-        }
-      });
-
-      const resetSwipeTracking = () => {
-        startX = null;
-        startY = null;
-        swipeDetected = false;
-      };
-
-      card.addEventListener('pointerup', (e) => {
-        if (startX === null || startY === null) return resetSwipeTracking();
-        const dx = e.clientX - startX;
-        const dy = e.clientY - startY;
-        const isSwipe = swipeDetected || (dx > 50 && Math.abs(dy) < 30);
-        if (isSwipe) {
-          e.preventDefault();
-          e.stopPropagation();
-          addTimer(patient.id);
-        }
-        resetSwipeTracking();
-      });
-
-      card.addEventListener('pointercancel', resetSwipeTracking);
-      card.addEventListener('pointerleave', resetSwipeTracking);
+      card.addEventListener('pointerup', clearLongPress);
+      card.addEventListener('pointercancel', clearLongPress);
+      card.addEventListener('pointerleave', clearLongPress);
 
       return wrapper;
     }
