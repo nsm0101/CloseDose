@@ -1843,6 +1843,7 @@
       const quickDispo = wrapper.querySelector('[data-summary-dispo-select]');
       const summary = wrapper.querySelector('.card-summary');
       const editInfoBtn = wrapper.querySelector('[data-edit-info]');
+      const statusPanel = wrapper.querySelector('.status-panel');
       const managerInitialsField = wrapper.querySelector('.manager-initials-field');
       const managerColorPalette = wrapper.querySelector('[data-color-palette]');
       const summaryRoomSelect = wrapper.querySelector('[data-summary-room-select]');
@@ -1966,6 +1967,8 @@
 
       let lastTap = 0;
       let longPressTimer = null;
+      let reassessTapCount = 0;
+      let lastReassessTap = 0;
 
       const clearLongPress = () => {
         if (longPressTimer) {
@@ -1986,6 +1989,26 @@
           card.open = true;
           card.classList.add('editing');
           roomField?.focus();
+        });
+      }
+
+      if (statusPanel) {
+        statusPanel.addEventListener('pointerdown', (event) => {
+          if (event.button !== 0) return;
+          event.stopPropagation();
+          const now = Date.now();
+          if (now - lastReassessTap < GESTURE.doubleTapMs) {
+            reassessTapCount += 1;
+          } else {
+            reassessTapCount = 1;
+          }
+          lastReassessTap = now;
+
+          if (reassessTapCount >= 3) {
+            event.preventDefault();
+            reassessTapCount = 0;
+            handleChange(patient.id, { reassessStartedAt: Date.now() });
+          }
         });
       }
 
