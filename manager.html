@@ -53,6 +53,7 @@
       background-attachment: fixed;
       display: flex;
       flex-direction: column;
+      line-height: 1.35;
     }
 
     .wrap {
@@ -60,8 +61,8 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 26px 14px 120px;
-      gap: 18px;
+      padding: 22px 12px 110px;
+      gap: 14px;
     }
 
     .brand-header {
@@ -69,7 +70,7 @@
       align-items: center;
       justify-content: center;
       gap: 16px;
-      padding: 14px 20px;
+      padding: 12px 16px;
       width: min(900px, 100%);
       border-radius: 22px;
       border: 1px solid rgba(12, 44, 72, 0.12);
@@ -100,8 +101,8 @@
       width: min(1080px, 100%);
       display: flex;
       flex-direction: column;
-      gap: 14px;
-      padding: 18px;
+      gap: 6px;
+      padding: 14px;
       background: var(--surface);
       border-radius: 24px;
       border: var(--card-border);
@@ -123,7 +124,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 12px;
+      gap: 10px;
       flex-wrap: wrap;
       position: relative;
       z-index: 1;
@@ -152,6 +153,28 @@
       flex-wrap: wrap;
     }
 
+    .sort-control {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 800;
+      color: var(--ink-700);
+      background: #fff;
+      border: 1px solid rgba(12, 44, 72, 0.14);
+      padding: 6px 10px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(15, 44, 42, 0.12);
+    }
+
+    .sort-control select {
+      border: none;
+      background: transparent;
+      padding: 4px 6px;
+      border-radius: 10px;
+      font-weight: 700;
+      color: var(--ink-900);
+    }
+
     button,
     select,
     input,
@@ -163,8 +186,8 @@
     .pill-btn {
       background: var(--pill-bg);
       border: var(--pill-border);
-      padding: 10px 16px;
-      border-radius: 14px;
+      padding: 6px 12px;
+      border-radius: 12px;
       cursor: pointer;
       transition: transform 0.1s ease, box-shadow 0.15s ease, background-color 0.15s ease;
       color: var(--ink-900);
@@ -216,6 +239,15 @@
       overflow: hidden;
       transform: translateX(var(--swipe-offset, 0px));
       transition: transform 0.15s ease, box-shadow 0.2s ease;
+      user-select: none;
+    }
+
+    .patient-card input,
+    .patient-card textarea,
+    .patient-card select,
+    .patient-card button,
+    .patient-card label {
+      user-select: text;
     }
 
     .patient-card.is-swiping {
@@ -254,8 +286,8 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 12px;
-      padding: 18px 20px 16px 20px;
+      gap: 10px;
+      padding: 14px 16px 12px 16px;
       background: rgba(255, 255, 255, 0.7);
       border-bottom: 1px solid rgba(12, 44, 72, 0.08);
       cursor: pointer;
@@ -340,8 +372,24 @@
     .summary-right {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
       flex-wrap: wrap;
+    }
+
+    .summary-room-block {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .summary-room-select {
+      min-width: 86px;
+      padding: 4px 6px;
+      border-radius: 10px;
+      border: 1px solid rgba(12, 44, 72, 0.2);
+      background: #fff;
+      font-weight: 800;
+      cursor: pointer;
     }
 
     .summary-left {
@@ -379,7 +427,7 @@
     .quick-toggle {
       border: 1px solid rgba(12, 44, 72, 0.18);
       border-radius: 12px;
-      padding: 8px 12px;
+      padding: 6px 10px;
       background: #fff;
       font-weight: 800;
       cursor: pointer;
@@ -477,6 +525,29 @@
       text-overflow: ellipsis;
     }
 
+    .summary-next {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--ink-700);
+    }
+
+    .summary-next .next-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(12, 44, 72, 0.16);
+      background: rgba(225, 243, 243, 0.7);
+    }
+
+    .summary-next[data-empty="true"] {
+      opacity: 0.75;
+    }
+
     .patient-card[open] .patient-grid {
       margin-top: 10px;
       padding: 0 16px 0 16px;
@@ -485,7 +556,7 @@
     .patient-grid {
       display: grid;
       grid-template-columns: minmax(140px, 160px) 1fr minmax(160px, 190px);
-      gap: 12px;
+      gap: 10px;
       align-items: start;
     }
 
@@ -523,10 +594,69 @@
       box-shadow: 0 0 0 3px rgba(6, 156, 180, 0.2);
     }
 
+    .next-input-row {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .next-input-row .next-input {
+      flex: 1;
+    }
+
+    .next-input-row .next-add {
+      padding: 6px 10px;
+      min-width: 42px;
+    }
+
+    .next-list {
+      display: grid;
+      gap: 6px;
+      margin-top: 6px;
+    }
+
+    .next-item {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 8px;
+      align-items: center;
+      padding: 6px 8px;
+      border-radius: 12px;
+      border: 1px solid rgba(12, 44, 72, 0.12);
+      background: #f7fbff;
+    }
+
+    .next-item label {
+      display: contents;
+    }
+
+    .next-item input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+    }
+
+    .next-text {
+      font-weight: 700;
+    }
+
+    .next-text.done {
+      text-decoration: line-through;
+      opacity: 0.7;
+    }
+
+    .next-item .delete-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 1rem;
+      padding: 4px 6px;
+      color: var(--ink-700);
+    }
+
     .patient-info {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-      gap: 10px;
+      gap: 8px;
       align-items: center;
     }
 
@@ -820,6 +950,20 @@
       display: none;
     }
 
+    .footer-helper {
+      margin-top: 12px;
+      padding: 12px 16px 24px;
+      background: var(--surface);
+      border-radius: 18px;
+      border: var(--card-border);
+      box-shadow: var(--shadow-card);
+      width: min(1080px, 100%);
+      font-weight: 700;
+      display: grid;
+      gap: 6px;
+      line-height: 1.3;
+    }
+
     .manager-tag-dot {
       width: 12px;
       height: 12px;
@@ -886,6 +1030,14 @@
           <p class="subhead">Track active patients during shift—rooms, plans, and dispo at a glance.</p>
         </div>
         <div class="controls">
+          <label class="sort-control">Sort by
+            <select id="sort-mode">
+              <option value="recent">Recently updated</option>
+              <option value="manager">Resident/APP tag</option>
+              <option value="reassess">Time since reassessment</option>
+              <option value="room">Bed number</option>
+            </select>
+          </label>
           <button class="pill-btn danger" id="clear-list">Clear List</button>
           <button class="pill-btn primary" id="add-patient">+ Add Patient</button>
         </div>
@@ -897,6 +1049,10 @@
         <button class="pill-btn primary" id="add-patient-bottom" aria-label="Add another patient">+</button>
       </div>
     </div>
+    <footer class="footer-helper">
+      <div>Touchscreen: long-press a card to open or collapse for editing, double-tap to add a timer, tap status pills to toggle.</div>
+      <div>Desktop: click “Edit info” or right-click a card to edit, use the bed selector in the header row, and scroll/drag to navigate.</div>
+    </footer>
   </div>
 
   <template id="patient-template">
@@ -905,7 +1061,10 @@
         <summary class="card-summary" aria-label="Toggle condensed patient view">
           <button class="note-toggle" type="button" aria-label="Mark note priority"><span aria-hidden="true"></span></button>
           <div class="summary-left">
-            <span class="summary-room" data-summary-room>--</span>
+            <div class="summary-room-block">
+              <span class="summary-room" data-summary-room>--</span>
+              <select class="summary-room-select" data-summary-room-select aria-label="Change bed"></select>
+            </div>
             <span class="summary-name" data-summary-name>New patient</span>
             <span class="manager-tag-pill" data-summary-manager hidden>
               <span class="manager-tag-dot" data-summary-manager-dot></span>
@@ -913,6 +1072,7 @@
             </span>
             <span class="summary-meta" data-summary-meta>Age · Gender</span>
             <span class="summary-notes" data-summary-notes></span>
+            <div class="summary-next" data-summary-next></div>
           </div>
           <div class="summary-right">
             <div class="summary-actions">
@@ -971,6 +1131,14 @@
             <div class="field" style="grid-column: 1 / -1;">
               <label for="notes">Pertinent info</label>
               <textarea class="notes-field" placeholder="Presentation, plan, follow-ups..."></textarea>
+            </div>
+            <div class="field" style="grid-column: 1 / -1;">
+              <label>What's next</label>
+              <div class="next-input-row">
+                <input type="text" class="next-input" placeholder="Add next step or reminder" />
+                <button type="button" class="pill-btn primary next-add" data-add-next>+</button>
+              </div>
+              <div class="next-list" data-next-list></div>
             </div>
             <div class="field" style="grid-column: 1 / -1;">
               <div class="chip-row">
@@ -1040,6 +1208,7 @@
     const listEl = document.getElementById('patient-list');
     const addBtns = [document.getElementById('add-patient'), document.getElementById('add-patient-bottom')];
     const clearBtn = document.getElementById('clear-list');
+    const sortSelect = document.getElementById('sort-mode');
     const template = document.getElementById('patient-template');
     const STORAGE_KEY = 'patient-manager-list';
     // Shared document hosted by jsonstorage.net so every device sees the same board.
@@ -1084,6 +1253,7 @@
     let patients = [];
     let remoteSaveHandle = null;
     let isApplyingRemote = false;
+    let sortMode = 'recent';
 
     function persistLocal() {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(patients));
@@ -1128,6 +1298,17 @@
       return `${hours}:${mins}:${secs}`;
     }
 
+    function normalizeNextSteps(steps = []) {
+      if (!Array.isArray(steps)) return [];
+      return steps
+        .filter((step) => typeof step?.text === 'string' && step.text.trim())
+        .map((step) => ({
+          id: step.id || (crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random().toString(16).slice(2)}`),
+          text: step.text.trim(),
+          done: Boolean(step.done),
+        }));
+    }
+
     function normalizePatient(patient = {}) {
       const fallbackId = crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random().toString(16).slice(2)}`;
       return {
@@ -1146,6 +1327,7 @@
         updatedAt: typeof patient.updatedAt === 'number' ? patient.updatedAt : Date.now(),
         reassessStartedAt: typeof patient.reassessStartedAt === 'number' ? patient.reassessStartedAt : (typeof patient.updatedAt === 'number' ? patient.updatedAt : Date.now()),
         notePinned: Boolean(patient.notePinned),
+        nextSteps: normalizeNextSteps(patient.nextSteps),
         timers: Array.isArray(patient.timers)
           ? patient.timers.map((timer) => ({
             id: timer.id || (crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random().toString(16).slice(2)}`),
@@ -1160,7 +1342,31 @@
     }
 
     function sortPatientsInPlace() {
-      patients.sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
+      patients.sort((a, b) => {
+        const now = Date.now();
+        if (sortMode === 'manager') {
+          const aHas = Boolean(a.managerInitials);
+          const bHas = Boolean(b.managerInitials);
+          if (aHas !== bHas) return aHas ? -1 : 1;
+          return (a.managerInitials || '').localeCompare(b.managerInitials || '');
+        }
+        if (sortMode === 'reassess') {
+          const aElapsed = now - (a.reassessStartedAt || 0);
+          const bElapsed = now - (b.reassessStartedAt || 0);
+          return bElapsed - aElapsed;
+        }
+        if (sortMode === 'room') {
+          return (a.room || '').localeCompare(b.room || '');
+        }
+        return (b.updatedAt || 0) - (a.updatedAt || 0);
+      });
+    }
+
+    function reorderDomToMatchPatients() {
+      const order = new Map(patients.map((patient, idx) => [patient.id, idx]));
+      Array.from(listEl.children)
+        .sort((a, b) => (order.get(a.dataset.id) || 0) - (order.get(b.dataset.id) || 0))
+        .forEach((el) => listEl.appendChild(el));
     }
 
     function mergePatientLists(localList, remoteList) {
@@ -1275,8 +1481,13 @@
       const managerTag = wrapper.querySelector('[data-summary-manager]');
       const managerTagDot = wrapper.querySelector('[data-summary-manager-dot]');
       const managerTagText = wrapper.querySelector('[data-summary-manager-text]');
+      const summaryRoomSelect = wrapper.querySelector('[data-summary-room-select]');
+      const summaryNext = wrapper.querySelector('[data-summary-next]');
 
       if (roomEl) roomEl.textContent = patient.room || '--';
+      if (summaryRoomSelect) {
+        createRoomOptions(summaryRoomSelect, patient.room || '');
+      }
       if (nameEl) nameEl.textContent = patient.initials || 'New patient';
 
       if (metaEl) {
@@ -1328,6 +1539,8 @@
         }
       }
 
+      renderNextSummary(patient, summaryNext);
+
       if (managerTag) {
         const hasManager = Boolean(patient.managerInitials?.trim());
         managerTag.hidden = !hasManager;
@@ -1345,6 +1558,27 @@
 
       const summaryTimeEl = wrapper.querySelector('[data-summary-time]');
       if (summaryTimeEl) summaryTimeEl.textContent = formattedElapsed(patient.reassessStartedAt);
+    }
+
+    function renderNextSummary(patient, summaryEl) {
+      if (!summaryEl) return;
+      summaryEl.innerHTML = '';
+      const steps = patient.nextSteps || [];
+      if (!steps.length) {
+        summaryEl.textContent = 'Next: none';
+        summaryEl.dataset.empty = 'true';
+        return;
+      }
+      summaryEl.dataset.empty = 'false';
+      steps.slice(0, 3).forEach((step) => {
+        const pill = document.createElement('span');
+        pill.className = 'next-pill';
+        pill.textContent = step.text;
+        if (step.done) {
+          pill.style.opacity = '0.7';
+        }
+        summaryEl.appendChild(pill);
+      });
     }
 
     function updateSummaryForPatient(patient) {
@@ -1397,6 +1631,13 @@
       }
     }
 
+    function refreshNextSteps(patient) {
+      const wrapper = document.querySelector(`.patient-wrapper[data-id="${patient.id}"]`);
+      const list = wrapper?.querySelector('[data-next-list]');
+      const summaryNext = wrapper?.querySelector('[data-summary-next]');
+      renderNextSteps(patient, list, summaryNext);
+    }
+
     function handleChange(id, updater, options = {}) {
       const idx = patients.findIndex((p) => p.id === id);
       if (idx === -1) return;
@@ -1412,6 +1653,8 @@
       if (Object.prototype.hasOwnProperty.call(updater, 'timers')) {
         refreshTimersForPatient(patients[idx]);
       }
+      refreshNextSteps(patients[idx]);
+      reorderDomToMatchPatients();
       queueRemotePersist();
       updateTimers();
     }
@@ -1509,6 +1752,57 @@
       });
     }
 
+    function renderNextSteps(patient, listEl, summaryEl) {
+      if (listEl) {
+        listEl.innerHTML = '';
+        const steps = patient.nextSteps || [];
+        if (!steps.length) {
+          const empty = document.createElement('div');
+          empty.className = 'muted';
+          empty.textContent = 'No next steps yet';
+          listEl.appendChild(empty);
+        } else {
+          steps.forEach((step) => {
+            const row = document.createElement('div');
+            row.className = 'next-item';
+
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.checked = Boolean(step.done);
+            checkbox.addEventListener('change', () => {
+              const current = patients.find((p) => p.id === patient.id) || patient;
+              const nextSteps = current.nextSteps.map((item) => (item.id === step.id ? { ...item, done: checkbox.checked } : item));
+              handleChange(patient.id, { nextSteps }, { skipUpdateStamp: true });
+            });
+
+            const text = document.createElement('div');
+            text.className = `next-text${step.done ? ' done' : ''}`;
+            text.textContent = step.text;
+
+            const deleteBtn = document.createElement('button');
+            deleteBtn.type = 'button';
+            deleteBtn.className = 'delete-btn';
+            deleteBtn.textContent = '✕';
+            deleteBtn.setAttribute('aria-label', 'Remove next step');
+            deleteBtn.addEventListener('click', () => {
+              const current = patients.find((p) => p.id === patient.id) || patient;
+              const nextSteps = current.nextSteps.filter((item) => item.id !== step.id);
+              handleChange(patient.id, { nextSteps }, { skipUpdateStamp: true });
+            });
+
+            row.appendChild(checkbox);
+            row.appendChild(text);
+            row.appendChild(deleteBtn);
+            listEl.appendChild(row);
+          });
+        }
+      }
+
+      if (summaryEl) {
+        renderNextSummary(patient, summaryEl);
+      }
+    }
+
     function addTimer(patientId) {
       const idx = patients.findIndex((p) => p.id === patientId);
       if (idx === -1) return;
@@ -1551,6 +1845,11 @@
       const editInfoBtn = wrapper.querySelector('[data-edit-info]');
       const managerInitialsField = wrapper.querySelector('.manager-initials-field');
       const managerColorPalette = wrapper.querySelector('[data-color-palette]');
+      const summaryRoomSelect = wrapper.querySelector('[data-summary-room-select]');
+      const nextInput = wrapper.querySelector('.next-input');
+      const nextList = wrapper.querySelector('[data-next-list]');
+      const addNextBtn = wrapper.querySelector('[data-add-next]');
+      const summaryNext = wrapper.querySelector('[data-summary-next]');
 
       createRoomOptions(roomField, patient.room || '');
       initialsField.value = patient.initials || '';
@@ -1564,8 +1863,11 @@
       renderManagerPalette(managerColorPalette, patient.managerColor, (color) => handleChange(patient.id, { managerColor: color }, { skipUpdateStamp: true }));
       markDispoSelections(dispoContainer, patient.dispo || '');
       noteToggle.classList.toggle('active', patient.notePinned);
+      createRoomOptions(summaryRoomSelect, patient.room || '');
 
       roomField.addEventListener('change', (e) => handleChange(patient.id, { room: e.target.value }));
+      summaryRoomSelect?.addEventListener('click', (e) => e.stopPropagation());
+      summaryRoomSelect?.addEventListener('change', (e) => handleChange(patient.id, { room: e.target.value }));
       initialsField.addEventListener('input', (e) => handleChange(patient.id, { initials: e.target.value }));
       ageField.addEventListener('input', (e) => handleChange(patient.id, { age: e.target.value }));
       genderField.addEventListener('change', (e) => handleChange(patient.id, { gender: e.target.value }));
@@ -1574,6 +1876,27 @@
       labsField.addEventListener('change', (e) => handleChange(patient.id, { labsOrdered: e.target.checked }, { skipUpdateStamp: true }));
       medsField.addEventListener('change', (e) => handleChange(patient.id, { medsOrdered: e.target.checked }, { skipUpdateStamp: true }));
       managerInitialsField?.addEventListener('input', (e) => handleChange(patient.id, { managerInitials: e.target.value }, { skipUpdateStamp: true }));
+
+      const addNextStep = () => {
+        const text = nextInput?.value?.trim();
+        if (!text) return;
+        const current = patients.find((p) => p.id === patient.id) || patient;
+        const nextSteps = [...(current.nextSteps || []), { id: crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random().toString(16).slice(2)}`, text, done: false }];
+        nextInput.value = '';
+        handleChange(patient.id, { nextSteps }, { skipUpdateStamp: true });
+      };
+
+      addNextBtn?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        addNextStep();
+      });
+
+      nextInput?.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          addNextStep();
+        }
+      });
 
       noteToggle.addEventListener('click', (event) => {
         event.stopPropagation();
@@ -1639,6 +1962,7 @@
       card.querySelector('[data-time]').textContent = formattedElapsed(patient.reassessStartedAt);
       populateCardSummary(wrapper, patient);
       renderPatientTimers(patient, timerStack);
+      renderNextSteps(patient, nextList, summaryNext);
 
       let lastTap = 0;
       let longPressTimer = null;
@@ -1689,9 +2013,12 @@
         lastTap = now;
 
         longPressTimer = setTimeout(() => {
-          card.open = true;
-          card.classList.add('editing');
-          roomField?.focus();
+          const nextOpen = !card.open;
+          card.open = nextOpen;
+          card.classList.toggle('editing', nextOpen);
+          if (nextOpen) {
+            roomField?.focus();
+          }
           clearLongPress();
         }, GESTURE.longPressMs);
       });
@@ -1719,6 +2046,12 @@
       queueRemotePersist();
       renderAll();
     }
+
+    sortSelect?.addEventListener('change', (event) => {
+      sortMode = event.target.value;
+      sortPatientsInPlace();
+      reorderDomToMatchPatients();
+    });
 
     addBtns.forEach((btn) => btn.addEventListener('click', addPatient));
 
