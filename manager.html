@@ -802,6 +802,74 @@
         text-align: left;
       }
     }
+
+    .manager-tag-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: #e5fbf2;
+      color: var(--ink-900);
+      font-weight: 900;
+      border: 1px solid rgba(15, 44, 42, 0.2);
+      box-shadow: 0 4px 10px rgba(15, 44, 42, 0.12);
+    }
+
+    .manager-tag-pill[hidden] {
+      display: none;
+    }
+
+    .manager-tag-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      border: 1px solid rgba(12, 44, 72, 0.4);
+    }
+
+    .manager-tag-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .manager-tag-initials {
+      width: 90px;
+    }
+
+    .color-palette {
+      display: grid;
+      grid-template-columns: repeat(8, minmax(26px, 1fr));
+      gap: 6px;
+    }
+
+    .color-swatch {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 2px solid rgba(12, 44, 72, 0.2);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 10px rgba(12, 44, 72, 0.12);
+      transition: transform 0.12s ease, box-shadow 0.12s ease, border-color 0.12s ease;
+      background: #fff;
+    }
+
+    .color-swatch span {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      display: block;
+    }
+
+    .color-swatch.active {
+      transform: translateY(-1px);
+      border-color: rgba(13, 143, 138, 0.6);
+      box-shadow: 0 6px 14px rgba(13, 143, 138, 0.2);
+    }
   </style>
 </head>
 <body>
@@ -839,6 +907,10 @@
           <div class="summary-left">
             <span class="summary-room" data-summary-room>--</span>
             <span class="summary-name" data-summary-name>New patient</span>
+            <span class="manager-tag-pill" data-summary-manager hidden>
+              <span class="manager-tag-dot" data-summary-manager-dot></span>
+              <span data-summary-manager-text>APP</span>
+            </span>
             <span class="summary-meta" data-summary-meta>Age · Gender</span>
             <span class="summary-notes" data-summary-notes></span>
           </div>
@@ -888,6 +960,13 @@
                 <option value="male">♂ Male</option>
                 <option value="other">∅ Other</option>
               </select>
+            </div>
+            <div class="field" style="grid-column: 1 / -1;">
+              <label>Managing clinician tag</label>
+              <div class="manager-tag-controls">
+                <input type="text" class="manager-initials-field manager-tag-initials" placeholder="e.g., AB" maxlength="6" />
+                <div class="color-palette" data-color-palette></div>
+              </div>
             </div>
             <div class="field" style="grid-column: 1 / -1;">
               <label for="notes">Pertinent info</label>
@@ -982,6 +1061,17 @@
       other: '∅',
     };
 
+    const managerColors = [
+      '#1f8f7b',
+      '#0f2c2a',
+      '#3b82f6',
+      '#f5b700',
+      '#f79256',
+      '#ff6b6b',
+      '#6c5ce7',
+      '#14b8a6',
+    ];
+
     const dispoLabels = {
       floor: 'Admit Floor',
       picu: 'Admit PICU',
@@ -1051,6 +1141,8 @@
         labsOrdered: Boolean(patient.labsOrdered),
         medsOrdered: Boolean(patient.medsOrdered),
         dispo: typeof patient.dispo === 'string' ? patient.dispo : '',
+        managerInitials: typeof patient.managerInitials === 'string' ? patient.managerInitials : '',
+        managerColor: typeof patient.managerColor === 'string' ? patient.managerColor : managerColors[0],
         updatedAt: typeof patient.updatedAt === 'number' ? patient.updatedAt : Date.now(),
         reassessStartedAt: typeof patient.reassessStartedAt === 'number' ? patient.reassessStartedAt : (typeof patient.updatedAt === 'number' ? patient.updatedAt : Date.now()),
         notePinned: Boolean(patient.notePinned),
@@ -1161,7 +1253,7 @@
             if (display) display.textContent = formatDuration(computeTimerElapsed(timer));
             const pauseBtn = row?.querySelector('[data-timer-pause]');
             if (pauseBtn) {
-              pauseBtn.textContent = '‖';
+              pauseBtn.textContent = timer.paused ? '▶' : '‖';
               pauseBtn.setAttribute('aria-label', timer.paused ? 'Resume timer' : 'Pause timer');
             }
           });
@@ -1180,6 +1272,9 @@
       const quickVisit = wrapper.querySelector('[data-summary-visit]');
       const quickOrders = wrapper.querySelector('[data-summary-orders]');
       const quickDispo = wrapper.querySelector('[data-summary-dispo-select]');
+      const managerTag = wrapper.querySelector('[data-summary-manager]');
+      const managerTagDot = wrapper.querySelector('[data-summary-manager-dot]');
+      const managerTagText = wrapper.querySelector('[data-summary-manager-text]');
 
       if (roomEl) roomEl.textContent = patient.room || '--';
       if (nameEl) nameEl.textContent = patient.initials || 'New patient';
@@ -1233,6 +1328,17 @@
         }
       }
 
+      if (managerTag) {
+        const hasManager = Boolean(patient.managerInitials?.trim());
+        managerTag.hidden = !hasManager;
+        if (hasManager) {
+          if (managerTagText) managerTagText.textContent = patient.managerInitials.trim();
+          managerTag.style.backgroundColor = `${patient.managerColor || managerColors[0]}20`;
+          managerTag.style.borderColor = patient.managerColor || managerColors[0];
+          if (managerTagDot) managerTagDot.style.background = patient.managerColor || managerColors[0];
+        }
+      }
+
       if (quickVisit) quickVisit.classList.toggle('active', Boolean(patient.seen));
       if (quickOrders) quickOrders.classList.toggle('active', Boolean(patient.labsOrdered));
       if (quickDispo) quickDispo.value = patient.dispo || '';
@@ -1252,6 +1358,28 @@
       selectEl.value = value;
     }
 
+    function renderManagerPalette(container, selectedColor, onSelect) {
+      if (!container) return;
+      container.innerHTML = '';
+      managerColors.forEach((color) => {
+        const swatch = document.createElement('button');
+        swatch.type = 'button';
+        swatch.className = 'color-swatch';
+        swatch.dataset.color = color;
+        const dot = document.createElement('span');
+        dot.style.background = color;
+        swatch.appendChild(dot);
+        if (color === selectedColor) {
+          swatch.classList.add('active');
+        }
+        swatch.addEventListener('click', () => {
+          container.querySelectorAll('.color-swatch').forEach((el) => el.classList.toggle('active', el.dataset.color === color));
+          onSelect(color);
+        });
+        container.appendChild(swatch);
+      });
+    }
+
     function markDispoSelections(container, value) {
       container.querySelectorAll('.dispo-pill').forEach((pill) => {
         const input = pill.querySelector('input');
@@ -1259,6 +1387,14 @@
         pill.classList.toggle('active', input.checked);
         input.dataset.wasChecked = input.checked ? 'true' : 'false';
       });
+    }
+
+    function refreshTimersForPatient(patient) {
+      const wrapper = document.querySelector(`.patient-wrapper[data-id="${patient.id}"]`);
+      const stack = wrapper?.querySelector('[data-timer-stack]');
+      if (stack) {
+        renderPatientTimers(patient, stack);
+      }
     }
 
     function handleChange(id, updater, options = {}) {
@@ -1273,6 +1409,9 @@
       };
       sortPatientsInPlace();
       updateSummaryForPatient(patients[idx]);
+      if (Object.prototype.hasOwnProperty.call(updater, 'timers')) {
+        refreshTimersForPatient(patients[idx]);
+      }
       queueRemotePersist();
       updateTimers();
     }
@@ -1319,7 +1458,7 @@
         const pauseBtn = document.createElement('button');
         pauseBtn.dataset.timerPause = 'true';
         pauseBtn.className = 'pause-btn';
-        pauseBtn.textContent = '‖';
+        pauseBtn.textContent = timer.paused ? '▶' : '‖';
         pauseBtn.setAttribute('aria-label', timer.paused ? 'Resume timer' : 'Pause timer');
         pauseBtn.addEventListener('click', () => {
           const current = patients.find((p) => p.id === patient.id) || patient;
@@ -1410,6 +1549,8 @@
       const quickDispo = wrapper.querySelector('[data-summary-dispo-select]');
       const summary = wrapper.querySelector('.card-summary');
       const editInfoBtn = wrapper.querySelector('[data-edit-info]');
+      const managerInitialsField = wrapper.querySelector('.manager-initials-field');
+      const managerColorPalette = wrapper.querySelector('[data-color-palette]');
 
       createRoomOptions(roomField, patient.room || '');
       initialsField.value = patient.initials || '';
@@ -1419,6 +1560,8 @@
       seenField.checked = Boolean(patient.seen);
       labsField.checked = Boolean(patient.labsOrdered);
       medsField.checked = Boolean(patient.medsOrdered);
+      if (managerInitialsField) managerInitialsField.value = patient.managerInitials || '';
+      renderManagerPalette(managerColorPalette, patient.managerColor, (color) => handleChange(patient.id, { managerColor: color }, { skipUpdateStamp: true }));
       markDispoSelections(dispoContainer, patient.dispo || '');
       noteToggle.classList.toggle('active', patient.notePinned);
 
@@ -1430,6 +1573,7 @@
       seenField.addEventListener('change', (e) => handleChange(patient.id, { seen: e.target.checked }, { skipUpdateStamp: true }));
       labsField.addEventListener('change', (e) => handleChange(patient.id, { labsOrdered: e.target.checked }, { skipUpdateStamp: true }));
       medsField.addEventListener('change', (e) => handleChange(patient.id, { medsOrdered: e.target.checked }, { skipUpdateStamp: true }));
+      managerInitialsField?.addEventListener('input', (e) => handleChange(patient.id, { managerInitials: e.target.value }, { skipUpdateStamp: true }));
 
       noteToggle.addEventListener('click', (event) => {
         event.stopPropagation();
@@ -1545,8 +1689,9 @@
         lastTap = now;
 
         longPressTimer = setTimeout(() => {
-          card.open = !card.open;
-          card.classList.toggle('editing', card.open);
+          card.open = true;
+          card.classList.add('editing');
+          roomField?.focus();
           clearLongPress();
         }, GESTURE.longPressMs);
       });
