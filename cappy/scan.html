@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Cappy Scan | CloseDose</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+        /* Overlay styles */
+        .med-overlay-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.55);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+
+        .med-overlay-backdrop.hidden {
+            display: none;
+        }
+
+        .med-overlay-card {
+            background: #ffffff;
+            border-radius: 18px;
+            padding: 20px;
+            max-width: 420px;
+            width: 90%;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.18);
+            display: flex;
+            gap: 16px;
+            font-family: system-ui, -apple-system, sans-serif;
+        }
+
+        .med-overlay-image {
+            flex: 0 0 100px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .med-overlay-logo {
+            max-width: 80px;
+            max-height: 24px;
+            object-fit: contain;
+        }
+
+        .med-overlay-content {
+            flex: 1;
+        }
+
+        .med-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 999px;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            background: #24A6871A;
+            color: #24A687;
+            margin-bottom: 4px;
+        }
+
+        #med-title {
+            font-size: 18px;
+            margin: 0;
+        }
+
+        #med-subtitle {
+            font-size: 13px;
+            color: #555;
+            margin: 2px 0 6px;
+        }
+
+        #med-concentration,
+        #med-category {
+            font-size: 12px;
+            color: #333;
+            margin: 2px 0;
+        }
+
+        .med-warning {
+            font-size: 11px;
+            color: #B1453F;
+            margin-top: 6px;
+        }
+
+        #med-open-calculator-btn,
+        #med-overlay-close-btn {
+            margin-top: 10px;
+            padding: 8px 12px;
+            border-radius: 999px;
+            border: none;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        #med-open-calculator-btn {
+            background: #24A687;
+            color: white;
+            margin-right: 6px;
+        }
+
+        #med-overlay-close-btn.secondary {
+            background: #F1F3F5;
+            color: #333;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Overlay container (hidden until token is processed) -->
+    <div id="med-overlay-backdrop" class="med-overlay-backdrop hidden">
+        <div class="med-overlay-card">
+            <div class="med-overlay-image">
+                <!-- SVG “bottle” -->
+                <div id="med-overlay-svg"></div>
+                <!-- Brand logo -->
+                <img id="med-brand-logo" class="med-overlay-logo" alt="Brand logo" />
+            </div>
+            <div class="med-overlay-content">
+                <span class="med-badge" id="med-badge">OTC</span>
+                <h2 id="med-title"></h2>
+                <p id="med-subtitle"></p>
+                <p id="med-concentration"></p>
+                <p id="med-category"></p>
+                <p id="med-warning" class="med-warning"></p>
+                <button id="med-open-calculator-btn">Use for dosing</button>
+                <button id="med-overlay-close-btn" class="secondary">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="/cappy/scan.js"></script>
+</body>
+
+</html>
