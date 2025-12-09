@@ -235,10 +235,74 @@
       background: white;
       border: 1px solid var(--border);
       box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6);
+      position: relative;
     }
 
     .detail p { margin: 6px 0; color: var(--muted); }
     .detail strong { color: #0a1d2b; }
+
+    .detail-actions {
+      grid-column: 1 / -1;
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 4px;
+      flex-wrap: wrap;
+    }
+
+    .detail button,
+    .edit-form button {
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: linear-gradient(135deg, rgba(13, 143, 138, 0.18), rgba(13, 143, 138, 0.08));
+      color: #0a1d2b;
+      font-weight: 700;
+      padding: 8px 12px;
+      cursor: pointer;
+      box-shadow: 0 10px 18px rgba(13, 143, 138, 0.16);
+      transition: transform 0.14s ease, box-shadow 0.14s ease;
+    }
+
+    .detail button:hover,
+    .edit-form button:hover,
+    .detail button:focus-visible,
+    .edit-form button:focus-visible {
+      outline: none;
+      transform: translateY(-1px);
+      box-shadow: 0 14px 26px rgba(13, 143, 138, 0.24);
+    }
+
+    .edit-form {
+      grid-column: 1 / -1;
+      display: grid;
+      gap: 10px;
+      padding: 12px;
+      border-radius: var(--radius-md);
+      background: rgba(13, 143, 138, 0.06);
+      border: 1px dashed rgba(13, 143, 138, 0.35);
+    }
+
+    .edit-form label {
+      display: grid;
+      gap: 6px;
+      font-weight: 700;
+      color: #0a1d2b;
+    }
+
+    .edit-form input,
+    .edit-form textarea {
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      padding: 10px 12px;
+      font-family: inherit;
+      font-size: 1rem;
+      color: #0a1d2b;
+    }
+
+    .edit-form textarea {
+      min-height: 90px;
+      resize: vertical;
+    }
 
     .settings-btn {
       position: fixed;
@@ -365,12 +429,35 @@
             <h2 id="member-details-title">Member details</h2>
             <small>Age, weight, and current prescriptions are previewed here.</small>
           </div>
+          <div class="detail-actions">
+            <button type="button" id="editMemberBtn">Edit member</button>
+            <button type="button" id="syncBtn">Sync from Supabase</button>
+          </div>
         </div>
         <div class="detail" id="memberDetails">
           <p><strong>Age:</strong> <span data-field="age">—</span></p>
           <p><strong>Weight:</strong> <span data-field="weight">—</span></p>
           <p><strong>Primary medication:</strong> <span data-field="med">—</span></p>
           <p><strong>Notes:</strong> <span data-field="notes">Select a member to view details.</span></p>
+          <form class="edit-form" id="editForm" hidden>
+            <label>
+              Weight
+              <input type="text" id="weightInput" placeholder="e.g., 70 lb" />
+            </label>
+            <label>
+              Primary medication
+              <input type="text" id="medInput" placeholder="e.g., Cetirizine" />
+            </label>
+            <label>
+              Notes
+              <textarea id="notesInput" placeholder="Add key reminders and dosing tips"></textarea>
+            </label>
+            <div class="detail-actions" style="justify-content:flex-start;">
+              <button type="submit">Save changes</button>
+              <button type="button" id="cancelEditBtn">Cancel</button>
+              <small id="editStatus"></small>
+            </div>
+          </form>
         </div>
       </section>
     </main>
@@ -411,6 +498,19 @@
     const userEmailEl = document.getElementById("userEmail");
     const userStatusEl = document.getElementById("userStatus");
     const signOutBtn = document.getElementById("signOutBtn");
+    const editMemberBtn = document.getElementById("editMemberBtn");
+    const syncBtn = document.getElementById("syncBtn");
+    const editForm = document.getElementById("editForm");
+    const weightInput = document.getElementById("weightInput");
+    const medInput = document.getElementById("medInput");
+    const notesInput = document.getElementById("notesInput");
+    const cancelEditBtn = document.getElementById("cancelEditBtn");
+    const editStatus = document.getElementById("editStatus");
+
+    let currentUser = null;
+    let currentFamily = null;
+    let activeMemberIndex = 0;
+    let familyKey = "";
 
     const defaultFamily = {
       name: "The CloseDose Household",
@@ -436,11 +536,18 @@
       }
 
       const user = data.session.user;
+      currentUser = user;
+      familyKey = getFamilyKey(user);
       renderUserBadge(user);
       await loadInitialData(user);
     }
 
     async function loadInitialData(user) {
+      const hydrated = await getFamilyData(user);
+      renderDashboard(hydrated);
+    }
+
+    async function getFamilyData(user) {
       const { data: profile, error } = await supabase
         .from("profiles")
         .select("id, family_name, member_profiles")
@@ -453,15 +560,40 @@
 
       const hydratedProfile = profile ?? (await seedProfile(user));
 
-      const hydrated = {
+      const { data: sharedMembers, error: familyError } = await supabase
+        .from("family_members")
+        .select("name, role, age, weight, med, notes, color")
+        .eq("family_id", familyKey);
+
+      if (familyError) {
+        console.error("Error loading synced family members", familyError);
+      }
+
+      const normalizedShared = Array.isArray(sharedMembers)
+        ? sharedMembers.map(member => ({
+            name: member.name,
+            role: member.role,
+            age: member.age,
+            weight: member.weight,
+            med: member.med,
+            notes: member.notes,
+            color: member.color
+          }))
+        : [];
+
+      return {
         name: hydratedProfile?.family_name || user.user_metadata?.family_name || defaultFamily.name,
         tagline: defaultFamily.tagline,
-        members: Array.isArray(hydratedProfile?.member_profiles) && hydratedProfile.member_profiles.length
+        members: normalizedShared.length
+          ? normalizedShared
+          : Array.isArray(hydratedProfile?.member_profiles) && hydratedProfile.member_profiles.length
           ? hydratedProfile.member_profiles
           : defaultFamily.members
       };
+    }
 
-      renderDashboard(hydrated);
+    function getFamilyKey(user) {
+      return user?.user_metadata?.family_id || user?.id || "";
     }
 
     async function seedProfile(user) {
@@ -510,17 +642,18 @@
       const grid = document.getElementById("familyGrid");
       const activeHint = document.getElementById("activeMemberHint");
 
+      currentFamily = family;
       nameEl.textContent = family.name;
       taglineEl.textContent = family.tagline;
       countEl.textContent = `${family.members.length} member${family.members.length === 1 ? "" : "s"}`;
 
       grid.innerHTML = "";
       family.members.forEach((member, idx) => {
-        const card = document.createElement("button");
+        const card = document.createElement("div");
         card.className = "member-card";
-        card.type = "button";
         card.setAttribute("role", "listitem");
         card.setAttribute("aria-pressed", "false");
+        card.tabIndex = 0;
 
         const avatar = document.createElement("div");
         avatar.className = "avatar";
@@ -546,28 +679,61 @@
         weightTag.className = "tag";
         weightTag.textContent = member.weight ? `${member.weight}` : "Add weight";
 
-        tags.append(ageTag, weightTag);
-        card.append(avatar, name, role, tags);
+        const editChip = document.createElement("span");
+        editChip.className = "tag";
+        editChip.textContent = "Edit";
+        editChip.style.position = "absolute";
+        editChip.style.top = "10px";
+        editChip.style.right = "10px";
+        editChip.style.cursor = "pointer";
+        editChip.addEventListener("click", event => {
+          event.stopPropagation();
+          setActiveMember(idx);
+          openEditForm();
+        });
 
-        card.addEventListener("click", () => {
-          document
-            .querySelectorAll(".member-card")
-            .forEach(btn => btn.classList.remove("active"));
-          card.classList.add("active");
-          card.setAttribute("aria-pressed", "true");
-          activeHint.textContent = `${member.name}'s profile active`;
-          populateDetails(member);
+        tags.append(ageTag, weightTag);
+        card.append(editChip, avatar, name, role, tags);
+
+        const activateCard = () => {
+          setActiveMember(idx);
+        };
+
+        card.addEventListener("click", activateCard);
+        card.addEventListener("keydown", event => {
+          if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            activateCard();
+          }
         });
 
         if (idx === 0) {
-          card.classList.add("active");
-          card.setAttribute("aria-pressed", "true");
-          activeHint.textContent = `${member.name}'s profile active`;
-          populateDetails(member);
+          setActiveMember(idx, card);
         }
 
         grid.appendChild(card);
       });
+    }
+
+    function setActiveMember(idx, cardRef) {
+      const grid = document.getElementById("familyGrid");
+      grid
+        .querySelectorAll(".member-card")
+        .forEach(btn => {
+          btn.classList.remove("active");
+          btn.setAttribute("aria-pressed", "false");
+        });
+
+      const targetCard = cardRef || grid.children[idx];
+      if (targetCard) {
+        targetCard.classList.add("active");
+        targetCard.setAttribute("aria-pressed", "true");
+      }
+
+      activeMemberIndex = idx;
+      const activeMember = currentFamily.members[idx];
+      document.getElementById("activeMemberHint").textContent = `${activeMember.name}'s profile active`;
+      populateDetails(activeMember);
     }
 
     function populateDetails(member) {
@@ -576,7 +742,107 @@
       container.querySelector('[data-field="weight"]').textContent = member.weight ?? "—";
       container.querySelector('[data-field="med"]').textContent = member.med ?? "Add a medication";
       container.querySelector('[data-field="notes"]').textContent = member.notes || "Add notes to guide OTC dosing.";
+
+      if (!editForm.hidden) {
+        weightInput.value = member.weight || "";
+        medInput.value = member.med || "";
+        notesInput.value = member.notes || "";
+      }
     }
+
+    function openEditForm() {
+      const member = currentFamily?.members?.[activeMemberIndex];
+      if (!member) return;
+
+      weightInput.value = member.weight || "";
+      medInput.value = member.med || "";
+      notesInput.value = member.notes || "";
+      editStatus.textContent = "";
+      editForm.hidden = false;
+    }
+
+    function closeEditForm() {
+      editForm.hidden = true;
+      editStatus.textContent = "";
+    }
+
+    editMemberBtn.addEventListener("click", openEditForm);
+    cancelEditBtn.addEventListener("click", () => {
+      closeEditForm();
+    });
+
+    editForm.addEventListener("submit", async event => {
+      event.preventDefault();
+      const member = currentFamily.members[activeMemberIndex];
+      if (!member || !currentUser) return;
+
+      const updatedMember = {
+        ...member,
+        weight: weightInput.value.trim() || "—",
+        med: medInput.value.trim() || "Add a medication",
+        notes: notesInput.value.trim()
+      };
+
+      currentFamily.members[activeMemberIndex] = updatedMember;
+      populateDetails(updatedMember);
+      editStatus.textContent = "Saving…";
+      const success = await persistMemberUpdate();
+      editStatus.textContent = success ? "Saved & synced" : "Save failed";
+    });
+
+    async function persistMemberUpdate() {
+      try {
+        const profileUpdate = supabase
+          .from("profiles")
+          .update({
+            family_name: currentFamily.name,
+            member_profiles: currentFamily.members
+          })
+          .eq("id", currentUser.id);
+
+        const sharedPayload = currentFamily.members.map(member => ({
+          family_id: familyKey,
+          name: member.name,
+          role: member.role,
+          age: member.age,
+          weight: member.weight,
+          med: member.med,
+          notes: member.notes,
+          color: member.color
+        }));
+
+        const familyUpsert = supabase.from("family_members").upsert(sharedPayload, {
+          onConflict: "family_id,name"
+        });
+
+        const [{ error: profileError }, { error: syncError }] = await Promise.all([
+          profileUpdate,
+          familyUpsert
+        ]);
+
+        if (profileError || syncError) {
+          console.error("Sync errors", { profileError, syncError });
+          return false;
+        }
+
+        renderDashboard({ ...currentFamily });
+        setActiveMember(activeMemberIndex);
+        return true;
+      } catch (err) {
+        console.error("Unexpected error syncing member", err);
+        return false;
+      }
+    }
+
+    syncBtn.addEventListener("click", async () => {
+      if (!currentUser) return;
+      syncBtn.disabled = true;
+      syncBtn.textContent = "Syncing…";
+      const syncedFamily = await getFamilyData(currentUser);
+      renderDashboard(syncedFamily);
+      syncBtn.textContent = "Sync from Supabase";
+      syncBtn.disabled = false;
+    });
 
     const settingsBtn = document.getElementById("settingsBtn");
     const settingsDrawer = document.getElementById("settingsDrawer");
