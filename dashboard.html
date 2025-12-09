@@ -85,6 +85,34 @@
       flex-wrap: wrap;
     }
 
+    .family-controls {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 10px;
+      margin-top: 12px;
+      align-items: end;
+    }
+
+    .family-controls label {
+      display: grid;
+      gap: 6px;
+      font-weight: 700;
+      color: #0a1d2b;
+    }
+
+    .family-controls input {
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      padding: 10px 12px;
+      font-family: inherit;
+      font-size: 1rem;
+    }
+
+    .family-controls small {
+      color: var(--muted);
+      font-weight: 600;
+    }
+
     .auth-chip {
       display: inline-flex;
       align-items: center;
@@ -409,6 +437,23 @@
           <button class="signout-btn" type="button" id="signOutBtn">Sign out</button>
         </div>
       </div>
+      <div class="family-controls">
+        <label>
+          Family name
+          <input id="familyNameInput" type="text" placeholder="Your family or care team" />
+          <small>Shared across every admin in the family.</small>
+        </label>
+        <label>
+          Family ID
+          <input id="familyKeyInput" type="text" placeholder="Invite code or family ID" />
+          <small>Join an existing family or generate a new one.</small>
+        </label>
+        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+          <button type="button" id="joinFamilyBtn">Join existing family</button>
+          <button type="button" id="createFamilyBtn">Create new family</button>
+        </div>
+        <small id="familyStatus" aria-live="polite"></small>
+      </div>
     </header>
 
     <main>
@@ -518,6 +563,11 @@
     const addMemberBtn = document.getElementById("addMemberBtn");
     const removeMemberBtn = document.getElementById("removeMemberBtn");
     const syncBtn = document.getElementById("syncBtn");
+    const familyNameInput = document.getElementById("familyNameInput");
+    const familyKeyInput = document.getElementById("familyKeyInput");
+    const joinFamilyBtn = document.getElementById("joinFamilyBtn");
+    const createFamilyBtn = document.getElementById("createFamilyBtn");
+    const familyStatus = document.getElementById("familyStatus");
     const editForm = document.getElementById("editForm");
     const nameInput = document.getElementById("nameInput");
     const roleInput = document.getElementById("roleInput");
@@ -546,6 +596,25 @@
       ]
     };
 
+    function generateFamilyId() {
+      if (typeof crypto !== "undefined" && crypto.randomUUID) {
+        return crypto.randomUUID();
+      }
+      return `family-${Math.random().toString(36).slice(2, 10)}`;
+    }
+
+    async function updateUserMetadata(metadata) {
+      const { data, error } = await supabase.auth.updateUser({ data: metadata });
+      if (error) {
+        console.error("Error updating user metadata", error);
+        return { error };
+      }
+      if (data?.user) {
+        currentUser = data.user;
+      }
+      return { error: null };
+    }
+
     async function requireAuth() {
       const { data, error } = await supabase.auth.getSession();
       if (error) {
@@ -562,6 +631,12 @@
       currentUser = user;
       familyKey = getFamilyKey(user);
       renderUserBadge(user);
+      if (familyKeyInput) {
+        familyKeyInput.value = familyKey;
+      }
+      if (familyNameInput) {
+        familyNameInput.value = user.user_metadata?.family_name || defaultFamily.name;
+      }
       await loadInitialData(user);
     }
 
@@ -667,6 +742,12 @@
       const activeHint = document.getElementById("activeMemberHint");
 
       currentFamily = family;
+      if (familyNameInput) {
+        familyNameInput.value = family.name;
+      }
+      if (familyKeyInput) {
+        familyKeyInput.value = familyKey;
+      }
       nameEl.textContent = family.name;
       taglineEl.textContent = family.tagline;
       countEl.textContent = `${family.members.length} member${family.members.length === 1 ? "" : "s"}`;
@@ -823,6 +904,70 @@
       closeEditForm();
     });
 
+    familyNameInput?.addEventListener("blur", async () => {
+      if (!currentFamily) return;
+      const nextName = familyNameInput.value.trim() || defaultFamily.name;
+      currentFamily.name = nextName;
+      renderDashboard({ ...currentFamily }, activeMemberIndex);
+      await persistMemberUpdate();
+    });
+
+    async function switchFamily(targetKey, targetName, label) {
+      if (!currentUser) return;
+      const safeKey = (targetKey || "").trim();
+      if (!safeKey) {
+        familyStatus.textContent = "Provide a family ID to continue.";
+        return;
+      }
+
+      const safeName = (targetName || "").trim() || defaultFamily.name;
+      familyStatus.textContent = label || "Syncing family…";
+      familyKey = safeKey;
+
+      const { error: metadataError } = await updateUserMetadata({
+        family_id: safeKey,
+        family_name: safeName
+      });
+
+      if (metadataError) {
+        familyStatus.textContent = "Could not update family settings.";
+        return;
+      }
+
+      const { error: profileError } = await supabase.from("profiles").upsert({
+        id: currentUser.id,
+        family_name: safeName,
+        member_profiles: currentFamily?.members ?? []
+      });
+
+      if (profileError) {
+        familyStatus.textContent = "Family record did not save.";
+        return;
+      }
+
+      const hydratedUser = {
+        ...currentUser,
+        user_metadata: { ...(currentUser?.user_metadata || {}), family_id: safeKey, family_name: safeName }
+      };
+
+      const syncedFamily = await getFamilyData(hydratedUser);
+      activeMemberIndex = Math.min(activeMemberIndex, Math.max(0, syncedFamily.members.length - 1));
+      renderDashboard(syncedFamily, activeMemberIndex);
+      familyStatus.textContent = "Family synced";
+    }
+
+    joinFamilyBtn?.addEventListener("click", () => {
+      if (!familyKeyInput || !familyNameInput) return;
+      switchFamily(familyKeyInput.value, familyNameInput.value, "Joining family…");
+    });
+
+    createFamilyBtn?.addEventListener("click", () => {
+      if (!familyKeyInput || !familyNameInput) return;
+      const newKey = generateFamilyId();
+      familyKeyInput.value = newKey;
+      switchFamily(newKey, familyNameInput.value || defaultFamily.name, "Created and joined family");
+    });
+
     addMemberBtn.addEventListener("click", () => {
       if (!currentFamily) return;
 
@@ -922,14 +1067,19 @@
               )
           : supabase.from("family_members").delete().eq("family_id", familyKey);
 
-        const [{ error: profileError }, { error: syncError }, { error: deleteError }] = await Promise.all([
+        const [{ error: profileError }, { error: syncError }, { error: deleteError }, { error: metadataError }] = await Promise.all([
           profileUpdate,
           familyUpsert,
-          deleteMissing
+          deleteMissing,
+          updateUserMetadata({
+            family_name: currentFamily.name,
+            family_id: familyKey,
+            member_profiles: currentFamily.members
+          })
         ]);
 
-        if (profileError || syncError || deleteError) {
-          console.error("Sync errors", { profileError, syncError, deleteError });
+        if (profileError || syncError || deleteError || metadataError) {
+          console.error("Sync errors", { profileError, syncError, deleteError, metadataError });
           return false;
         }
 
