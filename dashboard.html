@@ -85,6 +85,45 @@
       flex-wrap: wrap;
     }
 
+    .auth-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: linear-gradient(135deg, rgba(13, 143, 138, 0.12), rgba(13, 143, 138, 0.06));
+      font-weight: 700;
+      color: #0a1d2b;
+      box-shadow: 0 12px 26px rgba(13, 143, 138, 0.18);
+    }
+
+    .auth-chip small {
+      display: block;
+      color: var(--muted);
+      font-weight: 600;
+      line-height: 1.2;
+    }
+
+    .signout-btn {
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: white;
+      padding: 8px 12px;
+      cursor: pointer;
+      font-weight: 700;
+      color: #0a1d2b;
+      box-shadow: 0 10px 18px rgba(0, 0, 0, 0.08);
+      transition: transform 0.14s ease, box-shadow 0.14s ease;
+    }
+
+    .signout-btn:hover,
+    .signout-btn:focus-visible {
+      transform: translateY(-1px);
+      box-shadow: 0 14px 26px rgba(13, 143, 138, 0.18);
+      outline: none;
+    }
+
     .pill {
       border-radius: 999px;
       border: 1px solid var(--border);
@@ -298,6 +337,13 @@
       <div class="cta-row">
         <span class="pill" id="memberCount">0 members</span>
         <span class="pill">Secure &amp; synced</span>
+        <div class="auth-chip" id="authChip" aria-live="polite">
+          <div>
+            <span id="userEmail">Signed out</span>
+            <small id="userStatus">Checking session…</small>
+          </div>
+          <button class="signout-btn" type="button" id="signOutBtn">Sign out</button>
+        </div>
       </div>
     </header>
 
@@ -362,6 +408,10 @@
       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRmbXBneHd6Z2R6bmRiZHpzZnR4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQxNjg0MDcsImV4cCI6MjA3OTc0NDQwN30.X5f5YulGHxjJDFX2i7T3vDZXD3Gt9MY8SyvFybTHCKc"
     );
 
+    const userEmailEl = document.getElementById("userEmail");
+    const userStatusEl = document.getElementById("userStatus");
+    const signOutBtn = document.getElementById("signOutBtn");
+
     const defaultFamily = {
       name: "The CloseDose Household",
       tagline: "Everyone’s dosing guidance in one place.",
@@ -377,6 +427,7 @@
       const { data, error } = await supabase.auth.getSession();
       if (error) {
         console.error("Error retrieving auth session", error);
+        userStatusEl.textContent = "Could not verify session";
         return;
       }
       if (!data.session) {
@@ -385,31 +436,72 @@
       }
 
       const user = data.session.user;
+      renderUserBadge(user);
       await loadInitialData(user);
     }
 
     async function loadInitialData(user) {
-      const profile = await supabase
+      const { data: profile, error } = await supabase
         .from("profiles")
-        .select("family_name, member_profiles")
+        .select("id, family_name, member_profiles")
         .eq("id", user.id)
-        .single();
+        .maybeSingle();
 
-      if (profile.error && profile.error.code !== "PGRST116") {
-        console.error("Error loading profile", profile.error);
+      if (error) {
+        console.error("Error loading profile", error);
       }
 
-      const familyName = profile.data?.family_name || user.user_metadata?.family_name;
-      const members = profile.data?.member_profiles;
+      const hydratedProfile = profile ?? (await seedProfile(user));
 
       const hydrated = {
-        name: familyName || defaultFamily.name,
+        name: hydratedProfile?.family_name || user.user_metadata?.family_name || defaultFamily.name,
         tagline: defaultFamily.tagline,
-        members: Array.isArray(members) && members.length ? members : defaultFamily.members
+        members: Array.isArray(hydratedProfile?.member_profiles) && hydratedProfile.member_profiles.length
+          ? hydratedProfile.member_profiles
+          : defaultFamily.members
       };
 
       renderDashboard(hydrated);
     }
+
+    async function seedProfile(user) {
+      const draftProfile = {
+        id: user.id,
+        family_name: user.user_metadata?.family_name || defaultFamily.name,
+        member_profiles: defaultFamily.members
+      };
+
+      const { data, error } = await supabase.from("profiles").upsert(draftProfile).select().single();
+
+      if (error) {
+        console.error("Error creating default profile", error);
+        return draftProfile;
+      }
+
+      return data;
+    }
+
+    function renderUserBadge(user) {
+      userEmailEl.textContent = user.email || "Signed in";
+      userStatusEl.textContent = "Session active";
+    }
+
+    signOutBtn.addEventListener("click", async () => {
+      const { error } = await supabase.auth.signOut();
+      if (error) {
+        console.error("Error signing out", error);
+        userStatusEl.textContent = "Sign out failed";
+        return;
+      }
+      userStatusEl.textContent = "Signed out";
+      window.location.href = "/login.html";
+    });
+
+    supabase.auth.onAuthStateChange((_event, session) => {
+      if (!session) {
+        window.location.href = "/login.html";
+      }
+    });
 
     function renderDashboard(family) {
       const nameEl = document.getElementById("familyName");
