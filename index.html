@@ -422,6 +422,152 @@
       outline-offset: 2px;
     }
 
+    .cappy-login-trigger {
+      gap: 14px;
+      align-items: center;
+    }
+
+    .cappy-login-trigger .account-card__title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .cappy-login-icon {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      border: var(--card-border);
+      background: #fff;
+      box-shadow: var(--shadow-btn);
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+    }
+
+    .cappy-login-icon img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .cappy-floating-btn {
+      position: fixed;
+      top: clamp(12px, 2.5vw, 20px);
+      left: clamp(12px, 4vw, 28px);
+      z-index: 1400;
+      border: var(--card-border);
+      border-radius: 50%;
+      width: 62px;
+      height: 62px;
+      padding: 6px;
+      display: grid;
+      place-items: center;
+      background: #fff;
+      cursor: pointer;
+      box-shadow: var(--shadow-btn);
+      transition: transform 0.14s ease, box-shadow 0.14s ease;
+    }
+
+    .cappy-floating-btn:hover,
+    .cappy-floating-btn:focus-visible {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 0 rgba(15, 44, 42, 0.26);
+      outline: none;
+    }
+
+    .cappy-floating-btn img {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .cappy-login-form {
+      display: grid;
+      gap: 12px;
+    }
+
+    .cappy-login-form label {
+      font-weight: 800;
+      letter-spacing: 0.04em;
+    }
+
+    .cappy-login-form input {
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 2px solid rgba(18, 70, 67, 0.2);
+      font: inherit;
+      transition: border-color 0.12s ease, box-shadow 0.12s ease;
+    }
+
+    .cappy-login-form input:focus {
+      outline: none;
+      border-color: var(--teal-500);
+      box-shadow: 0 0 0 3px rgba(36, 166, 135, 0.25);
+    }
+
+    .cappy-login-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .cappy-login-primary {
+      border-radius: 12px;
+      border: var(--card-border);
+      background: var(--teal-400);
+      color: #fff;
+      font-weight: 900;
+      letter-spacing: 0.06em;
+      padding: 12px 18px;
+      cursor: pointer;
+      box-shadow: var(--shadow-btn);
+      text-transform: uppercase;
+    }
+
+    .cappy-login-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+    }
+
+    .cappy-login-links a {
+      color: var(--teal-500);
+    }
+
+    #auth-message {
+      margin: 0;
+      font-weight: 800;
+    }
+
+    .cappy-modal__header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .cappy-modal__title {
+      margin: 0;
+    }
+
+    .cappy-modal__badge {
+      margin: 0;
+      font-size: 0.8rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--teal-500);
+      font-weight: 800;
+    }
+
+    .cappy-modal__intro {
+      margin: 0;
+      color: var(--ink-700);
+    }
+
     .account-form {
       display: flex;
       flex-direction: column;
@@ -1581,90 +1727,214 @@
     }
   </style>
 </head>
-<body>
-  <a class="skip-link" href="#calculator-card">Skip to calculator</a>
-  <div class="wrap">
-    <header>
-      <img src="images/CD_Word.png" alt="CloseDose" class="header-wordmark" />
-      <button class="menu-btn" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="siteMenu" aria-label="Open menu">
-        <span class="label">Menu</span>
-        <span class="hamburger" aria-hidden="true"><span></span><span></span><span></span></span>
-    </header>
-    <main>
-      <div class="layout">
-        <section class="card account-card account-card--collapsed" aria-labelledby="account-heading" data-dashboard-card>
-          <div id="auth-card">
-  <h2>Sign in to CloseDose</h2>
-  <form id="auth-form">
-    <label>Email</label>
-    <input type="email" id="email" required />
+  <body>
+    <a class="skip-link" href="#calculator-card">Skip to calculator</a>
+    <div class="wrap">
+      <header>
+        <img src="images/CD_Word.png" alt="CloseDose" class="header-wordmark" />
+        <button class="menu-btn" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="siteMenu" aria-label="Open menu">
+          <span class="label">Menu</span>
+          <span class="hamburger" aria-hidden="true"><span></span><span></span><span></span></span>
+        </button>
+      </header>
+      <button
+        class="cappy-floating-btn"
+        type="button"
+        data-cappy-trigger
+        aria-controls="cappyLoginModal"
+        aria-expanded="false"
+        aria-label="Open Cappy! Medication Manager login">
+        <img src="images/cappy-login-icon.svg" alt="" />
+        <span class="visually-hidden">Open the Cappy! Medication Manager login</span>
+      </button>
+      <main>
+        <div class="layout">
+          <section class="card account-card account-card--collapsed" aria-labelledby="account-heading" data-dashboard-card>
+            <button
+              class="account-card__toggle cappy-login-trigger"
+              type="button"
+              data-cappy-trigger
+              aria-controls="cappyLoginModal"
+              aria-expanded="false">
+              <span class="cappy-login-icon" aria-hidden="true">
+                <img src="images/cappy-login-icon.svg" alt="" />
+              </span>
+              <span class="account-card__label">
+                <span class="account-card__eyebrow">Quick access</span>
+                <span class="account-card__title">Cappy! Medication Manager</span>
+              </span>
+              <span class="account-card__toggle-icon" aria-hidden="true">+</span>
+            </button>
+          </section>
 
-    <label>Password</label>
-    <input type="password" id="password" required minlength="6" />
+          <div class="account-modal" id="cappyLoginModal" role="dialog" aria-modal="true" aria-labelledby="cappyLoginTitle" hidden>
+            <div class="account-modal__dialog" tabindex="-1">
+              <button class="account-modal__close" type="button" data-cappy-close aria-label="Close login">×</button>
+              <div class="cappy-modal__header">
+                <span class="cappy-login-icon" aria-hidden="true">
+                  <img src="images/cappy-login-icon.svg" alt="" />
+                </span>
+                <div>
+                  <p class="cappy-modal__badge">Cappy! access</p>
+                  <h3 class="account-modal__title cappy-modal__title" id="cappyLoginTitle">Sign in to Cappy!</h3>
+                </div>
+              </div>
+              <p class="cappy-modal__intro">Enter your username and password to access your medication manager.</p>
+              <form id="auth-form" class="cappy-login-form">
+                <label for="cappy-username">Username or email</label>
+                <input type="text" id="cappy-username" name="username" autocomplete="username" required />
 
-    <button type="submit" id="sign-in-btn">Sign In</button>
-    <button type="button" id="sign-up-btn">Create Account</button>
-  </form>
+                <label for="cappy-password">Password</label>
+                <input type="password" id="cappy-password" name="password" autocomplete="current-password" required minlength="6" />
 
-  <p id="auth-message"></p>
-</div>
+                <div class="cappy-login-actions">
+                  <button type="submit" class="cappy-login-primary" id="sign-in-btn">Sign In</button>
+                  <div class="cappy-login-links">
+                    <a href="#" id="sign-up-btn">Sign up for Cappy!</a>
+                    <a href="#" id="forgot-password-btn">Forgot password?</a>
+                  </div>
+                </div>
+              </form>
+              <p id="auth-message" aria-live="polite"></p>
+            </div>
+          </div>
 
-<script type="module">
-  import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+          <script type="module">
+            import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-  const supabaseUrl = "https://tfmpgxwzgdzndbdzsftx.supabase.co";
-  const supabaseAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRmbXBneHd6Z2R6bmRiZHpzZnR4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQxNjg0MDcsImV4cCI6MjA3OTc0NDQwN30.X5f5YulGHxjJDFX2i7T3vDZXD3Gt9MY8SyvFybTHCKc";
-  const supabase = createClient(supabaseUrl, supabaseAnonKey);
+            const supabaseUrl = "https://tfmpgxwzgdzndbdzsftx.supabase.co";
+            const supabaseAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRmbXBneHd6Z2R6bmRiZHpzZnR4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQxNjg0MDcsImV4cCI6MjA3OTc0NDQwN30.X5f5YulGHxjJDFX2i7T3vDZXD3Gt9MY8SyvFybTHCKc";
+            const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
-  const emailInput = document.getElementById("email");
-  const passwordInput = document.getElementById("password");
-  const signInBtn = document.getElementById("sign-in-btn");
-  const signUpBtn = document.getElementById("sign-up-btn");
-  const form = document.getElementById("auth-form");
-  const msg = document.getElementById("auth-message");
+            const modal = document.getElementById("cappyLoginModal");
+            const modalDialog = modal?.querySelector(".account-modal__dialog");
+            const triggers = document.querySelectorAll('[data-cappy-trigger]');
+            const closeBtn = modal?.querySelector("[data-cappy-close]");
+            const usernameInput = document.getElementById("cappy-username");
+            const passwordInput = document.getElementById("cappy-password");
+            const signInBtn = document.getElementById("sign-in-btn");
+            const signUpBtn = document.getElementById("sign-up-btn");
+            const forgotPasswordBtn = document.getElementById("forgot-password-btn");
+            const form = document.getElementById("auth-form");
+            const msg = document.getElementById("auth-message");
+            let lastFocusedTrigger = null;
 
-  function setMessage(text, isError = false) {
-    msg.textContent = text;
-    msg.style.color = isError ? "red" : "green";
-  }
+            const setExpanded = (expanded) => {
+              triggers.forEach((trigger) => trigger.setAttribute("aria-expanded", expanded ? "true" : "false"));
+            };
 
-  signUpBtn.addEventListener("click", async () => {
-    const email = emailInput.value.trim();
-    const password = passwordInput.value.trim();
+            const setMessage = (text, isError = false) => {
+              msg.textContent = text;
+              msg.style.color = isError ? "#b42318" : "#1f8f7b";
+            };
 
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-    });
+            const openModal = (trigger = null) => {
+              if (!modal) return;
+              lastFocusedTrigger = trigger;
+              modal.hidden = false;
+              document.body.style.overflow = "hidden";
+              setExpanded(true);
+              modalDialog?.focus();
+            };
 
-    if (error) {
-      setMessage(error.message, true);
-    } else {
-      setMessage("Check your email to confirm your account.");
-    }
-  });
+            const closeModal = () => {
+              if (!modal) return;
+              modal.hidden = true;
+              document.body.style.overflow = "";
+              setExpanded(false);
+              if (lastFocusedTrigger instanceof HTMLElement) {
+                lastFocusedTrigger.focus();
+              }
+            };
 
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const email = emailInput.value.trim();
-    const password = passwordInput.value.trim();
+            triggers.forEach((trigger) => {
+              trigger.addEventListener("click", () => openModal(trigger));
+            });
 
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+            modal?.addEventListener("click", (event) => {
+              if (event.target === modal) {
+                closeModal();
+              }
+            });
 
-    if (error) {
-      setMessage(error.message, true);
-    } else {
-      setMessage("Signed in successfully.");
-      // redirect to app dashboard
-      window.location.href = "/dashboard.html";
-    }
-  });
-</script>
+            closeBtn?.addEventListener("click", closeModal);
 
-        <div class="calculator-widget-host" id="calculator-card" data-calculator-root></div>
+            document.addEventListener("keydown", (event) => {
+              if (event.key === "Escape" && modal && !modal.hidden) {
+                closeModal();
+              }
+            });
+
+            const getCredentials = () => {
+              const identifier = usernameInput?.value.trim() || "";
+              const password = passwordInput?.value.trim() || "";
+              return { identifier, password };
+            };
+
+            signUpBtn?.addEventListener("click", async (event) => {
+              event.preventDefault();
+              const { identifier, password } = getCredentials();
+              if (!identifier || !password) {
+                setMessage("Enter a username/email and password to sign up.", true);
+                return;
+              }
+              if (!identifier.includes("@")) {
+                setMessage("Please enter a valid email to create your account.", true);
+                return;
+              }
+              const { error } = await supabase.auth.signUp({
+                email: identifier,
+                password,
+              });
+
+              if (error) {
+                setMessage(error.message, true);
+              } else {
+                setMessage("Check your email to confirm your account.");
+              }
+            });
+
+            forgotPasswordBtn?.addEventListener("click", async (event) => {
+              event.preventDefault();
+              const identifier = usernameInput?.value.trim() || "";
+              if (!identifier || !identifier.includes("@")) {
+                setMessage("Enter your account email to reset your password.", true);
+                return;
+              }
+
+              const { error } = await supabase.auth.resetPasswordForEmail(identifier);
+              if (error) {
+                setMessage(error.message, true);
+              } else {
+                setMessage("Check your email for reset instructions.");
+              }
+            });
+
+            form?.addEventListener("submit", async (event) => {
+              event.preventDefault();
+              const { identifier, password } = getCredentials();
+
+              if (!identifier || !password) {
+                setMessage("Please enter both your username/email and password.", true);
+                return;
+              }
+
+              const { error } = await supabase.auth.signInWithPassword({
+                email: identifier,
+                password,
+              });
+
+              if (error) {
+                setMessage(error.message, true);
+              } else {
+                setMessage("Signed in successfully.");
+                closeModal();
+                window.location.href = "/dashboard.html";
+              }
+            });
+          </script>
+
+          <div class="calculator-widget-host" id="calculator-card" data-calculator-root></div>
         <section class="card donate-card" aria-labelledby="donate-heading">
           <div class="donate-content">
             <div class="donate-primary">
