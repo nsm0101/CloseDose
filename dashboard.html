@@ -19,7 +19,7 @@
     console.log("Logged in as:", user.email);
 
     // TODO: fetch profile/family data next
-    loadInitialData(user);
+    await loadInitialData(user);
   }
 
   async function loadInitialData(user) {
