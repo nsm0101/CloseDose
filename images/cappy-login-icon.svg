@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" role="img" aria-labelledby="title desc">
+  <title id="title">Cappy login icon</title>
+  <desc id="desc">A friendly capybara illustration inside teal rings.</desc>
+  <defs>
+    <linearGradient id="fur" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0%" stop-color="#c59a6b" />
+      <stop offset="100%" stop-color="#b17e45" />
+    </linearGradient>
+  </defs>
+  <circle cx="100" cy="100" r="98" fill="#0f9482" />
+  <circle cx="100" cy="100" r="86" fill="#f5f9f9" />
+  <circle cx="100" cy="100" r="74" fill="#0f9482" />
+  <g transform="translate(34 44)">
+    <ellipse cx="76" cy="64" rx="70" ry="56" fill="url(#fur)" stroke="#7a4f29" stroke-width="4" />
+    <ellipse cx="62" cy="78" rx="18" ry="14" fill="#f8f0e3" stroke="#7a4f29" stroke-width="3" />
+    <circle cx="70" cy="54" r="8" fill="#fff" stroke="#7a4f29" stroke-width="3" />
+    <circle cx="70" cy="54" r="3.8" fill="#0f2c2a" />
+    <circle cx="114" cy="64" r="10" fill="#f0e2cf" stroke="#7a4f29" stroke-width="4" />
+    <ellipse cx="40" cy="64" rx="16" ry="12" fill="#d8b07d" stroke="#7a4f29" stroke-width="3" />
+    <path d="M84 78c6 8 16 10 30 8" fill="none" stroke="#7a4f29" stroke-width="4" stroke-linecap="round" />
+    <circle cx="50" cy="74" r="4" fill="#7a4f29" />
+    <circle cx="90" cy="72" r="4" fill="#7a4f29" />
+    <path d="M48 44c10-10 36-20 54-10" fill="none" stroke="#7a4f29" stroke-width="4" stroke-linecap="round" />
+  </g>
+</svg>
