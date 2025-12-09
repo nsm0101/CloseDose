@@ -418,7 +418,10 @@
             <h2 id="family-members-title">Family members</h2>
             <small>Select who you want to review or update.</small>
           </div>
-          <small id="activeMemberHint">No member selected</small>
+          <div style="display:flex; align-items:center; gap:12px;">
+            <button type="button" id="addMemberBtn">Add member</button>
+            <small id="activeMemberHint">No member selected</small>
+          </div>
         </div>
         <div class="grid" id="familyGrid" role="list"></div>
       </section>
@@ -430,6 +433,7 @@
             <small>Age, weight, and current prescriptions are previewed here.</small>
           </div>
           <div class="detail-actions">
+            <button type="button" id="removeMemberBtn">Remove member</button>
             <button type="button" id="editMemberBtn">Edit member</button>
             <button type="button" id="syncBtn">Sync from Supabase</button>
           </div>
@@ -440,6 +444,18 @@
           <p><strong>Primary medication:</strong> <span data-field="med">—</span></p>
           <p><strong>Notes:</strong> <span data-field="notes">Select a member to view details.</span></p>
           <form class="edit-form" id="editForm" hidden>
+            <label>
+              Full name
+              <input type="text" id="nameInput" placeholder="e.g., Maya Patel" />
+            </label>
+            <label>
+              Role
+              <input type="text" id="roleInput" placeholder="e.g., Guardian or Patient" />
+            </label>
+            <label>
+              Age
+              <input type="text" id="ageInput" placeholder="e.g., 10" />
+            </label>
             <label>
               Weight
               <input type="text" id="weightInput" placeholder="e.g., 70 lb" />
@@ -499,8 +515,13 @@
     const userStatusEl = document.getElementById("userStatus");
     const signOutBtn = document.getElementById("signOutBtn");
     const editMemberBtn = document.getElementById("editMemberBtn");
+    const addMemberBtn = document.getElementById("addMemberBtn");
+    const removeMemberBtn = document.getElementById("removeMemberBtn");
     const syncBtn = document.getElementById("syncBtn");
     const editForm = document.getElementById("editForm");
+    const nameInput = document.getElementById("nameInput");
+    const roleInput = document.getElementById("roleInput");
+    const ageInput = document.getElementById("ageInput");
     const weightInput = document.getElementById("weightInput");
     const medInput = document.getElementById("medInput");
     const notesInput = document.getElementById("notesInput");
@@ -511,6 +532,8 @@
     let currentFamily = null;
     let activeMemberIndex = 0;
     let familyKey = "";
+
+    const colorPalette = ["#0d8f8a", "#0a74c1", "#d94f70", "#f3a847", "#8a5cf6", "#3a6fb0", "#28a745"];
 
     const defaultFamily = {
       name: "The CloseDose Household",
@@ -544,7 +567,8 @@
 
     async function loadInitialData(user) {
       const hydrated = await getFamilyData(user);
-      renderDashboard(hydrated);
+      activeMemberIndex = 0;
+      renderDashboard(hydrated, activeMemberIndex);
     }
 
     async function getFamilyData(user) {
@@ -635,7 +659,7 @@
       }
     });
 
-    function renderDashboard(family) {
+    function renderDashboard(family, preferredIndex = 0) {
       const nameEl = document.getElementById("familyName");
       const taglineEl = document.getElementById("familyTagline");
       const countEl = document.getElementById("memberCount");
@@ -646,8 +670,18 @@
       nameEl.textContent = family.name;
       taglineEl.textContent = family.tagline;
       countEl.textContent = `${family.members.length} member${family.members.length === 1 ? "" : "s"}`;
+      editMemberBtn.disabled = !family.members.length;
+      removeMemberBtn.disabled = !family.members.length;
 
       grid.innerHTML = "";
+
+      if (!family.members.length) {
+        activeHint.textContent = "Add a member to get started";
+        populateDetails({ age: "—", weight: "—", med: "—", notes: "No family members yet." });
+        editForm.hidden = true;
+        return;
+      }
+
       family.members.forEach((member, idx) => {
         const card = document.createElement("div");
         card.className = "member-card";
@@ -707,16 +741,28 @@
           }
         });
 
-        if (idx === 0) {
+        if (idx === preferredIndex) {
           setActiveMember(idx, card);
         }
 
         grid.appendChild(card);
       });
+
+      if (!grid.querySelector(".member-card.active")) {
+        setActiveMember(Math.min(preferredIndex, family.members.length - 1));
+      }
     }
 
     function setActiveMember(idx, cardRef) {
       const grid = document.getElementById("familyGrid");
+      if (!currentFamily?.members?.length) {
+        activeMemberIndex = 0;
+        document.getElementById("activeMemberHint").textContent = "Add a member to get started";
+        populateDetails({ age: "—", weight: "—", med: "—", notes: "No family members yet." });
+        return;
+      }
+
+      const boundedIdx = Math.max(0, Math.min(idx, currentFamily.members.length - 1));
       grid
         .querySelectorAll(".member-card")
         .forEach(btn => {
@@ -724,14 +770,14 @@
           btn.setAttribute("aria-pressed", "false");
         });
 
-      const targetCard = cardRef || grid.children[idx];
+      const targetCard = cardRef || grid.children[boundedIdx];
       if (targetCard) {
         targetCard.classList.add("active");
         targetCard.setAttribute("aria-pressed", "true");
       }
 
-      activeMemberIndex = idx;
-      const activeMember = currentFamily.members[idx];
+      activeMemberIndex = boundedIdx;
+      const activeMember = currentFamily.members[boundedIdx];
       document.getElementById("activeMemberHint").textContent = `${activeMember.name}'s profile active`;
       populateDetails(activeMember);
     }
@@ -744,6 +790,9 @@
       container.querySelector('[data-field="notes"]').textContent = member.notes || "Add notes to guide OTC dosing.";
 
       if (!editForm.hidden) {
+        nameInput.value = member.name || "";
+        roleInput.value = member.role || "";
+        ageInput.value = member.age || "";
         weightInput.value = member.weight || "";
         medInput.value = member.med || "";
         notesInput.value = member.notes || "";
@@ -754,6 +803,9 @@
       const member = currentFamily?.members?.[activeMemberIndex];
       if (!member) return;
 
+      nameInput.value = member.name || "";
+      roleInput.value = member.role || "";
+      ageInput.value = member.age || "";
       weightInput.value = member.weight || "";
       medInput.value = member.med || "";
       notesInput.value = member.notes || "";
@@ -771,6 +823,42 @@
       closeEditForm();
     });
 
+    addMemberBtn.addEventListener("click", () => {
+      if (!currentFamily) return;
+
+      const newIndex = currentFamily.members.length;
+      const color = colorPalette[newIndex % colorPalette.length];
+      const newMember = {
+        name: `New member ${newIndex + 1}`,
+        role: "Patient",
+        age: "—",
+        weight: "—",
+        med: "Add a medication",
+        notes: "",
+        color
+      };
+
+      currentFamily.members = [...currentFamily.members, newMember];
+      activeMemberIndex = newIndex;
+      renderDashboard({ ...currentFamily }, activeMemberIndex);
+      openEditForm();
+    });
+
+    removeMemberBtn.addEventListener("click", async () => {
+      if (!currentFamily?.members?.length || !currentUser) return;
+      const member = currentFamily.members[activeMemberIndex];
+      const confirmed = window.confirm(`Remove ${member.name} from your family?`);
+      if (!confirmed) return;
+
+      currentFamily.members.splice(activeMemberIndex, 1);
+      activeMemberIndex = Math.max(0, activeMemberIndex - 1);
+      renderDashboard({ ...currentFamily }, activeMemberIndex);
+      closeEditForm();
+      editStatus.textContent = "Saving…";
+      const success = await persistMemberUpdate();
+      editStatus.textContent = success ? "Member removed" : "Removal failed";
+    });
+
     editForm.addEventListener("submit", async event => {
       event.preventDefault();
       const member = currentFamily.members[activeMemberIndex];
@@ -778,6 +866,9 @@
 
       const updatedMember = {
         ...member,
+        name: nameInput.value.trim() || member.name,
+        role: roleInput.value.trim() || member.role,
+        age: ageInput.value.trim() || "—",
         weight: weightInput.value.trim() || "—",
         med: medInput.value.trim() || "Add a medication",
         notes: notesInput.value.trim()
@@ -800,6 +891,8 @@
           })
           .eq("id", currentUser.id);
 
+        const memberNames = currentFamily.members.map(member => member.name);
+
         const sharedPayload = currentFamily.members.map(member => ({
           family_id: familyKey,
           name: member.name,
@@ -811,22 +904,36 @@
           color: member.color
         }));
 
-        const familyUpsert = supabase.from("family_members").upsert(sharedPayload, {
-          onConflict: "family_id,name"
-        });
+        const familyUpsert = memberNames.length
+          ? supabase.from("family_members").upsert(sharedPayload, {
+              onConflict: "family_id,name"
+            })
+          : Promise.resolve({ error: null });
 
-        const [{ error: profileError }, { error: syncError }] = await Promise.all([
+        const deleteMissing = memberNames.length
+          ? supabase
+              .from("family_members")
+              .delete()
+              .eq("family_id", familyKey)
+              .not(
+                "name",
+                "in",
+                `(${memberNames.map(name => `"${name.replace(/"/g, '\\"')}"`).join(",")})`
+              )
+          : supabase.from("family_members").delete().eq("family_id", familyKey);
+
+        const [{ error: profileError }, { error: syncError }, { error: deleteError }] = await Promise.all([
           profileUpdate,
-          familyUpsert
+          familyUpsert,
+          deleteMissing
         ]);
 
-        if (profileError || syncError) {
-          console.error("Sync errors", { profileError, syncError });
+        if (profileError || syncError || deleteError) {
+          console.error("Sync errors", { profileError, syncError, deleteError });
           return false;
         }
 
-        renderDashboard({ ...currentFamily });
-        setActiveMember(activeMemberIndex);
+        renderDashboard({ ...currentFamily }, activeMemberIndex);
         return true;
       } catch (err) {
         console.error("Unexpected error syncing member", err);
@@ -839,7 +946,9 @@
       syncBtn.disabled = true;
       syncBtn.textContent = "Syncing…";
       const syncedFamily = await getFamilyData(currentUser);
-      renderDashboard(syncedFamily);
+      const nextIndex = Math.min(activeMemberIndex, Math.max(0, syncedFamily.members.length - 1));
+      activeMemberIndex = nextIndex;
+      renderDashboard(syncedFamily, activeMemberIndex);
       syncBtn.textContent = "Sync from Supabase";
       syncBtn.disabled = false;
     });
