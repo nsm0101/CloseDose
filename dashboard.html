@@ -1,42 +1,498 @@
-<script type="module">
-  import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-
-  const supabase = createClient("https://tfmpgxwzgdzndbdzsftx.supabase.co", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRmbXBneHd6Z2R6bmRiZHpzZnR4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQxNjg0MDcsImV4cCI6MjA3OTc0NDQwN30.X5f5YulGHxjJDFX2i7T3vDZXD3Gt9MY8SyvFybTHCKc");
-
-  async function requireAuth() {
-    const { data, error } = await supabase.auth.getSession();
-    if (error) {
-      console.error("Error retrieving auth session", error);
-      return;
-    }
-    if (!data.session) {
-      // Not logged in → send to login
-      window.location.href = "/login.html";
-      return;
-    }
-
-    const user = data.session.user;
-    console.log("Logged in as:", user.email);
-
-    // TODO: fetch profile/family data next
-    await loadInitialData(user);
-  }
-
-  async function loadInitialData(user) {
-    // Example: get or create profile row
-    const { data, error } = await supabase
-      .from("profiles")
-      .select("*")
-      .eq("id", user.id)
-      .single();
-
-    if (error && error.code !== "PGRST116") {
-      console.error("Error loading profile", error);
-      return;
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CloseDose Family Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0d2433;
+      --panel: rgba(255, 255, 255, 0.94);
+      --panel-soft: rgba(255, 255, 255, 0.82);
+      --accent: #0d8f8a;
+      --accent-strong: #0a706c;
+      --muted: rgba(15, 46, 68, 0.72);
+      --border: rgba(12, 44, 72, 0.18);
+      --shadow: 0 20px 50px rgba(0, 0, 0, 0.24);
+      --radius-lg: 28px;
+      --radius-md: 18px;
+      --gear-size: 56px;
     }
 
-    // Render UI...
-  }
+    * { box-sizing: border-box; }
 
-  requireAuth();
-</script>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+      background: radial-gradient(circle at 20% 20%, rgba(13, 143, 138, 0.12), transparent 28%),
+        radial-gradient(circle at 80% 10%, rgba(13, 143, 138, 0.10), transparent 32%),
+        radial-gradient(circle at 50% 90%, rgba(13, 143, 138, 0.14), transparent 36%),
+        url('./images/bg4k.png');
+      background-size: cover;
+      background-attachment: fixed;
+      color: #0b2136;
+      display: flex;
+      flex-direction: column;
+      padding: clamp(18px, 3vw, 32px);
+    }
+
+    .shell {
+      width: min(1200px, 100%);
+      margin: 0 auto;
+      display: grid;
+      gap: clamp(18px, 3vw, 28px);
+    }
+
+    header {
+      background: var(--panel);
+      border-radius: var(--radius-lg);
+      padding: clamp(18px, 3vw, 28px);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .family-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .family-name {
+      margin: 0;
+      font-size: clamp(1.8rem, 3vw, 2.4rem);
+      letter-spacing: 0.04em;
+      color: #0a1d2b;
+    }
+
+    .family-subhead {
+      margin: 0;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .cta-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .pill {
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      padding: 10px 16px;
+      background: linear-gradient(135deg, rgba(13, 143, 138, 0.14), rgba(13, 143, 138, 0.08));
+      color: #0b2136;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 10px 24px rgba(13, 143, 138, 0.18);
+    }
+
+    main {
+      display: grid;
+      gap: clamp(16px, 2vw, 24px);
+    }
+
+    .panel {
+      background: var(--panel-soft);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      padding: clamp(16px, 2vw, 24px);
+    }
+
+    .panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+
+    .panel h2 {
+      margin: 0;
+      font-size: 1.3rem;
+      letter-spacing: 0.02em;
+      color: #0a1d2b;
+    }
+
+    .panel small { color: var(--muted); }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: clamp(12px, 2vw, 18px);
+    }
+
+    .member-card {
+      position: relative;
+      padding: 16px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      background: white;
+      box-shadow: 0 12px 26px rgba(15, 46, 68, 0.14);
+      cursor: pointer;
+      transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+    }
+
+    .member-card:hover,
+    .member-card:focus-visible {
+      transform: translateY(-2px);
+      box-shadow: 0 16px 30px rgba(13, 143, 138, 0.22);
+      border-color: rgba(13, 143, 138, 0.5);
+      outline: none;
+    }
+
+    .member-card.active {
+      border-color: var(--accent);
+      box-shadow: 0 18px 36px rgba(13, 143, 138, 0.28);
+    }
+
+    .avatar {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+      color: white;
+      margin-bottom: 10px;
+      background: var(--accent);
+      box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.6);
+    }
+
+    .member-name { margin: 0; font-size: 1.05rem; }
+    .member-role { margin: 2px 0 0; color: var(--muted); font-weight: 600; }
+
+    .tags { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+
+    .tag {
+      background: rgba(13, 143, 138, 0.12);
+      color: #0a1d2b;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-weight: 700;
+      border: 1px solid rgba(13, 143, 138, 0.22);
+      font-size: 0.85rem;
+    }
+
+    .detail {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 12px;
+      padding: 14px;
+      border-radius: var(--radius-md);
+      background: white;
+      border: 1px solid var(--border);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6);
+    }
+
+    .detail p { margin: 6px 0; color: var(--muted); }
+    .detail strong { color: #0a1d2b; }
+
+    .settings-btn {
+      position: fixed;
+      bottom: clamp(12px, 4vw, 22px);
+      left: clamp(12px, 4vw, 22px);
+      width: var(--gear-size);
+      height: var(--gear-size);
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(222,239,246,0.92));
+      box-shadow: 0 14px 30px rgba(0,0,0,0.16);
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      transition: transform 0.16s ease, box-shadow 0.16s ease;
+      z-index: 10;
+    }
+
+    .settings-btn:hover,
+    .settings-btn:focus-visible {
+      transform: scale(1.03);
+      box-shadow: 0 18px 36px rgba(13, 143, 138, 0.26);
+      outline: none;
+    }
+
+    .settings-drawer {
+      position: fixed;
+      bottom: calc(var(--gear-size) + 18px);
+      left: clamp(12px, 4vw, 22px);
+      width: min(360px, 90vw);
+      background: rgba(10, 29, 43, 0.96);
+      color: white;
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.38);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      transform: translateY(12px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+    }
+
+    .settings-drawer.open {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+
+    .settings-drawer h3 { margin: 0 0 8px; }
+    .settings-drawer p { margin: 0 0 10px; color: rgba(255,255,255,0.76); }
+
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .switch {
+      width: 46px;
+      height: 26px;
+      background: rgba(255,255,255,0.18);
+      border-radius: 999px;
+      position: relative;
+      border: 1px solid rgba(255,255,255,0.2);
+      transition: background 0.18s ease;
+    }
+
+    .switch::after {
+      content: '';
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 22px;
+      height: 22px;
+      background: white;
+      border-radius: 50%;
+      transition: transform 0.18s ease;
+      box-shadow: 0 6px 12px rgba(0,0,0,0.25);
+    }
+
+    .switch.on { background: #14cba8; }
+    .switch.on::after { transform: translateX(20px); }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header>
+      <div class="family-meta">
+        <p class="family-subhead">Post-login dashboard</p>
+        <h1 class="family-name" id="familyName">Family Group</h1>
+        <p class="family-subhead" id="familyTagline">Choose a member to view dosing guidance and medications.</p>
+      </div>
+      <div class="cta-row">
+        <span class="pill" id="memberCount">0 members</span>
+        <span class="pill">Secure &amp; synced</span>
+      </div>
+    </header>
+
+    <main>
+      <section class="panel" aria-labelledby="family-members-title">
+        <div class="panel-header">
+          <div>
+            <h2 id="family-members-title">Family members</h2>
+            <small>Select who you want to review or update.</small>
+          </div>
+          <small id="activeMemberHint">No member selected</small>
+        </div>
+        <div class="grid" id="familyGrid" role="list"></div>
+      </section>
+
+      <section class="panel" aria-labelledby="member-details-title">
+        <div class="panel-header">
+          <div>
+            <h2 id="member-details-title">Member details</h2>
+            <small>Age, weight, and current prescriptions are previewed here.</small>
+          </div>
+        </div>
+        <div class="detail" id="memberDetails">
+          <p><strong>Age:</strong> <span data-field="age">—</span></p>
+          <p><strong>Weight:</strong> <span data-field="weight">—</span></p>
+          <p><strong>Primary medication:</strong> <span data-field="med">—</span></p>
+          <p><strong>Notes:</strong> <span data-field="notes">Select a member to view details.</span></p>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <button class="settings-btn" id="settingsBtn" aria-label="Open dashboard settings">
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#0a1d2b" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="3" />
+      <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h.06A1.65 1.65 0 0 0 9 3.09V3a2 2 0 1 1 4 0v.09c0 .7.4 1.34 1.02 1.63h.06a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06c-.43.43-.56 1.08-.33 1.64l.02.06c.3.61.94 1 1.64 1H21a2 2 0 1 1 0 4h-.09c-.7 0-1.34.4-1.63 1.02z" />
+    </svg>
+  </button>
+
+  <div class="settings-drawer" id="settingsDrawer" aria-live="polite">
+    <h3>Dashboard settings</h3>
+    <p>Toggle quick personalization options for each family member.</p>
+    <div class="toggle-row">
+      <span>Highlight prescriptions</span>
+      <span class="switch on" role="presentation"></span>
+    </div>
+    <div class="toggle-row">
+      <span>Show OTC dosing helper</span>
+      <span class="switch on" role="presentation"></span>
+    </div>
+    <div class="toggle-row" style="border-bottom:none;">
+      <span>Compact family grid</span>
+      <span class="switch" role="presentation"></span>
+    </div>
+  </div>
+
+  <script type="module">
+    import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+
+    const supabase = createClient(
+      "https://tfmpgxwzgdzndbdzsftx.supabase.co",
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRmbXBneHd6Z2R6bmRiZHpzZnR4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQxNjg0MDcsImV4cCI6MjA3OTc0NDQwN30.X5f5YulGHxjJDFX2i7T3vDZXD3Gt9MY8SyvFybTHCKc"
+    );
+
+    const defaultFamily = {
+      name: "The CloseDose Household",
+      tagline: "Everyone’s dosing guidance in one place.",
+      members: [
+        { name: "Alex", role: "Guardian", age: "34", weight: "—", med: "Keeps family updated", notes: "Primary account owner", color: "#0d8f8a" },
+        { name: "Maya", role: "Patient", age: "10", weight: "70 lb", med: "Cetirizine", notes: "Seasonal allergies", color: "#0a74c1" },
+        { name: "Leo", role: "Patient", age: "6", weight: "45 lb", med: "Albuterol", notes: "Use spacer as instructed", color: "#d94f70" },
+        { name: "Ella", role: "Patient", age: "2", weight: "24 lb", med: "Acetaminophen", notes: "Use weight-based dosing", color: "#f3a847" }
+      ]
+    };
+
+    async function requireAuth() {
+      const { data, error } = await supabase.auth.getSession();
+      if (error) {
+        console.error("Error retrieving auth session", error);
+        return;
+      }
+      if (!data.session) {
+        window.location.href = "/login.html";
+        return;
+      }
+
+      const user = data.session.user;
+      await loadInitialData(user);
+    }
+
+    async function loadInitialData(user) {
+      const profile = await supabase
+        .from("profiles")
+        .select("family_name, member_profiles")
+        .eq("id", user.id)
+        .single();
+
+      if (profile.error && profile.error.code !== "PGRST116") {
+        console.error("Error loading profile", profile.error);
+      }
+
+      const familyName = profile.data?.family_name || user.user_metadata?.family_name;
+      const members = profile.data?.member_profiles;
+
+      const hydrated = {
+        name: familyName || defaultFamily.name,
+        tagline: defaultFamily.tagline,
+        members: Array.isArray(members) && members.length ? members : defaultFamily.members
+      };
+
+      renderDashboard(hydrated);
+    }
+
+    function renderDashboard(family) {
+      const nameEl = document.getElementById("familyName");
+      const taglineEl = document.getElementById("familyTagline");
+      const countEl = document.getElementById("memberCount");
+      const grid = document.getElementById("familyGrid");
+      const activeHint = document.getElementById("activeMemberHint");
+
+      nameEl.textContent = family.name;
+      taglineEl.textContent = family.tagline;
+      countEl.textContent = `${family.members.length} member${family.members.length === 1 ? "" : "s"}`;
+
+      grid.innerHTML = "";
+      family.members.forEach((member, idx) => {
+        const card = document.createElement("button");
+        card.className = "member-card";
+        card.type = "button";
+        card.setAttribute("role", "listitem");
+        card.setAttribute("aria-pressed", "false");
+
+        const avatar = document.createElement("div");
+        avatar.className = "avatar";
+        avatar.style.background = member.color || "var(--accent)";
+        avatar.textContent = member.name.slice(0, 2).toUpperCase();
+
+        const name = document.createElement("p");
+        name.className = "member-name";
+        name.textContent = member.name;
+
+        const role = document.createElement("p");
+        role.className = "member-role";
+        role.textContent = member.role;
+
+        const tags = document.createElement("div");
+        tags.className = "tags";
+
+        const ageTag = document.createElement("span");
+        ageTag.className = "tag";
+        ageTag.textContent = `Age ${member.age ?? "—"}`;
+
+        const weightTag = document.createElement("span");
+        weightTag.className = "tag";
+        weightTag.textContent = member.weight ? `${member.weight}` : "Add weight";
+
+        tags.append(ageTag, weightTag);
+        card.append(avatar, name, role, tags);
+
+        card.addEventListener("click", () => {
+          document
+            .querySelectorAll(".member-card")
+            .forEach(btn => btn.classList.remove("active"));
+          card.classList.add("active");
+          card.setAttribute("aria-pressed", "true");
+          activeHint.textContent = `${member.name}'s profile active`;
+          populateDetails(member);
+        });
+
+        if (idx === 0) {
+          card.classList.add("active");
+          card.setAttribute("aria-pressed", "true");
+          activeHint.textContent = `${member.name}'s profile active`;
+          populateDetails(member);
+        }
+
+        grid.appendChild(card);
+      });
+    }
+
+    function populateDetails(member) {
+      const container = document.getElementById("memberDetails");
+      container.querySelector('[data-field="age"]').textContent = member.age ?? "—";
+      container.querySelector('[data-field="weight"]').textContent = member.weight ?? "—";
+      container.querySelector('[data-field="med"]').textContent = member.med ?? "Add a medication";
+      container.querySelector('[data-field="notes"]').textContent = member.notes || "Add notes to guide OTC dosing.";
+    }
+
+    const settingsBtn = document.getElementById("settingsBtn");
+    const settingsDrawer = document.getElementById("settingsDrawer");
+    settingsBtn.addEventListener("click", () => {
+      settingsDrawer.classList.toggle("open");
+    });
+
+    requireAuth();
+  </script>
+</body>
+</html>
