@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>CloseDose – Pediatric Medication Dose Calculator</title>
+  <title>CloseDose – Medication Manager</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
@@ -1593,90 +1593,77 @@
     <main>
       <div class="layout">
         <section class="card account-card account-card--collapsed" aria-labelledby="account-heading" data-dashboard-card>
-          <button
-            class="account-card__toggle"
-            type="button"
-            aria-expanded="false"
-            aria-controls="accountPanel"
-            data-dashboard-toggle>
-            <span class="account-card__label">
-              <span class="account-card__eyebrow">CloseDose Dashboard</span>
-              <span class="account-card__title" id="account-heading">CloseDose Dashboard</span>
-            </span>
-            <span class="account-card__toggle-icon" aria-hidden="true">+</span>
-          </button>
-          <div class="account-card__panel" id="accountPanel" data-dashboard-panel hidden>
-            <p class="account-card__intro">
-              Save calculator preferences, dosing notes, and future family sharing tools inside your personal dashboard.
-              Everything stays on this device until you opt into cloud sync.
-            </p>
-            <p id="accountStatus" class="account-status" role="status" aria-live="polite" hidden></p>
-            <div class="account-session" data-auth-view="logged-in" hidden>
-              <p class="account-session__meta">
-                Signed in as <strong id="accountUserBadge"></strong>. Your information stays on this browser unless you clear it.
-              </p>
-              <div class="account-session__actions">
-                <button type="button" id="logoutBtn">Log out</button>
-              </div>
-            </div>
-            <div class="account-card__actions" data-auth-view="logged-out">
-              <button type="button" class="account-card__action account-card__action--secondary" data-open-modal="login">
-                Log in
-              </button>
-              <button type="button" class="account-card__action" data-open-modal="signup">
-                Create an account
-              </button>
-            </div>
-          </div>
-        </section>
-        <div class="account-modal" data-modal="signup" role="dialog" aria-modal="true" aria-labelledby="signupTitle" hidden>
-          <div class="account-modal__dialog" tabindex="-1">
-            <button class="account-modal__close" type="button" data-close-modal aria-label="Close sign up form">
-              &times;
-            </button>
-            <h3 class="account-modal__title" id="signupTitle">Create your CloseDose account</h3>
-            <p class="account-card__intro">
-              Your secure dashboard lives right in this browser. We hash your password locally before it is saved.
-            </p>
-            <form id="signupForm" class="account-form" autocomplete="off" novalidate>
-              <label for="signupName">
-                Full name
-                <input id="signupName" name="name" type="text" minlength="2" required />
-              </label>
-              <label for="signupEmail">
-                Email address
-                <input id="signupEmail" name="email" type="email" required />
-              </label>
-              <label for="signupPassword">
-                Create password
-                <input id="signupPassword" name="password" type="password" minlength="8" required />
-              </label>
-              <small>Use a unique passphrase; you will need it to unlock encrypted family data later.</small>
-              <button type="submit">Sign up</button>
-            </form>
-          </div>
-        </div>
-        <div class="account-modal" data-modal="login" role="dialog" aria-modal="true" aria-labelledby="loginTitle" hidden>
-          <div class="account-modal__dialog" tabindex="-1">
-            <button class="account-modal__close" type="button" data-close-modal aria-label="Close login form">
-              &times;
-            </button>
-            <h3 class="account-modal__title" id="loginTitle">Log into CloseDose</h3>
-            <p class="account-card__intro">Welcome back! Sign in to access your saved dashboard data on this device.</p>
-            <form id="loginForm" class="account-form" autocomplete="off" novalidate>
-              <label for="loginEmail">
-                Email address
-                <input id="loginEmail" name="email" type="email" required />
-              </label>
-              <label for="loginPassword">
-                Password
-                <input id="loginPassword" name="password" type="password" minlength="8" required />
-              </label>
-              <small>Accounts run locally today; future sync support will require this login.</small>
-              <button type="submit">Log in</button>
-            </form>
-          </div>
-        </div>
+          <div id="auth-card">
+  <h2>Sign in to CloseDose</h2>
+  <form id="auth-form">
+    <label>Email</label>
+    <input type="email" id="email" required />
+
+    <label>Password</label>
+    <input type="password" id="password" required minlength="6" />
+
+    <button type="submit" id="sign-in-btn">Sign In</button>
+    <button type="button" id="sign-up-btn">Create Account</button>
+  </form>
+
+  <p id="auth-message"></p>
+</div>
+
+<script type="module">
+  import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+
+  const supabaseUrl = "https://tfmpgxwzgdzndbdzsftx.supabase.co";
+  const supabaseAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRmbXBneHd6Z2R6bmRiZHpzZnR4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQxNjg0MDcsImV4cCI6MjA3OTc0NDQwN30.X5f5YulGHxjJDFX2i7T3vDZXD3Gt9MY8SyvFybTHCKc";
+  const supabase = createClient(supabaseUrl, supabaseAnonKey);
+
+  const emailInput = document.getElementById("email");
+  const passwordInput = document.getElementById("password");
+  const signInBtn = document.getElementById("sign-in-btn");
+  const signUpBtn = document.getElementById("sign-up-btn");
+  const form = document.getElementById("auth-form");
+  const msg = document.getElementById("auth-message");
+
+  function setMessage(text, isError = false) {
+    msg.textContent = text;
+    msg.style.color = isError ? "red" : "green";
+  }
+
+  signUpBtn.addEventListener("click", async () => {
+    const email = emailInput.value.trim();
+    const password = passwordInput.value.trim();
+
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+    });
+
+    if (error) {
+      setMessage(error.message, true);
+    } else {
+      setMessage("Check your email to confirm your account.");
+    }
+  });
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const email = emailInput.value.trim();
+    const password = passwordInput.value.trim();
+
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    if (error) {
+      setMessage(error.message, true);
+    } else {
+      setMessage("Signed in successfully.");
+      // redirect to app dashboard
+      window.location.href = "/dashboard.html";
+    }
+  });
+</script>
+
         <div class="calculator-widget-host" id="calculator-card" data-calculator-root></div>
         <section class="card donate-card" aria-labelledby="donate-heading">
           <div class="donate-content">
