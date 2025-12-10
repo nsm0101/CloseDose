@@ -1063,8 +1063,28 @@
         return;
       }
 
-      userFamilies = await fetchUserFamilies(currentUser);
-      activeMembership = pickFamilyMembership(createdFamily?.id);
+      const { data: membershipRows, error: membershipError } = await supabase
+        .from("user_families")
+        .upsert(
+          {
+            family_id: createdFamily.id,
+            user_id: currentUser.id,
+            role: "admin"
+          },
+          { onConflict: "user_id,family_id" }
+        )
+        .select("family_id, role, family:family_id(id, name, description)");
+
+      if (membershipError) {
+        console.error("Error linking user to new family", membershipError);
+        familyStatus.textContent = "Family creation failed.";
+        return;
+      }
+
+      userFamilies =
+        (Array.isArray(membershipRows) && membershipRows.length ? membershipRows : null) ||
+        (await fetchUserFamilies(currentUser));
+      activeMembership = pickFamilyMembership(createdFamily?.id) || membershipRows?.[0] || null;
       familyKey = createdFamily?.id || familyKey;
 
       if (familyKeyInput) {
@@ -1157,9 +1177,72 @@
 
     async function persistMemberUpdate() {
       try {
+        if (!currentUser) return false;
+
         if (!familyKey) {
-          console.warn("Cannot sync family members without a family id");
-          return false;
+          const fallbackMembership = pickFamilyMembership(userFamilies?.[0]?.family_id);
+
+          if (fallbackMembership?.family_id) {
+            familyKey = fallbackMembership.family_id;
+            activeMembership = fallbackMembership;
+            if (familyKeyInput) {
+              familyKeyInput.value = familyKey;
+            }
+          } else {
+            const safeName = (familyNameInput?.value || currentFamily?.name || defaultFamily.name).trim();
+            familyStatus.textContent = "Creating family…";
+
+            const { data: createdFamily, error: createError } = await supabase
+              .from("families")
+              .insert([
+                {
+                  name: safeName,
+                  description: "Created from CloseDose dashboard",
+                  created_by_user_id: currentUser.id
+                }
+              ])
+              .select("id, name, description")
+              .single();
+
+            if (createError) {
+              console.warn("Cannot sync family members without a family id", createError);
+              familyStatus.textContent = "Family creation failed.";
+              return false;
+            }
+
+            const { error: membershipError } = await supabase
+              .from("user_families")
+              .upsert(
+                {
+                  family_id: createdFamily.id,
+                  user_id: currentUser.id,
+                  role: "admin"
+                },
+                { onConflict: "user_id,family_id" }
+              );
+
+            if (membershipError) {
+              console.error("Error linking new family", membershipError);
+              familyStatus.textContent = "Family creation failed.";
+              return false;
+            }
+
+            familyKey = createdFamily.id;
+            activeMembership = { family_id: createdFamily.id, role: "admin", family: createdFamily };
+            userFamilies = await fetchUserFamilies(currentUser);
+
+            if (familyKeyInput) {
+              familyKeyInput.value = familyKey;
+            }
+            if (familyNameInput) {
+              familyNameInput.value = createdFamily.name;
+            }
+
+            await updateUserMetadata({
+              family_id: createdFamily.id,
+              family_name: createdFamily.name
+            });
+          }
         }
 
         const profileUpdate = supabase
