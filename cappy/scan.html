@@ -6,6 +6,49 @@
     <title>Cappy!</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <style>
+        :root {
+            --brand-green: #24A687;
+            --text-body: #1f2a37;
+            --muted: #6b7280;
+            --surface: #ffffff;
+            --chip-bg: #f3f4f6;
+            --chip-text: #111827;
+        }
+
+        body {
+            margin: 0;
+            font-family: system-ui, -apple-system, sans-serif;
+            background: #f8fafc;
+            color: var(--text-body);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .page-shell {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+
+        .scan-status {
+            max-width: 540px;
+            width: 100%;
+            background: var(--surface);
+            border-radius: 20px;
+            padding: 18px;
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.12);
+            text-align: center;
+            line-height: 1.5;
+        }
+
+        .scan-status strong {
+            color: var(--brand-green);
+        }
+
         /* Overlay styles */
         .med-overlay-backdrop {
             position: fixed;
@@ -15,6 +58,7 @@
             align-items: center;
             justify-content: center;
             z-index: 9999;
+            padding: 16px;
         }
 
         .med-overlay-backdrop.hidden {
@@ -25,8 +69,8 @@
             background: #ffffff;
             border-radius: 18px;
             padding: 20px;
-            max-width: 420px;
-            width: 90%;
+            max-width: 520px;
+            width: 100%;
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.18);
             display: flex;
             gap: 16px;
@@ -108,10 +152,163 @@
             background: #F1F3F5;
             color: #333;
         }
+
+        .family-section {
+            margin-top: 14px;
+            padding-top: 10px;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .family-section h3 {
+            margin: 0 0 8px;
+            font-size: 14px;
+            color: #1f2937;
+        }
+
+        .chip-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .member-chip {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 2px;
+            padding: 10px 12px;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+            background: var(--chip-bg);
+            color: var(--chip-text);
+            font-size: 13px;
+            cursor: pointer;
+            min-width: 120px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
+        }
+
+        .member-chip .member-name {
+            font-weight: 700;
+        }
+
+        .member-chip .member-meta {
+            font-size: 12px;
+            color: var(--muted);
+        }
+
+        .member-chip:hover,
+        .member-chip:focus {
+            border-color: var(--brand-green);
+            outline: none;
+        }
+
+        .helper-text {
+            margin-top: 6px;
+            font-size: 12px;
+            color: var(--muted);
+        }
+
+        .modal-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.55);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            padding: 16px;
+        }
+
+        .modal-backdrop.hidden {
+            display: none;
+        }
+
+        .modal-card {
+            background: #fff;
+            border-radius: 14px;
+            padding: 16px;
+            max-width: 420px;
+            width: 100%;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+            font-family: system-ui, -apple-system, sans-serif;
+        }
+
+        .modal-card h3 {
+            margin: 0 0 8px;
+            font-size: 16px;
+        }
+
+        .modal-card p {
+            margin: 4px 0 10px;
+            color: var(--text-body);
+            line-height: 1.4;
+        }
+
+        .modal-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .btn {
+            padding: 10px 14px;
+            border-radius: 12px;
+            border: 1px solid transparent;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: var(--brand-green);
+            color: white;
+            border-color: var(--brand-green);
+        }
+
+        .btn-secondary {
+            background: #f3f4f6;
+            color: #111827;
+            border-color: #e5e7eb;
+        }
+
+        .input-row {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .input-row input,
+        .input-row select {
+            padding: 10px;
+            border-radius: 10px;
+            border: 1px solid #d1d5db;
+            font-size: 14px;
+            flex: 1;
+        }
+
+        @media (max-width: 600px) {
+            .med-overlay-card {
+                flex-direction: column;
+                max-height: 90vh;
+                overflow-y: auto;
+            }
+
+            .med-overlay-image {
+                flex-direction: row;
+            }
+
+            .member-chip {
+                min-width: 140px;
+            }
+        }
     </style>
 </head>
 
 <body>
+    <div class="page-shell">
+        <div id="scan-status" class="scan-status">Waiting for NFC tag...</div>
+    </div>
+
     <!-- Overlay container (hidden until token is processed) -->
     <div id="med-overlay-backdrop" class="med-overlay-backdrop hidden">
         <div class="med-overlay-card">
@@ -128,9 +325,34 @@
                 <p id="med-concentration"></p>
                 <p id="med-category"></p>
                 <p id="med-warning" class="med-warning"></p>
+                <div id="family-section" class="family-section">
+                    <h3>Who is this for?</h3>
+                    <div id="family-member-list" class="chip-list"></div>
+                    <p id="family-note" class="helper-text"></p>
+                </div>
                 <button id="med-open-calculator-btn">Use for dosing</button>
                 <button id="med-overlay-close-btn" class="secondary">Close</button>
             </div>
+        </div>
+    </div>
+
+    <div id="weight-modal" class="modal-backdrop hidden">
+        <div class="modal-card">
+            <h3 id="weight-modal-title"></h3>
+            <p id="weight-modal-message"></p>
+            <div id="weight-form" class="hidden">
+                <div class="input-row">
+                    <input type="number" id="weight-input" placeholder="Weight" min="0" step="0.1" />
+                    <select id="weight-unit">
+                        <option value="kg">kg</option>
+                        <option value="lb">lb</option>
+                    </select>
+                </div>
+                <div class="input-row">
+                    <input type="date" id="weight-date" />
+                </div>
+            </div>
+            <div id="weight-modal-actions" class="modal-actions"></div>
         </div>
     </div>
 
