@@ -582,6 +582,8 @@
     let currentFamily = null;
     let activeMemberIndex = 0;
     let familyKey = "";
+    let userFamilies = [];
+    let activeMembership = null;
 
     const colorPalette = ["#0d8f8a", "#0a74c1", "#d94f70", "#f3a847", "#8a5cf6", "#3a6fb0", "#28a745"];
 
@@ -629,24 +631,47 @@
 
       const user = data.session.user;
       currentUser = user;
-      familyKey = getFamilyKey(user);
+      userFamilies = await fetchUserFamilies(user);
+      activeMembership = pickFamilyMembership(getFamilyKey(user));
+      familyKey = activeMembership?.family_id || getFamilyKey(user);
       renderUserBadge(user);
       if (familyKeyInput) {
         familyKeyInput.value = familyKey;
       }
       if (familyNameInput) {
-        familyNameInput.value = user.user_metadata?.family_name || defaultFamily.name;
+        familyNameInput.value =
+          activeMembership?.family?.name || user.user_metadata?.family_name || defaultFamily.name;
       }
-      await loadInitialData(user);
+      await loadInitialData(user, activeMembership);
     }
 
-    async function loadInitialData(user) {
-      const hydrated = await getFamilyData(user);
+    async function loadInitialData(user, membership) {
+      const hydrated = await getFamilyData(user, membership);
       activeMemberIndex = 0;
       renderDashboard(hydrated, activeMemberIndex);
     }
 
-    async function getFamilyData(user) {
+    async function fetchUserFamilies(user) {
+      const { data, error } = await supabase
+        .from("user_families")
+        .select("family_id, role, family:family_id(id, name, description)")
+        .eq("user_id", user.id);
+
+      if (error) {
+        console.error("Error loading memberships", error);
+        return [];
+      }
+
+      return data ?? [];
+    }
+
+    function pickFamilyMembership(preferredId) {
+      if (!userFamilies?.length) return null;
+      const match = preferredId ? userFamilies.find(entry => entry.family_id === preferredId) : null;
+      return match || userFamilies[0];
+    }
+
+    async function getFamilyData(user, membership) {
       const { data: profile, error } = await supabase
         .from("profiles")
         .select("id, family_name, member_profiles")
@@ -659,10 +684,18 @@
 
       const hydratedProfile = profile ?? (await seedProfile(user));
 
-      const { data: sharedMembers, error: familyError } = await supabase
-        .from("family_members")
-        .select("name, role, age, weight, med, notes, color")
-        .eq("family_id", familyKey);
+      const activeFamilyId = membership?.family_id || familyKey || getFamilyKey(user);
+      familyKey = activeFamilyId;
+      if (familyKeyInput) {
+        familyKeyInput.value = familyKey;
+      }
+
+      const { data: sharedMembers, error: familyError } = activeFamilyId
+        ? await supabase
+            .from("family_members")
+            .select("name, role, age, weight, med, notes, color")
+            .eq("family_id", activeFamilyId)
+        : { data: [], error: null };
 
       if (familyError) {
         console.error("Error loading synced family members", familyError);
@@ -680,8 +713,15 @@
           }))
         : [];
 
+      const resolvedName =
+        membership?.family?.name || hydratedProfile?.family_name || user.user_metadata?.family_name || defaultFamily.name;
+
+      if (familyNameInput && resolvedName) {
+        familyNameInput.value = resolvedName;
+      }
+
       return {
-        name: hydratedProfile?.family_name || user.user_metadata?.family_name || defaultFamily.name,
+        name: resolvedName,
         tagline: defaultFamily.tagline,
         members: normalizedShared.length
           ? normalizedShared
@@ -920,12 +960,46 @@
         return;
       }
 
-      const safeName = (targetName || "").trim() || defaultFamily.name;
       familyStatus.textContent = label || "Syncing family…";
-      familyKey = safeKey;
 
+      const { data: familyRecord, error: familyLookupError } = await supabase
+        .from("families")
+        .select("id, name, description")
+        .eq("id", safeKey)
+        .maybeSingle();
+
+      if (familyLookupError) {
+        console.error("Error looking up family", familyLookupError);
+        familyStatus.textContent = "Family lookup failed.";
+        return;
+      }
+
+      if (!familyRecord) {
+        familyStatus.textContent = "Family not found. Check the ID and try again.";
+        return;
+      }
+
+      const { error: membershipError } = await supabase
+        .from("user_families")
+        .upsert({
+          family_id: safeKey,
+          user_id: currentUser.id,
+          role: "member"
+        }, { onConflict: "user_id,family_id" });
+
+      if (membershipError) {
+        console.error("Error joining family", membershipError);
+        familyStatus.textContent = "Could not join family.";
+        return;
+      }
+
+      userFamilies = await fetchUserFamilies(currentUser);
+      activeMembership = pickFamilyMembership(safeKey);
+      familyKey = activeMembership?.family_id || safeKey;
+
+      const safeName = familyRecord.name || (targetName || "").trim() || defaultFamily.name;
       const { error: metadataError } = await updateUserMetadata({
-        family_id: safeKey,
+        family_id: familyKey,
         family_name: safeName
       });
 
@@ -947,13 +1021,13 @@
 
       const hydratedUser = {
         ...currentUser,
-        user_metadata: { ...(currentUser?.user_metadata || {}), family_id: safeKey, family_name: safeName }
+        user_metadata: { ...(currentUser?.user_metadata || {}), family_id: familyKey, family_name: safeName }
       };
 
-      const syncedFamily = await getFamilyData(hydratedUser);
+      const syncedFamily = await getFamilyData(hydratedUser, activeMembership);
       activeMemberIndex = Math.min(activeMemberIndex, Math.max(0, syncedFamily.members.length - 1));
       renderDashboard(syncedFamily, activeMemberIndex);
-      familyStatus.textContent = "Family synced";
+      familyStatus.textContent = label || "Family synced";
     }
 
     joinFamilyBtn?.addEventListener("click", () => {
@@ -961,11 +1035,66 @@
       switchFamily(familyKeyInput.value, familyNameInput.value, "Joining family…");
     });
 
-    createFamilyBtn?.addEventListener("click", () => {
-      if (!familyKeyInput || !familyNameInput) return;
-      const newKey = generateFamilyId();
-      familyKeyInput.value = newKey;
-      switchFamily(newKey, familyNameInput.value || defaultFamily.name, "Created and joined family");
+    createFamilyBtn?.addEventListener("click", async () => {
+      if (!familyNameInput) return;
+      if (!currentUser) {
+        familyStatus.textContent = "You need to be signed in to create a family.";
+        return;
+      }
+
+      const safeName = familyNameInput.value.trim() || defaultFamily.name;
+      familyStatus.textContent = "Creating family…";
+
+      const { data: createdFamily, error } = await supabase
+        .from("families")
+        .insert([
+          {
+            name: safeName,
+            description: "Created from CloseDose dashboard",
+            created_by_user_id: currentUser.id
+          }
+        ])
+        .select("id, name, description")
+        .single();
+
+      if (error) {
+        console.error("Error creating family", error);
+        familyStatus.textContent = "Family creation failed.";
+        return;
+      }
+
+      userFamilies = await fetchUserFamilies(currentUser);
+      activeMembership = pickFamilyMembership(createdFamily?.id);
+      familyKey = createdFamily?.id || familyKey;
+
+      if (familyKeyInput) {
+        familyKeyInput.value = familyKey;
+      }
+      familyNameInput.value = createdFamily?.name || safeName;
+
+      await updateUserMetadata({
+        family_id: familyKey,
+        family_name: createdFamily?.name || safeName
+      });
+
+      const hydratedUser = {
+        ...currentUser,
+        user_metadata: {
+          ...(currentUser?.user_metadata || {}),
+          family_id: familyKey,
+          family_name: createdFamily?.name || safeName
+        }
+      };
+
+      const syncedFamily = await getFamilyData(hydratedUser, activeMembership || {
+        family_id: familyKey,
+        role: "admin",
+        family: createdFamily
+      });
+
+      activeMemberIndex = Math.min(activeMemberIndex, Math.max(0, syncedFamily.members.length - 1));
+      renderDashboard(syncedFamily, activeMemberIndex);
+      familyStatus.textContent = "Created and joined family";
     });
 
     addMemberBtn.addEventListener("click", () => {
@@ -1028,6 +1157,11 @@
 
     async function persistMemberUpdate() {
       try {
+        if (!familyKey) {
+          console.warn("Cannot sync family members without a family id");
+          return false;
+        }
+
         const profileUpdate = supabase
           .from("profiles")
           .update({
@@ -1095,7 +1229,7 @@
       if (!currentUser) return;
       syncBtn.disabled = true;
       syncBtn.textContent = "Syncing…";
-      const syncedFamily = await getFamilyData(currentUser);
+      const syncedFamily = await getFamilyData(currentUser, activeMembership);
       const nextIndex = Math.min(activeMemberIndex, Math.max(0, syncedFamily.members.length - 1));
       activeMemberIndex = nextIndex;
       renderDashboard(syncedFamily, activeMemberIndex);
