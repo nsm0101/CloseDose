@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CloseDose – Shared dosing card</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --font-base: 16px;
+      --font-scale: 1;
+      --font-body: "Nunito", system-ui, -apple-system, "Segoe UI", sans-serif;
+      --font-dyslexic: "Atkinson Hyperlegible", "Nunito", system-ui, -apple-system, "Segoe UI", sans-serif;
+      --color-bg: #f5f9f9;
+      --color-surface: #ffffff;
+      --color-text: #0f2c2a;
+      --color-text-muted: #124643;
+      --color-border: #0f2c2a;
+      --card-border: 3px solid var(--color-border);
+    }
+
+    html {
+      font-size: calc(var(--font-base) * var(--font-scale));
+    }
+
+    html[data-text="lg"] { --font-scale: 1.1; }
+    html[data-text="xl"] { --font-scale: 1.25; }
+    html[data-font="dyslexic"] body { font-family: var(--font-dyslexic); }
+
+    html[data-calm="on"] {
+      --color-bg: #0b0b0b;
+      --color-surface: #111111;
+      --color-text: #ffffff;
+      --color-text-muted: #f1f1f1;
+      --color-border: #ffffff;
+    }
+
+    body {
+      margin: 0;
+      font-family: var(--font-body);
+      background: var(--color-bg);
+      color: var(--color-text);
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+    }
+
+    .card {
+      width: min(720px, 100%);
+      background: var(--color-surface);
+      border: var(--card-border);
+      border-radius: 24px;
+      padding: 24px;
+      display: grid;
+      gap: 16px;
+    }
+
+    h1, h2, h3, p { margin: 0; }
+
+    .details-grid {
+      display: grid;
+      gap: 12px;
+    }
+
+    .details-grid div {
+      border-radius: 16px;
+      border: 2px solid rgba(15, 44, 42, 0.18);
+      padding: 12px;
+      background: rgba(18, 58, 55, 0.06);
+      font-weight: 700;
+    }
+
+    .status {
+      font-weight: 700;
+      color: var(--color-text-muted);
+    }
+
+    .seek-care {
+      border-radius: 16px;
+      border: 2px solid rgba(220, 38, 38, 0.4);
+      padding: 12px;
+      background: rgba(220, 38, 38, 0.1);
+      color: #8b1111;
+      font-weight: 700;
+    }
+
+    @media print {
+      body { background: #ffffff; }
+      .card { border: 1px solid #000; box-shadow: none; }
+    }
+  </style>
+</head>
+<body>
+  <main class="card" aria-live="polite">
+    <h1 data-i18n="share.title">Shared dosing card</h1>
+    <p class="status" id="share-status">Loading…</p>
+    <div class="details-grid" id="share-details" hidden>
+      <div><span data-i18n="share.details.child">Child</span>: <strong id="share-child"></strong></div>
+      <div><span data-i18n="share.details.weight">Weight</span>: <strong id="share-weight"></strong> <span class="status" id="share-weight-date"></span></div>
+      <div><span data-i18n="share.details.medication">Medication</span>: <strong id="share-med"></strong></div>
+      <div><span data-i18n="share.details.concentration">Concentration</span>: <strong id="share-concentration"></strong></div>
+      <div><span data-i18n="share.details.doseRange">Dose range</span>: <strong id="share-range"></strong></div>
+      <div><span data-i18n="share.details.selectedDose">Selected dose</span>: <strong id="share-dose"></strong></div>
+      <div><span data-i18n="share.details.lastGiven">Last given</span>: <strong id="share-last"></strong></div>
+      <div><span data-i18n="share.details.nextEligible">Next eligible</span>: <strong id="share-next"></strong></div>
+      <div><span data-i18n="share.details.warnings">Key warnings</span>: <strong id="share-warnings"></strong></div>
+    </div>
+    <p class="status" id="share-expiration"></p>
+    <div class="seek-care">
+      <strong data-i18n="timeline.seek.title">When to seek care</strong>
+      <p data-i18n="timeline.seek.line5">Call 911 for emergencies. If you’re worried, it’s okay to get help.</p>
+    </div>
+    <p data-i18n="share.disclaimer">This card does not replace medical advice.</p>
+  </main>
+  <script type="module">
+    import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+    import { loadAccessibilityPrefs, applyAccessibilityPrefs } from "../accessibility.mjs";
+    import { initI18n, applyTranslations, t } from "../i18n.mjs";
+
+    const prefs = loadAccessibilityPrefs();
+    applyAccessibilityPrefs(prefs);
+    await initI18n(prefs.lang);
+    applyTranslations(document);
+
+    const status = document.getElementById("share-status");
+    const details = document.getElementById("share-details");
+    const expiration = document.getElementById("share-expiration");
+
+    status.textContent = t("share.loading");
+
+    const tokenFromPath = window.location.pathname.split("/share/")[1];
+    const token = tokenFromPath?.split("/").pop() || new URLSearchParams(window.location.search).get("token");
+
+    if (!navigator.onLine) {
+      status.textContent = t("share.offline");
+    } else if (!token) {
+      status.textContent = t("share.notFound");
+    } else {
+      const supabaseUrl = "https://tfmpgxwzgdzndbdzsftx.supabase.co";
+      const supabaseAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRmbXBneHd6Z2R6bmRiZHpzZnR4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQxNjg0MDcsImV4cCI6MjA3OTc0NDQwN30.X5f5YulGHxjJDFX2i7T3vDZXD3Gt9MY8SyvFybTHCKc";
+      const supabase = createClient(supabaseUrl, supabaseAnonKey);
+
+      const { data, error } = await supabase
+        .from("shared_cards")
+        .select("snapshot, expires_at")
+        .eq("token", token)
+        .single();
+
+      if (error || !data) {
+        status.textContent = t("share.notFound");
+      } else if (new Date(data.expires_at).getTime() < Date.now()) {
+        status.textContent = t("share.expired");
+      } else {
+        const snapshot = data.snapshot || {};
+        details.hidden = false;
+        status.textContent = "";
+        document.getElementById("share-child").textContent = snapshot.childName || "—";
+        document.getElementById("share-weight").textContent = snapshot.weight || "—";
+        const weightDateEl = document.getElementById("share-weight-date");
+        if (weightDateEl) {
+          weightDateEl.textContent = snapshot.weightUpdatedAt
+            ? `(${t("share.weightUpdated", { date: new Date(snapshot.weightUpdatedAt).toLocaleDateString(prefs.lang) })})`
+            : "";
+        }
+        document.getElementById("share-med").textContent = snapshot.medication || "—";
+        document.getElementById("share-concentration").textContent = snapshot.concentration || "—";
+        document.getElementById("share-range").textContent = snapshot.doseRange || "—";
+        document.getElementById("share-dose").textContent = snapshot.selectedDose || "—";
+        document.getElementById("share-last").textContent = snapshot.lastGiven || "—";
+        document.getElementById("share-next").textContent = snapshot.nextEligible || "—";
+        document.getElementById("share-warnings").textContent = snapshot.warnings?.join(" ") || "—";
+        expiration.textContent = t("share.expires", {
+          expires: new Date(data.expires_at).toLocaleString(prefs.lang),
+        });
+      }
+    }
+  </script>
+</body>
+</html>

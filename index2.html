@@ -7,6 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet" />
   <link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16.png">
   <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32.png">
   <link rel="icon" type="image/png" sizes="192x192" href="images/favicon-192.png">
@@ -39,15 +40,31 @@
   <script async src="https://widgets.givebutter.com/latest.umd.cjs?acct=r8SGiZ0RhFRoIkXu&p=other"></script>
   <style>
     :root {
+      --font-base: 16px;
+      --font-scale: 1;
+      --font-body: "Nunito", system-ui, -apple-system, "Segoe UI", sans-serif;
+      --font-dyslexic: "Atkinson Hyperlegible", "Nunito", system-ui, -apple-system, "Segoe UI", sans-serif;
       --teal-400: #24a687;
       --teal-500: #1f8f7b;
       --teal-600: #123a37;
       --ink-900: #0f2c2a;
       --ink-700: #124643;
-      --bg: #f5f9f9;
+      --color-bg: #f5f9f9;
+      --color-surface: #ffffff;
+      --color-surface-soft: #f0faf6;
+      --color-surface-muted: rgba(255, 255, 255, 0.92);
       --white: #ffffff;
-      --card-bg: rgba(255, 255, 255, 0.92);
-      --card-border: 3px solid var(--ink-900);
+      --color-text: var(--ink-900);
+      --color-text-muted: var(--ink-700);
+      --color-border: var(--ink-900);
+      --color-outline: #222222;
+      --color-action: var(--teal-500);
+      --color-action-hover: var(--teal-400);
+      --color-warning: rgba(255, 149, 0, 0.18);
+      --color-warning-strong: rgba(220, 38, 38, 0.2);
+      --color-danger: #8b1111;
+      --card-bg: var(--color-surface-muted);
+      --card-border: 3px solid var(--color-border);
       --card-radius: 26px;
       --inner-radius: 18px;
       --shadow-card: 0 6px 0 rgba(15, 44, 42, 0.18);
@@ -58,6 +75,12 @@
       --footer-muted: #666666;
       --footer-link: #0369a1;
       --footer-border: #e5e7eb;
+      --tap-target: 48px;
+      --spacing-unit: 1;
+    }
+
+    html {
+      font-size: calc(var(--font-base) * var(--font-scale));
     }
 
     *,
@@ -68,14 +91,73 @@
 
     body {
       margin: 0;
-      font-family: "Nunito", system-ui, -apple-system, "Segoe UI", sans-serif;
-      background: var(--bg) url("images/bg4k.png");
+      font-family: var(--font-body);
+      background: var(--color-bg) url("images/bg4k.png");
       background-size: cover;
       background-attachment: fixed;
-      color: var(--ink-900);
+      color: var(--color-text);
       min-height: 100vh;
       display: flex;
       flex-direction: column;
+    }
+
+    html[data-font="dyslexic"] body {
+      font-family: var(--font-dyslexic);
+    }
+
+    html[data-text="sm"] {
+      --font-scale: 0.95;
+    }
+
+    html[data-text="md"] {
+      --font-scale: 1;
+    }
+
+    html[data-text="lg"] {
+      --font-scale: 1.1;
+    }
+
+    html[data-text="xl"] {
+      --font-scale: 1.25;
+    }
+
+    html[data-calm="on"] {
+      --color-bg: #0b0b0b;
+      --color-surface: #111111;
+      --color-surface-soft: #151515;
+      --color-surface-muted: rgba(17, 17, 17, 0.98);
+      --color-text: #ffffff;
+      --color-text-muted: #f1f1f1;
+      --color-border: #ffffff;
+      --color-action: #ffdd57;
+      --color-action-hover: #ffe98a;
+      --teal-400: #ffdd57;
+      --teal-500: #f4c63d;
+      --teal-600: #ffe98a;
+      --shadow-card: none;
+      --shadow-btn: none;
+      --tap-target: 56px;
+      --spacing-unit: 1.1;
+    }
+
+    html[data-calm="on"] body {
+      background: var(--color-bg);
+    }
+
+    html[data-motion="reduced"] *,
+    html[data-motion="reduced"] *::before,
+    html[data-motion="reduced"] *::after {
+      animation: none !important;
+      transition: none !important;
+      scroll-behavior: auto !important;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        animation: none !important;
+        transition: none !important;
+        scroll-behavior: auto !important;
+      }
     }
 
     .visually-hidden {
@@ -113,7 +195,7 @@
       padding: 10px 16px;
       border-radius: 999px;
       background: none;
-      border: 3px solid var(--ink-900);
+      border: 3px solid var(--color-border);
     }
 
     .wrap {
@@ -149,8 +231,8 @@
       appearance: none;
       border: var(--card-border);
       border-radius: 50%;
-      background: var(--white);
-      color: var(--ink-900);
+      background: var(--color-surface);
+      color: var(--color-text);
       font-weight: 900;
       letter-spacing: 0.14em;
       text-transform: uppercase;
@@ -193,7 +275,7 @@
       right: 0;
       height: 3px;
       border-radius: 999px;
-      background: var(--ink-900);
+      background: var(--color-text);
       transition: background 0.12s ease;
     }
 
@@ -1319,8 +1401,8 @@
     }
 
     .form-group {
-      background: #f0faf6;
-      border: 3px solid var(--ink-900);
+      background: var(--color-surface-soft);
+      border: 3px solid var(--color-border);
       border-radius: var(--inner-radius);
       padding: clamp(22px, 4vw, 30px);
       display: grid;
@@ -1346,9 +1428,9 @@
     }
 
     .segmented button {
-      border: 3px solid var(--ink-900);
+      border: 3px solid var(--color-border);
       border-radius: 18px;
-      background: var(--white);
+      background: var(--color-surface);
       font-weight: 800;
       font-size: clamp(0.85rem, 2.6vw, 1.05rem);
       letter-spacing: 0.05em;
@@ -1361,7 +1443,7 @@
 
     .segmented button[aria-pressed="true"] {
       background: var(--teal-400);
-      color: var(--white);
+      color: var(--color-surface);
       transform: translateY(2px);
       box-shadow: 0 4px 0 rgba(15, 44, 42, 0.7);
     }
@@ -1369,13 +1451,13 @@
     .segmented button:focus-visible,
     .unit-toggle button:focus-visible,
     .action button:focus-visible {
-      outline: 3px solid #222;
+      outline: 3px solid var(--color-outline);
       outline-offset: 3px;
     }
 
     .hello-box {
-      background: var(--white);
-      border: 3px solid var(--ink-900);
+      background: var(--color-surface);
+      border: 3px solid var(--color-border);
       border-radius: 18px;
       padding: 18px;
       font-size: 1rem;
@@ -1397,16 +1479,16 @@
 
     .weight-input input[type="number"] {
       width: min(100%, 220px);
-      border: 3px solid var(--ink-900);
+      border: 3px solid var(--color-border);
       border-radius: 18px;
       padding: 14px 18px;
       font-size: 1.1rem;
       font-weight: 700;
       text-align: center;
-      font-family: "Nunito", sans-serif;
+      font-family: var(--font-body);
       box-shadow: 0 6px 0 rgba(15, 44, 42, 0.6);
-      background: var(--white);
-      color: var(--ink-900);
+      background: var(--color-surface);
+      color: var(--color-text);
       appearance: textfield;
       -moz-appearance: textfield;
     }
@@ -1424,9 +1506,9 @@
     }
 
     .unit-toggle button {
-      border: 3px solid var(--ink-900);
+      border: 3px solid var(--color-border);
       border-radius: 18px;
-      background: var(--white);
+      background: var(--color-surface);
       font-weight: 800;
       font-size: 1rem;
       padding: 12px;
@@ -1446,10 +1528,10 @@
 
     .action button {
       width: 100%;
-      border: 3px solid var(--ink-900);
+      border: 3px solid var(--color-border);
       border-radius: 18px;
-      background: var(--teal-500);
-      color: var(--white);
+      background: var(--color-action);
+      color: var(--color-surface);
       font-weight: 900;
       font-size: clamp(1.05rem, 3.4vw, 1.4rem);
       letter-spacing: 0.2em;
@@ -1461,7 +1543,7 @@
     }
 
     .action button:hover:not(:disabled) {
-      background: var(--teal-400);
+      background: var(--color-action-hover);
     }
 
     .action button:disabled {
@@ -1483,7 +1565,7 @@
       font-weight: 600;
       line-height: 1.6;
       text-align: left;
-      background: rgba(255, 255, 255, 0.96);
+      background: var(--color-surface-muted);
       color: var(--teal-600);
       box-shadow: var(--shadow-card);
     }
@@ -1543,7 +1625,7 @@
     }
 
     .result-card {
-      background: rgba(255, 255, 255, 0.96);
+      background: var(--color-surface-muted);
       border: var(--card-border);
       border-radius: 22px;
       box-shadow: var(--shadow-card);
@@ -1597,15 +1679,15 @@
     }
 
     .warning-card--orange {
-      background: rgba(255, 149, 0, 0.18);
+      background: var(--color-warning);
       border-color: rgba(255, 149, 0, 0.45);
       color: #b35a00;
     }
 
     .warning-card--red-strong {
-      background: rgba(220, 38, 38, 0.2);
+      background: var(--color-warning-strong);
       border-color: rgba(220, 38, 38, 0.55);
-      color: #8b1111;
+      color: var(--color-danger);
       text-transform: uppercase;
       letter-spacing: 0.06em;
     }
@@ -1757,7 +1839,7 @@
 
     .menu-panel {
       width: min(420px, 92vw);
-      background: #fff;
+      background: var(--color-surface);
       border: var(--card-border);
       border-radius: 24px;
       box-shadow: 0 6px 0 var(--ink-900);
@@ -1790,8 +1872,8 @@
     }
 
     .menu-links a[aria-current="page"] {
-      background: #e4f4f0;
-      border: 2px solid var(--ink-900);
+      background: var(--color-surface-soft);
+      border: 2px solid var(--color-border);
     }
 
     .close-menu {
@@ -1813,6 +1895,490 @@
       outline-offset: 3px;
     }
 
+    .accessibility-btn {
+      appearance: none;
+      border: var(--card-border);
+      border-radius: 999px;
+      background: var(--color-surface);
+      color: var(--color-text);
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 10px 16px;
+      min-height: var(--tap-target);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      box-shadow: var(--shadow-btn);
+      position: fixed;
+      top: clamp(16px, 3vw, 32px);
+      right: clamp(86px, 12vw, 140px);
+      z-index: 1201;
+    }
+
+    .accessibility-btn:focus-visible {
+      outline: 3px solid var(--color-outline);
+      outline-offset: 3px;
+    }
+
+    .accessibility-sheet {
+      position: fixed;
+      inset: 0;
+      z-index: 1400;
+      display: grid;
+      place-items: center;
+      background: rgba(0, 0, 0, 0.45);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+    }
+
+    .accessibility-sheet.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .accessibility-dialog {
+      width: min(520px, 92vw);
+      max-height: 90vh;
+      overflow: auto;
+      background: var(--color-surface);
+      border: var(--card-border);
+      border-radius: 24px;
+      padding: 24px;
+      display: grid;
+      gap: 16px;
+      box-shadow: var(--shadow-card);
+    }
+
+    .accessibility-dialog h2 {
+      margin: 0;
+      font-size: 1.3rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .accessibility-dialog p {
+      margin: 0;
+      color: var(--color-text-muted);
+    }
+
+    .accessibility-list {
+      display: grid;
+      gap: 14px;
+    }
+
+    .accessibility-row {
+      display: grid;
+      gap: 6px;
+      padding: 12px 14px;
+      border-radius: 18px;
+      border: 2px solid rgba(15, 44, 42, 0.18);
+      background: var(--color-surface-soft);
+    }
+
+    .accessibility-row label {
+      font-weight: 700;
+    }
+
+    .accessibility-row small {
+      color: var(--color-text-muted);
+      font-weight: 600;
+    }
+
+    .accessibility-row input[type="checkbox"],
+    .accessibility-row select {
+      min-height: var(--tap-target);
+      font-size: 1rem;
+      padding: 6px 10px;
+      border-radius: 14px;
+      border: 2px solid var(--color-border);
+      background: var(--color-surface);
+    }
+
+    .accessibility-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+    }
+
+    .accessibility-close {
+      border: var(--card-border);
+      border-radius: 999px;
+      padding: 10px 18px;
+      background: var(--color-action);
+      color: var(--color-surface);
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      cursor: pointer;
+      min-height: var(--tap-target);
+    }
+
+    .accessibility-close:focus-visible {
+      outline: 3px solid var(--color-outline);
+      outline-offset: 3px;
+    }
+
+    .flow-card {
+      display: grid;
+      gap: calc(18px * var(--spacing-unit));
+    }
+
+    .flow-header {
+      text-align: center;
+      display: grid;
+      gap: 8px;
+    }
+
+    .flow-header-top {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .lang-toggle {
+      border: var(--card-border);
+      border-radius: 999px;
+      padding: 8px 14px;
+      background: var(--color-surface);
+      color: var(--color-text);
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      cursor: pointer;
+      min-height: var(--tap-target);
+    }
+
+    .lang-toggle:focus-visible {
+      outline: 3px solid var(--color-outline);
+      outline-offset: 3px;
+    }
+
+    .flow-header h2 {
+      margin: 0;
+      font-size: clamp(1.6rem, 3.6vw, 2.3rem);
+    }
+
+    .flow-header p {
+      margin: 0;
+      color: var(--color-text-muted);
+    }
+
+    .icon-guidance {
+      display: none;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      text-align: center;
+    }
+
+    html[data-icon="on"] .icon-guidance {
+      display: grid;
+    }
+
+    .icon-guidance .icon-step {
+      padding: 12px;
+      border-radius: 16px;
+      border: 2px solid rgba(15, 44, 42, 0.2);
+      background: var(--color-surface);
+      font-weight: 700;
+    }
+
+    .icon-guidance .icon-step span {
+      display: block;
+      font-size: 1.5rem;
+    }
+
+    .flow-steps {
+      display: grid;
+      gap: calc(16px * var(--spacing-unit));
+    }
+
+    .flow-step {
+      display: none;
+      background: var(--color-surface);
+      border: var(--card-border);
+      border-radius: var(--inner-radius);
+      padding: calc(20px * var(--spacing-unit));
+      box-shadow: var(--shadow-card);
+    }
+
+    .flow-step.active {
+      display: grid;
+      gap: 16px;
+    }
+
+    .flow-step h3 {
+      margin: 0;
+      font-size: 1.2rem;
+    }
+
+    .flow-fields {
+      display: grid;
+      gap: calc(12px * var(--spacing-unit));
+    }
+
+    .flow-fields label {
+      font-weight: 700;
+    }
+
+    .flow-fields input,
+    .flow-fields select,
+    .flow-fields button {
+      min-height: var(--tap-target);
+      border-radius: 16px;
+      border: 2px solid var(--color-border);
+      padding: 10px 12px;
+      font-size: 1rem;
+      font-family: inherit;
+      background: var(--color-surface);
+      color: var(--color-text);
+    }
+
+    .flow-actions {
+      display: flex;
+      gap: 12px;
+      justify-content: space-between;
+    }
+
+    .flow-actions button {
+      flex: 1;
+      border: var(--card-border);
+      border-radius: 18px;
+      background: var(--color-action);
+      color: var(--color-surface);
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      min-height: var(--tap-target);
+      cursor: pointer;
+    }
+
+    .flow-actions button.secondary {
+      background: var(--color-surface);
+      color: var(--color-text);
+    }
+
+    .secondary {
+      background: var(--color-surface);
+      color: var(--color-text);
+    }
+
+    .dose-focus {
+      border-radius: 20px;
+      border: 2px dashed rgba(15, 44, 42, 0.3);
+      padding: 16px;
+      display: grid;
+      gap: 10px;
+      text-align: center;
+      transform-origin: center top;
+      transition: transform 0.2s ease;
+    }
+
+    .dose-focus.zoomed {
+      transform: scale(1.75);
+    }
+
+    .dose-amount {
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 900;
+    }
+
+    .dose-range {
+      font-weight: 700;
+      color: var(--color-text-muted);
+    }
+
+    .night-zoom-btn {
+      position: sticky;
+      bottom: 16px;
+      justify-self: end;
+      border: var(--card-border);
+      border-radius: 999px;
+      padding: 10px 16px;
+      min-height: var(--tap-target);
+      background: var(--color-action);
+      color: var(--color-surface);
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+
+    .voice-row {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .mic-button {
+      border: var(--card-border);
+      border-radius: 999px;
+      background: var(--color-surface);
+      min-height: var(--tap-target);
+      min-width: var(--tap-target);
+      font-size: 1.2rem;
+      cursor: pointer;
+    }
+
+    .mic-status {
+      font-weight: 700;
+      color: var(--color-text-muted);
+    }
+
+    .confirm-button {
+      width: 100%;
+      border: var(--card-border);
+      border-radius: 18px;
+      background: var(--color-action);
+      color: var(--color-surface);
+      font-weight: 900;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 18px;
+      min-height: var(--tap-target);
+      cursor: pointer;
+    }
+
+    .result-summary {
+      display: grid;
+      gap: 12px;
+      border-radius: 18px;
+      border: 2px solid rgba(15, 44, 42, 0.18);
+      padding: 16px;
+      background: var(--color-surface-soft);
+    }
+
+    .result-summary h4 {
+      margin: 0;
+    }
+
+    .timeline-card {
+      display: grid;
+      gap: calc(12px * var(--spacing-unit));
+      background: var(--color-surface);
+      border: var(--card-border);
+      border-radius: var(--inner-radius);
+      padding: calc(18px * var(--spacing-unit));
+    }
+
+    .timeline-strip {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+    }
+
+    .timeline-strip div {
+      border-radius: 14px;
+      border: 2px solid rgba(15, 44, 42, 0.18);
+      padding: 12px;
+      background: var(--color-surface-soft);
+      font-weight: 700;
+    }
+
+    .seek-care-banner {
+      position: sticky;
+      bottom: 12px;
+      background: var(--color-surface);
+      border: 3px solid var(--color-border);
+      border-radius: 18px;
+      padding: 12px 14px;
+      box-shadow: var(--shadow-card);
+    }
+
+    .seek-care-banner button {
+      width: 100%;
+      border: none;
+      background: transparent;
+      text-align: left;
+      font-weight: 800;
+      cursor: pointer;
+      padding: 6px 0;
+      color: var(--color-text);
+    }
+
+    .seek-care-details {
+      margin-top: 8px;
+      display: none;
+      font-weight: 600;
+      color: var(--color-text-muted);
+    }
+
+    .seek-care-banner[aria-expanded="true"] .seek-care-details {
+      display: grid;
+      gap: 6px;
+    }
+
+    .share-actions {
+      display: grid;
+      gap: 10px;
+    }
+
+    .share-actions button,
+    .share-actions a {
+      border: var(--card-border);
+      border-radius: 999px;
+      padding: 10px 16px;
+      min-height: var(--tap-target);
+      background: var(--color-action);
+      color: var(--color-surface);
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      text-decoration: none;
+      text-align: center;
+    }
+
+    .share-actions button.secondary {
+      background: var(--color-surface);
+      color: var(--color-text);
+    }
+
+    .flow-alert {
+      padding: 12px 14px;
+      border-radius: 16px;
+      border: 2px solid rgba(220, 38, 38, 0.4);
+      background: rgba(220, 38, 38, 0.12);
+      color: var(--color-danger);
+      font-weight: 700;
+    }
+
+    .flow-alert[data-variant="soft"] {
+      border-color: rgba(255, 149, 0, 0.4);
+      background: rgba(255, 149, 0, 0.18);
+      color: #8b4b00;
+    }
+
+    @media (min-width: 900px) {
+      .seek-care-banner {
+        position: sticky;
+        top: 24px;
+        bottom: auto;
+        max-width: 320px;
+        justify-self: end;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .accessibility-dialog {
+        width: 100%;
+        border-radius: 24px 24px 0 0;
+        margin-top: auto;
+        max-height: 80vh;
+      }
+      .accessibility-sheet {
+        place-items: end center;
+      }
+      .night-zoom-btn {
+        position: fixed;
+        right: 16px;
+        bottom: 20px;
+      }
+    }
+
     @media (max-width: 720px) {
       .segmented-buttons {
         grid-template-columns: 1fr;
@@ -1828,6 +2394,9 @@
     <div class="wrap">
       <header>
         <img src="images/CD_Word.png" alt="CloseDose" class="header-wordmark" />
+        <button class="accessibility-btn" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="accessibilitySheet" data-accessibility-open data-i18n="accessibility.title">
+          Accessibility
+        </button>
         <button class="menu-btn" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="siteMenu" aria-label="Open menu">
           <span class="label">Menu</span>
           <span class="hamburger" aria-hidden="true"><span></span><span></span><span></span></span>
@@ -1843,6 +2412,55 @@
         <img src="images/CAPPY.png" alt="" />
         <span class="visually-hidden">Open the Cappy! Medication Manager login</span>
       </button>
+      <div class="accessibility-sheet" id="accessibilitySheet" role="dialog" aria-modal="true" aria-labelledby="accessibilityHeading" hidden>
+        <div class="accessibility-dialog" tabindex="-1">
+          <h2 id="accessibilityHeading" data-i18n="accessibility.title">Accessibility</h2>
+          <p data-i18n="accessibility.subtitle">Make the screen calmer, clearer, and easier to use.</p>
+          <div class="accessibility-list">
+            <div class="accessibility-row">
+              <label for="toggle-calm" data-i18n="accessibility.calm.label">Calm Mode</label>
+              <small data-i18n="accessibility.calm.help">Ultra-high contrast, bigger tap targets, no decorative motion.</small>
+              <input id="toggle-calm" type="checkbox" />
+            </div>
+            <div class="accessibility-row">
+              <label for="toggle-text" data-i18n="accessibility.text.label">Larger text</label>
+              <small data-i18n="accessibility.text.help">Choose the text size that feels easy to read.</small>
+              <select id="toggle-text">
+                <option value="sm" data-i18n="accessibility.text.option.sm">Small</option>
+                <option value="md" data-i18n="accessibility.text.option.md">Medium</option>
+                <option value="lg" data-i18n="accessibility.text.option.lg">Large</option>
+                <option value="xl" data-i18n="accessibility.text.option.xl">Extra large</option>
+              </select>
+            </div>
+            <div class="accessibility-row">
+              <label for="toggle-motion" data-i18n="accessibility.motion.label">Reduce motion</label>
+              <small data-i18n="accessibility.motion.help">Turn off animation and auto-scrolling.</small>
+              <input id="toggle-motion" type="checkbox" />
+            </div>
+            <div class="accessibility-row">
+              <label for="toggle-font" data-i18n="accessibility.font.label">Dyslexia-friendly font</label>
+              <small data-i18n="accessibility.font.help">Switch to a clearer letter shape.</small>
+              <input id="toggle-font" type="checkbox" />
+            </div>
+            <div class="accessibility-row">
+              <label for="toggle-icon" data-i18n="accessibility.icon.label">Icon-first guidance</label>
+              <small data-i18n="accessibility.icon.help">Show a simple 3-step visual guide.</small>
+              <input id="toggle-icon" type="checkbox" />
+            </div>
+            <div class="accessibility-row">
+              <label for="toggle-lang" data-i18n="accessibility.lang.label">Language</label>
+              <small data-i18n="accessibility.lang.help">Switch the app language instantly.</small>
+              <select id="toggle-lang">
+                <option value="en" data-i18n="accessibility.lang.option.en">English</option>
+                <option value="es" data-i18n="accessibility.lang.option.es">Español</option>
+              </select>
+            </div>
+          </div>
+          <div class="accessibility-actions">
+            <button class="accessibility-close" type="button" data-accessibility-close data-i18n="actions.close">Close</button>
+          </div>
+        </div>
+      </div>
       <main>
         <div class="layout">
           <section class="card account-card account-card--collapsed" aria-labelledby="account-heading" data-dashboard-card>
@@ -1896,141 +2514,688 @@
           </div>
 
           <script type="module">
-            import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+    import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+    import {
+      loadAccessibilityPrefs,
+      applyAccessibilityPrefs,
+      updateAccessibilityPref,
+      watchSystemMotion,
+    } from "./accessibility.mjs";
+    import { initI18n, applyTranslations, t } from "./i18n.mjs";
+    import { startListening, speak, isSpeechAvailable, parseDose } from "./voice.mjs";
 
-            const supabaseUrl = "https://tfmpgxwzgdzndbdzsftx.supabase.co";
-            const supabaseAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRmbXBneHd6Z2R6bmRiZHpzZnR4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQxNjg0MDcsImV4cCI6MjA3OTc0NDQwN30.X5f5YulGHxjJDFX2i7T3vDZXD3Gt9MY8SyvFybTHCKc";
-            const supabase = createClient(supabaseUrl, supabaseAnonKey);
+    document.addEventListener("DOMContentLoaded", async () => {
+      const accessibilitySheet = document.getElementById("accessibilitySheet");
+      const accessibilityDialog = accessibilitySheet?.querySelector(".accessibility-dialog");
+      const openAccessibility = document.querySelector("[data-accessibility-open]");
+      const closeAccessibility = accessibilitySheet?.querySelector("[data-accessibility-close]");
+      const focusableSelector = "button, [href], input, select, textarea, [tabindex]:not([tabindex='-1'])";
+      let lastFocused = null;
 
-            const modal = document.getElementById("cappyLoginModal");
-            const modalDialog = modal?.querySelector(".account-modal__dialog");
-            const triggers = document.querySelectorAll('[data-cappy-trigger]');
-            const closeBtn = modal?.querySelector("[data-cappy-close]");
-            const usernameInput = document.getElementById("cappy-username");
-            const passwordInput = document.getElementById("cappy-password");
-            const signInBtn = document.getElementById("sign-in-btn");
-            const signUpBtn = document.getElementById("sign-up-btn");
-            const forgotPasswordBtn = document.getElementById("forgot-password-btn");
-            const form = document.getElementById("auth-form");
-            const msg = document.getElementById("auth-message");
-            let lastFocusedTrigger = null;
+      const prefs = loadAccessibilityPrefs();
+      applyAccessibilityPrefs(prefs);
+      watchSystemMotion(prefs);
 
-            const setExpanded = (expanded) => {
-              triggers.forEach((trigger) => trigger.setAttribute("aria-expanded", expanded ? "true" : "false"));
-            };
+      await initI18n(prefs.lang);
+      applyTranslations(document);
 
-            const setMessage = (text, isError = false) => {
-              msg.textContent = text;
-              msg.style.color = isError ? "#b42318" : "#1f8f7b";
-            };
+      const updateAccessibilityControls = () => {
+        const calmToggle = document.getElementById("toggle-calm");
+        const textToggle = document.getElementById("toggle-text");
+        const motionToggle = document.getElementById("toggle-motion");
+        const fontToggle = document.getElementById("toggle-font");
+        const iconToggle = document.getElementById("toggle-icon");
+        const langToggle = document.getElementById("toggle-lang");
 
-            const openModal = (trigger = null) => {
-              if (!modal) return;
-              lastFocusedTrigger = trigger;
-              modal.hidden = false;
-              document.body.style.overflow = "hidden";
-              setExpanded(true);
-              modalDialog?.focus();
-            };
+        if (calmToggle) calmToggle.checked = prefs.calm === "on";
+        if (textToggle) textToggle.value = prefs.text;
+        if (motionToggle) motionToggle.checked = prefs.motion === "reduced";
+        if (fontToggle) fontToggle.checked = prefs.font === "dyslexic";
+        if (iconToggle) iconToggle.checked = prefs.icon === "on";
+        if (langToggle) langToggle.value = prefs.lang;
+      };
 
-            const closeModal = () => {
-              if (!modal) return;
-              modal.hidden = true;
-              document.body.style.overflow = "";
-              setExpanded(false);
-              if (lastFocusedTrigger instanceof HTMLElement) {
-                lastFocusedTrigger.focus();
-              }
-            };
+      const openSheet = () => {
+        if (!accessibilitySheet || !openAccessibility) return;
+        lastFocused = document.activeElement;
+        accessibilitySheet.hidden = false;
+        requestAnimationFrame(() => accessibilitySheet.classList.add("open"));
+        openAccessibility.setAttribute("aria-expanded", "true");
+        accessibilityDialog?.focus();
+      };
 
-            triggers.forEach((trigger) => {
-              trigger.addEventListener("click", () => openModal(trigger));
-            });
+      const closeSheet = () => {
+        if (!accessibilitySheet || !openAccessibility) return;
+        accessibilitySheet.classList.remove("open");
+        accessibilitySheet.hidden = true;
+        openAccessibility.setAttribute("aria-expanded", "false");
+        if (lastFocused instanceof HTMLElement) {
+          lastFocused.focus();
+        }
+      };
 
-            modal?.addEventListener("click", (event) => {
-              if (event.target === modal) {
-                closeModal();
-              }
-            });
+      openAccessibility?.addEventListener("click", openSheet);
+      closeAccessibility?.addEventListener("click", closeSheet);
+      accessibilitySheet?.addEventListener("click", (event) => {
+        if (event.target === accessibilitySheet) {
+          closeSheet();
+        }
+      });
 
-            closeBtn?.addEventListener("click", closeModal);
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && accessibilitySheet && !accessibilitySheet.hidden) {
+          closeSheet();
+        }
+      });
 
-            document.addEventListener("keydown", (event) => {
-              if (event.key === "Escape" && modal && !modal.hidden) {
-                closeModal();
-              }
-            });
+      accessibilitySheet?.addEventListener("keydown", (event) => {
+        if (event.key !== "Tab") return;
+        const focusable = Array.from(accessibilitySheet.querySelectorAll(focusableSelector));
+        if (!focusable.length) return;
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (event.shiftKey && document.activeElement === first) {
+          event.preventDefault();
+          last.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault();
+          first.focus();
+        }
+      });
 
-            const getCredentials = () => {
-              const identifier = usernameInput?.value.trim() || "";
-              const password = passwordInput?.value.trim() || "";
-              return { identifier, password };
-            };
+      updateAccessibilityControls();
 
-            signUpBtn?.addEventListener("click", async (event) => {
-              event.preventDefault();
-              const { identifier, password } = getCredentials();
-              if (!identifier || !password) {
-                setMessage("Enter a username/email and password to sign up.", true);
-                return;
-              }
-              if (!identifier.includes("@")) {
-                setMessage("Please enter a valid email to create your account.", true);
-                return;
-              }
-              const { error } = await supabase.auth.signUp({
-                email: identifier,
-                password,
-              });
+      const bindToggle = (id, handler) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.addEventListener("change", () => handler(el));
+      };
 
-              if (error) {
-                setMessage(error.message, true);
-              } else {
-                setMessage("Check your email to confirm your account.");
-              }
-            });
+      bindToggle("toggle-calm", (el) => {
+        prefs.calm = el.checked ? "on" : "off";
+        updateAccessibilityPref(prefs, "calm", prefs.calm);
+      });
+      bindToggle("toggle-text", (el) => {
+        prefs.text = el.value;
+        updateAccessibilityPref(prefs, "text", prefs.text);
+      });
+      bindToggle("toggle-motion", (el) => {
+        prefs.motion = el.checked ? "reduced" : "full";
+        updateAccessibilityPref(prefs, "motion", prefs.motion);
+      });
+      bindToggle("toggle-font", (el) => {
+        prefs.font = el.checked ? "dyslexic" : "default";
+        updateAccessibilityPref(prefs, "font", prefs.font);
+      });
+      bindToggle("toggle-icon", (el) => {
+        prefs.icon = el.checked ? "on" : "off";
+        updateAccessibilityPref(prefs, "icon", prefs.icon);
+      });
+      bindToggle("toggle-lang", async (el) => {
+        prefs.lang = el.value;
+        updateAccessibilityPref(prefs, "lang", prefs.lang);
+        await initI18n(prefs.lang);
+        applyTranslations(document);
+        updateLanguageToggle();
+      });
 
-            forgotPasswordBtn?.addEventListener("click", async (event) => {
-              event.preventDefault();
-              const identifier = usernameInput?.value.trim() || "";
-              if (!identifier || !identifier.includes("@")) {
-                setMessage("Enter your account email to reset your password.", true);
-                return;
-              }
+      const langToggleButton = document.querySelector("[data-lang-toggle]");
+      const updateLanguageToggle = () => {
+        if (!langToggleButton) return;
+        langToggleButton.textContent = prefs.lang.toUpperCase();
+        const langSelect = document.getElementById("toggle-lang");
+        if (langSelect) {
+          langSelect.value = prefs.lang;
+        }
+      };
+      updateLanguageToggle();
 
-              const { error } = await supabase.auth.resetPasswordForEmail(identifier);
-              if (error) {
-                setMessage(error.message, true);
-              } else {
-                setMessage("Check your email for reset instructions.");
-              }
-            });
+      langToggleButton?.addEventListener("click", async () => {
+        prefs.lang = prefs.lang === "en" ? "es" : "en";
+        updateAccessibilityPref(prefs, "lang", prefs.lang);
+        await initI18n(prefs.lang);
+        applyTranslations(document);
+        updateLanguageToggle();
+      });
 
-            form?.addEventListener("submit", async (event) => {
-              event.preventDefault();
-              const { identifier, password } = getCredentials();
+      const steps = Array.from(document.querySelectorAll(".flow-step"));
+      const nextButtons = document.querySelectorAll("[data-next-step]");
+      const prevButtons = document.querySelectorAll("[data-prev-step]");
+      let currentStep = 0;
 
-              if (!identifier || !password) {
-                setMessage("Please enter both your username/email and password.", true);
-                return;
-              }
+      const childWeightInput = document.getElementById("child-weight");
+      const weightUnitSelect = document.getElementById("child-weight-unit");
+      const ageInput = document.getElementById("child-age");
+      const weightUpdatedLabel = document.getElementById("weight-updated");
+      const updateWeightButton = document.querySelector("[data-weight-update]");
+      const medRadios = document.querySelectorAll("input[name='medication']");
+      const concentrationSelect = document.getElementById("med-concentration");
+      const doseAmount = document.getElementById("dose-amount");
+      const doseRange = document.getElementById("dose-range");
+      const doseNote = document.getElementById("dose-note");
+      const doseCalcSummary = document.getElementById("dose-calc-summary");
+      const nightZoomButton = document.querySelector("[data-night-zoom]");
+      const doseFocus = document.getElementById("dose-focus");
+      const doseInput = document.getElementById("dose-input");
+      const confirmButton = document.querySelector("[data-confirm-dose]");
+      const flowWarning = document.getElementById("flow-warning");
+      const overrideCheckbox = document.getElementById("override-warning");
+      const resultSummary = document.getElementById("dose-result");
+      const resultLast = document.getElementById("result-last");
+      const resultNext = document.getElementById("result-next");
+      const resultDose = document.getElementById("result-dose");
+      const timelineLast = document.getElementById("timeline-last");
+      const timelineNext = document.getElementById("timeline-next");
+      const timelineLimit = document.getElementById("timeline-limit");
+      const voiceButton = document.querySelector("[data-voice-button]");
+      const voiceStatus = document.getElementById("voice-status");
+      const seekToggle = document.querySelector("[data-seek-toggle]");
+      const seekBanner = document.querySelector(".seek-care-banner");
+      const shareButton = document.querySelector("[data-share-card]");
+      const copyButton = document.querySelector("[data-copy-link]");
+      const shareLinkButton = document.querySelector("[data-share-link]");
+      const shareStatus = document.getElementById("share-status");
 
-              const { error } = await supabase.auth.signInWithPassword({
-                email: identifier,
-                password,
-              });
+      const state = {
+        weightUpdatedAt: null,
+        lastDoseAt: null,
+        med: "acetaminophen",
+      };
 
-              if (error) {
-                setMessage(error.message, true);
-              } else {
-                setMessage("Signed in successfully.");
-                closeModal();
-                window.location.href = "/dashboard.html";
-              }
-            });
-          </script>
+      const formatDateTime = (value) => {
+        if (!value) return "—";
+        const date = value instanceof Date ? value : new Date(value);
+        return date.toLocaleString(prefs.lang, {
+          hour: "numeric",
+          minute: "2-digit",
+          month: "short",
+          day: "numeric",
+        });
+      };
+
+      const updateStep = (index) => {
+        currentStep = Math.max(0, Math.min(index, steps.length - 1));
+        steps.forEach((step, idx) => {
+          step.classList.toggle("active", idx === currentStep);
+        });
+      };
+
+      nextButtons.forEach((button) => {
+        button.addEventListener("click", () => updateStep(currentStep + 1));
+      });
+      prevButtons.forEach((button) => {
+        button.addEventListener("click", () => updateStep(currentStep - 1));
+      });
+
+      const getWeightKg = () => {
+        const weight = parseFloat(childWeightInput?.value || "");
+        if (!weight) return null;
+        return weightUnitSelect?.value === "kg" ? weight : weight * 0.453592;
+      };
+
+      const updateWeightTimestamp = () => {
+        state.weightUpdatedAt = new Date();
+        if (weightUpdatedLabel) {
+          weightUpdatedLabel.textContent = formatDateTime(state.weightUpdatedAt);
+        }
+      };
+
+      updateWeightButton?.addEventListener("click", updateWeightTimestamp);
+
+      const updateConcentrationOptions = () => {
+        const med = state.med;
+        if (!concentrationSelect) return;
+        const options = Array.from(concentrationSelect.options);
+        options.forEach((option) => {
+          const isMatch = option.dataset.med === med;
+          option.hidden = !isMatch;
+        });
+        const visible = options.find((option) => !option.hidden);
+        if (visible) {
+          concentrationSelect.value = visible.value;
+        }
+      };
+
+      medRadios.forEach((radio) => {
+        radio.addEventListener("change", () => {
+          if (radio.checked) {
+            state.med = radio.value;
+            updateConcentrationOptions();
+            updateDose();
+          }
+        });
+      });
+
+      concentrationSelect?.addEventListener("change", updateDose);
+      childWeightInput?.addEventListener("input", updateDose);
+      weightUnitSelect?.addEventListener("change", updateDose);
+
+      const updateDose = () => {
+        const weightKg = getWeightKg();
+        if (!weightKg) {
+          doseAmount.textContent = "0 mL";
+          doseRange.textContent = "0 - 0 mL";
+          doseCalcSummary.textContent = "";
+          timelineLimit.textContent = "—";
+          return;
+        }
+
+        const med = state.med;
+        const minMgPerKg = med === "acetaminophen" ? 10 : 5;
+        const maxMgPerKg = med === "acetaminophen" ? 15 : 10;
+        const intervalHours = med === "acetaminophen" ? 4 : 6;
+        const maxPerDay = med === "acetaminophen" ? 4 : 3;
+
+        const selectedOption = concentrationSelect?.selectedOptions[0];
+        const mgPerUnit = parseFloat(selectedOption?.value || "0");
+        const volume = parseFloat(selectedOption?.dataset.volume || "5");
+        const mgPerMl = mgPerUnit / volume;
+
+        const minMl = (minMgPerKg * weightKg) / mgPerMl;
+        const maxMl = (maxMgPerKg * weightKg) / mgPerMl;
+        const suggestedMl = (minMl + maxMl) / 2;
+
+        doseAmount.textContent = `${suggestedMl.toFixed(1)} mL`;
+        doseRange.textContent = `${minMl.toFixed(1)} - ${maxMl.toFixed(1)} mL`;
+        doseCalcSummary.textContent = `${weightKg.toFixed(1)} kg × ${minMgPerKg}-${maxMgPerKg} mg/kg, ${mgPerUnit} mg per ${volume} mL.`;
+        doseInput.value = `${suggestedMl.toFixed(1)} mL`;
+        timelineLimit.textContent = t("timeline.limitValue", { max: maxPerDay });
+        doseNote.textContent = t("flow.step3.note");
+        state.intervalHours = intervalHours;
+        state.maxPerDay = maxPerDay;
+        state.recommendedDose = suggestedMl;
+        state.range = { min: minMl, max: maxMl };
+      };
+
+      updateConcentrationOptions();
+      updateDose();
+
+      nightZoomButton?.addEventListener("click", () => {
+        doseFocus?.classList.toggle("zoomed");
+        nightZoomButton.setAttribute("aria-pressed", doseFocus?.classList.contains("zoomed"));
+      });
+
+      const updateTimeline = () => {
+        timelineLast.textContent = formatDateTime(state.lastDoseAt);
+        if (state.lastDoseAt && state.intervalHours) {
+          const next = new Date(state.lastDoseAt.getTime() + state.intervalHours * 60 * 60 * 1000);
+          timelineNext.textContent = formatDateTime(next);
+          state.nextDoseAt = next;
+        } else {
+          timelineNext.textContent = "—";
+          state.nextDoseAt = null;
+        }
+      };
+
+      const evaluateWarnings = () => {
+        const warnings = [];
+        const weightKg = getWeightKg();
+        if (!weightKg) {
+          warnings.push(t("warnings.weightMissing"));
+        }
+        if (state.weightUpdatedAt) {
+          const days = (Date.now() - state.weightUpdatedAt.getTime()) / (1000 * 60 * 60 * 24);
+          if (days > 30) {
+            warnings.push(t("warnings.weightOutdated"));
+          }
+        }
+        const ageMonths = parseFloat(ageInput?.value || "");
+        if (state.med === "ibuprofen" && ageMonths && ageMonths < 6) {
+          warnings.push(t("warnings.ageContra"));
+        }
+        if (state.lastDoseAt && state.intervalHours) {
+          const next = new Date(state.lastDoseAt.getTime() + state.intervalHours * 60 * 60 * 1000);
+          if (Date.now() < next.getTime()) {
+            warnings.push(t("warnings.intervalSoon"));
+          }
+        }
+        return warnings;
+      };
+
+      confirmButton?.addEventListener("click", () => {
+        const warnings = evaluateWarnings();
+        if (warnings.length && !overrideCheckbox?.checked) {
+          flowWarning.hidden = false;
+          flowWarning.textContent = `${warnings[0]} ${t("warnings.override")}`;
+          return;
+        }
+
+        const parsed = parseDose(doseInput?.value || "");
+        const fallbackAmount = parseFloat((doseInput?.value || "").replace(/[^\d.]/g, ""));
+        const amount = parsed?.amount || fallbackAmount;
+        if (!amount || Number.isNaN(amount)) {
+          flowWarning.hidden = false;
+          flowWarning.textContent = t("voice.noMatch");
+          return;
+        }
+
+        flowWarning.hidden = true;
+        state.lastDoseAt = new Date();
+        updateTimeline();
+
+        resultSummary.hidden = false;
+        resultLast.textContent = formatDateTime(state.lastDoseAt);
+        resultNext.textContent = formatDateTime(state.nextDoseAt);
+        resultDose.textContent = `${amount} mL`;
+
+        if (overrideCheckbox) {
+          overrideCheckbox.checked = false;
+        }
+      });
+
+      updateTimeline();
+
+      if (!isSpeechAvailable()) {
+        if (voiceButton) voiceButton.hidden = true;
+        if (voiceStatus) voiceStatus.textContent = "";
+      }
+
+      voiceButton?.addEventListener("click", async () => {
+        if (!voiceStatus) return;
+        voiceStatus.textContent = t("voice.listening");
+        try {
+          const result = await startListening();
+          if (!result.parsed) {
+            voiceStatus.textContent = t("voice.noMatch");
+            return;
+          }
+          doseInput.value = `${result.parsed.amount} mL`;
+          voiceStatus.textContent = "";
+          speak(t("voice.confirmed", { amount: result.parsed.amount }));
+        } catch (error) {
+          const message = error.message?.includes("not-allowed")
+            ? t("voice.permissionDenied")
+            : t("voice.noMatch");
+          voiceStatus.textContent = message;
+        }
+      });
+
+      seekToggle?.addEventListener("click", () => {
+        const expanded = seekBanner?.getAttribute("aria-expanded") === "true";
+        seekBanner?.setAttribute("aria-expanded", String(!expanded));
+        seekToggle?.setAttribute("aria-expanded", String(!expanded));
+      });
+
+      const supabaseUrl = "https://tfmpgxwzgdzndbdzsftx.supabase.co";
+      const supabaseAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRmbXBneHd6Z2R6bmRiZHpzZnR4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQxNjg0MDcsImV4cCI6MjA3OTc0NDQwN30.X5f5YulGHxjJDFX2i7T3vDZXD3Gt9MY8SyvFybTHCKc";
+      const supabase = createClient(supabaseUrl, supabaseAnonKey);
+
+      const generateToken = () => {
+        const bytes = crypto.getRandomValues(new Uint8Array(8));
+        return Array.from(bytes).map((b) => b.toString(16).padStart(2, "0")).join("");
+      };
+
+      const buildShareSnapshot = () => {
+        const childName = document.getElementById("child-name")?.value || "";
+        const weight = childWeightInput?.value || "";
+        const unit = weightUnitSelect?.value || "";
+        const med = state.med;
+        const concentration = concentrationSelect?.selectedOptions[0]?.textContent || "";
+        const warnings = evaluateWarnings();
+        return {
+          childName,
+          weight: weight ? `${weight} ${unit}` : "",
+          weightUpdatedAt: state.weightUpdatedAt?.toISOString() || null,
+          medication: med,
+          concentration,
+          doseRange: doseRange?.textContent || "",
+          selectedDose: resultDose?.textContent || "",
+          lastGiven: resultLast?.textContent || "",
+          nextEligible: resultNext?.textContent || "",
+          warnings,
+        };
+      };
+
+      const setShareStatus = (message) => {
+        if (shareStatus) shareStatus.textContent = message;
+      };
+
+      shareButton?.addEventListener("click", async () => {
+        if (!navigator.onLine) {
+          setShareStatus(t("share.offline"));
+          return;
+        }
+        const { data: sessionData } = await supabase.auth.getSession();
+        if (!sessionData?.session) {
+          setShareStatus(t("share.signIn"));
+          return;
+        }
+
+        const token = generateToken();
+        const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+        const snapshot = buildShareSnapshot();
+
+        const { error } = await supabase.from("shared_cards").insert({
+          token,
+          snapshot,
+          expires_at: expiresAt.toISOString(),
+          created_by: sessionData.session.user.id,
+        });
+
+        if (error) {
+          setShareStatus(t("share.failed"));
+          return;
+        }
+
+        const shareUrl = `${window.location.origin}/share/${token}`;
+        shareButton.dataset.shareUrl = shareUrl;
+        copyButton.hidden = false;
+        shareLinkButton.hidden = false;
+        setShareStatus(t("share.created", { expires: expiresAt.toLocaleString(prefs.lang) }));
+      });
+
+      copyButton?.addEventListener("click", async () => {
+        const url = shareButton?.dataset.shareUrl;
+        if (!url) return;
+        try {
+          await navigator.clipboard.writeText(url);
+          setShareStatus(t("share.copied"));
+        } catch (error) {
+          setShareStatus(t("share.copyFailed"));
+        }
+      });
+
+      shareLinkButton?.addEventListener("click", async () => {
+        const url = shareButton?.dataset.shareUrl;
+        if (!url) return;
+        if (navigator.share) {
+          try {
+            await navigator.share({ title: "CloseDose", url });
+            setShareStatus(t("share.shared"));
+          } catch (error) {
+            setShareStatus(t("share.copyFailed"));
+          }
+        } else {
+          setShareStatus(t("share.copyFailed"));
+        }
+      });
+
+      // Manual QA: toggle Calm Mode, press Night Zoom, confirm dose, verify timeline updates.
+      const qaNote = document.createElement("p");
+      qaNote.className = "visually-hidden";
+      qaNote.textContent = t("flow.qaNote");
+      document.body.appendChild(qaNote);
+    });
+  </script>
 
           <div class="calculator-widget-host" id="calculator-card" data-calculator-root></div>
+          <section class="card card--parent-flow" aria-labelledby="parent-flow-heading" data-parent-flow>
+            <div class="flow-card">
+              <div class="flow-header">
+                <div class="flow-header-top">
+                  <h2 id="parent-flow-heading" data-i18n="flow.title">Parent-first dosing flow</h2>
+                  <button class="lang-toggle" type="button" data-lang-toggle data-i18n-aria-label="actions.switchLanguage">EN / ES</button>
+                </div>
+                <p data-i18n="flow.subtitle">Move step-by-step. Tap next when you are ready.</p>
+                <div class="icon-guidance" aria-label="Quick steps">
+                  <div class="icon-step">
+                    <span aria-hidden="true">👤</span>
+                    <small data-i18n="flow.icon.step1">1) Child + weight</small>
+                  </div>
+                  <div class="icon-step">
+                    <span aria-hidden="true">💊</span>
+                    <small data-i18n="flow.icon.step2">2) Choose medicine</small>
+                  </div>
+                  <div class="icon-step">
+                    <span aria-hidden="true">✅</span>
+                    <small data-i18n="flow.icon.step3">3) Confirm dose</small>
+                  </div>
+                </div>
+              </div>
+
+              <div class="flow-steps">
+                <div class="flow-step active" data-step="1">
+                  <h3 data-i18n="flow.step1.title">Step 1: Child + weight</h3>
+                  <div class="flow-fields">
+                    <label for="child-name" data-i18n="flow.step1.childName">Child name (first or nickname)</label>
+                    <input id="child-name" type="text" placeholder="Sam" data-i18n-placeholder="flow.step1.childName.placeholder" />
+                    <label for="child-age" data-i18n="flow.step1.childAge">Age (months)</label>
+                    <input id="child-age" type="number" min="0" max="240" placeholder="12" data-i18n-placeholder="flow.step1.childAge.placeholder" />
+                    <label for="child-weight" data-i18n="flow.step1.weight">Weight</label>
+                    <div class="voice-row">
+                      <input id="child-weight" type="number" min="0" step="0.1" placeholder="24" data-i18n-placeholder="flow.step1.weight.placeholder" />
+                      <select id="child-weight-unit" aria-label="Weight unit">
+                        <option value="lb" data-i18n="flow.step1.weight.lb">lb</option>
+                        <option value="kg" data-i18n="flow.step1.weight.kg">kg</option>
+                      </select>
+                    </div>
+                    <div class="voice-row">
+                      <button type="button" class="secondary" data-weight-update data-i18n="flow.step1.updateWeight">Update weight</button>
+                      <span class="mic-status" id="weight-updated" data-i18n="flow.step1.weightUpdated">Not updated yet</span>
+                    </div>
+                  </div>
+                  <div class="flow-actions">
+                    <button type="button" class="secondary" disabled data-prev-step data-i18n="actions.back">Back</button>
+                    <button type="button" data-next-step data-i18n="actions.next">Next</button>
+                  </div>
+                </div>
+
+                <div class="flow-step" data-step="2">
+                  <h3 data-i18n="flow.step2.title">Step 2: Choose medicine</h3>
+                  <div class="flow-fields">
+                    <label data-i18n="flow.step2.medLabel">Medication</label>
+                    <div class="voice-row">
+                      <label>
+                        <input type="radio" name="medication" value="acetaminophen" checked />
+                        <span data-i18n="flow.step2.med.acetaminophen">Tylenol (Acetaminophen)</span>
+                      </label>
+                      <label>
+                        <input type="radio" name="medication" value="ibuprofen" />
+                        <span data-i18n="flow.step2.med.ibuprofen">Ibuprofen (Motrin)</span>
+                      </label>
+                    </div>
+                    <label for="med-concentration" data-i18n="flow.step2.concentration">Concentration</label>
+                    <select id="med-concentration">
+                      <option value="160" data-med="acetaminophen" data-volume="5">160 mg / 5 mL</option>
+                      <option value="120" data-med="acetaminophen" data-volume="5">120 mg / 5 mL</option>
+                      <option value="100" data-med="ibuprofen" data-volume="5">100 mg / 5 mL</option>
+                      <option value="50" data-med="ibuprofen" data-volume="1.25">50 mg / 1.25 mL</option>
+                    </select>
+                  </div>
+                  <div class="flow-actions">
+                    <button type="button" class="secondary" data-prev-step data-i18n="actions.back">Back</button>
+                    <button type="button" data-next-step data-i18n="actions.next">Next</button>
+                  </div>
+                </div>
+
+                <div class="flow-step" data-step="3">
+                  <h3 data-i18n="flow.step3.title">Step 3: Recommended dose</h3>
+                  <div class="dose-focus" id="dose-focus">
+                    <div class="dose-amount" id="dose-amount">0 mL</div>
+                    <div class="dose-range" id="dose-range">0 - 0 mL range</div>
+                    <p class="dose-note" id="dose-note" data-i18n="flow.step3.note">Use the lower end if your child is new to this medicine.</p>
+                  </div>
+                  <details>
+                    <summary data-i18n="flow.step3.how">How we calculated this</summary>
+                    <p id="dose-calc-summary"></p>
+                  </details>
+                  <button class="night-zoom-btn" type="button" data-night-zoom aria-pressed="false" data-i18n="actions.nightZoom">Night Zoom</button>
+                  <p class="mic-status" data-i18n="actions.nightZoomHelper">Night Zoom: make the dose easy to read.</p>
+                  <div class="flow-actions">
+                    <button type="button" class="secondary" data-prev-step data-i18n="actions.back">Back</button>
+                    <button type="button" data-next-step data-i18n="actions.next">Next</button>
+                  </div>
+                </div>
+
+                <div class="flow-step" data-step="4">
+                  <h3 data-i18n="flow.step4.title">Step 4: Confirm + log dose</h3>
+                  <div class="flow-fields">
+                    <label for="dose-input" data-i18n="flow.step4.doseLabel">Dose to give (mL)</label>
+                    <div class="voice-row">
+                      <input id="dose-input" type="text" inputmode="decimal" placeholder="5 mL" data-i18n-placeholder="flow.step4.dosePlaceholder" />
+                      <button class="mic-button" type="button" data-voice-button data-i18n-aria-label="voice.button">🎤</button>
+                    </div>
+                    <span class="mic-status" id="voice-status" aria-live="polite"></span>
+                    <div class="flow-alert" id="flow-warning" aria-live="polite" hidden></div>
+                    <label class="voice-row">
+                      <input type="checkbox" id="override-warning" />
+                      <span data-i18n="flow.step4.override">I understand and want to continue.</span>
+                    </label>
+                  </div>
+                  <button class="confirm-button" type="button" data-confirm-dose data-i18n="actions.confirmDose">Confirm dose</button>
+                  <p class="mic-status" data-i18n="flow.step4.confirmNote">Nothing logs automatically. Tap confirm when you are ready.</p>
+                  <div class="result-summary" id="dose-result" hidden>
+                    <h4 data-i18n="flow.result.title">Dose logged</h4>
+                    <div class="timeline-strip">
+                      <div>
+                        <span data-i18n="flow.result.last">Last given</span>
+                        <strong id="result-last">—</strong>
+                      </div>
+                      <div>
+                        <span data-i18n="flow.result.next">Next eligible</span>
+                        <strong id="result-next">—</strong>
+                      </div>
+                      <div>
+                        <span data-i18n="flow.result.dose">Dose</span>
+                        <strong id="result-dose">—</strong>
+                      </div>
+                    </div>
+                    <div class="share-actions">
+                      <button type="button" class="secondary" data-share-card data-i18n="actions.shareCard">Share dosing card</button>
+                      <button type="button" data-copy-link hidden data-i18n="actions.copyLink">Copy link</button>
+                      <button type="button" data-share-link hidden data-i18n="actions.shareLink">Share link</button>
+                      <p class="mic-status" id="share-status" aria-live="polite"></p>
+                    </div>
+                  </div>
+                  <div class="flow-actions">
+                    <button type="button" class="secondary" data-prev-step data-i18n="actions.back">Back</button>
+                    <button type="button" data-next-step data-i18n="actions.next">Next</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="timeline-card" aria-labelledby="timeline-title">
+                <h3 id="timeline-title" data-i18n="timeline.title">Dose timeline</h3>
+                <div class="timeline-strip">
+                  <div>
+                    <span data-i18n="timeline.last">Last given</span>
+                    <strong id="timeline-last">—</strong>
+                  </div>
+                  <div>
+                    <span data-i18n="timeline.next">Next eligible</span>
+                    <strong id="timeline-next">—</strong>
+                  </div>
+                  <div>
+                    <span data-i18n="timeline.limit">Max per day</span>
+                    <strong id="timeline-limit">—</strong>
+                  </div>
+                </div>
+                <div class="seek-care-banner" role="region" aria-expanded="false" aria-labelledby="seek-care-label">
+                  <button type="button" data-seek-toggle aria-expanded="false" aria-controls="seek-care-details" id="seek-care-label">
+                    <span data-i18n="timeline.seek.title">When to seek care</span>
+                  </button>
+                  <div class="seek-care-details" id="seek-care-details">
+                    <span data-i18n="timeline.seek.line1">Trouble breathing, blue lips, or severe wheezing.</span>
+                    <span data-i18n="timeline.seek.line2">Very sleepy, hard to wake, or not making eye contact.</span>
+                    <span data-i18n="timeline.seek.line3">Signs of dehydration: no tears, dry mouth, or no wet diapers.</span>
+                    <span data-i18n="timeline.seek.line4">Seizure, severe pain, or fever lasting more than 3 days.</span>
+                    <span data-i18n="timeline.seek.line5">Call 911 for emergencies. If you’re worried, it’s okay to get help.</span>
+                    <a href="safety.html" data-i18n="actions.learnMore">Learn more</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
         <section class="card card--experimental" aria-labelledby="experimental-heading">
           <header class="experimental-header">
             <span class="eyebrow">Experimental lab</span>
@@ -2251,6 +3416,186 @@
     });
   </script>
   <script src="script.js"></script>
+  <script type="module">
+    import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+    import {
+      loadAccessibilityPrefs,
+      applyAccessibilityPrefs,
+      updateAccessibilityPref,
+      watchSystemMotion,
+    } from "./accessibility.mjs";
+    import { initI18n, applyTranslations, t } from "./i18n.mjs";
+    import { startListening, speak, isSpeechAvailable, parseDose } from "./voice.mjs";
+
+    document.addEventListener("DOMContentLoaded", async () => {
+      const accessibilitySheet = document.getElementById("accessibilitySheet");
+      const accessibilityDialog = accessibilitySheet?.querySelector(".accessibility-dialog");
+      const openAccessibility = document.querySelector("[data-accessibility-open]");
+      const closeAccessibility = accessibilitySheet?.querySelector("[data-accessibility-close]");
+      const focusableSelector = "button, [href], input, select, textarea, [tabindex]:not([tabindex='-1'])";
+      let lastFocused = null;
+
+      const prefs = loadAccessibilityPrefs();
+      applyAccessibilityPrefs(prefs);
+      watchSystemMotion(prefs);
+
+      await initI18n(prefs.lang);
+      applyTranslations(document);
+
+      const updateAccessibilityControls = () => {
+        const calmToggle = document.getElementById("toggle-calm");
+        const textToggle = document.getElementById("toggle-text");
+        const motionToggle = document.getElementById("toggle-motion");
+        const fontToggle = document.getElementById("toggle-font");
+        const iconToggle = document.getElementById("toggle-icon");
+        const langToggle = document.getElementById("toggle-lang");
+
+        if (calmToggle) calmToggle.checked = prefs.calm === "on";
+        if (textToggle) textToggle.value = prefs.text;
+        if (motionToggle) motionToggle.checked = prefs.motion === "reduced";
+        if (fontToggle) fontToggle.checked = prefs.font === "dyslexic";
+        if (iconToggle) iconToggle.checked = prefs.icon === "on";
+        if (langToggle) langToggle.value = prefs.lang;
+      };
+
+      const openSheet = () => {
+        if (!accessibilitySheet || !openAccessibility) return;
+        lastFocused = document.activeElement;
+        accessibilitySheet.hidden = false;
+        requestAnimationFrame(() => accessibilitySheet.classList.add("open"));
+        openAccessibility.setAttribute("aria-expanded", "true");
+        accessibilityDialog?.focus();
+      };
+
+      const closeSheet = () => {
+        if (!accessibilitySheet || !openAccessibility) return;
+        accessibilitySheet.classList.remove("open");
+        accessibilitySheet.hidden = true;
+        openAccessibility.setAttribute("aria-expanded", "false");
+        if (lastFocused instanceof HTMLElement) {
+          lastFocused.focus();
+        }
+      };
+
+      openAccessibility?.addEventListener("click", openSheet);
+      closeAccessibility?.addEventListener("click", closeSheet);
+      accessibilitySheet?.addEventListener("click", (event) => {
+        if (event.target === accessibilitySheet) {
+          closeSheet();
+        }
+      });
+
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && accessibilitySheet && !accessibilitySheet.hidden) {
+          closeSheet();
+        }
+      });
+
+      accessibilitySheet?.addEventListener("keydown", (event) => {
+        if (event.key !== "Tab") return;
+        const focusable = Array.from(accessibilitySheet.querySelectorAll(focusableSelector));
+        if (!focusable.length) return;
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (event.shiftKey && document.activeElement === first) {
+          event.preventDefault();
+          last.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault();
+          first.focus();
+        }
+      });
+
+      updateAccessibilityControls();
+
+      const bindToggle = (id, handler) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.addEventListener("change", () => handler(el));
+      };
+
+      bindToggle("toggle-calm", (el) => {
+        prefs.calm = el.checked ? "on" : "off";
+        updateAccessibilityPref(prefs, "calm", prefs.calm);
+      });
+      bindToggle("toggle-text", (el) => {
+        prefs.text = el.value;
+        updateAccessibilityPref(prefs, "text", prefs.text);
+      });
+      bindToggle("toggle-motion", (el) => {
+        prefs.motion = el.checked ? "reduced" : "full";
+        updateAccessibilityPref(prefs, "motion", prefs.motion);
+      });
+      bindToggle("toggle-font", (el) => {
+        prefs.font = el.checked ? "dyslexic" : "default";
+        updateAccessibilityPref(prefs, "font", prefs.font);
+      });
+      bindToggle("toggle-icon", (el) => {
+        prefs.icon = el.checked ? "on" : "off";
+        updateAccessibilityPref(prefs, "icon", prefs.icon);
+      });
+      bindToggle("toggle-lang", async (el) => {
+        prefs.lang = el.value;
+        updateAccessibilityPref(prefs, "lang", prefs.lang);
+        await initI18n(prefs.lang);
+        applyTranslations(document);
+        updateLanguageToggle();
+      });
+
+      const langToggleButton = document.querySelector("[data-lang-toggle]");
+      const updateLanguageToggle = () => {
+        if (!langToggleButton) return;
+        langToggleButton.textContent = prefs.lang.toUpperCase();
+      };
+      updateLanguageToggle();
+
+      langToggleButton?.addEventListener("click", async () => {
+        prefs.lang = prefs.lang === "en" ? "es" : "en";
+        updateAccessibilityPref(prefs, "lang", prefs.lang);
+        await initI18n(prefs.lang);
+        applyTranslations(document);
+        updateLanguageToggle();
+      });
+
+      const steps = Array.from(document.querySelectorAll(".flow-step"));
+      const nextButtons = document.querySelectorAll("[data-next-step]");
+      const prevButtons = document.querySelectorAll("[data-prev-step]");
+      let currentStep = 0;
+
+      const childWeightInput = document.getElementById("child-weight");
+      const weightUnitSelect = document.getElementById("child-weight-unit");
+      const ageInput = document.getElementById("child-age");
+      const weightUpdatedLabel = document.getElementById("weight-updated");
+      const updateWeightButton = document.querySelector("[data-weight-update]");
+      const medRadios = document.querySelectorAll(\"input[name='medication']\");
+      const concentrationSelect = document.getElementById(\"med-concentration\");
+      const doseAmount = document.getElementById(\"dose-amount\");
+      const doseRange = document.getElementById(\"dose-range\");
+      const doseNote = document.getElementById(\"dose-note\");
+      const doseCalcSummary = document.getElementById(\"dose-calc-summary\");
+      const nightZoomButton = document.querySelector(\"[data-night-zoom]\");
+      const doseFocus = document.getElementById(\"dose-focus\");
+      const doseInput = document.getElementById(\"dose-input\");
+      const confirmButton = document.querySelector(\"[data-confirm-dose]\");
+      const flowWarning = document.getElementById(\"flow-warning\");
+      const overrideCheckbox = document.getElementById(\"override-warning\");
+      const resultSummary = document.getElementById(\"dose-result\");
+      const resultLast = document.getElementById(\"result-last\");
+      const resultNext = document.getElementById(\"result-next\");
+      const resultDose = document.getElementById(\"result-dose\");
+      const timelineLast = document.getElementById(\"timeline-last\");
+      const timelineNext = document.getElementById(\"timeline-next\");
+      const timelineLimit = document.getElementById(\"timeline-limit\");
+      const voiceButton = document.querySelector(\"[data-voice-button]\");
+      const voiceStatus = document.getElementById(\"voice-status\");
+      const seekToggle = document.querySelector(\"[data-seek-toggle]\");
+      const seekBanner = document.querySelector(\".seek-care-banner\");
+      const shareButton = document.querySelector(\"[data-share-card]\");
+      const copyButton = document.querySelector(\"[data-copy-link]\");
+      const shareLinkButton = document.querySelector(\"[data-share-link]\");
+      const shareStatus = document.getElementById(\"share-status\");
+
+      const state = {\n        weightUpdatedAt: null,\n        lastDoseAt: null,\n        med: \"acetaminophen\",\n      };\n\n      const formatDateTime = (value) => {\n        if (!value) return \"—\";\n        const date = value instanceof Date ? value : new Date(value);\n        return date.toLocaleString(prefs.lang, {\n          hour: \"numeric\",\n          minute: \"2-digit\",\n          month: \"short\",\n          day: \"numeric\",\n        });\n      };\n\n      const updateStep = (index) => {\n        currentStep = Math.max(0, Math.min(index, steps.length - 1));\n        steps.forEach((step, idx) => {\n          step.classList.toggle(\"active\", idx === currentStep);\n        });\n      };\n\n      nextButtons.forEach((button) => {\n        button.addEventListener(\"click\", () => updateStep(currentStep + 1));\n      });\n      prevButtons.forEach((button) => {\n        button.addEventListener(\"click\", () => updateStep(currentStep - 1));\n      });\n\n      const getWeightKg = () => {\n        const weight = parseFloat(childWeightInput?.value || \"\");\n        if (!weight) return null;\n        return weightUnitSelect?.value === \"kg\" ? weight : weight * 0.453592;\n      };\n\n      const updateWeightTimestamp = () => {\n        state.weightUpdatedAt = new Date();\n        if (weightUpdatedLabel) {\n          weightUpdatedLabel.textContent = formatDateTime(state.weightUpdatedAt);\n        }\n      };\n\n      updateWeightButton?.addEventListener(\"click\", updateWeightTimestamp);\n\n      const updateConcentrationOptions = () => {\n        const med = state.med;\n        if (!concentrationSelect) return;\n        const options = Array.from(concentrationSelect.options);\n        options.forEach((option) => {\n          const isMatch = option.dataset.med === med;\n          option.hidden = !isMatch;\n        });\n        const visible = options.find((option) => !option.hidden);\n        if (visible) {\n          concentrationSelect.value = visible.value;\n        }\n      };\n\n      medRadios.forEach((radio) => {\n        radio.addEventListener(\"change\", () => {\n          if (radio.checked) {\n            state.med = radio.value;\n            updateConcentrationOptions();\n            updateDose();\n          }\n        });\n      });\n\n      concentrationSelect?.addEventListener(\"change\", updateDose);\n      childWeightInput?.addEventListener(\"input\", updateDose);\n      weightUnitSelect?.addEventListener(\"change\", updateDose);\n\n      const updateDose = () => {\n        const weightKg = getWeightKg();\n        if (!weightKg) {\n          doseAmount.textContent = \"0 mL\";\n          doseRange.textContent = \"0 - 0 mL\";\n          doseCalcSummary.textContent = \"\";\n          timelineLimit.textContent = \"—\";\n          return;\n        }\n\n        const med = state.med;\n        const minMgPerKg = med === \"acetaminophen\" ? 10 : 5;\n        const maxMgPerKg = med === \"acetaminophen\" ? 15 : 10;\n        const intervalHours = med === \"acetaminophen\" ? 4 : 6;\n        const maxPerDay = med === \"acetaminophen\" ? 4 : 3;\n\n        const selectedOption = concentrationSelect?.selectedOptions[0];\n        const mgPerUnit = parseFloat(selectedOption?.value || \"0\");\n        const volume = parseFloat(selectedOption?.dataset.volume || \"5\");\n        const mgPerMl = mgPerUnit / volume;\n\n        const minMl = (minMgPerKg * weightKg) / mgPerMl;\n        const maxMl = (maxMgPerKg * weightKg) / mgPerMl;\n        const suggestedMl = (minMl + maxMl) / 2;\n\n        doseAmount.textContent = `${suggestedMl.toFixed(1)} mL`;\n        doseRange.textContent = `${minMl.toFixed(1)} - ${maxMl.toFixed(1)} mL`;\n        doseCalcSummary.textContent = `${weightKg.toFixed(1)} kg × ${minMgPerKg}-${maxMgPerKg} mg/kg, ${mgPerUnit} mg per ${volume} mL.`;\n        doseInput.value = `${suggestedMl.toFixed(1)} mL`;\n        timelineLimit.textContent = t(\"timeline.limit\", { max: maxPerDay });\n        doseNote.textContent = t(\"flow.step3.note\");\n        state.intervalHours = intervalHours;\n        state.maxPerDay = maxPerDay;\n        state.recommendedDose = suggestedMl;\n        state.range = { min: minMl, max: maxMl };\n      };\n\n      updateConcentrationOptions();\n      updateDose();\n\n      nightZoomButton?.addEventListener(\"click\", () => {\n        doseFocus?.classList.toggle(\"zoomed\");\n        nightZoomButton.setAttribute(\"aria-pressed\", doseFocus?.classList.contains(\"zoomed\"));\n      });\n\n      const updateTimeline = () => {\n        timelineLast.textContent = formatDateTime(state.lastDoseAt);\n        if (state.lastDoseAt && state.intervalHours) {\n          const next = new Date(state.lastDoseAt.getTime() + state.intervalHours * 60 * 60 * 1000);\n          timelineNext.textContent = formatDateTime(next);\n          state.nextDoseAt = next;\n        } else {\n          timelineNext.textContent = \"—\";\n          state.nextDoseAt = null;\n        }\n      };\n\n      const evaluateWarnings = () => {\n        const warnings = [];\n        const weightKg = getWeightKg();\n        if (!weightKg) {\n          warnings.push(t(\"warnings.weightMissing\"));\n        }\n        if (state.weightUpdatedAt) {\n          const days = (Date.now() - state.weightUpdatedAt.getTime()) / (1000 * 60 * 60 * 24);\n          if (days > 30) {\n            warnings.push(t(\"warnings.weightOutdated\"));\n          }\n        }\n        const ageMonths = parseFloat(ageInput?.value || \"\");\n        if (state.med === \"ibuprofen\" && ageMonths && ageMonths < 6) {\n          warnings.push(t(\"warnings.ageContra\"));\n        }\n        if (state.lastDoseAt && state.intervalHours) {\n          const next = new Date(state.lastDoseAt.getTime() + state.intervalHours * 60 * 60 * 1000);\n          if (Date.now() < next.getTime()) {\n            warnings.push(t(\"warnings.intervalSoon\"));\n          }\n        }\n        return warnings;\n      };\n\n      confirmButton?.addEventListener(\"click\", () => {\n        const warnings = evaluateWarnings();\n        if (warnings.length && !overrideCheckbox?.checked) {\n          flowWarning.hidden = false;\n          flowWarning.textContent = warnings[0];\n          return;\n        }\n        if (warnings.length && overrideCheckbox?.checked === false) {\n          flowWarning.hidden = false;\n          flowWarning.textContent = t(\"warnings.override\");\n          return;\n        }\n\n        const parsed = parseDose(doseInput?.value || \"\");\n        if (!parsed) {\n          flowWarning.hidden = false;\n          flowWarning.textContent = t(\"voice.noMatch\");\n          return;\n        }\n\n        flowWarning.hidden = true;\n        state.lastDoseAt = new Date();\n        updateTimeline();\n\n        resultSummary.hidden = false;\n        resultLast.textContent = formatDateTime(state.lastDoseAt);\n        resultNext.textContent = formatDateTime(state.nextDoseAt);\n        resultDose.textContent = `${parsed.amount} mL`;\n\n        if (overrideCheckbox) {\n          overrideCheckbox.checked = false;\n        }\n      });\n\n      updateTimeline();\n\n      if (!isSpeechAvailable()) {\n        if (voiceButton) voiceButton.hidden = true;\n        if (voiceStatus) voiceStatus.textContent = \"\";\n      }\n\n      voiceButton?.addEventListener(\"click\", async () => {\n        if (!voiceStatus) return;\n        voiceStatus.textContent = t(\"voice.listening\");\n        try {\n          const result = await startListening();\n          if (!result.parsed) {\n            voiceStatus.textContent = t(\"voice.noMatch\");\n            return;\n          }\n          doseInput.value = `${result.parsed.amount} mL`;\n          voiceStatus.textContent = \"\";\n          speak(t(\"voice.confirmed\", { amount: result.parsed.amount }));\n        } catch (error) {\n          const message = error.message?.includes(\"not-allowed\")\n            ? t(\"voice.permissionDenied\")\n            : t(\"voice.noMatch\");\n          voiceStatus.textContent = message;\n        }\n      });\n\n      seekToggle?.addEventListener(\"click\", () => {\n        const expanded = seekBanner?.getAttribute(\"aria-expanded\") === \"true\";\n        seekBanner?.setAttribute(\"aria-expanded\", String(!expanded));\n        seekToggle?.setAttribute(\"aria-expanded\", String(!expanded));\n      });\n\n      const supabaseUrl = \"https://tfmpgxwzgdzndbdzsftx.supabase.co\";\n      const supabaseAnonKey = \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRmbXBneHd6Z2R6bmRiZHpzZnR4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQxNjg0MDcsImV4cCI6MjA3OTc0NDQwN30.X5f5YulGHxjJDFX2i7T3vDZXD3Gt9MY8SyvFybTHCKc\";\n      const supabase = createClient(supabaseUrl, supabaseAnonKey);\n\n      const generateToken = () => {\n        const bytes = crypto.getRandomValues(new Uint8Array(8));\n        return Array.from(bytes).map((b) => b.toString(16).padStart(2, \"0\")).join(\"\");\n      };\n\n      const buildShareSnapshot = () => {\n        const childName = document.getElementById(\"child-name\")?.value || \"\";\n        const weight = childWeightInput?.value || \"\";\n        const unit = weightUnitSelect?.value || \"\";\n        const med = state.med;\n        const concentration = concentrationSelect?.selectedOptions[0]?.textContent || \"\";\n        const warnings = evaluateWarnings();\n        return {\n          childName,\n          weight: weight ? `${weight} ${unit}` : \"\",\n          weightUpdatedAt: state.weightUpdatedAt?.toISOString() || null,\n          medication: med,\n          concentration,\n          doseRange: doseRange?.textContent || \"\",\n          selectedDose: resultDose?.textContent || \"\",\n          lastGiven: resultLast?.textContent || \"\",\n          nextEligible: resultNext?.textContent || \"\",\n          warnings,\n        };\n      };\n\n      const setShareStatus = (message) => {\n        if (shareStatus) shareStatus.textContent = message;\n      };\n\n      shareButton?.addEventListener(\"click\", async () => {\n        if (!navigator.onLine) {\n          setShareStatus(t(\"share.offline\"));\n          return;\n        }\n        const { data: sessionData } = await supabase.auth.getSession();\n        if (!sessionData?.session) {\n          setShareStatus(t(\"share.signIn\"));\n          return;\n        }\n\n        const token = generateToken();\n        const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);\n        const snapshot = buildShareSnapshot();\n\n        const { error } = await supabase.from(\"shared_cards\").insert({\n          token,\n          snapshot,\n          expires_at: expiresAt.toISOString(),\n          created_by: sessionData.session.user.id,\n        });\n\n        if (error) {\n          setShareStatus(t(\"share.failed\"));\n          return;\n        }\n\n        const shareUrl = `${window.location.origin}/share/${token}`;\n        shareButton.dataset.shareUrl = shareUrl;\n        copyButton.hidden = false;\n        shareLinkButton.hidden = false;\n        setShareStatus(t(\"share.created\", { expires: expiresAt.toLocaleString(prefs.lang) }));\n      });\n\n      copyButton?.addEventListener(\"click\", async () => {\n        const url = shareButton?.dataset.shareUrl;\n        if (!url) return;\n        try {\n          await navigator.clipboard.writeText(url);\n          setShareStatus(t(\"share.copied\"));\n        } catch (error) {\n          setShareStatus(t(\"share.copyFailed\"));\n        }\n      });\n\n      shareLinkButton?.addEventListener(\"click\", async () => {\n        const url = shareButton?.dataset.shareUrl;\n        if (!url) return;\n        if (navigator.share) {\n          try {\n            await navigator.share({ title: \"CloseDose\", url });\n            setShareStatus(t(\"share.shared\"));\n          } catch (error) {\n            setShareStatus(t(\"share.copyFailed\"));\n          }\n        } else {\n          setShareStatus(t(\"share.copyFailed\"));\n        }\n      });\n\n      // Manual QA: toggle Calm Mode, press Night Zoom, confirm dose, verify timeline updates.\n+      const qaNote = document.createElement(\"p\");\n+      qaNote.className = \"visually-hidden\";\n+      qaNote.textContent = t(\"flow.qaNote\");\n+      document.body.appendChild(qaNote);\n     });\n   </script>
   <script>
     (function () {
       const menuButton = document.querySelector('.menu-btn');
