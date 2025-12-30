@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CloseDose – Safety guidance</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --font-base: 16px;
+      --font-scale: 1;
+      --font-body: "Nunito", system-ui, -apple-system, "Segoe UI", sans-serif;
+      --font-dyslexic: "Atkinson Hyperlegible", "Nunito", system-ui, -apple-system, "Segoe UI", sans-serif;
+      --color-bg: #f5f9f9;
+      --color-surface: #ffffff;
+      --color-text: #0f2c2a;
+      --color-text-muted: #124643;
+      --color-border: #0f2c2a;
+      --card-border: 3px solid var(--color-border);
+    }
+
+    html { font-size: calc(var(--font-base) * var(--font-scale)); }
+    html[data-text="lg"] { --font-scale: 1.1; }
+    html[data-text="xl"] { --font-scale: 1.25; }
+    html[data-font="dyslexic"] body { font-family: var(--font-dyslexic); }
+
+    html[data-calm="on"] {
+      --color-bg: #0b0b0b;
+      --color-surface: #111111;
+      --color-text: #ffffff;
+      --color-text-muted: #f1f1f1;
+      --color-border: #ffffff;
+    }
+
+    body {
+      margin: 0;
+      font-family: var(--font-body);
+      background: var(--color-bg);
+      color: var(--color-text);
+      padding: 24px;
+    }
+
+    .card {
+      max-width: 760px;
+      margin: 0 auto;
+      background: var(--color-surface);
+      border: var(--card-border);
+      border-radius: 24px;
+      padding: 24px;
+      display: grid;
+      gap: 16px;
+    }
+
+    h1, h2, p, ul { margin: 0; }
+
+    ul {
+      padding-left: 20px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .callout {
+      border-radius: 16px;
+      border: 2px solid rgba(220, 38, 38, 0.4);
+      padding: 12px;
+      background: rgba(220, 38, 38, 0.1);
+      color: #8b1111;
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <h1 data-i18n="safety.title">When to seek care</h1>
+    <p data-i18n="safety.subtitle">Calm, clear guidance for fever or pain dosing.</p>
+    <div class="callout" data-i18n="safety.call911">Call 911 for emergencies.</div>
+    <h2 data-i18n="timeline.seek.title">When to seek care</h2>
+    <ul>
+      <li data-i18n="timeline.seek.line1">Trouble breathing, blue lips, or severe wheezing.</li>
+      <li data-i18n="timeline.seek.line2">Very sleepy, hard to wake, or not making eye contact.</li>
+      <li data-i18n="timeline.seek.line3">Signs of dehydration: no tears, dry mouth, or no wet diapers.</li>
+      <li data-i18n="timeline.seek.line4">Seizure, severe pain, or fever lasting more than 3 days.</li>
+      <li data-i18n="timeline.seek.line5">Call 911 for emergencies. If you’re worried, it’s okay to get help.</li>
+    </ul>
+    <p data-i18n="safety.disclaimer">CloseDose is not a substitute for medical advice. Trust your instincts and get help if you’re worried.</p>
+  </main>
+  <script type="module">
+    import { loadAccessibilityPrefs, applyAccessibilityPrefs } from "./accessibility.mjs";
+    import { initI18n, applyTranslations } from "./i18n.mjs";
+
+    const prefs = loadAccessibilityPrefs();
+    applyAccessibilityPrefs(prefs);
+    await initI18n(prefs.lang);
+    applyTranslations(document);
+  </script>
+</body>
+</html>
