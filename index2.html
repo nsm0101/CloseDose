@@ -1976,15 +1976,19 @@
       border-radius: 18px;
       border: 2px solid rgba(15, 44, 42, 0.18);
       background: var(--color-surface-soft);
+      min-width: 0;
     }
 
     .accessibility-row label {
       font-weight: 700;
+      overflow-wrap: anywhere;
     }
 
     .accessibility-row small {
       color: var(--color-text-muted);
       font-weight: 600;
+      line-height: 1.35;
+      overflow-wrap: anywhere;
     }
 
     .accessibility-row input[type="checkbox"],
@@ -1995,6 +1999,18 @@
       border-radius: 14px;
       border: 2px solid var(--color-border);
       background: var(--color-surface);
+    }
+
+    .accessibility-row input[type="checkbox"] {
+      width: 22px;
+      height: 22px;
+      padding: 0;
+      justify-self: start;
+    }
+
+    .accessibility-row select {
+      width: 100%;
+      max-width: 100%;
     }
 
     .accessibility-actions {
