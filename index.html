@@ -1818,6 +1818,7 @@
             const form = document.getElementById("auth-form");
             const msg = document.getElementById("auth-message");
             let lastFocusedTrigger = null;
+            const defaultFamilyName = "The CloseDose Household";
 
             const setExpanded = (expanded) => {
               triggers.forEach((trigger) => trigger.setAttribute("aria-expanded", expanded ? "true" : "false"));
@@ -1871,6 +1872,78 @@
               return { identifier, password };
             };
 
+            const ensureFamilyMembership = async (user, familyName) => {
+              if (!user) return null;
+              const { data: memberships, error: membershipError } = await supabase
+                .from("user_families")
+                .select("family_id, role, family:family_id(id, name)")
+                .eq("user_id", user.id);
+
+              if (membershipError) {
+                throw membershipError;
+              }
+
+              let activeFamilyId = memberships?.[0]?.family_id || null;
+              let activeFamilyName = memberships?.[0]?.family?.name || familyName || defaultFamilyName;
+
+              if (!activeFamilyId) {
+                const { data: createdFamily, error: familyError } = await supabase
+                  .from("families")
+                  .insert([
+                    {
+                      name: activeFamilyName,
+                      description: "Created from CloseDose login",
+                      created_by_user_id: user.id
+                    }
+                  ])
+                  .select("id, name")
+                  .single();
+
+                if (familyError) {
+                  throw familyError;
+                }
+
+                activeFamilyId = createdFamily?.id || null;
+                activeFamilyName = createdFamily?.name || activeFamilyName;
+
+                if (activeFamilyId) {
+                  const { error: linkError } = await supabase.from("user_families").upsert(
+                    {
+                      family_id: activeFamilyId,
+                      user_id: user.id,
+                      role: "admin"
+                    },
+                    { onConflict: "user_id,family_id" }
+                  );
+
+                  if (linkError) {
+                    throw linkError;
+                  }
+                }
+              }
+
+              if (activeFamilyId) {
+                const metadata = {
+                  family_id: activeFamilyId,
+                  family_name: activeFamilyName
+                };
+                const { error: updateError } = await supabase.auth.updateUser({ data: metadata });
+                if (updateError) {
+                  console.warn("Unable to update user metadata", updateError);
+                }
+
+                const { error: profileError } = await supabase.from("profiles").upsert({
+                  id: user.id,
+                  family_name: activeFamilyName
+                });
+                if (profileError) {
+                  console.warn("Unable to update profile", profileError);
+                }
+              }
+
+              return { familyId: activeFamilyId, familyName: activeFamilyName };
+            };
+
             signUpBtn?.addEventListener("click", async (event) => {
               event.preventDefault();
               const { identifier, password } = getCredentials();
@@ -1887,15 +1960,31 @@
                 password,
                 options: {
                   data: {
-                    family_name: "The CloseDose Household"
+                    family_name: defaultFamilyName
                   }
                 }
               });
 
               if (error) {
                 setMessage(error.message, true);
+                return;
+              }
+
+              const { data: sessionData } = await supabase.auth.getSession();
+              const signedInUser = sessionData?.session?.user || null;
+
+              if (signedInUser) {
+                try {
+                  await ensureFamilyMembership(signedInUser, defaultFamilyName);
+                  setMessage("Account created. Redirecting to your dashboard.");
+                  closeModal();
+                  window.location.href = "/dashboard.html";
+                } catch (syncError) {
+                  console.error("Error syncing new account", syncError);
+                  setMessage("Account created, but syncing failed. Try signing in again.", true);
+                }
               } else {
-                setMessage("Check your email to confirm your account.");
+                setMessage("Check your email to confirm your account, then sign in to finish setup.");
               }
             });
 
@@ -1924,7 +2013,7 @@
                 return;
               }
 
-              const { error } = await supabase.auth.signInWithPassword({
+              const { data, error } = await supabase.auth.signInWithPassword({
                 email: identifier,
                 password,
               });
@@ -1932,9 +2021,15 @@
               if (error) {
                 setMessage(error.message, true);
               } else {
-                setMessage("Signed in successfully.");
-                closeModal();
-                window.location.href = "/dashboard.html";
+                try {
+                  await ensureFamilyMembership(data?.user, defaultFamilyName);
+                  setMessage("Signed in successfully.");
+                  closeModal();
+                  window.location.href = "/dashboard.html";
+                } catch (syncError) {
+                  console.error("Error syncing account", syncError);
+                  setMessage("Signed in, but sync failed. Please try again.", true);
+                }
               }
             });
           </script>
