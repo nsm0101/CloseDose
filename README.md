@@ -12,6 +12,7 @@ The dashboard uses Supabase Auth and stores family data in `public.families` wit
 - RLS policies to enforce member-only access with admin-only updates
 - An AFTER INSERT trigger to auto-add the creator as an admin member
 - Supporting indexes for fast membership lookups
+- Cappy profiles, family members, dose logs, and weight logs for shared medication data
 
 To apply migrations against your Supabase instance, install the [Supabase CLI](https://supabase.com/docs/guides/cli) and run:
 

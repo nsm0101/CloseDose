@@ -2868,7 +2868,7 @@
         return warnings;
       };
 
-      confirmButton?.addEventListener("click", () => {
+      confirmButton?.addEventListener("click", async () => {
         const warnings = evaluateWarnings();
         if (warnings.length && !overrideCheckbox?.checked) {
           flowWarning.hidden = false;
@@ -2897,6 +2897,8 @@
         if (overrideCheckbox) {
           overrideCheckbox.checked = false;
         }
+
+        await logDoseToSupabase(amount);
       });
 
       updateTimeline();
@@ -2935,6 +2937,63 @@
       const supabaseUrl = "https://tfmpgxwzgdzndbdzsftx.supabase.co";
       const supabaseAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRmbXBneHd6Z2R6bmRiZHpzZnR4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQxNjg0MDcsImV4cCI6MjA3OTc0NDQwN30.X5f5YulGHxjJDFX2i7T3vDZXD3Gt9MY8SyvFybTHCKc";
       const supabase = createClient(supabaseUrl, supabaseAnonKey);
+
+      const resolveFamilyMemberForDose = async () => {
+        const childName = document.getElementById("child-name")?.value?.trim();
+        if (!childName) return null;
+        const { data: sessionData } = await supabase.auth.getSession();
+        if (!sessionData?.session) return null;
+
+        const user = sessionData.session.user;
+        const { data: memberships, error: membershipError } = await supabase
+          .from("user_families")
+          .select("family_id")
+          .eq("user_id", user.id);
+
+        if (membershipError || !memberships?.length) {
+          return null;
+        }
+
+        const preferredFamilyId = user.user_metadata?.family_id;
+        const activeFamilyId =
+          memberships.find((entry) => entry.family_id === preferredFamilyId)?.family_id ||
+          memberships[0]?.family_id;
+
+        if (!activeFamilyId) return null;
+
+        const { data: member, error: memberError } = await supabase
+          .from("family_members")
+          .select("id, family_id, name")
+          .eq("family_id", activeFamilyId)
+          .ilike("name", childName)
+          .maybeSingle();
+
+        if (memberError || !member) {
+          return null;
+        }
+
+        return { member, user };
+      };
+
+      async function logDoseToSupabase(amount) {
+        try {
+          const resolved = await resolveFamilyMemberForDose();
+          if (!resolved) return;
+          const { member, user } = resolved;
+          await supabase.from("dose_logs").insert({
+            family_id: member.family_id,
+            family_member_id: member.id,
+            medication_code: state.med,
+            medication_label: state.med,
+            dose_amount: amount,
+            dose_unit: "mL",
+            administered_at: state.lastDoseAt?.toISOString() || new Date().toISOString(),
+            created_by_user_id: user.id
+          });
+        } catch (error) {
+          console.warn("Dose log not saved", error);
+        }
+      }
 
       const generateToken = () => {
         const bytes = crypto.getRandomValues(new Uint8Array(8));
