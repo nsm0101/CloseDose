@@ -604,97 +604,40 @@ function initTranslations() {
   });
 }
 
-const ACCOUNT_STORAGE_KEY = 'closedose.accounts.v1';
-const ACCOUNT_SESSION_KEY = 'closedose.session.v1';
 const CLOSE_ACCOUNT_MODALS_EVENT = 'closedose:close-account-modals';
+const SUPABASE_URL = 'https://tfmpgxwzgdzndbdzsftx.supabase.co';
+const SUPABASE_ANON_KEY =
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRmbXBneHd6Z2R6bmRiZHpzZnR4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQxNjg0MDcsImV4cCI6MjA3OTc0NDQwN30.X5f5YulGHxjJDFX2i7T3vDZXD3Gt9MY8SyvFybTHCKc';
 let setDashboardCollapsed = () => {};
-
-function getStorage() {
-  try {
-    if (typeof window === 'undefined' || !window.localStorage) {
-      return null;
-    }
-    return window.localStorage;
-  } catch (error) {
-    console.warn('localStorage is not available', error);
-    return null;
-  }
-}
 
 function normalizeEmail(email = '') {
   return email.trim().toLowerCase();
 }
 
-function hashSecret(value) {
-  let hash = 5381;
-  for (let i = 0; i < value.length; i += 1) {
-    hash = (hash * 33) ^ value.charCodeAt(i);
-  }
-  return `cd_${(hash >>> 0).toString(16)}`;
-}
+let supabaseClientPromise;
 
-function readAccounts() {
-  const storage = getStorage();
-  if (!storage) {
-    return {};
+function getSupabaseClient() {
+  if (typeof window === 'undefined') {
+    return Promise.resolve(null);
   }
-  try {
-    const stored = storage.getItem(ACCOUNT_STORAGE_KEY);
-    return stored ? JSON.parse(stored) : {};
-  } catch (error) {
-    console.warn('Unable to read stored accounts', error);
-    return {};
+  if (window.supabase?.auth) {
+    return Promise.resolve(window.supabase);
   }
-}
-
-function writeAccounts(accounts) {
-  const storage = getStorage();
-  if (!storage) {
-    return;
+  if (!supabaseClientPromise) {
+    supabaseClientPromise = import('https://esm.sh/@supabase/supabase-js@2')
+      .then(({ createClient }) => {
+        const client = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        if (!window.supabase) {
+          window.supabase = client;
+        }
+        return client;
+      })
+      .catch((error) => {
+        console.warn('Unable to load Supabase client', error);
+        return null;
+      });
   }
-  try {
-    storage.setItem(ACCOUNT_STORAGE_KEY, JSON.stringify(accounts));
-  } catch (error) {
-    console.warn('Unable to save accounts', error);
-  }
-}
-
-function getActiveSession() {
-  const storage = getStorage();
-  if (!storage) {
-    return null;
-  }
-  try {
-    const session = storage.getItem(ACCOUNT_SESSION_KEY);
-    return session ? JSON.parse(session) : null;
-  } catch (error) {
-    console.warn('Unable to read session', error);
-    return null;
-  }
-}
-
-function setActiveSession(session) {
-  const storage = getStorage();
-  if (!storage) {
-    return;
-  }
-  try {
-    storage.setItem(ACCOUNT_SESSION_KEY, JSON.stringify(session));
-  } catch (error) {
-    console.warn('Unable to save session', error);
-  }
-}
-
-function clearActiveSession() {
-  const storage = getStorage();
-  if (!storage) {
-    return;
-  }
-  try {
-    storage.removeItem(ACCOUNT_SESSION_KEY);
-  } catch (error) {
-    console.warn('Unable to clear session', error);
-  }
+  return supabaseClientPromise;
 }
 
 function initDashboardCardToggle() {
@@ -834,8 +777,12 @@ function initAccountCenter() {
     setDashboardCollapsed(false);
   };
 
-  const renderSessionState = () => {
-    const session = getActiveSession();
+  const getUserDisplay = (session) => {
+    const metadata = session?.user?.user_metadata || {};
+    return metadata.name || metadata.full_name || session?.user?.email || '';
+  };
+
+  const renderSessionState = (session) => {
     authViews.forEach((view) => {
       if (!(view instanceof HTMLElement)) {
         return;
@@ -847,7 +794,9 @@ function initAccountCenter() {
       view.hidden = !shouldShow;
     });
     if (session && badgeElement) {
-      badgeElement.textContent = session.name || session.email;
+      badgeElement.textContent = getUserDisplay(session);
+    } else if (badgeElement) {
+      badgeElement.textContent = '';
     }
     if (session) {
       setDashboardCollapsed(false);
@@ -855,7 +804,7 @@ function initAccountCenter() {
   };
 
   if (signupForm) {
-    signupForm.addEventListener('submit', (event) => {
+    signupForm.addEventListener('submit', async (event) => {
       event.preventDefault();
       const formData = new FormData(signupForm);
       const name = (formData.get('name') || '').toString().trim();
@@ -875,32 +824,41 @@ function initAccountCenter() {
         return;
       }
 
-      const accounts = readAccounts();
-      if (accounts[email]) {
-        setStatus('error', 'An account already exists for that email. Try signing in.');
+      const supabase = await getSupabaseClient();
+      if (!supabase) {
+        setStatus('error', 'Unable to connect to the account service. Please try again.');
         return;
       }
 
-      accounts[email] = {
+      const { data, error } = await supabase.auth.signUp({
         email,
-        name,
-        passwordHash: hashSecret(password),
-        createdAt: new Date().toISOString(),
-      };
-      writeAccounts(accounts);
-      setActiveSession({ email, name });
-      setStatus('success', 'Account created! You are now signed in on this device.');
+        password,
+        options: {
+          data: { name },
+        },
+      });
+
+      if (error) {
+        setStatus('error', error.message);
+        return;
+      }
+
+      if (data?.session) {
+        setStatus('success', 'Account created! You are now signed in.');
+      } else {
+        setStatus('success', 'Account created! Check your email to confirm and sign in.');
+      }
       signupForm.reset();
       if (loginForm) {
         loginForm.reset();
       }
       document.dispatchEvent(new Event(CLOSE_ACCOUNT_MODALS_EVENT));
-      renderSessionState();
+      renderSessionState(data?.session || null);
     });
   }
 
   if (loginForm) {
-    loginForm.addEventListener('submit', (event) => {
+    loginForm.addEventListener('submit', async (event) => {
       event.preventDefault();
       const formData = new FormData(loginForm);
       const email = normalizeEmail((formData.get('email') || '').toString());
@@ -911,34 +869,62 @@ function initAccountCenter() {
         return;
       }
 
-      const accounts = readAccounts();
-      const account = accounts[email];
-      if (!account) {
-        setStatus('error', 'No account found for that email address.');
-        return;
-      }
-      if (account.passwordHash !== hashSecret(password)) {
-        setStatus('error', 'Incorrect password. Please try again.');
+      const supabase = await getSupabaseClient();
+      if (!supabase) {
+        setStatus('error', 'Unable to connect to the account service. Please try again.');
         return;
       }
 
-      setActiveSession({ email, name: account.name });
-      setStatus('success', `Welcome back, ${account.name || 'friend'}!`);
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (error) {
+        setStatus('error', error.message);
+        return;
+      }
+
+      const displayName = getUserDisplay(data?.session);
+      setStatus('success', `Welcome back, ${displayName || 'friend'}!`);
       loginForm.reset();
       document.dispatchEvent(new Event(CLOSE_ACCOUNT_MODALS_EVENT));
-      renderSessionState();
+      renderSessionState(data?.session || null);
     });
   }
 
   if (logoutButton) {
-    logoutButton.addEventListener('click', () => {
-      clearActiveSession();
-      setStatus('success', 'You have been signed out on this browser.');
-      renderSessionState();
+    logoutButton.addEventListener('click', async () => {
+      const supabase = await getSupabaseClient();
+      if (!supabase) {
+        setStatus('error', 'Unable to connect to the account service. Please try again.');
+        return;
+      }
+      const { error } = await supabase.auth.signOut();
+      if (error) {
+        setStatus('error', error.message);
+        return;
+      }
+      setStatus('success', 'You have been signed out.');
+      renderSessionState(null);
     });
   }
 
-  renderSessionState();
+  renderSessionState(null);
+  getSupabaseClient()
+    .then(async (supabase) => {
+      if (!supabase) {
+        return;
+      }
+      const { data } = await supabase.auth.getSession();
+      renderSessionState(data?.session || null);
+      supabase.auth.onAuthStateChange((_event, session) => {
+        renderSessionState(session);
+      });
+    })
+    .catch((error) => {
+      console.warn('Unable to initialize account center', error);
+    });
 }
 
 window.addEventListener('DOMContentLoaded', () => {
