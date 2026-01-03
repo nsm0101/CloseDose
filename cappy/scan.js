@@ -67,13 +67,29 @@ async function requireAuthOrRedirect() {
   return data.session.user;
 }
 
-async function fetchFamilyAndMembers(userId) {
+async function fetchFamilyAndMembers(user) {
+  const { data: memberships, error: membershipError } = await supabase
+    .from("user_families")
+    .select("family_id, role, family:family_id(id, name)")
+    .eq("user_id", user.id);
+
+  if (membershipError) {
+    throw membershipError;
+  }
+
+  const preferredFamilyId = user.user_metadata?.family_id;
+  const activeMembership =
+    memberships?.find((entry) => entry.family_id === preferredFamilyId) ||
+    memberships?.[0];
+
+  if (!activeMembership?.family_id) {
+    throw new Error("Family not found");
+  }
+
   const { data: family, error: famError } = await supabase
     .from("families")
     .select("*")
-    .eq("created_by_user_id", userId)
-    .order("created_at", { ascending: true })
-    .limit(1)
+    .eq("id", activeMembership.family_id)
     .single();
 
   if (famError || !family) {
@@ -110,6 +126,36 @@ async function fetchLatestWeightLog(memberId) {
     return null;
   }
   return data || null;
+}
+
+async function fetchLatestDoseLog(memberId, medCode) {
+  const query = supabase
+    .from("dose_logs")
+    .select("*")
+    .eq("family_member_id", memberId)
+    .order("administered_at", { ascending: false })
+    .limit(1);
+
+  if (medCode) {
+    query.eq("medication_code", medCode);
+  }
+
+  const { data, error } = await query.single();
+  if (error) {
+    if (error.code === "PGRST116") {
+      return null;
+    }
+    console.warn("Dose log error", error);
+    return null;
+  }
+  return data || null;
+}
+
+function formatDoseStatus(log) {
+  if (!log) return "No dose logged yet";
+  const time = new Date(log.administered_at).toLocaleString();
+  const amount = log.dose_amount ? `${log.dose_amount} ${log.dose_unit || ""}`.trim() : "";
+  return amount ? `Last dose: ${amount} on ${time}` : `Last dose: ${time}`;
 }
 
 function formatAge(dob) {
@@ -189,11 +235,14 @@ function renderFamilyMembers(med, members) {
   familyNote.textContent = "Tap a child to check weight and dosing.";
 
   const statusPromises = members.map((member) =>
-    fetchLatestWeightLog(member.id).then((log) => ({ member, log }))
+    Promise.all([
+      fetchLatestWeightLog(member.id),
+      fetchLatestDoseLog(member.id, med.code),
+    ]).then(([log, doseLog]) => ({ member, log, doseLog }))
   );
 
   Promise.all(statusPromises).then((results) => {
-    results.forEach(({ member, log }) => {
+    results.forEach(({ member, log, doseLog }) => {
       const chip = document.createElement("button");
       chip.type = "button";
       chip.className = "member-chip";
@@ -201,6 +250,7 @@ function renderFamilyMembers(med, members) {
         <span class="member-name">${member.name}</span>
         <span class="member-meta">${formatAge(member.date_of_birth)}</span>
         <span class="member-meta">${formatWeightStatus(log)}</span>
+        <span class="member-meta">${formatDoseStatus(doseLog)}</span>
       `;
       chip.addEventListener("click", () =>
         handleFamilyMemberSelection(med, member, log)
@@ -392,7 +442,7 @@ async function initScanPage() {
   if (!user) return;
 
   try {
-    const { members } = await fetchFamilyAndMembers(user.id);
+    const { members } = await fetchFamilyAndMembers(user);
     renderFamilyMembers(med, members);
     wireCalculatorButton(med);
     setStatusMessage("Select who needs this medication.");
