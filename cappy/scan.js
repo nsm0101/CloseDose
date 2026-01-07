@@ -6,6 +6,11 @@ const scanStatus = document.getElementById("scan-status");
 const overlayBackdrop = document.getElementById("med-overlay-backdrop");
 const familyMemberList = document.getElementById("family-member-list");
 const familyNote = document.getElementById("family-note");
+const memberDetailPanel = document.getElementById("member-detail-panel");
+const memberDetailName = document.getElementById("member-detail-name");
+const memberDetailStatus = document.getElementById("member-detail-status");
+const memberDoseHistory = document.getElementById("member-dose-history");
+const memberStartDosingBtn = document.getElementById("member-start-dosing-btn");
 const weightModal = document.getElementById("weight-modal");
 const weightForm = document.getElementById("weight-form");
 const weightInput = document.getElementById("weight-input");
@@ -14,6 +19,14 @@ const weightDateInput = document.getElementById("weight-date");
 const weightModalTitle = document.getElementById("weight-modal-title");
 const weightModalMessage = document.getElementById("weight-modal-message");
 const weightModalActions = document.getElementById("weight-modal-actions");
+
+const scanState = {
+  family: null,
+  med: null,
+  selectedMember: null,
+  tagId: null,
+  userId: null,
+};
 
 const BOTTLE_SVG = `
 <svg width="64" height="96" viewBox="0 0 64 96" xmlns="http://www.w3.org/2000/svg">
@@ -127,7 +140,7 @@ async function fetchLatestDoseLog(memberId, medCode) {
     .from("dose_logs")
     .select("*")
     .eq("family_member_id", memberId)
-    .order("administered_at", { ascending: false })
+    .order("dose_time", { ascending: false })
     .limit(1);
 
   if (medCode) {
@@ -147,7 +160,7 @@ async function fetchLatestDoseLog(memberId, medCode) {
 
 function formatDoseStatus(log) {
   if (!log) return "No dose logged yet";
-  const time = new Date(log.administered_at).toLocaleString();
+  const time = new Date(log.dose_time || log.administered_at).toLocaleString();
   const amount = log.dose_amount ? `${log.dose_amount} ${log.dose_unit || ""}`.trim() : "";
   return amount ? `Last dose: ${amount} on ${time}` : `Last dose: ${time}`;
 }
@@ -183,6 +196,130 @@ function formatWeightStatus(log) {
   const daysOld = daysBetween(new Date(), new Date(log.measured_at));
   const freshness = daysOld <= 7 ? "fresh" : `${daysOld}d old`;
   return `${Number(log.weight_kg).toFixed(1)} kg • ${freshness}`;
+}
+
+function formatDateTime(value) {
+  const date = value instanceof Date ? value : new Date(value);
+  return date.toLocaleString(undefined, {
+    hour: "numeric",
+    minute: "2-digit",
+    month: "short",
+    day: "numeric",
+  });
+}
+
+function getMedicationIntervalMinutes(med) {
+  const label = `${med.generic_name || ""} ${med.brand_name || ""}`.toLowerCase();
+  if (label.includes("ibuprofen")) {
+    return 360;
+  }
+  if (label.includes("acetaminophen") || label.includes("paracetamol")) {
+    return 240;
+  }
+  return 240;
+}
+
+function buildDoseStatus(current, previous, intervalMinutes) {
+  if (!previous) {
+    return {
+      label: "First dose",
+      tone: "first",
+      detail: "No previous dose logged.",
+    };
+  }
+  const currentTime = new Date(current.dose_time || current.administered_at);
+  const previousTime = new Date(previous.dose_time || previous.administered_at);
+  const minutesSince = Math.round((currentTime - previousTime) / (1000 * 60));
+  if (minutesSince < intervalMinutes) {
+    return {
+      label: "Too soon",
+      tone: "soon",
+      detail: `${minutesSince} minutes since last dose.`,
+    };
+  }
+  if (minutesSince >= intervalMinutes * 2) {
+    return {
+      label: "Late",
+      tone: "late",
+      detail: `${minutesSince} minutes since last dose.`,
+    };
+  }
+  return {
+    label: "On time",
+    tone: "ontime",
+    detail: `${minutesSince} minutes since last dose.`,
+  };
+}
+
+async function fetchDoseHistory(memberId, medCode) {
+  const { data, error } = await supabase
+    .from("dose_logs")
+    .select("*")
+    .eq("family_member_id", memberId)
+    .eq("medication_code", medCode)
+    .order("dose_time", { ascending: false })
+    .limit(8);
+
+  if (error) {
+    console.warn("Dose history error", error);
+    return [];
+  }
+  return data || [];
+}
+
+async function logDoseEvent({ family, member, med }) {
+  if (!family || !member || !med) {
+    return false;
+  }
+  const doseTime = new Date().toISOString();
+  const intervalMinutes = getMedicationIntervalMinutes(med);
+  const payload = {
+    family_id: family.id,
+    family_member_id: member.id,
+    member_name: member.name,
+    tag_id: scanState.tagId,
+    dose_time: doseTime,
+    medication: med.generic_name || med.brand_name || med.code,
+    interval_minutes: intervalMinutes,
+    medication_code: med.code,
+    medication_label: med.brand_name || med.generic_name || med.code,
+    administered_at: doseTime,
+    created_by_user_id: scanState.userId || null,
+  };
+
+  const { error } = await supabase.from("dose_logs").insert(payload);
+  if (error) {
+    console.error("Failed to log dose", error);
+    setStatusMessage("We couldn't log that dose. Please try again.", true);
+    return false;
+  }
+  return true;
+}
+
+function renderDoseHistory(history, med) {
+  const intervalMinutes = getMedicationIntervalMinutes(med);
+  memberDoseHistory.innerHTML = "";
+  if (!history.length) {
+    const empty = document.createElement("li");
+    empty.textContent = "No doses logged yet.";
+    memberDoseHistory.appendChild(empty);
+    memberDetailStatus.textContent = "No dose history for this medication yet.";
+    return;
+  }
+
+  history.forEach((log, index) => {
+    const previous = history[index + 1];
+    const status = buildDoseStatus(log, previous, log.interval_minutes || intervalMinutes);
+    const item = document.createElement("li");
+    item.innerHTML = `
+      <span class="dose-history-time">${formatDateTime(log.dose_time || log.administered_at)}</span>
+      <span class="status-badge ${status.tone}">${status.label}</span>
+    `;
+    memberDoseHistory.appendChild(item);
+  });
+
+  const latestStatus = buildDoseStatus(history[0], history[1], history[0]?.interval_minutes || intervalMinutes);
+  memberDetailStatus.textContent = `${latestStatus.label} • ${latestStatus.detail}`;
 }
 
 function showMedicationOverlay(med) {
@@ -246,9 +383,13 @@ function renderFamilyMembers(med, members) {
         <span class="member-meta">${formatWeightStatus(log)}</span>
         <span class="member-meta">${formatDoseStatus(doseLog)}</span>
       `;
-      chip.addEventListener("click", () =>
-        handleFamilyMemberSelection(med, member, log)
-      );
+      chip.addEventListener("click", () => {
+        document
+          .querySelectorAll(".member-chip")
+          .forEach((item) => item.classList.remove("is-active"));
+        chip.classList.add("is-active");
+        handleFamilyMemberSelection(med, member);
+      });
       familyMemberList.appendChild(chip);
     });
   });
@@ -377,9 +518,9 @@ function proceedToDosing(med, member, weightKg) {
   openDosingForSelection({ med, familyMember: member, weightKg, ageInMonths });
 }
 
-async function handleFamilyMemberSelection(med, member, cachedLog) {
+async function startDosingFlow(med, member) {
   setStatusMessage(`Preparing dosing for ${member.name}...`);
-  const log = cachedLog || (await fetchLatestWeightLog(member.id));
+  const log = await fetchLatestWeightLog(member.id);
   if (!log) {
     promptForWeight(med, member);
     return;
@@ -390,6 +531,28 @@ async function handleFamilyMemberSelection(med, member, cachedLog) {
     return;
   }
   proceedToDosing(med, member, log.weight_kg);
+}
+
+async function handleFamilyMemberSelection(med, member) {
+  scanState.selectedMember = member;
+  memberDetailPanel.classList.remove("hidden");
+  memberDetailName.textContent = member.name;
+
+  if (!scanState.family) {
+    setStatusMessage("We could not locate your family record.", true);
+    return;
+  }
+
+  const logged = await logDoseEvent({ family: scanState.family, member, med });
+  if (logged) {
+    setStatusMessage(`Logged a dose tap for ${member.name}.`);
+  }
+
+  const history = await fetchDoseHistory(member.id, med.code);
+  renderDoseHistory(history, med);
+
+  memberStartDosingBtn.disabled = false;
+  memberStartDosingBtn.onclick = () => startDosingFlow(med, member);
 }
 
 function openDosingForSelection({ med, familyMember, weightKg, ageInMonths }) {
@@ -431,14 +594,20 @@ async function initScanPage() {
   }
 
   showMedicationOverlay(med);
+  scanState.med = med;
+  scanState.tagId = code;
 
   const user = await requireAuthOrRedirect();
   if (!user) return;
+  scanState.userId = user.id;
 
   try {
-    const { members } = await fetchFamilyAndMembers(user);
+    const { family, members } = await fetchFamilyAndMembers(user);
+    scanState.family = family;
     renderFamilyMembers(med, members);
     wireCalculatorButton(med);
+    memberDetailPanel.classList.add("hidden");
+    memberStartDosingBtn.disabled = true;
     setStatusMessage("Select who needs this medication.");
   } catch (error) {
     console.error(error);
