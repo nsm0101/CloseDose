@@ -683,7 +683,6 @@
     let familyChannel = null;
     let joinRequestChannel = null;
     let realtimeRefreshTimeout = null;
-    let detailViewOpen = false;
 
     const colorPalette = ["#0d8f8a", "#0a74c1", "#d94f70", "#f3a847", "#8a5cf6", "#3a6fb0", "#28a745"];
 
@@ -1158,7 +1157,7 @@
       const { data: sharedMembers, error: familyError } = activeFamilyId
         ? await supabase
             .from("family_members")
-            .select("name, role, age, weight, med, medications, notes, color, date_of_birth")
+            .select("id, name, role, age, weight, med, medications, notes, color, date_of_birth")
             .eq("family_id", activeFamilyId)
         : { data: [], error: null };
 
@@ -1169,6 +1168,7 @@
       const normalizedShared = Array.isArray(sharedMembers)
         ? sharedMembers.map(member =>
             normalizeMember({
+              id: member.id,
               name: member.name,
               role: member.role,
               age: member.age,
@@ -1333,18 +1333,18 @@
         });
 
         if (idx === preferredIndex) {
-          setActiveMember(idx, card, { preserveDetails: detailViewOpen });
+          setActiveMember(idx, card);
         }
 
         grid.appendChild(card);
       });
 
       if (!grid.querySelector(".member-card.active")) {
-        setActiveMember(Math.min(preferredIndex, family.members.length - 1), null, { preserveDetails: detailViewOpen });
+        setActiveMember(Math.min(preferredIndex, family.members.length - 1), null);
       }
     }
 
-    function setActiveMember(idx, cardRef, options = {}) {
+    function setActiveMember(idx, cardRef) {
       const grid = document.getElementById("familyGrid");
       if (!currentFamily?.members?.length) {
         activeMemberIndex = 0;
@@ -1353,9 +1353,7 @@
         return;
       }
 
-      if (!options.preserveDetails) {
-        closeDetailView();
-      }
+      closeDetailView();
 
       const boundedIdx = Math.max(0, Math.min(idx, currentFamily.members.length - 1));
       grid
@@ -1377,7 +1375,6 @@
     }
 
     function closeDetailView() {
-      detailViewOpen = false;
       memberDetails.hidden = true;
       editForm.hidden = true;
       editStatus.textContent = "";
@@ -1489,7 +1486,6 @@
       const member = currentFamily?.members?.[activeMemberIndex];
       if (!member) return;
 
-      detailViewOpen = true;
       memberDetails.hidden = false;
       editForm.hidden = false;
       populateDetails(member);
@@ -1846,9 +1842,12 @@
           .update({ name: currentFamily.name })
           .eq("id", familyKey);
 
-        const memberNames = currentFamily.members.map(member => member.name);
+        const existingMembers = currentFamily.members.filter(member => member.id);
+        const newMembers = currentFamily.members.filter(member => !member.id);
+        const existingIds = existingMembers.map(member => member.id);
 
-        const sharedPayload = currentFamily.members.map(member => ({
+        const existingPayload = existingMembers.map(member => ({
+          id: member.id,
           family_id: familyKey,
           name: member.name,
           role: member.role,
@@ -1861,34 +1860,52 @@
           date_of_birth: member.date_of_birth || null
         }));
 
-        const familyUpsert = memberNames.length
-          ? supabase.from("family_members").upsert(sharedPayload, {
-              onConflict: "family_id,name"
+        const newPayload = newMembers.map(member => ({
+          family_id: familyKey,
+          name: member.name,
+          role: member.role,
+          age: member.age,
+          weight: member.weight,
+          med: member.med,
+          medications: normalizeMedications(member),
+          notes: member.notes,
+          color: member.color,
+          date_of_birth: member.date_of_birth || null
+        }));
+
+        const familyUpsert = existingPayload.length
+          ? supabase.from("family_members").upsert(existingPayload, {
+              onConflict: "id"
             })
           : Promise.resolve({ error: null });
 
-        const deleteMissing = memberNames.length
-          ? supabase
-              .from("family_members")
-              .delete()
-              .eq("family_id", familyKey)
-              .not(
-                "name",
-                "in",
-                `(${memberNames.map(name => `"${name.replace(/"/g, '\\"')}"`).join(",")})`
-              )
-          : supabase.from("family_members").delete().eq("family_id", familyKey);
+        const familyInsert = newPayload.length
+          ? supabase.from("family_members").insert(newPayload).select("id, name")
+          : Promise.resolve({ data: [], error: null });
+
+        const deleteMissing =
+          currentFamily.members.length === 0
+            ? supabase.from("family_members").delete().eq("family_id", familyKey)
+            : existingIds.length
+            ? supabase
+                .from("family_members")
+                .delete()
+                .eq("family_id", familyKey)
+                .not("id", "in", `(${existingIds.map(id => `"${id}"`).join(",")})`)
+            : Promise.resolve({ error: null });
 
         const [
           { error: profileError },
           { error: familyError },
           { error: syncError },
+          { data: insertedMembers, error: insertError },
           { error: deleteError },
           { error: metadataError }
         ] = await Promise.all([
           profileUpdate,
           familyUpdate,
           familyUpsert,
+          familyInsert,
           deleteMissing,
           updateUserMetadata({
             family_name: currentFamily.name,
@@ -1897,8 +1914,22 @@
           })
         ]);
 
-        if (profileError || familyError || syncError || deleteError || metadataError) {
-          console.error("Sync errors", { profileError, familyError, syncError, deleteError, metadataError });
+        if (!insertError && insertedMembers?.length) {
+          const insertedMap = new Map(insertedMembers.map(member => [member.name, member.id]));
+          currentFamily.members = currentFamily.members.map(member =>
+            member.id || !insertedMap.has(member.name) ? member : { ...member, id: insertedMap.get(member.name) }
+          );
+        }
+
+        if (profileError || familyError || syncError || insertError || deleteError || metadataError) {
+          console.error("Sync errors", {
+            profileError,
+            familyError,
+            syncError,
+            insertError,
+            deleteError,
+            metadataError
+          });
           return false;
         }
 
