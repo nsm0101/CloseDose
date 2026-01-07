@@ -16,37 +16,17 @@ export function clearNextUrl() {
 }
 
 /**
- * IMPORTANT: Call this on pages that might be the emailRedirectTo target.
- * It turns the magic-link URL into a persisted session.
- */
-export async function initAuthFromUrl() {
-  const { data, error } = await supabase.auth.getSession();
-  if (error) console.warn("initAuthFromUrl:", error.message);
-  return data?.session ?? null;
-}
-
-/**
- * Gate a page behind auth. If not logged in, redirect to /cappy/login/
+ * Gate a page behind auth. If not logged in, redirect to /cappy/auth/
  */
 export async function requireAuth({ nextUrl } = {}) {
-  await initAuthFromUrl();
-
-  const { data } = await supabase.auth.getUser();
+  const { data, error } = await supabase.auth.getUser();
+  if (error) console.warn("requireAuth:", error.message);
   if (data?.user) return data.user;
 
   const target = nextUrl || (location.pathname + location.search);
   setNextUrl(target);
-  location.href = `/cappy/login/?next=${encodeURIComponent(target)}`;
+  location.href = `/cappy/auth/?next=${encodeURIComponent(target)}`;
   return null;
-}
-
-/** Send email magic-link (OTP) */
-export async function sendMagicLink(email, redirectToAbsoluteUrl) {
-  const { error } = await supabase.auth.signInWithOtp({
-    email,
-    options: { emailRedirectTo: redirectToAbsoluteUrl },
-  });
-  if (error) throw error;
 }
 
 /** Logout */
