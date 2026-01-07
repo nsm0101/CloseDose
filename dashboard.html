@@ -610,49 +610,7 @@
 
     const defaultFamily = {
       name: "The CloseDose Household",
-      tagline: "Everyone’s dosing guidance in one place.",
-      members: [
-        {
-          name: "Alex",
-          role: "Guardian",
-          age: "34",
-          weight: "—",
-          med: "Keeps family updated",
-          medications: ["Keeps family updated"],
-          notes: "Primary account owner",
-          color: "#0d8f8a"
-        },
-        {
-          name: "Maya",
-          role: "Patient",
-          age: "10",
-          weight: "70 lb",
-          med: "Cetirizine",
-          medications: ["Cetirizine"],
-          notes: "Seasonal allergies",
-          color: "#0a74c1"
-        },
-        {
-          name: "Leo",
-          role: "Patient",
-          age: "6",
-          weight: "45 lb",
-          med: "Albuterol",
-          medications: ["Albuterol"],
-          notes: "Use spacer as instructed",
-          color: "#d94f70"
-        },
-        {
-          name: "Ella",
-          role: "Patient",
-          age: "2",
-          weight: "24 lb",
-          med: "Acetaminophen",
-          medications: ["Acetaminophen"],
-          notes: "Use weight-based dosing",
-          color: "#f3a847"
-        }
-      ]
+      tagline: "Everyone’s dosing guidance in one place."
     };
 
     function generateFamilyId() {
@@ -805,11 +763,7 @@
       return {
         name: resolvedName,
         tagline: defaultFamily.tagline,
-        members: normalizedShared.length
-          ? normalizedShared
-          : Array.isArray(hydratedProfile?.member_profiles) && hydratedProfile.member_profiles.length
-          ? hydratedProfile.member_profiles.map(normalizeMember)
-          : defaultFamily.members.map(normalizeMember)
+        members: normalizedShared
       };
     }
 
@@ -821,7 +775,7 @@
       const draftProfile = {
         id: user.id,
         family_name: user.user_metadata?.family_name || defaultFamily.name,
-        member_profiles: defaultFamily.members
+        member_profiles: []
       };
 
       const { data, error } = await supabase.from("profiles").upsert(draftProfile).select().single();
@@ -880,7 +834,7 @@
 
       if (!family.members.length) {
         activeHint.textContent = "Add a member to get started";
-        populateDetails({ age: "—", weight: "—", med: "—", notes: "No family members yet." });
+        populateDetails(null);
         editForm.hidden = true;
         return;
       }
@@ -1020,6 +974,26 @@
 
     function populateDetails(member) {
       const container = document.getElementById("memberDetails");
+      if (!member) {
+        container.querySelector('[data-field="age"]').textContent = "—";
+        container.querySelector('[data-field="weight"]').textContent = "—";
+        container.querySelector('[data-field="med"]').textContent = "—";
+        container.querySelector('[data-field="dob"]').textContent = "—";
+        container.querySelector('[data-field="notes"]').textContent = "No family members yet.";
+
+        if (!editForm.hidden) {
+          nameInput.value = "";
+          roleInput.value = "";
+          ageInput.value = "";
+          weightInput.value = "";
+          medInput.value = "";
+          medicationsInput.value = "";
+          dobInput.value = "";
+          notesInput.value = "";
+        }
+        return;
+      }
+
       container.querySelector('[data-field="age"]').textContent = member.age ?? "—";
       container.querySelector('[data-field="weight"]').textContent = member.weight ?? "—";
       const meds = normalizeMedications(member);
