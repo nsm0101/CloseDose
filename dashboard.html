@@ -522,7 +522,7 @@
         <div class="panel-header">
           <div>
             <h2 id="member-details-title">Member details</h2>
-            <small>Age, weight, and current prescriptions are previewed here.</small>
+            <small>Select a member and click Edit to view details.</small>
           </div>
           <div class="detail-actions">
             <button type="button" id="removeMemberBtn">Remove member</button>
@@ -530,7 +530,7 @@
             <button type="button" id="syncBtn">Sync from Supabase</button>
           </div>
         </div>
-        <div class="detail" id="memberDetails">
+        <div class="detail" id="memberDetails" hidden>
           <p><strong>Age:</strong> <span data-field="age">—</span></p>
           <p><strong>Weight:</strong> <span data-field="weight">—</span></p>
           <p><strong>Medications:</strong> <span data-field="med">—</span></p>
@@ -651,6 +651,7 @@
     const notesInput = document.getElementById("notesInput");
     const cancelEditBtn = document.getElementById("cancelEditBtn");
     const editStatus = document.getElementById("editStatus");
+    const memberDetails = document.getElementById("memberDetails");
 
     let currentUser = null;
     let currentFamily = null;
@@ -661,6 +662,7 @@
     let familyChannel = null;
     let joinRequestChannel = null;
     let realtimeRefreshTimeout = null;
+    let detailViewOpen = false;
 
     const colorPalette = ["#0d8f8a", "#0a74c1", "#d94f70", "#f3a847", "#8a5cf6", "#3a6fb0", "#28a745"];
 
@@ -1244,6 +1246,7 @@
 
       if (!family.members.length) {
         activeHint.textContent = "Add a member to get started";
+        closeDetailView();
         populateDetails(null);
         editForm.hidden = true;
         return;
@@ -1309,24 +1312,28 @@
         });
 
         if (idx === preferredIndex) {
-          setActiveMember(idx, card);
+          setActiveMember(idx, card, { preserveDetails: detailViewOpen });
         }
 
         grid.appendChild(card);
       });
 
       if (!grid.querySelector(".member-card.active")) {
-        setActiveMember(Math.min(preferredIndex, family.members.length - 1));
+        setActiveMember(Math.min(preferredIndex, family.members.length - 1), null, { preserveDetails: detailViewOpen });
       }
     }
 
-    function setActiveMember(idx, cardRef) {
+    function setActiveMember(idx, cardRef, options = {}) {
       const grid = document.getElementById("familyGrid");
       if (!currentFamily?.members?.length) {
         activeMemberIndex = 0;
         document.getElementById("activeMemberHint").textContent = "Add a member to get started";
-        populateDetails({ age: "—", weight: "—", med: "—", notes: "No family members yet." });
+        closeDetailView();
         return;
+      }
+
+      if (!options.preserveDetails) {
+        closeDetailView();
       }
 
       const boundedIdx = Math.max(0, Math.min(idx, currentFamily.members.length - 1));
@@ -1346,7 +1353,13 @@
       activeMemberIndex = boundedIdx;
       const activeMember = currentFamily.members[boundedIdx];
       document.getElementById("activeMemberHint").textContent = `${activeMember.name}'s profile active`;
-      populateDetails(activeMember);
+    }
+
+    function closeDetailView() {
+      detailViewOpen = false;
+      memberDetails.hidden = true;
+      editForm.hidden = true;
+      editStatus.textContent = "";
     }
 
     function scheduleRealtimeRefresh() {
@@ -1455,16 +1468,11 @@
       const member = currentFamily?.members?.[activeMemberIndex];
       if (!member) return;
 
-      nameInput.value = member.name || "";
-      roleInput.value = member.role || "";
-      ageInput.value = member.age || "";
-      weightInput.value = member.weight || "";
-      medInput.value = member.med || "";
-      medicationsInput.value = normalizeMedications(member).join(", ");
-      dobInput.value = member.date_of_birth || "";
-      notesInput.value = member.notes || "";
-      editStatus.textContent = "";
+      detailViewOpen = true;
+      memberDetails.hidden = false;
       editForm.hidden = false;
+      populateDetails(member);
+      editStatus.textContent = "";
     }
 
     function closeEditForm() {
