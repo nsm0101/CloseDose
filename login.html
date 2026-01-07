@@ -213,14 +213,25 @@
   </div>
 
   <script type="module">
-    import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-
-    const supabaseUrl = "https://tfmpgxwzgdzndbdzsftx.supabase.co";
-    const supabaseAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRmbXBneHd6Z2R6bmRiZHpzZnR4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQxNjg0MDcsImV4cCI6MjA3OTc0NDQwN30.X5f5YulGHxjJDFX2i7T3vDZXD3Gt9MY8SyvFybTHCKc";
-    const supabase = createClient(supabaseUrl, supabaseAnonKey);
+    import { supabase } from "./auth/supabaseClient.js";
 
     const redirectParam = new URLSearchParams(window.location.search).get("redirect");
-    const redirectTarget = redirectParam || "/dashboard.html";
+
+    const sanitizeRedirect = (value) => {
+      if (!value || !value.startsWith("/")) return "/dashboard.html";
+      if (value.includes("http") || value.includes("//") || value.includes("\\")) return "/dashboard.html";
+      return value;
+    };
+
+    const redirectTarget = sanitizeRedirect(redirectParam);
+
+    const resolveRedirectTarget = () => {
+      const pendingInvite = localStorage.getItem("pending_invite_token");
+      if (pendingInvite) {
+        return `/cappy/join.html?token=${encodeURIComponent(pendingInvite)}`;
+      }
+      return redirectTarget;
+    };
 
     const tabs = document.querySelectorAll(".tab-button");
     const panels = document.querySelectorAll("[role='tabpanel']");
@@ -260,7 +271,7 @@
       }
 
       setStatus(status, "Success! Redirecting...", "success");
-      window.location.href = redirectTarget;
+      window.location.href = resolveRedirectTarget();
     });
 
     document.getElementById("registerForm")?.addEventListener("submit", async (event) => {
@@ -280,7 +291,7 @@
 
       if (data?.session) {
         setStatus(status, "Account created! Redirecting...", "success");
-        window.location.href = redirectTarget;
+        window.location.href = resolveRedirectTarget();
         return;
       }
 
