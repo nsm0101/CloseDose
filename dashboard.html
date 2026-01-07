@@ -85,34 +85,6 @@
       flex-wrap: wrap;
     }
 
-    .family-controls {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 10px;
-      margin-top: 12px;
-      align-items: end;
-    }
-
-    .family-controls label {
-      display: grid;
-      gap: 6px;
-      font-weight: 700;
-      color: #0a1d2b;
-    }
-
-    .family-controls input {
-      border-radius: 12px;
-      border: 1px solid var(--border);
-      padding: 10px 12px;
-      font-family: inherit;
-      font-size: 1rem;
-    }
-
-    .family-controls small {
-      color: var(--muted);
-      font-weight: 600;
-    }
-
     .auth-chip {
       display: inline-flex;
       align-items: center;
@@ -382,13 +354,73 @@
     .settings-drawer h3 { margin: 0 0 8px; }
     .settings-drawer p { margin: 0 0 10px; color: rgba(255,255,255,0.76); }
 
-    .toggle-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+    .settings-menu {
+      display: grid;
       gap: 12px;
-      padding: 10px 0;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .settings-field {
+      display: grid;
+      gap: 6px;
+      font-weight: 700;
+      color: rgba(255, 255, 255, 0.92);
+    }
+
+    .settings-field input {
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      padding: 10px 12px;
+      font-family: inherit;
+      font-size: 0.95rem;
+      color: #0a1d2b;
+    }
+
+    .settings-field small {
+      color: rgba(255,255,255,0.7);
+      font-weight: 600;
+    }
+
+    .settings-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .request-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .request-card {
+      background: rgba(255,255,255,0.08);
+      border-radius: 16px;
+      padding: 16px;
+      border: 1px solid rgba(255,255,255,0.14);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .request-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      color: rgba(255,255,255,0.86);
+    }
+
+    .request-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .request-options {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 10px;
     }
 
     .switch {
@@ -399,23 +431,18 @@
       position: relative;
       border: 1px solid rgba(255,255,255,0.2);
       transition: background 0.18s ease;
+    .settings-row .settings-field {
+      flex: 1 1 180px;
     }
 
-    .switch::after {
-      content: '';
-      position: absolute;
-      top: 2px;
-      left: 2px;
-      width: 22px;
-      height: 22px;
-      background: white;
-      border-radius: 50%;
-      transition: transform 0.18s ease;
-      box-shadow: 0 6px 12px rgba(0,0,0,0.25);
+    .settings-actions {
+      display: grid;
+      gap: 8px;
     }
 
-    .switch.on { background: #14cba8; }
-    .switch.on::after { transform: translateX(20px); }
+    .settings-actions button {
+      width: 100%;
+    }
   </style>
 </head>
 <body>
@@ -449,7 +476,7 @@
           <small>Join an existing family or generate a new one.</small>
         </label>
         <div style="display:flex; gap:10px; flex-wrap:wrap;">
-          <button type="button" id="joinFamilyBtn">Join existing family</button>
+          <button type="button" id="joinFamilyBtn">Request to join family</button>
           <button type="button" id="createFamilyBtn">Create new family</button>
         </div>
         <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:8px;">
@@ -457,15 +484,30 @@
           <button type="button" id="copyFamilyBtn">Copy Family ID</button>
         </div>
         <small id="familyStatus" aria-live="polite"></small>
+        <small id="joinRequestStatus" aria-live="polite"></small>
         <small id="inviteStatus" aria-live="polite"></small>
       </div>
     </header>
 
     <main>
-      <section class="panel" aria-labelledby="family-members-title">
+      <section class="panel" id="joinRequestsPanel" aria-labelledby="join-requests-title" hidden>
         <div class="panel-header">
           <div>
-            <h2 id="family-members-title">Family members</h2>
+            <h2 id="join-requests-title">Pending join requests</h2>
+            <small>Review and approve incoming family access requests.</small>
+          </div>
+        </div>
+        <div class="request-list" id="joinRequestsList"></div>
+        <small id="joinRequestsStatus" aria-live="polite"></small>
+      </section>
+      <section class="panel" aria-labelledby="family-members-title">
+    </header>
+
+    <main>
+      <section class="panel" aria-labelledby="familyMembersTitle">
+        <div class="panel-header">
+          <div>
+            <h2 id="familyMembersTitle">Family Group</h2>
             <small>Select who you want to review or update.</small>
           </div>
           <div style="display:flex; align-items:center; gap:12px;">
@@ -546,19 +588,28 @@
   </button>
 
   <div class="settings-drawer" id="settingsDrawer" aria-live="polite">
-    <h3>Dashboard settings</h3>
-    <p>Toggle quick personalization options for each family member.</p>
-    <div class="toggle-row">
-      <span>Highlight prescriptions</span>
-      <span class="switch on" role="presentation"></span>
-    </div>
-    <div class="toggle-row">
-      <span>Show OTC dosing helper</span>
-      <span class="switch on" role="presentation"></span>
-    </div>
-    <div class="toggle-row" style="border-bottom:none;">
-      <span>Compact family grid</span>
-      <span class="switch" role="presentation"></span>
+    <h3>Family settings</h3>
+    <p>Manage family details, invites, and membership requests.</p>
+    <div class="settings-menu">
+      <label class="settings-field">
+        Family name
+        <input id="familyNameInput" type="text" placeholder="Your family or care team" />
+        <small>Shared across every admin in the family.</small>
+      </label>
+      <div class="settings-row">
+        <label class="settings-field">
+          Family ID
+          <input id="familyKeyInput" type="text" readonly />
+        </label>
+        <button type="button" id="copyFamilyBtn">Copy ID</button>
+      </div>
+      <div class="settings-actions">
+        <button type="button" id="createFamilyBtn">Create New Family</button>
+        <button type="button" id="inviteFamilyBtn">Invite Family Members</button>
+        <button type="button" id="joinFamilyBtn">Request to Join Family</button>
+      </div>
+      <small id="familyStatus" aria-live="polite"></small>
+      <small id="inviteStatus" aria-live="polite"></small>
     </div>
   </div>
 
@@ -584,7 +635,11 @@
     const inviteFamilyBtn = document.getElementById("inviteFamilyBtn");
     const copyFamilyBtn = document.getElementById("copyFamilyBtn");
     const familyStatus = document.getElementById("familyStatus");
+    const joinRequestStatus = document.getElementById("joinRequestStatus");
     const inviteStatus = document.getElementById("inviteStatus");
+    const joinRequestsPanel = document.getElementById("joinRequestsPanel");
+    const joinRequestsList = document.getElementById("joinRequestsList");
+    const joinRequestsStatus = document.getElementById("joinRequestsStatus");
     const editForm = document.getElementById("editForm");
     const nameInput = document.getElementById("nameInput");
     const roleInput = document.getElementById("roleInput");
@@ -605,6 +660,7 @@
     let userFamilies = [];
     let activeMembership = null;
     let familyChannel = null;
+    let joinRequestChannel = null;
     let realtimeRefreshTimeout = null;
     let detailViewOpen = false;
 
@@ -612,49 +668,7 @@
 
     const defaultFamily = {
       name: "The CloseDose Household",
-      tagline: "Everyone’s dosing guidance in one place.",
-      members: [
-        {
-          name: "Alex",
-          role: "Guardian",
-          age: "34",
-          weight: "—",
-          med: "Keeps family updated",
-          medications: ["Keeps family updated"],
-          notes: "Primary account owner",
-          color: "#0d8f8a"
-        },
-        {
-          name: "Maya",
-          role: "Patient",
-          age: "10",
-          weight: "70 lb",
-          med: "Cetirizine",
-          medications: ["Cetirizine"],
-          notes: "Seasonal allergies",
-          color: "#0a74c1"
-        },
-        {
-          name: "Leo",
-          role: "Patient",
-          age: "6",
-          weight: "45 lb",
-          med: "Albuterol",
-          medications: ["Albuterol"],
-          notes: "Use spacer as instructed",
-          color: "#d94f70"
-        },
-        {
-          name: "Ella",
-          role: "Patient",
-          age: "2",
-          weight: "24 lb",
-          med: "Acetaminophen",
-          medications: ["Acetaminophen"],
-          notes: "Use weight-based dosing",
-          color: "#f3a847"
-        }
-      ]
+      tagline: "Everyone’s dosing guidance in one place."
     };
 
     function generateFamilyId() {
@@ -676,6 +690,110 @@
       return { error: null };
     }
 
+    function resolveMemberName(user) {
+      const metadata = user?.user_metadata || {};
+      const composedName = [metadata.first_name, metadata.last_name].filter(Boolean).join(" ").trim();
+      const candidate =
+        metadata.full_name || metadata.name || metadata.display_name || composedName || user?.email || "";
+      if (!candidate) {
+        return "Primary caregiver";
+      }
+      if (candidate.includes("@")) {
+        return candidate.split("@")[0] || candidate;
+      }
+      return candidate;
+    }
+
+    async function ensureOnboardedFamily(user) {
+      const safeName = user.user_metadata?.family_name || defaultFamily.name;
+      const { data: createdFamily, error: createError } = await supabase
+        .from("families")
+        .insert([
+          {
+            name: safeName,
+            description: "Created during onboarding",
+            created_by_user_id: user.id
+          }
+        ])
+        .select("id, name, description")
+        .single();
+
+      if (createError) {
+        console.error("Error creating onboarding family", createError);
+        return null;
+      }
+
+      const { data: membershipRows, error: membershipError } = await supabase
+        .from("user_families")
+        .upsert(
+          {
+            family_id: createdFamily.id,
+            user_id: user.id,
+            role: "admin"
+          },
+          { onConflict: "user_id,family_id" }
+        )
+        .select("family_id, role, family:family_id(id, name, description)");
+
+      if (membershipError) {
+        console.error("Error linking onboarding family membership", membershipError);
+      }
+
+      const memberName = resolveMemberName(user);
+      const starterMember = {
+        name: memberName,
+        role: "Parent",
+        age: "",
+        weight: "",
+        med: "Add a medication",
+        medications: [],
+        notes: "",
+        color: colorPalette[0],
+        date_of_birth: ""
+      };
+
+      const { error: memberError } = await supabase.from("family_members").upsert(
+        {
+          family_id: createdFamily.id,
+          name: memberName,
+          role: starterMember.role,
+          age: null,
+          weight: null,
+          med: null,
+          medications: [],
+          notes: null,
+          color: starterMember.color,
+          date_of_birth: null
+        },
+        { onConflict: "family_id,name" }
+      );
+
+      if (memberError) {
+        console.error("Error creating onboarding family member", memberError);
+      }
+
+      await updateUserMetadata({
+        family_id: createdFamily.id,
+        family_name: createdFamily.name || safeName
+      });
+
+      const { error: profileError } = await supabase.from("profiles").upsert({
+        id: user.id,
+        family_name: createdFamily.name || safeName,
+        member_profiles: [starterMember]
+      });
+
+      if (profileError) {
+        console.warn("Error storing onboarding profile", profileError);
+      }
+
+      return {
+        createdFamily,
+        membershipRows: Array.isArray(membershipRows) ? membershipRows : [],
+        starterMember
+      };
+    }
+
     async function requireAuth() {
       const { data, error } = await supabase.auth.getSession();
       if (error) {
@@ -690,7 +808,16 @@
 
       const user = data.session.user;
       currentUser = user;
+      setupJoinRequestSubscription(user.id);
       userFamilies = await fetchUserFamilies(user);
+      if (!userFamilies.length) {
+        const onboarding = await ensureOnboardedFamily(user);
+        if (onboarding?.membershipRows?.length) {
+          userFamilies = onboarding.membershipRows;
+        } else {
+          userFamilies = await fetchUserFamilies(user);
+        }
+      }
       activeMembership = pickFamilyMembership(getFamilyKey(user));
       familyKey = activeMembership?.family_id || getFamilyKey(user);
       renderUserBadge(user);
@@ -709,12 +836,14 @@
       activeMemberIndex = 0;
       renderDashboard(hydrated, activeMemberIndex);
       setupRealtimeSubscriptions(familyKey);
+      await refreshJoinRequests();
+      await refreshLatestJoinRequestStatus();
     }
 
     async function fetchUserFamilies(user) {
       const { data, error } = await supabase
         .from("user_families")
-        .select("family_id, role, family:family_id(id, name, description)")
+        .select("family_id, role, parental_permissions, is_co_admin, family:family_id(id, name, description)")
         .eq("user_id", user.id);
 
       if (error) {
@@ -728,7 +857,242 @@
     function pickFamilyMembership(preferredId) {
       if (!userFamilies?.length) return null;
       const match = preferredId ? userFamilies.find(entry => entry.family_id === preferredId) : null;
-      return match || userFamilies[0];
+      if (match) return match;
+      return userFamilies.find(entry => entry.family_id) || userFamilies[0];
+    }
+
+    function isAdminMembership(membership) {
+      return membership?.role === "admin";
+    }
+
+    function formatRequestTimestamp(timestamp) {
+      if (!timestamp) return "Unknown time";
+      try {
+        return new Date(timestamp).toLocaleString();
+      } catch (error) {
+        console.warn("Unable to format request time", error);
+        return "Unknown time";
+      }
+    }
+
+    async function fetchPendingJoinRequests(targetFamilyId) {
+      if (!targetFamilyId) return [];
+      const { data, error } = await supabase
+        .from("family_join_requests")
+        .select("family_id, requester_user_id, requested_role, status, created_at")
+        .eq("family_id", targetFamilyId)
+        .eq("status", "pending")
+        .order("created_at", { ascending: true });
+
+      if (error) {
+        console.error("Error loading join requests", error);
+        return [];
+      }
+
+      return data ?? [];
+    }
+
+    function renderJoinRequests(requests) {
+      if (!joinRequestsList) return;
+      joinRequestsList.innerHTML = "";
+
+      if (!requests.length) {
+        const emptyState = document.createElement("div");
+        emptyState.className = "request-card";
+        emptyState.textContent = "No pending join requests right now.";
+        joinRequestsList.appendChild(emptyState);
+        return;
+      }
+
+      requests.forEach(request => {
+        const card = document.createElement("div");
+        card.className = "request-card";
+
+        const meta = document.createElement("div");
+        meta.className = "request-meta";
+        meta.innerHTML = `
+          <strong>Requester</strong>
+          <span>${request.requester_user_id}</span>
+          <small>Requested ${request.requested_role} access • ${formatRequestTimestamp(request.created_at)}</small>
+        `;
+
+        const options = document.createElement("div");
+        options.className = "request-options";
+
+        const roleLabel = document.createElement("label");
+        roleLabel.innerHTML = `
+          Role
+          <select>
+            <option value="member">Member</option>
+            <option value="admin">Admin</option>
+          </select>
+        `;
+        const roleSelect = roleLabel.querySelector("select");
+        roleSelect.value = request.requested_role || "member";
+
+        const parentalLabel = document.createElement("label");
+        parentalLabel.innerHTML = `
+          <span>Parental permissions</span>
+          <input type="checkbox" />
+        `;
+        const parentalCheckbox = parentalLabel.querySelector("input");
+
+        const coAdminLabel = document.createElement("label");
+        coAdminLabel.innerHTML = `
+          <span>Co-admin status</span>
+          <input type="checkbox" />
+        `;
+        const coAdminCheckbox = coAdminLabel.querySelector("input");
+
+        options.append(roleLabel, parentalLabel, coAdminLabel);
+
+        const actions = document.createElement("div");
+        actions.className = "request-actions";
+
+        const approveBtn = document.createElement("button");
+        approveBtn.type = "button";
+        approveBtn.textContent = "Accept";
+
+        const denyBtn = document.createElement("button");
+        denyBtn.type = "button";
+        denyBtn.textContent = "Deny";
+
+        approveBtn.addEventListener("click", async () => {
+          await handleJoinRequestDecision(request, "approved", {
+            role: roleSelect.value,
+            parentalPermissions: parentalCheckbox.checked,
+            isCoAdmin: coAdminCheckbox.checked
+          });
+        });
+
+        denyBtn.addEventListener("click", async () => {
+          await handleJoinRequestDecision(request, "denied");
+        });
+
+        actions.append(approveBtn, denyBtn);
+        card.append(meta, options, actions);
+        joinRequestsList.appendChild(card);
+      });
+    }
+
+    async function refreshJoinRequests() {
+      if (!joinRequestsPanel) return;
+      if (!isAdminMembership(activeMembership) || !familyKey) {
+        joinRequestsPanel.hidden = true;
+        return;
+      }
+
+      joinRequestsPanel.hidden = false;
+      if (joinRequestsStatus) {
+        joinRequestsStatus.textContent = "Loading join requests…";
+      }
+      const requests = await fetchPendingJoinRequests(familyKey);
+      renderJoinRequests(requests);
+      if (joinRequestsStatus) {
+        joinRequestsStatus.textContent = requests.length
+          ? `${requests.length} pending request${requests.length === 1 ? "" : "s"}`
+          : "";
+      }
+    }
+
+    async function handleJoinRequestDecision(request, status, options = {}) {
+      if (!request || !request.requester_user_id || !request.family_id) return;
+      if (joinRequestsStatus) {
+        joinRequestsStatus.textContent = status === "approved" ? "Approving request…" : "Denying request…";
+      }
+
+      if (status === "approved") {
+        const { error: membershipError } = await supabase.from("user_families").upsert(
+          {
+            family_id: request.family_id,
+            user_id: request.requester_user_id,
+            role: options.role || request.requested_role || "member",
+            parental_permissions: options.parentalPermissions ?? false,
+            is_co_admin: options.isCoAdmin ?? false
+          },
+          { onConflict: "user_id,family_id" }
+        );
+
+        if (membershipError) {
+          console.error("Error approving request", membershipError);
+          if (joinRequestsStatus) {
+            joinRequestsStatus.textContent = "Could not approve request.";
+          }
+          return;
+        }
+      }
+
+      const { error: requestError } = await supabase
+        .from("family_join_requests")
+        .update({ status })
+        .eq("family_id", request.family_id)
+        .eq("requester_user_id", request.requester_user_id);
+
+      if (requestError) {
+        console.error("Error updating join request", requestError);
+        if (joinRequestsStatus) {
+          joinRequestsStatus.textContent = "Could not update request status.";
+        }
+        return;
+      }
+
+      if (joinRequestsStatus) {
+        joinRequestsStatus.textContent = status === "approved" ? "Request approved." : "Request denied.";
+      }
+      await refreshJoinRequests();
+    }
+
+    async function refreshJoinRequestStatus(targetFamilyId) {
+      if (!currentUser || !joinRequestStatus) return;
+      if (!targetFamilyId) {
+        joinRequestStatus.textContent = "";
+        return;
+      }
+
+      const { data, error } = await supabase
+        .from("family_join_requests")
+        .select("status, requested_role, created_at")
+        .eq("family_id", targetFamilyId)
+        .eq("requester_user_id", currentUser.id)
+        .maybeSingle();
+
+      if (error) {
+        console.error("Error checking join request status", error);
+        return;
+      }
+
+      if (!data) {
+        joinRequestStatus.textContent = "";
+        return;
+      }
+
+      if (data.status === "pending") {
+        joinRequestStatus.textContent = "Join request pending approval.";
+      } else if (data.status === "approved") {
+        joinRequestStatus.textContent = "Join request approved. Refresh to access the family dashboard.";
+      } else {
+        joinRequestStatus.textContent = "Join request denied. Contact the family admin for more info.";
+      }
+    }
+
+    async function refreshLatestJoinRequestStatus() {
+      if (!currentUser || !joinRequestStatus) return;
+      const { data, error } = await supabase
+        .from("family_join_requests")
+        .select("family_id, status, created_at")
+        .eq("requester_user_id", currentUser.id)
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+
+      if (error) {
+        console.error("Error loading latest join request", error);
+        return;
+      }
+
+      if (data?.family_id) {
+        await refreshJoinRequestStatus(data.family_id);
+      }
     }
 
     function normalizeMedications(member) {
@@ -807,23 +1171,19 @@
       return {
         name: resolvedName,
         tagline: defaultFamily.tagline,
-        members: normalizedShared.length
-          ? normalizedShared
-          : Array.isArray(hydratedProfile?.member_profiles) && hydratedProfile.member_profiles.length
-          ? hydratedProfile.member_profiles.map(normalizeMember)
-          : defaultFamily.members.map(normalizeMember)
+        members: normalizedShared
       };
     }
 
     function getFamilyKey(user) {
-      return user?.user_metadata?.family_id || user?.id || "";
+      return user?.user_metadata?.family_id || activeMembership?.family_id || userFamilies?.[0]?.family_id || "";
     }
 
     async function seedProfile(user) {
       const draftProfile = {
         id: user.id,
         family_name: user.user_metadata?.family_name || defaultFamily.name,
-        member_profiles: defaultFamily.members
+        member_profiles: []
       };
 
       const { data, error } = await supabase.from("profiles").upsert(draftProfile).select().single();
@@ -860,6 +1220,7 @@
 
     function renderDashboard(family, preferredIndex = 0) {
       const nameEl = document.getElementById("familyName");
+      const familyMembersTitle = document.getElementById("familyMembersTitle");
       const taglineEl = document.getElementById("familyTagline");
       const countEl = document.getElementById("memberCount");
       const grid = document.getElementById("familyGrid");
@@ -873,6 +1234,9 @@
         familyKeyInput.value = familyKey;
       }
       nameEl.textContent = family.name;
+      if (familyMembersTitle) {
+        familyMembersTitle.textContent = family.name;
+      }
       taglineEl.textContent = family.tagline;
       countEl.textContent = `${family.members.length} member${family.members.length === 1 ? "" : "s"}`;
       editMemberBtn.disabled = !family.members.length;
@@ -883,6 +1247,8 @@
       if (!family.members.length) {
         activeHint.textContent = "Add a member to get started";
         closeDetailView();
+        populateDetails(null);
+        editForm.hidden = true;
         return;
       }
 
@@ -1026,11 +1392,59 @@
           { event: "*", schema: "public", table: "families", filter: `id=eq.${familyId}` },
           scheduleRealtimeRefresh
         )
+        .on(
+          "postgres_changes",
+          { event: "*", schema: "public", table: "family_join_requests", filter: `family_id=eq.${familyId}` },
+          () => {
+            refreshJoinRequests();
+          }
+        )
+        .subscribe();
+    }
+
+    function setupJoinRequestSubscription(userId) {
+      if (joinRequestChannel) {
+        supabase.removeChannel(joinRequestChannel);
+        joinRequestChannel = null;
+      }
+      if (!userId) return;
+      joinRequestChannel = supabase
+        .channel(`join-requests-${userId}`)
+        .on(
+          "postgres_changes",
+          { event: "*", schema: "public", table: "family_join_requests", filter: `requester_user_id=eq.${userId}` },
+          payload => {
+            const familyId = payload?.new?.family_id || payload?.old?.family_id;
+            if (familyId) {
+              refreshJoinRequestStatus(familyId);
+            }
+          }
+        )
         .subscribe();
     }
 
     function populateDetails(member) {
       const container = document.getElementById("memberDetails");
+      if (!member) {
+        container.querySelector('[data-field="age"]').textContent = "—";
+        container.querySelector('[data-field="weight"]').textContent = "—";
+        container.querySelector('[data-field="med"]').textContent = "—";
+        container.querySelector('[data-field="dob"]').textContent = "—";
+        container.querySelector('[data-field="notes"]').textContent = "No family members yet.";
+
+        if (!editForm.hidden) {
+          nameInput.value = "";
+          roleInput.value = "";
+          ageInput.value = "";
+          weightInput.value = "";
+          medInput.value = "";
+          medicationsInput.value = "";
+          dobInput.value = "";
+          notesInput.value = "";
+        }
+        return;
+      }
+
       container.querySelector('[data-field="age"]').textContent = member.age ?? "—";
       container.querySelector('[data-field="weight"]').textContent = member.weight ?? "—";
       const meds = normalizeMedications(member);
@@ -1106,61 +1520,34 @@
         return;
       }
 
-      const { error: membershipError } = await supabase
-        .from("user_families")
-        .upsert({
-          family_id: safeKey,
-          user_id: currentUser.id,
-          role: "member"
-        }, { onConflict: "user_id,family_id" });
+      const { error: requestError } = await supabase
+        .from("family_join_requests")
+        .upsert(
+          {
+            family_id: safeKey,
+            requester_user_id: currentUser.id,
+            requested_role: "member",
+            status: "pending"
+          },
+          { onConflict: "family_id,requester_user_id" }
+        );
 
-      if (membershipError) {
-        console.error("Error joining family", membershipError);
-        familyStatus.textContent = "Could not join family.";
+      if (requestError) {
+        console.error("Error requesting to join family", requestError);
+        familyStatus.textContent = "Could not request to join family.";
         return;
       }
 
-      userFamilies = await fetchUserFamilies(currentUser);
-      activeMembership = pickFamilyMembership(safeKey);
-      familyKey = activeMembership?.family_id || safeKey;
-
-      const safeName = familyRecord.name || (targetName || "").trim() || defaultFamily.name;
-      const { error: metadataError } = await updateUserMetadata({
-        family_id: familyKey,
-        family_name: safeName
-      });
-
-      if (metadataError) {
-        familyStatus.textContent = "Could not update family settings.";
-        return;
-      }
-
-      const { error: profileError } = await supabase.from("profiles").upsert({
-        id: currentUser.id,
-        family_name: safeName,
-        member_profiles: currentFamily?.members ?? []
-      });
-
-      if (profileError) {
-        familyStatus.textContent = "Family record did not save.";
-        return;
-      }
-
-      const hydratedUser = {
-        ...currentUser,
-        user_metadata: { ...(currentUser?.user_metadata || {}), family_id: familyKey, family_name: safeName }
-      };
-
-      const syncedFamily = await getFamilyData(hydratedUser, activeMembership);
-      activeMemberIndex = Math.min(activeMemberIndex, Math.max(0, syncedFamily.members.length - 1));
-      renderDashboard(syncedFamily, activeMemberIndex);
-      setupRealtimeSubscriptions(familyKey);
-      familyStatus.textContent = label || "Family synced";
+      familyStatus.textContent = label || "Join request sent.";
+      await refreshJoinRequestStatus(safeKey);
     }
 
     joinFamilyBtn?.addEventListener("click", () => {
       if (!familyKeyInput || !familyNameInput) return;
-      switchFamily(familyKeyInput.value, familyNameInput.value, "Joining family…");
+      switchFamily(familyKeyInput.value, familyNameInput.value, "Requesting to join family…");
+      const requestedFamilyId =
+        familyKeyInput.readOnly ? window.prompt("Enter the family ID you want to join:") : familyKeyInput.value;
+      switchFamily(requestedFamilyId, familyNameInput.value, "Requesting to join family…");
     });
 
     createFamilyBtn?.addEventListener("click", async () => {
