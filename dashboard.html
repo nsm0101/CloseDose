@@ -391,6 +391,42 @@
       border-bottom: 1px solid rgba(255, 255, 255, 0.12);
     }
 
+    .request-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .request-card {
+      background: rgba(255,255,255,0.08);
+      border-radius: 16px;
+      padding: 16px;
+      border: 1px solid rgba(255,255,255,0.14);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .request-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      color: rgba(255,255,255,0.86);
+    }
+
+    .request-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .request-options {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 10px;
+    }
+
     .switch {
       width: 46px;
       height: 26px;
@@ -449,7 +485,7 @@
           <small>Join an existing family or generate a new one.</small>
         </label>
         <div style="display:flex; gap:10px; flex-wrap:wrap;">
-          <button type="button" id="joinFamilyBtn">Join existing family</button>
+          <button type="button" id="joinFamilyBtn">Request to join family</button>
           <button type="button" id="createFamilyBtn">Create new family</button>
         </div>
         <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:8px;">
@@ -457,11 +493,22 @@
           <button type="button" id="copyFamilyBtn">Copy Family ID</button>
         </div>
         <small id="familyStatus" aria-live="polite"></small>
+        <small id="joinRequestStatus" aria-live="polite"></small>
         <small id="inviteStatus" aria-live="polite"></small>
       </div>
     </header>
 
     <main>
+      <section class="panel" id="joinRequestsPanel" aria-labelledby="join-requests-title" hidden>
+        <div class="panel-header">
+          <div>
+            <h2 id="join-requests-title">Pending join requests</h2>
+            <small>Review and approve incoming family access requests.</small>
+          </div>
+        </div>
+        <div class="request-list" id="joinRequestsList"></div>
+        <small id="joinRequestsStatus" aria-live="polite"></small>
+      </section>
       <section class="panel" aria-labelledby="family-members-title">
         <div class="panel-header">
           <div>
@@ -584,7 +631,11 @@
     const inviteFamilyBtn = document.getElementById("inviteFamilyBtn");
     const copyFamilyBtn = document.getElementById("copyFamilyBtn");
     const familyStatus = document.getElementById("familyStatus");
+    const joinRequestStatus = document.getElementById("joinRequestStatus");
     const inviteStatus = document.getElementById("inviteStatus");
+    const joinRequestsPanel = document.getElementById("joinRequestsPanel");
+    const joinRequestsList = document.getElementById("joinRequestsList");
+    const joinRequestsStatus = document.getElementById("joinRequestsStatus");
     const editForm = document.getElementById("editForm");
     const nameInput = document.getElementById("nameInput");
     const roleInput = document.getElementById("roleInput");
@@ -604,6 +655,7 @@
     let userFamilies = [];
     let activeMembership = null;
     let familyChannel = null;
+    let joinRequestChannel = null;
     let realtimeRefreshTimeout = null;
 
     const colorPalette = ["#0d8f8a", "#0a74c1", "#d94f70", "#f3a847", "#8a5cf6", "#3a6fb0", "#28a745"];
@@ -688,6 +740,7 @@
 
       const user = data.session.user;
       currentUser = user;
+      setupJoinRequestSubscription(user.id);
       userFamilies = await fetchUserFamilies(user);
       activeMembership = pickFamilyMembership(getFamilyKey(user));
       familyKey = activeMembership?.family_id || getFamilyKey(user);
@@ -707,12 +760,14 @@
       activeMemberIndex = 0;
       renderDashboard(hydrated, activeMemberIndex);
       setupRealtimeSubscriptions(familyKey);
+      await refreshJoinRequests();
+      await refreshLatestJoinRequestStatus();
     }
 
     async function fetchUserFamilies(user) {
       const { data, error } = await supabase
         .from("user_families")
-        .select("family_id, role, family:family_id(id, name, description)")
+        .select("family_id, role, parental_permissions, is_co_admin, family:family_id(id, name, description)")
         .eq("user_id", user.id);
 
       if (error) {
@@ -727,6 +782,240 @@
       if (!userFamilies?.length) return null;
       const match = preferredId ? userFamilies.find(entry => entry.family_id === preferredId) : null;
       return match || userFamilies[0];
+    }
+
+    function isAdminMembership(membership) {
+      return membership?.role === "admin";
+    }
+
+    function formatRequestTimestamp(timestamp) {
+      if (!timestamp) return "Unknown time";
+      try {
+        return new Date(timestamp).toLocaleString();
+      } catch (error) {
+        console.warn("Unable to format request time", error);
+        return "Unknown time";
+      }
+    }
+
+    async function fetchPendingJoinRequests(targetFamilyId) {
+      if (!targetFamilyId) return [];
+      const { data, error } = await supabase
+        .from("family_join_requests")
+        .select("family_id, requester_user_id, requested_role, status, created_at")
+        .eq("family_id", targetFamilyId)
+        .eq("status", "pending")
+        .order("created_at", { ascending: true });
+
+      if (error) {
+        console.error("Error loading join requests", error);
+        return [];
+      }
+
+      return data ?? [];
+    }
+
+    function renderJoinRequests(requests) {
+      if (!joinRequestsList) return;
+      joinRequestsList.innerHTML = "";
+
+      if (!requests.length) {
+        const emptyState = document.createElement("div");
+        emptyState.className = "request-card";
+        emptyState.textContent = "No pending join requests right now.";
+        joinRequestsList.appendChild(emptyState);
+        return;
+      }
+
+      requests.forEach(request => {
+        const card = document.createElement("div");
+        card.className = "request-card";
+
+        const meta = document.createElement("div");
+        meta.className = "request-meta";
+        meta.innerHTML = `
+          <strong>Requester</strong>
+          <span>${request.requester_user_id}</span>
+          <small>Requested ${request.requested_role} access • ${formatRequestTimestamp(request.created_at)}</small>
+        `;
+
+        const options = document.createElement("div");
+        options.className = "request-options";
+
+        const roleLabel = document.createElement("label");
+        roleLabel.innerHTML = `
+          Role
+          <select>
+            <option value="member">Member</option>
+            <option value="admin">Admin</option>
+          </select>
+        `;
+        const roleSelect = roleLabel.querySelector("select");
+        roleSelect.value = request.requested_role || "member";
+
+        const parentalLabel = document.createElement("label");
+        parentalLabel.innerHTML = `
+          <span>Parental permissions</span>
+          <input type="checkbox" />
+        `;
+        const parentalCheckbox = parentalLabel.querySelector("input");
+
+        const coAdminLabel = document.createElement("label");
+        coAdminLabel.innerHTML = `
+          <span>Co-admin status</span>
+          <input type="checkbox" />
+        `;
+        const coAdminCheckbox = coAdminLabel.querySelector("input");
+
+        options.append(roleLabel, parentalLabel, coAdminLabel);
+
+        const actions = document.createElement("div");
+        actions.className = "request-actions";
+
+        const approveBtn = document.createElement("button");
+        approveBtn.type = "button";
+        approveBtn.textContent = "Accept";
+
+        const denyBtn = document.createElement("button");
+        denyBtn.type = "button";
+        denyBtn.textContent = "Deny";
+
+        approveBtn.addEventListener("click", async () => {
+          await handleJoinRequestDecision(request, "approved", {
+            role: roleSelect.value,
+            parentalPermissions: parentalCheckbox.checked,
+            isCoAdmin: coAdminCheckbox.checked
+          });
+        });
+
+        denyBtn.addEventListener("click", async () => {
+          await handleJoinRequestDecision(request, "denied");
+        });
+
+        actions.append(approveBtn, denyBtn);
+        card.append(meta, options, actions);
+        joinRequestsList.appendChild(card);
+      });
+    }
+
+    async function refreshJoinRequests() {
+      if (!joinRequestsPanel) return;
+      if (!isAdminMembership(activeMembership) || !familyKey) {
+        joinRequestsPanel.hidden = true;
+        return;
+      }
+
+      joinRequestsPanel.hidden = false;
+      if (joinRequestsStatus) {
+        joinRequestsStatus.textContent = "Loading join requests…";
+      }
+      const requests = await fetchPendingJoinRequests(familyKey);
+      renderJoinRequests(requests);
+      if (joinRequestsStatus) {
+        joinRequestsStatus.textContent = requests.length
+          ? `${requests.length} pending request${requests.length === 1 ? "" : "s"}`
+          : "";
+      }
+    }
+
+    async function handleJoinRequestDecision(request, status, options = {}) {
+      if (!request || !request.requester_user_id || !request.family_id) return;
+      if (joinRequestsStatus) {
+        joinRequestsStatus.textContent = status === "approved" ? "Approving request…" : "Denying request…";
+      }
+
+      if (status === "approved") {
+        const { error: membershipError } = await supabase.from("user_families").upsert(
+          {
+            family_id: request.family_id,
+            user_id: request.requester_user_id,
+            role: options.role || request.requested_role || "member",
+            parental_permissions: options.parentalPermissions ?? false,
+            is_co_admin: options.isCoAdmin ?? false
+          },
+          { onConflict: "user_id,family_id" }
+        );
+
+        if (membershipError) {
+          console.error("Error approving request", membershipError);
+          if (joinRequestsStatus) {
+            joinRequestsStatus.textContent = "Could not approve request.";
+          }
+          return;
+        }
+      }
+
+      const { error: requestError } = await supabase
+        .from("family_join_requests")
+        .update({ status })
+        .eq("family_id", request.family_id)
+        .eq("requester_user_id", request.requester_user_id);
+
+      if (requestError) {
+        console.error("Error updating join request", requestError);
+        if (joinRequestsStatus) {
+          joinRequestsStatus.textContent = "Could not update request status.";
+        }
+        return;
+      }
+
+      if (joinRequestsStatus) {
+        joinRequestsStatus.textContent = status === "approved" ? "Request approved." : "Request denied.";
+      }
+      await refreshJoinRequests();
+    }
+
+    async function refreshJoinRequestStatus(targetFamilyId) {
+      if (!currentUser || !joinRequestStatus) return;
+      if (!targetFamilyId) {
+        joinRequestStatus.textContent = "";
+        return;
+      }
+
+      const { data, error } = await supabase
+        .from("family_join_requests")
+        .select("status, requested_role, created_at")
+        .eq("family_id", targetFamilyId)
+        .eq("requester_user_id", currentUser.id)
+        .maybeSingle();
+
+      if (error) {
+        console.error("Error checking join request status", error);
+        return;
+      }
+
+      if (!data) {
+        joinRequestStatus.textContent = "";
+        return;
+      }
+
+      if (data.status === "pending") {
+        joinRequestStatus.textContent = "Join request pending approval.";
+      } else if (data.status === "approved") {
+        joinRequestStatus.textContent = "Join request approved. Refresh to access the family dashboard.";
+      } else {
+        joinRequestStatus.textContent = "Join request denied. Contact the family admin for more info.";
+      }
+    }
+
+    async function refreshLatestJoinRequestStatus() {
+      if (!currentUser || !joinRequestStatus) return;
+      const { data, error } = await supabase
+        .from("family_join_requests")
+        .select("family_id, status, created_at")
+        .eq("requester_user_id", currentUser.id)
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+
+      if (error) {
+        console.error("Error loading latest join request", error);
+        return;
+      }
+
+      if (data?.family_id) {
+        await refreshJoinRequestStatus(data.family_id);
+      }
     }
 
     function normalizeMedications(member) {
@@ -1015,6 +1304,34 @@
           { event: "*", schema: "public", table: "families", filter: `id=eq.${familyId}` },
           scheduleRealtimeRefresh
         )
+        .on(
+          "postgres_changes",
+          { event: "*", schema: "public", table: "family_join_requests", filter: `family_id=eq.${familyId}` },
+          () => {
+            refreshJoinRequests();
+          }
+        )
+        .subscribe();
+    }
+
+    function setupJoinRequestSubscription(userId) {
+      if (joinRequestChannel) {
+        supabase.removeChannel(joinRequestChannel);
+        joinRequestChannel = null;
+      }
+      if (!userId) return;
+      joinRequestChannel = supabase
+        .channel(`join-requests-${userId}`)
+        .on(
+          "postgres_changes",
+          { event: "*", schema: "public", table: "family_join_requests", filter: `requester_user_id=eq.${userId}` },
+          payload => {
+            const familyId = payload?.new?.family_id || payload?.old?.family_id;
+            if (familyId) {
+              refreshJoinRequestStatus(familyId);
+            }
+          }
+        )
         .subscribe();
     }
 
@@ -1100,61 +1417,31 @@
         return;
       }
 
-      const { error: membershipError } = await supabase
-        .from("user_families")
-        .upsert({
-          family_id: safeKey,
-          user_id: currentUser.id,
-          role: "member"
-        }, { onConflict: "user_id,family_id" });
+      const { error: requestError } = await supabase
+        .from("family_join_requests")
+        .upsert(
+          {
+            family_id: safeKey,
+            requester_user_id: currentUser.id,
+            requested_role: "member",
+            status: "pending"
+          },
+          { onConflict: "family_id,requester_user_id" }
+        );
 
-      if (membershipError) {
-        console.error("Error joining family", membershipError);
-        familyStatus.textContent = "Could not join family.";
+      if (requestError) {
+        console.error("Error requesting to join family", requestError);
+        familyStatus.textContent = "Could not request to join family.";
         return;
       }
 
-      userFamilies = await fetchUserFamilies(currentUser);
-      activeMembership = pickFamilyMembership(safeKey);
-      familyKey = activeMembership?.family_id || safeKey;
-
-      const safeName = familyRecord.name || (targetName || "").trim() || defaultFamily.name;
-      const { error: metadataError } = await updateUserMetadata({
-        family_id: familyKey,
-        family_name: safeName
-      });
-
-      if (metadataError) {
-        familyStatus.textContent = "Could not update family settings.";
-        return;
-      }
-
-      const { error: profileError } = await supabase.from("profiles").upsert({
-        id: currentUser.id,
-        family_name: safeName,
-        member_profiles: currentFamily?.members ?? []
-      });
-
-      if (profileError) {
-        familyStatus.textContent = "Family record did not save.";
-        return;
-      }
-
-      const hydratedUser = {
-        ...currentUser,
-        user_metadata: { ...(currentUser?.user_metadata || {}), family_id: familyKey, family_name: safeName }
-      };
-
-      const syncedFamily = await getFamilyData(hydratedUser, activeMembership);
-      activeMemberIndex = Math.min(activeMemberIndex, Math.max(0, syncedFamily.members.length - 1));
-      renderDashboard(syncedFamily, activeMemberIndex);
-      setupRealtimeSubscriptions(familyKey);
-      familyStatus.textContent = label || "Family synced";
+      familyStatus.textContent = label || "Join request sent.";
+      await refreshJoinRequestStatus(safeKey);
     }
 
     joinFamilyBtn?.addEventListener("click", () => {
       if (!familyKeyInput || !familyNameInput) return;
-      switchFamily(familyKeyInput.value, familyNameInput.value, "Joining family…");
+      switchFamily(familyKeyInput.value, familyNameInput.value, "Requesting to join family…");
     });
 
     createFamilyBtn?.addEventListener("click", async () => {
