@@ -85,34 +85,6 @@
       flex-wrap: wrap;
     }
 
-    .family-controls {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 10px;
-      margin-top: 12px;
-      align-items: end;
-    }
-
-    .family-controls label {
-      display: grid;
-      gap: 6px;
-      font-weight: 700;
-      color: #0a1d2b;
-    }
-
-    .family-controls input {
-      border-radius: 12px;
-      border: 1px solid var(--border);
-      padding: 10px 12px;
-      font-family: inherit;
-      font-size: 1rem;
-    }
-
-    .family-controls small {
-      color: var(--muted);
-      font-weight: 600;
-    }
-
     .auth-chip {
       display: inline-flex;
       align-items: center;
@@ -382,13 +354,37 @@
     .settings-drawer h3 { margin: 0 0 8px; }
     .settings-drawer p { margin: 0 0 10px; color: rgba(255,255,255,0.76); }
 
-    .toggle-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+    .settings-menu {
+      display: grid;
       gap: 12px;
-      padding: 10px 0;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .settings-field {
+      display: grid;
+      gap: 6px;
+      font-weight: 700;
+      color: rgba(255, 255, 255, 0.92);
+    }
+
+    .settings-field input {
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      padding: 10px 12px;
+      font-family: inherit;
+      font-size: 0.95rem;
+      color: #0a1d2b;
+    }
+
+    .settings-field small {
+      color: rgba(255,255,255,0.7);
+      font-weight: 600;
+    }
+
+    .settings-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
     }
 
     .request-list {
@@ -435,23 +431,18 @@
       position: relative;
       border: 1px solid rgba(255,255,255,0.2);
       transition: background 0.18s ease;
+    .settings-row .settings-field {
+      flex: 1 1 180px;
     }
 
-    .switch::after {
-      content: '';
-      position: absolute;
-      top: 2px;
-      left: 2px;
-      width: 22px;
-      height: 22px;
-      background: white;
-      border-radius: 50%;
-      transition: transform 0.18s ease;
-      box-shadow: 0 6px 12px rgba(0,0,0,0.25);
+    .settings-actions {
+      display: grid;
+      gap: 8px;
     }
 
-    .switch.on { background: #14cba8; }
-    .switch.on::after { transform: translateX(20px); }
+    .settings-actions button {
+      width: 100%;
+    }
   </style>
 </head>
 <body>
@@ -510,9 +501,13 @@
         <small id="joinRequestsStatus" aria-live="polite"></small>
       </section>
       <section class="panel" aria-labelledby="family-members-title">
+    </header>
+
+    <main>
+      <section class="panel" aria-labelledby="familyMembersTitle">
         <div class="panel-header">
           <div>
-            <h2 id="family-members-title">Family members</h2>
+            <h2 id="familyMembersTitle">Family Group</h2>
             <small>Select who you want to review or update.</small>
           </div>
           <div style="display:flex; align-items:center; gap:12px;">
@@ -593,19 +588,28 @@
   </button>
 
   <div class="settings-drawer" id="settingsDrawer" aria-live="polite">
-    <h3>Dashboard settings</h3>
-    <p>Toggle quick personalization options for each family member.</p>
-    <div class="toggle-row">
-      <span>Highlight prescriptions</span>
-      <span class="switch on" role="presentation"></span>
-    </div>
-    <div class="toggle-row">
-      <span>Show OTC dosing helper</span>
-      <span class="switch on" role="presentation"></span>
-    </div>
-    <div class="toggle-row" style="border-bottom:none;">
-      <span>Compact family grid</span>
-      <span class="switch" role="presentation"></span>
+    <h3>Family settings</h3>
+    <p>Manage family details, invites, and membership requests.</p>
+    <div class="settings-menu">
+      <label class="settings-field">
+        Family name
+        <input id="familyNameInput" type="text" placeholder="Your family or care team" />
+        <small>Shared across every admin in the family.</small>
+      </label>
+      <div class="settings-row">
+        <label class="settings-field">
+          Family ID
+          <input id="familyKeyInput" type="text" readonly />
+        </label>
+        <button type="button" id="copyFamilyBtn">Copy ID</button>
+      </div>
+      <div class="settings-actions">
+        <button type="button" id="createFamilyBtn">Create New Family</button>
+        <button type="button" id="inviteFamilyBtn">Invite Family Members</button>
+        <button type="button" id="joinFamilyBtn">Request to Join Family</button>
+      </div>
+      <small id="familyStatus" aria-live="polite"></small>
+      <small id="inviteStatus" aria-live="polite"></small>
     </div>
   </div>
 
@@ -662,49 +666,7 @@
 
     const defaultFamily = {
       name: "The CloseDose Household",
-      tagline: "Everyone’s dosing guidance in one place.",
-      members: [
-        {
-          name: "Alex",
-          role: "Guardian",
-          age: "34",
-          weight: "—",
-          med: "Keeps family updated",
-          medications: ["Keeps family updated"],
-          notes: "Primary account owner",
-          color: "#0d8f8a"
-        },
-        {
-          name: "Maya",
-          role: "Patient",
-          age: "10",
-          weight: "70 lb",
-          med: "Cetirizine",
-          medications: ["Cetirizine"],
-          notes: "Seasonal allergies",
-          color: "#0a74c1"
-        },
-        {
-          name: "Leo",
-          role: "Patient",
-          age: "6",
-          weight: "45 lb",
-          med: "Albuterol",
-          medications: ["Albuterol"],
-          notes: "Use spacer as instructed",
-          color: "#d94f70"
-        },
-        {
-          name: "Ella",
-          role: "Patient",
-          age: "2",
-          weight: "24 lb",
-          med: "Acetaminophen",
-          medications: ["Acetaminophen"],
-          notes: "Use weight-based dosing",
-          color: "#f3a847"
-        }
-      ]
+      tagline: "Everyone’s dosing guidance in one place."
     };
 
     function generateFamilyId() {
@@ -726,6 +688,110 @@
       return { error: null };
     }
 
+    function resolveMemberName(user) {
+      const metadata = user?.user_metadata || {};
+      const composedName = [metadata.first_name, metadata.last_name].filter(Boolean).join(" ").trim();
+      const candidate =
+        metadata.full_name || metadata.name || metadata.display_name || composedName || user?.email || "";
+      if (!candidate) {
+        return "Primary caregiver";
+      }
+      if (candidate.includes("@")) {
+        return candidate.split("@")[0] || candidate;
+      }
+      return candidate;
+    }
+
+    async function ensureOnboardedFamily(user) {
+      const safeName = user.user_metadata?.family_name || defaultFamily.name;
+      const { data: createdFamily, error: createError } = await supabase
+        .from("families")
+        .insert([
+          {
+            name: safeName,
+            description: "Created during onboarding",
+            created_by_user_id: user.id
+          }
+        ])
+        .select("id, name, description")
+        .single();
+
+      if (createError) {
+        console.error("Error creating onboarding family", createError);
+        return null;
+      }
+
+      const { data: membershipRows, error: membershipError } = await supabase
+        .from("user_families")
+        .upsert(
+          {
+            family_id: createdFamily.id,
+            user_id: user.id,
+            role: "admin"
+          },
+          { onConflict: "user_id,family_id" }
+        )
+        .select("family_id, role, family:family_id(id, name, description)");
+
+      if (membershipError) {
+        console.error("Error linking onboarding family membership", membershipError);
+      }
+
+      const memberName = resolveMemberName(user);
+      const starterMember = {
+        name: memberName,
+        role: "Parent",
+        age: "",
+        weight: "",
+        med: "Add a medication",
+        medications: [],
+        notes: "",
+        color: colorPalette[0],
+        date_of_birth: ""
+      };
+
+      const { error: memberError } = await supabase.from("family_members").upsert(
+        {
+          family_id: createdFamily.id,
+          name: memberName,
+          role: starterMember.role,
+          age: null,
+          weight: null,
+          med: null,
+          medications: [],
+          notes: null,
+          color: starterMember.color,
+          date_of_birth: null
+        },
+        { onConflict: "family_id,name" }
+      );
+
+      if (memberError) {
+        console.error("Error creating onboarding family member", memberError);
+      }
+
+      await updateUserMetadata({
+        family_id: createdFamily.id,
+        family_name: createdFamily.name || safeName
+      });
+
+      const { error: profileError } = await supabase.from("profiles").upsert({
+        id: user.id,
+        family_name: createdFamily.name || safeName,
+        member_profiles: [starterMember]
+      });
+
+      if (profileError) {
+        console.warn("Error storing onboarding profile", profileError);
+      }
+
+      return {
+        createdFamily,
+        membershipRows: Array.isArray(membershipRows) ? membershipRows : [],
+        starterMember
+      };
+    }
+
     async function requireAuth() {
       const { data, error } = await supabase.auth.getSession();
       if (error) {
@@ -742,6 +808,14 @@
       currentUser = user;
       setupJoinRequestSubscription(user.id);
       userFamilies = await fetchUserFamilies(user);
+      if (!userFamilies.length) {
+        const onboarding = await ensureOnboardedFamily(user);
+        if (onboarding?.membershipRows?.length) {
+          userFamilies = onboarding.membershipRows;
+        } else {
+          userFamilies = await fetchUserFamilies(user);
+        }
+      }
       activeMembership = pickFamilyMembership(getFamilyKey(user));
       familyKey = activeMembership?.family_id || getFamilyKey(user);
       renderUserBadge(user);
@@ -781,7 +855,8 @@
     function pickFamilyMembership(preferredId) {
       if (!userFamilies?.length) return null;
       const match = preferredId ? userFamilies.find(entry => entry.family_id === preferredId) : null;
-      return match || userFamilies[0];
+      if (match) return match;
+      return userFamilies.find(entry => entry.family_id) || userFamilies[0];
     }
 
     function isAdminMembership(membership) {
@@ -1094,23 +1169,19 @@
       return {
         name: resolvedName,
         tagline: defaultFamily.tagline,
-        members: normalizedShared.length
-          ? normalizedShared
-          : Array.isArray(hydratedProfile?.member_profiles) && hydratedProfile.member_profiles.length
-          ? hydratedProfile.member_profiles.map(normalizeMember)
-          : defaultFamily.members.map(normalizeMember)
+        members: normalizedShared
       };
     }
 
     function getFamilyKey(user) {
-      return user?.user_metadata?.family_id || user?.id || "";
+      return user?.user_metadata?.family_id || activeMembership?.family_id || userFamilies?.[0]?.family_id || "";
     }
 
     async function seedProfile(user) {
       const draftProfile = {
         id: user.id,
         family_name: user.user_metadata?.family_name || defaultFamily.name,
-        member_profiles: defaultFamily.members
+        member_profiles: []
       };
 
       const { data, error } = await supabase.from("profiles").upsert(draftProfile).select().single();
@@ -1147,6 +1218,7 @@
 
     function renderDashboard(family, preferredIndex = 0) {
       const nameEl = document.getElementById("familyName");
+      const familyMembersTitle = document.getElementById("familyMembersTitle");
       const taglineEl = document.getElementById("familyTagline");
       const countEl = document.getElementById("memberCount");
       const grid = document.getElementById("familyGrid");
@@ -1160,6 +1232,9 @@
         familyKeyInput.value = familyKey;
       }
       nameEl.textContent = family.name;
+      if (familyMembersTitle) {
+        familyMembersTitle.textContent = family.name;
+      }
       taglineEl.textContent = family.tagline;
       countEl.textContent = `${family.members.length} member${family.members.length === 1 ? "" : "s"}`;
       editMemberBtn.disabled = !family.members.length;
@@ -1169,7 +1244,7 @@
 
       if (!family.members.length) {
         activeHint.textContent = "Add a member to get started";
-        populateDetails({ age: "—", weight: "—", med: "—", notes: "No family members yet." });
+        populateDetails(null);
         editForm.hidden = true;
         return;
       }
@@ -1337,6 +1412,26 @@
 
     function populateDetails(member) {
       const container = document.getElementById("memberDetails");
+      if (!member) {
+        container.querySelector('[data-field="age"]').textContent = "—";
+        container.querySelector('[data-field="weight"]').textContent = "—";
+        container.querySelector('[data-field="med"]').textContent = "—";
+        container.querySelector('[data-field="dob"]').textContent = "—";
+        container.querySelector('[data-field="notes"]').textContent = "No family members yet.";
+
+        if (!editForm.hidden) {
+          nameInput.value = "";
+          roleInput.value = "";
+          ageInput.value = "";
+          weightInput.value = "";
+          medInput.value = "";
+          medicationsInput.value = "";
+          dobInput.value = "";
+          notesInput.value = "";
+        }
+        return;
+      }
+
       container.querySelector('[data-field="age"]').textContent = member.age ?? "—";
       container.querySelector('[data-field="weight"]').textContent = member.weight ?? "—";
       const meds = normalizeMedications(member);
@@ -1442,6 +1537,9 @@
     joinFamilyBtn?.addEventListener("click", () => {
       if (!familyKeyInput || !familyNameInput) return;
       switchFamily(familyKeyInput.value, familyNameInput.value, "Requesting to join family…");
+      const requestedFamilyId =
+        familyKeyInput.readOnly ? window.prompt("Enter the family ID you want to join:") : familyKeyInput.value;
+      switchFamily(requestedFamilyId, familyNameInput.value, "Requesting to join family…");
     });
 
     createFamilyBtn?.addEventListener("click", async () => {
