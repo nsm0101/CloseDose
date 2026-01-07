@@ -674,6 +674,110 @@
       return { error: null };
     }
 
+    function resolveMemberName(user) {
+      const metadata = user?.user_metadata || {};
+      const composedName = [metadata.first_name, metadata.last_name].filter(Boolean).join(" ").trim();
+      const candidate =
+        metadata.full_name || metadata.name || metadata.display_name || composedName || user?.email || "";
+      if (!candidate) {
+        return "Primary caregiver";
+      }
+      if (candidate.includes("@")) {
+        return candidate.split("@")[0] || candidate;
+      }
+      return candidate;
+    }
+
+    async function ensureOnboardedFamily(user) {
+      const safeName = user.user_metadata?.family_name || defaultFamily.name;
+      const { data: createdFamily, error: createError } = await supabase
+        .from("families")
+        .insert([
+          {
+            name: safeName,
+            description: "Created during onboarding",
+            created_by_user_id: user.id
+          }
+        ])
+        .select("id, name, description")
+        .single();
+
+      if (createError) {
+        console.error("Error creating onboarding family", createError);
+        return null;
+      }
+
+      const { data: membershipRows, error: membershipError } = await supabase
+        .from("user_families")
+        .upsert(
+          {
+            family_id: createdFamily.id,
+            user_id: user.id,
+            role: "admin"
+          },
+          { onConflict: "user_id,family_id" }
+        )
+        .select("family_id, role, family:family_id(id, name, description)");
+
+      if (membershipError) {
+        console.error("Error linking onboarding family membership", membershipError);
+      }
+
+      const memberName = resolveMemberName(user);
+      const starterMember = {
+        name: memberName,
+        role: "Parent",
+        age: "",
+        weight: "",
+        med: "Add a medication",
+        medications: [],
+        notes: "",
+        color: colorPalette[0],
+        date_of_birth: ""
+      };
+
+      const { error: memberError } = await supabase.from("family_members").upsert(
+        {
+          family_id: createdFamily.id,
+          name: memberName,
+          role: starterMember.role,
+          age: null,
+          weight: null,
+          med: null,
+          medications: [],
+          notes: null,
+          color: starterMember.color,
+          date_of_birth: null
+        },
+        { onConflict: "family_id,name" }
+      );
+
+      if (memberError) {
+        console.error("Error creating onboarding family member", memberError);
+      }
+
+      await updateUserMetadata({
+        family_id: createdFamily.id,
+        family_name: createdFamily.name || safeName
+      });
+
+      const { error: profileError } = await supabase.from("profiles").upsert({
+        id: user.id,
+        family_name: createdFamily.name || safeName,
+        member_profiles: [starterMember]
+      });
+
+      if (profileError) {
+        console.warn("Error storing onboarding profile", profileError);
+      }
+
+      return {
+        createdFamily,
+        membershipRows: Array.isArray(membershipRows) ? membershipRows : [],
+        starterMember
+      };
+    }
+
     async function requireAuth() {
       const { data, error } = await supabase.auth.getSession();
       if (error) {
@@ -689,6 +793,14 @@
       const user = data.session.user;
       currentUser = user;
       userFamilies = await fetchUserFamilies(user);
+      if (!userFamilies.length) {
+        const onboarding = await ensureOnboardedFamily(user);
+        if (onboarding?.membershipRows?.length) {
+          userFamilies = onboarding.membershipRows;
+        } else {
+          userFamilies = await fetchUserFamilies(user);
+        }
+      }
       activeMembership = pickFamilyMembership(getFamilyKey(user));
       familyKey = activeMembership?.family_id || getFamilyKey(user);
       renderUserBadge(user);
@@ -726,7 +838,8 @@
     function pickFamilyMembership(preferredId) {
       if (!userFamilies?.length) return null;
       const match = preferredId ? userFamilies.find(entry => entry.family_id === preferredId) : null;
-      return match || userFamilies[0];
+      if (match) return match;
+      return userFamilies.find(entry => entry.family_id) || userFamilies[0];
     }
 
     function normalizeMedications(member) {
@@ -814,7 +927,7 @@
     }
 
     function getFamilyKey(user) {
-      return user?.user_metadata?.family_id || user?.id || "";
+      return user?.user_metadata?.family_id || activeMembership?.family_id || userFamilies?.[0]?.family_id || "";
     }
 
     async function seedProfile(user) {
