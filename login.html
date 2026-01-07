@@ -53,6 +53,23 @@
       gap: 6px;
     }
 
+    .cappy-badge {
+      width: clamp(64px, 12vw, 80px);
+      height: clamp(64px, 12vw, 80px);
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      background: white;
+      overflow: hidden;
+      box-shadow: 0 16px 32px rgba(0, 0, 0, 0.2);
+    }
+
+    .cappy-badge img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
     header h1 {
       margin: 0;
       font-size: clamp(1.6rem, 3vw, 2rem);
@@ -138,6 +155,9 @@
 <body>
   <div class="card">
     <header>
+      <div class="cappy-badge" aria-hidden="true">
+        <img src="cappy/assets/Cappy circle.png" alt="" />
+      </div>
       <h1>Welcome back to CloseDose</h1>
       <p>Sign in or create an account to access your family dashboard.</p>
     </header>
