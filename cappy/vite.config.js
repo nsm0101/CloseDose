@@ -10,6 +10,8 @@ export default defineConfig({
       input: {
         scan: resolve(__dirname, "src/pages/scan/index.html"),
         login: resolve(__dirname, "src/pages/login/index.html"),
+        auth: resolve(__dirname, "src/pages/auth/index.html"),
+        onboarding: resolve(__dirname, "src/pages/onboarding/index.html"),
         app: resolve(__dirname, "src/pages/app/index.html"),
       },
     },
