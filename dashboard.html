@@ -85,34 +85,6 @@
       flex-wrap: wrap;
     }
 
-    .family-controls {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 10px;
-      margin-top: 12px;
-      align-items: end;
-    }
-
-    .family-controls label {
-      display: grid;
-      gap: 6px;
-      font-weight: 700;
-      color: #0a1d2b;
-    }
-
-    .family-controls input {
-      border-radius: 12px;
-      border: 1px solid var(--border);
-      padding: 10px 12px;
-      font-family: inherit;
-      font-size: 1rem;
-    }
-
-    .family-controls small {
-      color: var(--muted);
-      font-weight: 600;
-    }
-
     .auth-chip {
       display: inline-flex;
       align-items: center;
@@ -382,40 +354,51 @@
     .settings-drawer h3 { margin: 0 0 8px; }
     .settings-drawer p { margin: 0 0 10px; color: rgba(255,255,255,0.76); }
 
-    .toggle-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+    .settings-menu {
+      display: grid;
       gap: 12px;
-      padding: 10px 0;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
     }
 
-    .switch {
-      width: 46px;
-      height: 26px;
-      background: rgba(255,255,255,0.18);
-      border-radius: 999px;
-      position: relative;
-      border: 1px solid rgba(255,255,255,0.2);
-      transition: background 0.18s ease;
+    .settings-field {
+      display: grid;
+      gap: 6px;
+      font-weight: 700;
+      color: rgba(255, 255, 255, 0.92);
     }
 
-    .switch::after {
-      content: '';
-      position: absolute;
-      top: 2px;
-      left: 2px;
-      width: 22px;
-      height: 22px;
-      background: white;
-      border-radius: 50%;
-      transition: transform 0.18s ease;
-      box-shadow: 0 6px 12px rgba(0,0,0,0.25);
+    .settings-field input {
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      padding: 10px 12px;
+      font-family: inherit;
+      font-size: 0.95rem;
+      color: #0a1d2b;
     }
 
-    .switch.on { background: #14cba8; }
-    .switch.on::after { transform: translateX(20px); }
+    .settings-field small {
+      color: rgba(255,255,255,0.7);
+      font-weight: 600;
+    }
+
+    .settings-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .settings-row .settings-field {
+      flex: 1 1 180px;
+    }
+
+    .settings-actions {
+      display: grid;
+      gap: 8px;
+    }
+
+    .settings-actions button {
+      width: 100%;
+    }
   </style>
 </head>
 <body>
@@ -437,35 +420,13 @@
           <button class="signout-btn" type="button" id="signOutBtn">Sign out</button>
         </div>
       </div>
-      <div class="family-controls">
-        <label>
-          Family name
-          <input id="familyNameInput" type="text" placeholder="Your family or care team" />
-          <small>Shared across every admin in the family.</small>
-        </label>
-        <label>
-          Family ID
-          <input id="familyKeyInput" type="text" placeholder="Invite code or family ID" />
-          <small>Join an existing family or generate a new one.</small>
-        </label>
-        <div style="display:flex; gap:10px; flex-wrap:wrap;">
-          <button type="button" id="joinFamilyBtn">Join existing family</button>
-          <button type="button" id="createFamilyBtn">Create new family</button>
-        </div>
-        <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:8px;">
-          <button type="button" id="inviteFamilyBtn">Invite Family Member to Dashboard</button>
-          <button type="button" id="copyFamilyBtn">Copy Family ID</button>
-        </div>
-        <small id="familyStatus" aria-live="polite"></small>
-        <small id="inviteStatus" aria-live="polite"></small>
-      </div>
     </header>
 
     <main>
-      <section class="panel" aria-labelledby="family-members-title">
+      <section class="panel" aria-labelledby="familyMembersTitle">
         <div class="panel-header">
           <div>
-            <h2 id="family-members-title">Family members</h2>
+            <h2 id="familyMembersTitle">Family Group</h2>
             <small>Select who you want to review or update.</small>
           </div>
           <div style="display:flex; align-items:center; gap:12px;">
@@ -546,19 +507,28 @@
   </button>
 
   <div class="settings-drawer" id="settingsDrawer" aria-live="polite">
-    <h3>Dashboard settings</h3>
-    <p>Toggle quick personalization options for each family member.</p>
-    <div class="toggle-row">
-      <span>Highlight prescriptions</span>
-      <span class="switch on" role="presentation"></span>
-    </div>
-    <div class="toggle-row">
-      <span>Show OTC dosing helper</span>
-      <span class="switch on" role="presentation"></span>
-    </div>
-    <div class="toggle-row" style="border-bottom:none;">
-      <span>Compact family grid</span>
-      <span class="switch" role="presentation"></span>
+    <h3>Family settings</h3>
+    <p>Manage family details, invites, and membership requests.</p>
+    <div class="settings-menu">
+      <label class="settings-field">
+        Family name
+        <input id="familyNameInput" type="text" placeholder="Your family or care team" />
+        <small>Shared across every admin in the family.</small>
+      </label>
+      <div class="settings-row">
+        <label class="settings-field">
+          Family ID
+          <input id="familyKeyInput" type="text" readonly />
+        </label>
+        <button type="button" id="copyFamilyBtn">Copy ID</button>
+      </div>
+      <div class="settings-actions">
+        <button type="button" id="createFamilyBtn">Create New Family</button>
+        <button type="button" id="inviteFamilyBtn">Invite Family Members</button>
+        <button type="button" id="joinFamilyBtn">Request to Join Family</button>
+      </div>
+      <small id="familyStatus" aria-live="polite"></small>
+      <small id="inviteStatus" aria-live="polite"></small>
     </div>
   </div>
 
@@ -858,6 +828,7 @@
 
     function renderDashboard(family, preferredIndex = 0) {
       const nameEl = document.getElementById("familyName");
+      const familyMembersTitle = document.getElementById("familyMembersTitle");
       const taglineEl = document.getElementById("familyTagline");
       const countEl = document.getElementById("memberCount");
       const grid = document.getElementById("familyGrid");
@@ -871,6 +842,9 @@
         familyKeyInput.value = familyKey;
       }
       nameEl.textContent = family.name;
+      if (familyMembersTitle) {
+        familyMembersTitle.textContent = family.name;
+      }
       taglineEl.textContent = family.tagline;
       countEl.textContent = `${family.members.length} member${family.members.length === 1 ? "" : "s"}`;
       editMemberBtn.disabled = !family.members.length;
@@ -1154,7 +1128,9 @@
 
     joinFamilyBtn?.addEventListener("click", () => {
       if (!familyKeyInput || !familyNameInput) return;
-      switchFamily(familyKeyInput.value, familyNameInput.value, "Joining family…");
+      const requestedFamilyId =
+        familyKeyInput.readOnly ? window.prompt("Enter the family ID you want to join:") : familyKeyInput.value;
+      switchFamily(requestedFamilyId, familyNameInput.value, "Requesting to join family…");
     });
 
     createFamilyBtn?.addEventListener("click", async () => {
