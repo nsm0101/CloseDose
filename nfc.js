@@ -108,7 +108,6 @@
                 <div id="nfc-med-frequency">—</div>
               </div>
             </div>
-            <p id="nfc-med-notes"></p>
           </section>
           <section class="nfc-section">
             <h3>Family member</h3>
@@ -135,19 +134,13 @@
             <h3>NFC tag encoding</h3>
             <div class="nfc-encoding">
               <div>Write a single NDEF Text or MIME record containing JSON:</div>
-              <code>{
-  "version": 1,
-  "medication": {
-    "id": "acetaminophen-160",
-    "brand": "Children's Tylenol",
-    "name": "Acetaminophen",
-    "dosage": "160 mg / 5 mL",
-    "frequency": "Every 4-6 hours",
-    "mgPerKg": 12.5,
-    "otc": true
-  },
-  "notes": "Use provided dosing syringe."
-}</code>
+              <code>{"v":1,"m":{"id":"acet-160","b":"Tylenol","n":"Acetaminophen","d":"160 mg/5 mL","f":"q4-6h","k":12.5,"o":1}}</code>
+              <div style="margin-top: 10px;">
+                Tag info: NTAG215 stores ~504 bytes total. If your writer limits payloads to 215 bytes, keep the JSON under that size.
+              </div>
+              <div style="margin-top: 8px;">
+                Field map: <strong>b</strong>=brand, <strong>n</strong>=name, <strong>d</strong>=dosage, <strong>f</strong>=frequency, <strong>k</strong>=mgPerKg, <strong>o</strong>=otc.
+              </div>
             </div>
           </section>
         </div>
@@ -260,8 +253,7 @@
     const nameEl = document.getElementById('nfc-med-name');
     const dosageEl = document.getElementById('nfc-med-dose');
     const frequencyEl = document.getElementById('nfc-med-frequency');
-    const notesEl = document.getElementById('nfc-med-notes');
-    if (!brandEl || !nameEl || !dosageEl || !frequencyEl || !notesEl) {
+    if (!brandEl || !nameEl || !dosageEl || !frequencyEl) {
       return;
     }
 
@@ -272,7 +264,6 @@
     nameEl.textContent = name;
     dosageEl.textContent = medication.dosage || '—';
     frequencyEl.textContent = medication.frequency || '—';
-    notesEl.textContent = data.notes || '';
 
     overlayState.medId = medication.id || slugify(`${brand}-${medication.name || ''}`);
     overlayState.medication = medication;
@@ -298,6 +289,30 @@
       }
     }
     return null;
+  };
+
+  const normalizePayload = (payload) => {
+    if (!payload || typeof payload !== 'object') {
+      return null;
+    }
+    if (payload.medication) {
+      return payload;
+    }
+    if (payload.m) {
+      return {
+        version: payload.v || 1,
+        medication: {
+          id: payload.m.id,
+          brand: payload.m.b,
+          name: payload.m.n,
+          dosage: payload.m.d,
+          frequency: payload.m.f,
+          mgPerKg: payload.m.k,
+          otc: Boolean(payload.m.o),
+        },
+      };
+    }
+    return payload;
   };
 
   const updateStatus = (text) => {
@@ -397,13 +412,14 @@
           parsed = null;
         }
 
-        if (!parsed) {
+        const normalized = normalizePayload(parsed);
+        if (!normalized) {
           updateStatus('NFC tag read, but no medication data found.');
           showOverlay();
           return;
         }
 
-        updateMedicationDetails(parsed);
+        updateMedicationDetails(normalized);
         const history = loadDoseHistory();
         const selected = getSelectedMember(members);
         updateMemberDetails(selected, overlayState.medication, history);
