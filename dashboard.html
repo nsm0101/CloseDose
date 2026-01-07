@@ -441,6 +441,80 @@
       gap: 10px;
     }
 
+    .setup-grid {
+      display: grid;
+      gap: 16px;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    }
+
+    .setup-card {
+      background: white;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      padding: 16px;
+      box-shadow: 0 14px 30px rgba(12, 44, 72, 0.12);
+      display: grid;
+      gap: 12px;
+    }
+
+    .setup-step {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      font-weight: 700;
+      color: #0a1d2b;
+    }
+
+    .setup-step span {
+      display: grid;
+      place-items: center;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: rgba(13, 143, 138, 0.15);
+      color: #0a1d2b;
+      font-weight: 800;
+    }
+
+    .setup-form {
+      display: grid;
+      gap: 10px;
+    }
+
+    .setup-field {
+      display: grid;
+      gap: 6px;
+      font-weight: 600;
+      color: #0a1d2b;
+    }
+
+    .setup-field input {
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      padding: 10px 12px;
+      font-family: inherit;
+      font-size: 0.95rem;
+    }
+
+    .setup-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .setup-status {
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .setup-sync {
+      display: grid;
+      gap: 10px;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
     .switch {
       width: 46px;
       height: 26px;
@@ -449,6 +523,7 @@
       position: relative;
       border: 1px solid rgba(255,255,255,0.2);
       transition: background 0.18s ease;
+    }
     .settings-row .settings-field {
       flex: 1 1 180px;
     }
@@ -521,10 +596,67 @@
         <div class="request-list" id="joinRequestsList"></div>
         <small id="joinRequestsStatus" aria-live="polite"></small>
       </section>
-      <section class="panel" aria-labelledby="family-members-title">
-    </header>
-
-    <main>
+      <section class="panel" aria-labelledby="family-setup-title">
+        <div class="panel-header">
+          <div>
+            <h2 id="family-setup-title">Family setup</h2>
+            <small>Add patients to your family group and sync details to Supabase.</small>
+          </div>
+        </div>
+        <div class="setup-grid">
+          <article class="setup-card">
+            <div class="setup-step">
+              <span>1</span>
+              <div>
+                Add a family member
+                <div style="font-size:0.9rem; color: var(--muted); font-weight:600;">
+                  Save patient name, date of birth, and weight while creating the profile.
+                </div>
+              </div>
+            </div>
+            <form class="setup-form" id="addMemberForm">
+              <label class="setup-field">
+                Patient name
+                <input type="text" id="newMemberName" placeholder="e.g., Maya Patel" required />
+              </label>
+              <label class="setup-field">
+                Date of birth
+                <input type="date" id="newMemberDob" />
+              </label>
+              <label class="setup-field">
+                Weight
+                <input type="text" id="newMemberWeight" placeholder="e.g., 70 lb" />
+              </label>
+              <label class="setup-field">
+                Role
+                <input type="text" id="newMemberRole" placeholder="Patient" />
+              </label>
+              <div class="setup-actions">
+                <button type="submit">Add member to group</button>
+                <span class="setup-status" id="addMemberStatus">Ready to add your first patient.</span>
+              </div>
+            </form>
+          </article>
+          <article class="setup-card">
+            <div class="setup-step">
+              <span>2</span>
+              <div>
+                Sync to Supabase
+                <div style="font-size:0.9rem; color: var(--muted); font-weight:600;">
+                  Confirm the dashboard is storing patient updates to keep dosing info current.
+                </div>
+              </div>
+            </div>
+            <div class="setup-sync">
+              <p>Click sync after adding or editing a patient to verify the shared record is updated.</p>
+              <div class="setup-actions">
+                <button type="button" id="setupSyncBtn">Sync and verify</button>
+                <span class="setup-status" id="setupSyncStatus">Awaiting sync.</span>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
       <section class="panel" aria-labelledby="familyMembersTitle">
         <div class="panel-header">
           <div>
@@ -673,6 +805,14 @@
     const cancelEditBtn = document.getElementById("cancelEditBtn");
     const editStatus = document.getElementById("editStatus");
     const memberDetails = document.getElementById("memberDetails");
+    const addMemberForm = document.getElementById("addMemberForm");
+    const newMemberName = document.getElementById("newMemberName");
+    const newMemberDob = document.getElementById("newMemberDob");
+    const newMemberWeight = document.getElementById("newMemberWeight");
+    const newMemberRole = document.getElementById("newMemberRole");
+    const addMemberStatus = document.getElementById("addMemberStatus");
+    const setupSyncBtn = document.getElementById("setupSyncBtn");
+    const setupSyncStatus = document.getElementById("setupSyncStatus");
 
     let currentUser = null;
     let currentFamily = null;
@@ -1693,25 +1833,72 @@
 
     addMemberBtn.addEventListener("click", () => {
       if (!currentFamily) return;
+      const created = addMemberToFamily({
+        name: "",
+        role: "Patient",
+        weight: "—",
+        dateOfBirth: ""
+      });
+      if (created) {
+        openEditForm();
+      }
+    });
 
+    function addMemberToFamily({ name, role, weight, dateOfBirth }) {
+      if (!currentFamily) return null;
       const newIndex = currentFamily.members.length;
       const color = colorPalette[newIndex % colorPalette.length];
+      const safeName = name?.trim() || `New member ${newIndex + 1}`;
+      const safeRole = role?.trim() || "Patient";
+      const safeWeight = weight?.trim() || "—";
       const newMember = {
-        name: `New member ${newIndex + 1}`,
-        role: "Patient",
+        name: safeName,
+        role: safeRole,
         age: "—",
-        weight: "—",
+        weight: safeWeight,
         med: "Add a medication",
         medications: [],
         notes: "",
         color,
-        date_of_birth: ""
+        date_of_birth: dateOfBirth || ""
       };
 
       currentFamily.members = [...currentFamily.members, newMember];
       activeMemberIndex = newIndex;
       renderDashboard({ ...currentFamily }, activeMemberIndex);
-      openEditForm();
+      return newMember;
+    }
+
+    addMemberForm?.addEventListener("submit", async event => {
+      event.preventDefault();
+      if (!currentFamily) return;
+      if (addMemberStatus) {
+        addMemberStatus.textContent = "Adding member…";
+      }
+
+      const created = addMemberToFamily({
+        name: newMemberName?.value,
+        role: newMemberRole?.value,
+        weight: newMemberWeight?.value,
+        dateOfBirth: newMemberDob?.value
+      });
+
+      if (!created) {
+        if (addMemberStatus) {
+          addMemberStatus.textContent = "Unable to add member.";
+        }
+        return;
+      }
+
+      const synced = await persistMemberUpdate();
+      if (addMemberStatus) {
+        addMemberStatus.textContent = synced ? "Member added and saved." : "Member added, save failed.";
+      }
+
+      if (newMemberName) newMemberName.value = "";
+      if (newMemberDob) newMemberDob.value = "";
+      if (newMemberWeight) newMemberWeight.value = "";
+      if (newMemberRole) newMemberRole.value = "";
     });
 
     removeMemberBtn.addEventListener("click", async () => {
@@ -1942,16 +2129,35 @@
       }
     }
 
-    syncBtn.addEventListener("click", async () => {
+    async function syncFromSupabase(triggerBtn, statusEl, label) {
       if (!currentUser) return;
-      syncBtn.disabled = true;
-      syncBtn.textContent = "Syncing…";
+      const originalLabel = triggerBtn?.textContent;
+      if (triggerBtn) {
+        triggerBtn.disabled = true;
+        triggerBtn.textContent = label || "Syncing…";
+      }
+      if (statusEl) {
+        statusEl.textContent = "Syncing with Supabase…";
+      }
       const syncedFamily = await getFamilyData(currentUser, activeMembership);
       const nextIndex = Math.min(activeMemberIndex, Math.max(0, syncedFamily.members.length - 1));
       activeMemberIndex = nextIndex;
       renderDashboard(syncedFamily, activeMemberIndex);
-      syncBtn.textContent = "Sync from Supabase";
-      syncBtn.disabled = false;
+      if (triggerBtn) {
+        triggerBtn.textContent = originalLabel || "Sync from Supabase";
+        triggerBtn.disabled = false;
+      }
+      if (statusEl) {
+        statusEl.textContent = "Sync complete. Patient data is up to date.";
+      }
+    }
+
+    syncBtn.addEventListener("click", () => {
+      syncFromSupabase(syncBtn, null, "Syncing…");
+    });
+
+    setupSyncBtn?.addEventListener("click", () => {
+      syncFromSupabase(setupSyncBtn, setupSyncStatus, "Sync and verify");
     });
 
     const settingsBtn = document.getElementById("settingsBtn");
