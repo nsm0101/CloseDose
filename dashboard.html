@@ -348,6 +348,15 @@
     </main>
   </div>
 
+  <script type="module">
+    import { supabase } from "./auth/supabaseClient.js";
+
+    const { data: sessionData } = await supabase.auth.getSession();
+    if (sessionData?.session?.user) {
+      const { data: family_id, error } = await supabase.rpc("ensure_active_family_for_current_user");
+      console.log({ family_id, error });
+    }
+  </script>
   <script type="module" src="dashboard.js"></script>
 </body>
 </html>
