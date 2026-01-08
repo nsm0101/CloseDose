@@ -803,6 +803,15 @@ function initAccountCenter() {
     }
   };
 
+  const ensureActiveFamilyForCurrentUser = async (supabase) => {
+    const { data: familyId, error } = await supabase.rpc('ensure_active_family_for_current_user');
+    if (error) {
+      console.error('family ensure failed', error);
+      return null;
+    }
+    return familyId;
+  };
+
   if (signupForm) {
     signupForm.addEventListener('submit', async (event) => {
       event.preventDefault();
@@ -844,6 +853,11 @@ function initAccountCenter() {
       }
 
       if (data?.session) {
+        const familyId = await ensureActiveFamilyForCurrentUser(supabase);
+        if (!familyId) {
+          setStatus('error', 'We could not load your family yet. Please try again.');
+          return;
+        }
         setStatus('success', 'Account created! You are now signed in.');
       } else {
         setStatus('success', 'Account created! Check your email to confirm and sign in.');
@@ -885,6 +899,11 @@ function initAccountCenter() {
         return;
       }
 
+      const familyId = await ensureActiveFamilyForCurrentUser(supabase);
+      if (!familyId) {
+        setStatus('error', 'We could not load your family yet. Please try again.');
+        return;
+      }
       const displayName = getUserDisplay(data?.session);
       setStatus('success', `Welcome back, ${displayName || 'friend'}!`);
       loginForm.reset();

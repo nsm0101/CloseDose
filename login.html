@@ -215,6 +215,15 @@
   <script type="module">
     import { supabase } from "./auth/supabaseClient.js";
 
+    const ensureActiveFamilyForCurrentUser = async () => {
+      const { data: familyId, error } = await supabase.rpc("ensure_active_family_for_current_user");
+      if (error) {
+        console.error("family ensure failed", error);
+        return null;
+      }
+      return familyId;
+    };
+
     const redirectParam = new URLSearchParams(window.location.search).get("redirect");
 
     const sanitizeRedirect = (value) => {
@@ -270,6 +279,12 @@
         return;
       }
 
+      const familyId = await ensureActiveFamilyForCurrentUser();
+      if (!familyId) {
+        setStatus(status, "We could not load your family yet. Please try again.", "error");
+        return;
+      }
+
       setStatus(status, "Success! Redirecting...", "success");
       window.location.href = resolveRedirectTarget();
     });
@@ -290,6 +305,11 @@
       }
 
       if (data?.session) {
+        const familyId = await ensureActiveFamilyForCurrentUser();
+        if (!familyId) {
+          setStatus(status, "We could not load your family yet. Please try again.", "error");
+          return;
+        }
         setStatus(status, "Account created! Redirecting...", "success");
         window.location.href = resolveRedirectTarget();
         return;
