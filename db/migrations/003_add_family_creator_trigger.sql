@@ -1,5 +1,5 @@
--- Trigger to add family creator as admin in user_families
-CREATE OR REPLACE FUNCTION public.add_family_creator_as_admin()
+-- Trigger to add family creator as owner in user_families
+CREATE OR REPLACE FUNCTION public.add_family_creator_as_owner()
 RETURNS trigger
 LANGUAGE plpgsql
 SECURITY DEFINER
@@ -17,7 +17,7 @@ BEGIN
   END IF;
 
   INSERT INTO public.user_families (user_id, family_id, role)
-  SELECT creator, NEW.id, 'admin'
+  SELECT creator, NEW.id, 'owner'
   WHERE NOT EXISTS (
     SELECT 1
     FROM public.user_families uf
@@ -29,11 +29,11 @@ BEGIN
 END;
 $$;
 
-DROP TRIGGER IF EXISTS families_after_insert_add_admin ON public.families;
-CREATE TRIGGER families_after_insert_add_admin
+DROP TRIGGER IF EXISTS families_after_insert_add_owner ON public.families;
+CREATE TRIGGER families_after_insert_add_owner
 AFTER INSERT ON public.families
 FOR EACH ROW
-EXECUTE FUNCTION public.add_family_creator_as_admin();
+EXECUTE FUNCTION public.add_family_creator_as_owner();
 
 -- Limit function execution surface
-REVOKE EXECUTE ON FUNCTION public.add_family_creator_as_admin() FROM PUBLIC, anon, authenticated;
+REVOKE EXECUTE ON FUNCTION public.add_family_creator_as_owner() FROM PUBLIC, anon, authenticated;

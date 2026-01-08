@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS public.user_families (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id uuid NOT NULL REFERENCES auth.users (id) ON DELETE CASCADE,
   family_id uuid NOT NULL REFERENCES public.families (id) ON DELETE CASCADE,
-  role text NOT NULL CHECK (role IN ('admin', 'member')),
+  role text NOT NULL CHECK (role IN ('owner', 'admin', 'caregiver', 'member')),
   created_at timestamptz DEFAULT now(),
   UNIQUE (user_id, family_id)
 );

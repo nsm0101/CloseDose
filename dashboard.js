@@ -90,7 +90,7 @@ const fetchFamilies = async (userId) => {
   return memberships || [];
 };
 
-const createBootstrapFamily = async (userId) => {
+const createBootstrapFamily = async () => {
   const { data: createdFamily, error: familyError } = await supabase
     .from("families")
     .insert({ name: "My Family" })
@@ -98,14 +98,6 @@ const createBootstrapFamily = async (userId) => {
     .single();
 
   if (familyError) throw familyError;
-
-  const { error: linkError } = await supabase.from("user_families").insert({
-    user_id: userId,
-    family_id: createdFamily.id,
-    role: "owner",
-  });
-
-  if (linkError) throw linkError;
 
   return createdFamily;
 };
@@ -406,7 +398,7 @@ const refreshDashboard = async (userId) => {
   try {
     let memberships = await fetchFamilies(userId);
     if (!memberships.length) {
-      await createBootstrapFamily(userId);
+      await createBootstrapFamily();
       memberships = await fetchFamilies(userId);
     }
 
