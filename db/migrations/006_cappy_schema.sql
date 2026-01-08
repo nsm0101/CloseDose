@@ -21,10 +21,32 @@ CREATE TABLE IF NOT EXISTS public.family_members (
   notes text,
   color text,
   date_of_birth date,
+  dob date,
+  sex text,
+  weight_kg numeric,
+  photo_url text,
+  created_by_user_id uuid REFERENCES auth.users (id) ON DELETE SET NULL,
   created_at timestamptz DEFAULT now(),
   updated_at timestamptz DEFAULT now(),
   UNIQUE (family_id, name)
 );
+
+ALTER TABLE public.family_members
+  ADD COLUMN IF NOT EXISTS dob date,
+  ADD COLUMN IF NOT EXISTS sex text,
+  ADD COLUMN IF NOT EXISTS weight_kg numeric,
+  ADD COLUMN IF NOT EXISTS photo_url text,
+  ADD COLUMN IF NOT EXISTS created_by_user_id uuid REFERENCES auth.users (id) ON DELETE SET NULL;
+
+UPDATE public.family_members
+SET dob = COALESCE(dob, date_of_birth)
+WHERE dob IS NULL
+  AND date_of_birth IS NOT NULL;
+
+UPDATE public.family_members
+SET weight_kg = COALESCE(weight_kg, NULLIF(weight, '')::numeric)
+WHERE weight_kg IS NULL
+  AND weight ~ E'^[0-9]+(\\.[0-9]+)?$';
 
 CREATE TABLE IF NOT EXISTS public.weight_logs (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
