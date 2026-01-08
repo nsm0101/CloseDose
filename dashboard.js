@@ -93,7 +93,7 @@ const fetchFamilies = async (userId) => {
 const createBootstrapFamily = async (userId) => {
   const { data: createdFamily, error: familyError } = await supabase
     .from("families")
-    .insert({ name: "My Family" })
+    .insert({ name: "My Family", created_by_user_id: userId })
     .select("id, name, created_at")
     .single();
 
