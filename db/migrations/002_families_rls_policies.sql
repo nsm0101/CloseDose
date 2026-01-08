@@ -34,7 +34,7 @@ CREATE POLICY IF NOT EXISTS families_admin_update
       FROM public.user_families uf
       WHERE uf.family_id = id
         AND uf.user_id = (SELECT auth.uid())
-        AND uf.role = 'admin'
+        AND uf.role IN ('admin', 'owner')
     )
   )
   WITH CHECK (
@@ -43,7 +43,7 @@ CREATE POLICY IF NOT EXISTS families_admin_update
       FROM public.user_families uf
       WHERE uf.family_id = id
         AND uf.user_id = (SELECT auth.uid())
-        AND uf.role = 'admin'
+        AND uf.role IN ('admin', 'owner')
     )
   );
 
@@ -58,7 +58,7 @@ CREATE POLICY IF NOT EXISTS families_admin_delete
       FROM public.user_families uf
       WHERE uf.family_id = id
         AND uf.user_id = (SELECT auth.uid())
-        AND uf.role = 'admin'
+        AND uf.role IN ('admin', 'owner')
     )
   );
 
