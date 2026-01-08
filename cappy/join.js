@@ -1,4 +1,4 @@
-import { supabase } from "../auth/supabaseClient.js";
+import { supabase } from "./supabase.js";
 
 const statusEl = document.getElementById("joinStatus");
 const acceptBtn = document.getElementById("acceptInviteBtn");

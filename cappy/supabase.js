@@ -1,9 +1,21 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { supabaseAnonKey, supabaseUrl } from "./supabaseConfig.js";
 
-const supabaseUrl = "https://tfmpgxwzgdzndbdzsftx.supabase.co";
-const supabaseAnonKey =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRmbXBneHd6Z2R6bmRiZHpzZnR4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQxNjg0MDcsImV4cCI6MjA3OTc0NDQwN30.X5f5YulGHxjJDFX2i7T3vDZXD3Gt9MY8SyvFybTHCKc";
+const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+  auth: {
+    persistSession: true,
+    autoRefreshToken: true,
+    detectSessionInUrl: true,
+    flowType: "pkce",
+  },
+});
 
-const supabase = createClient(supabaseUrl, supabaseAnonKey);
+supabase.auth.getSession().then(({ data }) => {
+  supabase.realtime.setAuth(data?.session?.access_token ?? null);
+});
+
+supabase.auth.onAuthStateChange((_event, session) => {
+  supabase.realtime.setAuth(session?.access_token ?? null);
+});
 
 export { supabase, supabaseAnonKey, supabaseUrl };
