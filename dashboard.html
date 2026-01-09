@@ -348,8 +348,17 @@
     </main>
   </div>
 
+  <script>
+    // Public client config (anon key is intended to be used in the browser)
+    window.SUPABASE_URL = "https://fvvyapvwtnmambyrlmmx.supabase.co";
+    window.SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ2dnlhcHZ3dG5tYW1ieXJsbW14Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjAzMDQzMTIsImV4cCI6MjA3NTg4MDMxMn0.LI4LKR6AefB5Bjm8PQLiIGzoIZ-tfVgJBPVdwzEX0_M";
+  </script>
+  <script type="module" src="./dashboard.family-groups.js"></script>
   <script type="module">
-    import { supabase } from "./auth/supabaseClient.js";
+    import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+
+    const supabase = window.supabase ?? createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY);
+    window.supabase = supabase;
 
     const { data: sessionData } = await supabase.auth.getSession();
     if (sessionData?.session?.user) {
@@ -357,6 +366,5 @@
       console.log({ family_id, error });
     }
   </script>
-  <script type="module" src="dashboard.js"></script>
 </body>
 </html>
