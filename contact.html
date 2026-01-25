@@ -43,6 +43,12 @@
   src="https://widgets.givebutter.com/latest.umd.cjs?acct=r8SGiZ0RhFRoIkXu&p=other"
 ></script>
 
+  <script
+    src="https://challenges.cloudflare.com/turnstile/v0/api.js"
+    async
+    defer
+  ></script>
+
   <style>
     :root {
       --teal-300: #3ec0ab;
@@ -359,6 +365,12 @@
     }
 
     .attachment-info {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin: 4px 0 0;
+    }
+
+    .captcha-info {
       font-size: 0.9rem;
       color: var(--text-muted);
       margin: 4px 0 0;
@@ -731,6 +743,15 @@
                 <input type="file" id="attachment" name="attachment" accept=".jpg,.jpeg,.png,.gif,.pdf" aria-describedby="file-error" />
                 <p class="attachment-info">Accepted formats: JPG, PNG, GIF, or PDF up to 2 MB.</p>
                 <p class="field-error" id="file-error" role="alert" aria-live="polite"></p>
+              </div>
+            </div>
+
+            <div class="field-group">
+              <span class="field-label">Spam check <span class="required-indicator" aria-hidden="true">*</span></span>
+              <div class="input-shell">
+                <!-- Replace with your Cloudflare Turnstile site key. -->
+                <div class="cf-turnstile" data-sitekey="YOUR_TURNSTILE_SITE_KEY"></div>
+                <p class="captcha-info">Complete the captcha to submit the form.</p>
               </div>
             </div>
 
