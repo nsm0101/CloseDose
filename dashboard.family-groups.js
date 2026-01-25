@@ -93,7 +93,7 @@ const fetchFamilies = async (userId) => {
   return memberships || [];
 };
 
-const createBootstrapFamily = async () => {
+const createBootstrapFamily = async (userId) => {
   const { data: createdFamily, error: familyError } = await supabase
     .from("families")
     .insert({ name: "My Family", created_by_user_id: userId })
@@ -401,7 +401,7 @@ const refreshDashboard = async (userId) => {
   try {
     let memberships = await fetchFamilies(userId);
     if (!memberships.length) {
-      await createBootstrapFamily();
+      await createBootstrapFamily(userId);
       memberships = await fetchFamilies(userId);
     }
 
