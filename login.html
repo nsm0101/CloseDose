@@ -279,14 +279,15 @@
         return;
       }
 
+      const resolvedRedirect = resolveRedirectTarget();
       const familyId = await ensureActiveFamilyForCurrentUser();
-      if (!familyId) {
+      if (!familyId && !resolvedRedirect.startsWith("/cappy/")) {
         setStatus(status, "We could not load your family yet. Please try again.", "error");
         return;
       }
 
       setStatus(status, "Success! Redirecting...", "success");
-      window.location.href = resolveRedirectTarget();
+      window.location.href = resolvedRedirect;
     });
 
     document.getElementById("registerForm")?.addEventListener("submit", async (event) => {
@@ -305,13 +306,14 @@
       }
 
       if (data?.session) {
+        const resolvedRedirect = resolveRedirectTarget();
         const familyId = await ensureActiveFamilyForCurrentUser();
-        if (!familyId) {
+        if (!familyId && !resolvedRedirect.startsWith("/cappy/")) {
           setStatus(status, "We could not load your family yet. Please try again.", "error");
           return;
         }
         setStatus(status, "Account created! Redirecting...", "success");
-        window.location.href = resolveRedirectTarget();
+        window.location.href = resolvedRedirect;
         return;
       }
 
