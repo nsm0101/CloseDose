@@ -803,13 +803,29 @@ function initAccountCenter() {
     }
   };
 
-  const ensureActiveFamilyForCurrentUser = async (supabase) => {
-    const { data: familyId, error } = await supabase.rpc('ensure_active_family_for_current_user');
-    if (error) {
-      console.error('family ensure failed', error);
-      return null;
+  const ensureActiveFamilyForCurrentUser = async (supabase, options = {}) => {
+    const { retries = 2, delayMs = 500 } = options;
+    const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+    let lastError = null;
+
+    for (let attempt = 0; attempt <= retries; attempt += 1) {
+      const { data: familyId, error } = await supabase.rpc('ensure_active_family_for_current_user');
+      if (!error && familyId) {
+        return familyId;
+      }
+      if (error) {
+        lastError = error;
+        console.error('family ensure failed', error);
+      }
+      if (attempt < retries) {
+        await sleep(delayMs);
+      }
     }
-    return familyId;
+
+    if (lastError) {
+      console.warn('family ensure did not resolve after retries');
+    }
+    return null;
   };
 
   if (signupForm) {
@@ -855,10 +871,10 @@ function initAccountCenter() {
       if (data?.session) {
         const familyId = await ensureActiveFamilyForCurrentUser(supabase);
         if (!familyId) {
-          setStatus('error', 'We could not load your family yet. Please try again.');
-          return;
+          setStatus('success', 'Account created! We are still setting up your family.');
+        } else {
+          setStatus('success', 'Account created! You are now signed in.');
         }
-        setStatus('success', 'Account created! You are now signed in.');
       } else {
         setStatus('success', 'Account created! Check your email to confirm and sign in.');
       }
@@ -901,11 +917,11 @@ function initAccountCenter() {
 
       const familyId = await ensureActiveFamilyForCurrentUser(supabase);
       if (!familyId) {
-        setStatus('error', 'We could not load your family yet. Please try again.');
-        return;
+        setStatus('success', 'Signed in! We are still setting up your family.');
+      } else {
+        const displayName = getUserDisplay(data?.session);
+        setStatus('success', `Welcome back, ${displayName || 'friend'}!`);
       }
-      const displayName = getUserDisplay(data?.session);
-      setStatus('success', `Welcome back, ${displayName || 'friend'}!`);
       loginForm.reset();
       document.dispatchEvent(new Event(CLOSE_ACCOUNT_MODALS_EVENT));
       renderSessionState(data?.session || null);
