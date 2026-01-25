@@ -215,13 +215,29 @@
   <script type="module">
     import { supabase } from "./auth/supabaseClient.js";
 
-    const ensureActiveFamilyForCurrentUser = async () => {
-      const { data: familyId, error } = await supabase.rpc("ensure_active_family_for_current_user");
-      if (error) {
-        console.error("family ensure failed", error);
-        return null;
+    const ensureActiveFamilyForCurrentUser = async (options = {}) => {
+      const { retries = 2, delayMs = 500 } = options;
+      const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+      let lastError = null;
+
+      for (let attempt = 0; attempt <= retries; attempt += 1) {
+        const { data: familyId, error } = await supabase.rpc("ensure_active_family_for_current_user");
+        if (!error && familyId) {
+          return familyId;
+        }
+        if (error) {
+          lastError = error;
+          console.error("family ensure failed", error);
+        }
+        if (attempt < retries) {
+          await sleep(delayMs);
+        }
       }
-      return familyId;
+
+      if (lastError) {
+        console.warn("family ensure did not resolve after retries");
+      }
+      return null;
     };
 
     const redirectParam = new URLSearchParams(window.location.search).get("redirect");
@@ -282,11 +298,10 @@
       const resolvedRedirect = resolveRedirectTarget();
       const familyId = await ensureActiveFamilyForCurrentUser();
       if (!familyId && !resolvedRedirect.startsWith("/cappy/")) {
-        setStatus(status, "We could not load your family yet. Please try again.", "error");
-        return;
+        setStatus(status, "Signed in! We are still setting up your family.", "success");
+      } else {
+        setStatus(status, "Success! Redirecting...", "success");
       }
-
-      setStatus(status, "Success! Redirecting...", "success");
       window.location.href = resolvedRedirect;
     });
 
@@ -309,10 +324,10 @@
         const resolvedRedirect = resolveRedirectTarget();
         const familyId = await ensureActiveFamilyForCurrentUser();
         if (!familyId && !resolvedRedirect.startsWith("/cappy/")) {
-          setStatus(status, "We could not load your family yet. Please try again.", "error");
-          return;
+          setStatus(status, "Account created! We are still setting up your family.", "success");
+        } else {
+          setStatus(status, "Account created! Redirecting...", "success");
         }
-        setStatus(status, "Account created! Redirecting...", "success");
         window.location.href = resolvedRedirect;
         return;
       }
