@@ -11,7 +11,7 @@ if (nextParam) setNextUrl(nextParam);
 
 const { data } = await supabase.auth.getUser();
 if (data?.user) {
-  const next = getNextUrl("/cappy/onboarding/");
+  const next = getNextUrl("/dashboard.html");
   clearNextUrl();
   location.replace(next);
 } else {

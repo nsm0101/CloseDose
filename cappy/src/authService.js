@@ -7,7 +7,7 @@ export function setNextUrl(url) {
   try { localStorage.setItem(NEXT_KEY, url); } catch (_) {}
 }
 
-export function getNextUrl(fallback = "/cappy/app/") {
+export function getNextUrl(fallback = "/dashboard.html") {
   try { return localStorage.getItem(NEXT_KEY) || fallback; } catch (_) { return fallback; }
 }
 
