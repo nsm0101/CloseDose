@@ -26,7 +26,7 @@ export function createAuthForm() {
         <button id="sign-in-btn">Sign in</button>
         <button id="sign-up-btn">Create account</button>
       </div>
-      <p class="muted">After signing in, you’ll continue to onboarding.</p>
+      <p class="muted">After signing in, you’ll continue to your dashboard.</p>
     </div>
   `;
 
@@ -52,7 +52,7 @@ export function createAuthForm() {
       }
 
       showToast("Signed in successfully.", "success");
-      const next = getNextUrl("/cappy/onboarding/");
+      const next = getNextUrl("/dashboard.html");
       clearNextUrl();
       location.href = next;
     } catch (error) {
