@@ -19,7 +19,7 @@ const ATTENTION_CLASS = 'button--attention';
 //   directed to seek immediate care.
 // - 2–6 months: acetaminophen at 12.5 mg/kg (maximum 160 mg) and no ibuprofen.
 // - 6 months–11 years: pediatric caps limiting acetaminophen to 480 mg and
-//   ibuprofen to 800 mg per single dose.
+//   ibuprofen to 600 mg per single dose.
 // - 12+ years: adult dosing ceilings of 1000 mg acetaminophen and 800 mg
 //   ibuprofen per single dose.
 // This replaces the prior combined 6+ pathway while keeping the structure ready
@@ -206,7 +206,7 @@ function calculateDose() {
   } else if (gate === 'pediatric' || gate === 'adolescent') {
     const isPediatric = gate === 'pediatric';
     const ACETA_MAX_SINGLE_DOSE_MG = isPediatric ? 480 : 1000;
-    const IBU_MAX_SINGLE_DOSE_MG = 800;
+    const IBU_MAX_SINGLE_DOSE_MG = isPediatric ? 600 : 800;
 
     const acetaMgCalculated = 15 * weightKg;
     const acetaMg = Math.min(acetaMgCalculated, ACETA_MAX_SINGLE_DOSE_MG);

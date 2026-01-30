@@ -1348,7 +1348,7 @@
     } else if (gate === 'pediatric' || gate === 'adolescent') {
       const isPediatric = gate === 'pediatric';
       const ACETA_MAX_SINGLE_DOSE_MG = isPediatric ? 480 : 1000;
-      const IBU_MAX_SINGLE_DOSE_MG = 800;
+      const IBU_MAX_SINGLE_DOSE_MG = isPediatric ? 600 : 800;
 
       const acetaMgCalculated = 15 * weightKg;
       const acetaMg = Math.min(acetaMgCalculated, ACETA_MAX_SINGLE_DOSE_MG);
