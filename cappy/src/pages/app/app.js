@@ -30,6 +30,7 @@ if (!user) {
         </div>
         <div class="row">
           <button id="refresh">Refresh</button>
+          <button id="firebase-prototype">Firebase Prototype</button>
           <button id="out">Sign out</button>
         </div>
       </div>
@@ -93,6 +94,10 @@ if (!user) {
     await doseEvents.refresh();
     await patientWeights.refresh();
     showToast("Data refreshed.", "success");
+  };
+
+  document.querySelector("#firebase-prototype").onclick = () => {
+    location.href = "/cappy/firebase/";
   };
 
   document.querySelector("#out").onclick = async () => {
