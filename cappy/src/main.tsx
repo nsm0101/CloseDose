@@ -1,6 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+// Swapped BrowserRouter for HashRouter
+import { HashRouter, Routes, Route } from "react-router-dom"; 
 import App from "./pages/app/App.jsx";
 import Auth from "./pages/auth/Auth.jsx";
 import Login from "./pages/login/Login.jsx";
@@ -11,7 +12,7 @@ const root = ReactDOM.createRoot(document.getElementById("app"));
 
 root.render(
   <React.StrictMode>
-    <BrowserRouter>
+    <HashRouter>
       <Routes>
         <Route path="/" element={<App />} />
         <Route path="/auth" element={<Auth />} />
@@ -19,6 +20,6 @@ root.render(
         <Route path="/onboarding" element={<Onboarding />} />
         <Route path="/scan" element={<Scan />} />
       </Routes>
-    </BrowserRouter>
+    </HashRouter>
   </React.StrictMode>
 );
