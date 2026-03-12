@@ -1783,27 +1783,23 @@
             </button>
           </section>
           <script type="module">
-            import { supabase } from "./auth/supabaseClient.js";
+  // Select both the floating button and the dashboard card trigger
+  const triggers = document.querySelectorAll('[data-cappy-trigger]');
+  
+  // Point this to where your Cappy React app is served (e.g., the /cappy/ directory)
+  const cappyAppPath = "/cappy/"; 
 
-            const triggers = document.querySelectorAll('[data-cappy-trigger]');
-            const dashboardPath = "/dashboard.html";
-            const loginPath = `/login.html?redirect=${encodeURIComponent(dashboardPath)}`;
+  const handleGatewayClick = (event) => {
+    event.preventDefault();
+    // Redirect to the Cappy app. 
+    // Cappy's App.jsx will automatically check Firebase auth and redirect to /auth if needed.
+    window.location.href = cappyAppPath;
+  };
 
-            const handleGatewayClick = async (event) => {
-              event.preventDefault();
-              const { data } = await supabase.auth.getSession();
-              if (data?.session) {
-                window.location.href = dashboardPath;
-                return;
-              }
-              window.location.href = loginPath;
-            };
-
-            triggers.forEach((trigger) => {
-              trigger.addEventListener("click", handleGatewayClick);
-            });
-          </script>
-
+  triggers.forEach((trigger) => {
+    trigger.addEventListener("click", handleGatewayClick);
+  });
+</script>
           <div class="calculator-widget-host" id="calculator-card" data-calculator-root></div>
         <section class="card donate-card" aria-labelledby="donate-heading">
           <div class="donate-content">
