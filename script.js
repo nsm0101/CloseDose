@@ -280,8 +280,38 @@ function calculateDose() {
 
     resultBlocks.push(`<div class="result-group">${group.join('')}</div>`);
   }
+  
+  resultBlocks.push(`
+    <div style="text-align: center; margin-top: 20px;">
+      <button class="copy-results-btn" type="button" style="padding: 10px 20px; font-weight: bold; border-radius: 99px; border: 2px solid var(--ink-900); background: #fff; cursor: pointer; box-shadow: 0 4px 0 var(--ink-900); color: var(--ink-900);">📋 Copy Results</button>
+    </div>
+  `);
 
   elements.results.innerHTML = resultBlocks.join('');
+  
+  const copyBtn = elements.results.querySelector('.copy-results-btn');
+  if (copyBtn) {
+    copyBtn.addEventListener('click', () => {
+      const text = elements.results.innerText.replace('📋 Copy Results', '').trim();
+      navigator.clipboard.writeText(text).then(() => {
+        copyBtn.innerText = '✅ Copied!';
+        setTimeout(() => copyBtn.innerText = '📋 Copy Results', 2000);
+      });
+    });
+  }
+  
+  if (typeof window.confetti === 'function') {
+    window.confetti({
+      particleCount: 100,
+      spread: 70,
+      origin: { y: 0.6 },
+      colors: ['#24a687', '#1f8f7b', '#123a37', '#ffffff']
+    });
+  }
+
+  setTimeout(() => {
+    elements.results.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }, 100);
 }
 
 function initCalculator() {

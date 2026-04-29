@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { auth, db } from '../../firebaseConfig';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { collection, query, where, getDocs, addDoc } from 'firebase/firestore';
-import "../../../styles.css";
+import "../../styles.css";
 
 const App = () => {
   const [user, setUser] = useState(null);

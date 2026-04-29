@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { auth } from '../../firebaseConfig';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
 // Import your global styles if needed
-import '../../../styles.css'; 
+import '../../styles.css'; 
 
 const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);

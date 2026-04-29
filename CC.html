@@ -1,400 +1,37 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>CloseDose – PALS Cardiac Arrest Multi‑Timer</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32.png" />
-    <link rel="apple-touch-icon" href="images/logo-teal.png" />
-    <link rel="stylesheet" href="style.css" />
-    <style>
-      :root {
-        --accent-red: #e53935;
-        --accent-orange: #ff9800;
-        --accent-grey: #9e9e9e;
-        --accent-blue: #0176c9;
-        --accent-green: #43a047;
-        --accent-purple: #7e57c2;
-        --accent-yellow: #fdd835;
-        --accent-pink: #ec407a;
-        --card-max-width: min(960px, 92vw);
-      }
+<head>
+  
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32.png">
+  <link rel="stylesheet" href="global.css" />
 
-      body {
-        font-family: "Nunito", system-ui, -apple-system, "Segoe UI", sans-serif;
-      }
-
-      .wrap {
-        min-height: 100vh;
-      }
-
-      main.page {
-        padding: clamp(16px, 4vw, 48px) 16px 72px;
-      }
-
-      .timer-app {
-        width: var(--card-max-width);
-        margin: 0 auto;
-        padding: clamp(18px, 3vw, 32px);
-        background: rgba(255, 255, 255, 0.92);
-        border-radius: 26px;
-        border: 3px solid rgba(15, 44, 42, 0.12);
-        box-shadow: 0 18px 36px rgba(13, 52, 82, 0.18);
-        backdrop-filter: blur(12px);
-      }
-
-      .timer-app h1 {
-        margin: 0 0 8px;
-        font-size: clamp(1.6rem, 1.2rem + 2vw, 2.4rem);
-        color: #0f2c2a;
-        text-align: center;
-      }
-
-      .timer-app p.lead {
-        margin: 0 0 24px;
-        text-align: center;
-        color: rgba(15, 44, 42, 0.78);
-        font-size: clamp(1rem, 0.9rem + 0.4vw, 1.2rem);
-      }
-
-      #timers {
-        display: flex;
-        flex-direction: column;
-        gap: 16px;
-      }
-
-      .timer-row {
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-        padding: 14px clamp(14px, 4vw, 20px);
-        background: rgba(236, 244, 248, 0.92);
-        border-radius: 18px;
-        border-left: 10px solid var(--accent-grey);
-        box-shadow: 0 6px 16px rgba(15, 44, 42, 0.18);
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
-      }
-
-      .timer-row:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 12px 28px rgba(15, 44, 42, 0.25);
-      }
-
-      .timer-row.red {
-        border-left-color: var(--accent-red);
-      }
-
-      .timer-row.orange {
-        border-left-color: var(--accent-orange);
-      }
-
-      .timer-row.grey {
-        border-left-color: var(--accent-grey);
-      }
-
-      .timer-row.blue {
-        border-left-color: var(--accent-blue);
-      }
-
-      .timer-row.green {
-        border-left-color: var(--accent-green);
-      }
-
-      .timer-row.purple {
-        border-left-color: var(--accent-purple);
-      }
-
-      .timer-row.yellow {
-        border-left-color: var(--accent-yellow);
-      }
-
-      .timer-row.pink {
-        border-left-color: var(--accent-pink);
-      }
-
-      .collapse {
-        background: rgba(255, 255, 255, 0.8);
-        border-radius: 10px;
-        padding: 4px 10px;
-        font-weight: 700;
-        cursor: pointer;
-        border: 1px solid rgba(15, 44, 42, 0.2);
-      }
-
-      .input-label {
-        border: none;
-        background: rgba(255, 255, 255, 0.9);
-        border-radius: 999px;
-        padding: 6px 16px;
-        min-width: 160px;
-        font-size: 1rem;
-        font-weight: 700;
-      }
-
-      .input-label:disabled {
-        opacity: 0.8;
-      }
-
-      .timer-header {
-        display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-        gap: 12px;
-      }
-
-      .timer-header .collapse {
-        flex-shrink: 0;
-      }
-
-      .timer-header .input-label {
-        flex: 1 1 220px;
-      }
-
-      .timer-header .timer-display {
-        margin-left: auto;
-      }
-
-      .timer-controls {
-        display: flex;
-        gap: 8px;
-        flex-wrap: wrap;
-      }
-
-      .summary-controls {
-        justify-content: flex-start;
-      }
-
-      .timer-display {
-        font-size: clamp(1.1rem, 1vw + 1rem, 1.45rem);
-        font-weight: 700;
-        color: #0f2c2a;
-      }
-
-      .timer-summary {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-        gap: 12px;
-        width: 100%;
-        align-items: center;
-      }
-
-      .summary-item {
-        display: flex;
-        flex-direction: column;
-        gap: 4px;
-        font-size: 0.95rem;
-      }
-
-      .summary-item strong {
-        font-size: 1rem;
-      }
-
-      .timer-body {
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-      }
-
-      .timer-controls button,
-      .footer-actions button,
-      .popup-content button {
-        appearance: none;
-        background: linear-gradient(140deg, #24a687, #123a37);
-        color: #fff;
-        border: none;
-        border-radius: 999px;
-        padding: 8px 18px;
-        font-weight: 700;
-        cursor: pointer;
-        box-shadow: 0 6px 14px rgba(15, 44, 42, 0.22);
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
-      }
-
-      .timer-controls button:hover,
-      .footer-actions button:hover,
-      .popup-content button:hover {
-        transform: translateY(-1px);
-        box-shadow: 0 10px 20px rgba(15, 44, 42, 0.25);
-      }
-
-      .timer-controls button.secondary,
-      .popup-content button.secondary {
-        background: rgba(15, 44, 42, 0.08);
-        color: #0f2c2a;
-        box-shadow: none;
-      }
-
-      .timer-controls button.secondary:hover,
-      .popup-content button.secondary:hover {
-        background: rgba(15, 44, 42, 0.15);
-      }
-
-      .dose-log {
-        background: rgba(255, 255, 255, 0.9);
-        padding: 10px 14px;
-        border-radius: 14px;
-        margin-top: 6px;
-        box-shadow: inset 0 0 0 1px rgba(15, 44, 42, 0.08);
-        width: 100%;
-        font-size: 0.95rem;
-      }
-
-      .dose-log b {
-        display: block;
-        margin-bottom: 4px;
-      }
-
-      .bold {
-        font-weight: 700;
-      }
-
-      .footer-actions {
-        margin-top: 24px;
-        display: flex;
-        justify-content: center;
-      }
-
-      #doseLog {
-        position: fixed;
-        bottom: clamp(20px, 6vw, 42px);
-        right: clamp(16px, 5vw, 48px);
-        background: rgba(0, 0, 0, 0.8);
-        color: #fff;
-        padding: 14px 18px;
-        border-radius: 16px;
-        box-shadow: 0 14px 28px rgba(0, 0, 0, 0.35);
-        max-width: min(280px, 90vw);
-        z-index: 50;
-      }
-
-      .popup {
-        position: fixed;
-        inset: 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: rgba(7, 18, 28, 0.6);
-        z-index: 1000;
-      }
-
-      .popup-content {
-        background: rgba(255, 255, 255, 0.98);
-        border-radius: 20px;
-        padding: clamp(24px, 4vw, 32px);
-        width: min(420px, 92vw);
-        box-shadow: 0 24px 40px rgba(12, 44, 72, 0.28);
-        display: flex;
-        flex-direction: column;
-        gap: 14px;
-      }
-
-      .popup-content h2 {
-        margin: 0;
-        font-size: 1.35rem;
-        text-align: center;
-      }
-
-      .popup-field {
-        display: flex;
-        flex-direction: column;
-        gap: 6px;
-      }
-
-      .popup-field label {
-        font-weight: 700;
-        color: rgba(15, 44, 42, 0.85);
-      }
-
-      .popup-field input,
-      .popup-field select {
-        border-radius: 12px;
-        border: 1px solid rgba(15, 44, 42, 0.18);
-        padding: 10px 14px;
-        font-size: 1rem;
-        font-family: inherit;
-      }
-
-      .popup-actions {
-        display: flex;
-        justify-content: flex-end;
-        gap: 10px;
-        margin-top: 6px;
-      }
-
-      #accentPickerOverlay .popup-content {
-        align-items: center;
-        text-align: center;
-      }
-
-      .color-picker {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(42px, 1fr));
-        gap: 8px;
-        margin-top: 8px;
-      }
-
-      .accent-color {
-        width: 42px;
-        height: 42px;
-        border-radius: 50%;
-        border: 3px solid transparent;
-        cursor: pointer;
-        background-clip: padding-box;
-        transition: transform 0.15s ease, border-color 0.15s ease;
-      }
-
-      .accent-color[data-selected="true"] {
-        border-color: rgba(15, 44, 42, 0.6);
-        transform: scale(1.05);
-      }
-
-      .accent-color:focus-visible {
-        outline: 3px solid rgba(15, 44, 42, 0.75);
-        outline-offset: 2px;
-      }
-
-      .visual-done {
-        font-weight: 800;
-        color: var(--accent-red);
-      }
-
-      .hidden {
-        display: none !important;
-      }
-
-      @media (max-width: 640px) {
-        .timer-row {
-          padding: 12px;
-        }
-
-        .timer-controls {
-          margin-left: 0;
-          width: 100%;
-          justify-content: flex-start;
-        }
-      }
-    </style>
-    <link rel="stylesheet" href="nfc.css" />
+  <title>CloseDose – PALS Cardiac Arrest Multi‑Timer</title>
 </head>
-  <body>
-    <a class="skip-link" href="#main">Skip to content</a>
-    <div class="wrap">
-      <header class="brand-header">
-        <div class="brand-logo">
-          <img src="images/logo-teal.png" alt="CloseDose logo" />
-        </div>
-        <h1 class="brand-title">
-          <span class="brand-title-dark">Close</span>
-          <span class="brand-title-teal">Dose</span>
-        </h1>
-      </header>
-      <main id="main" class="page">
+<body>
+  <div class="wrap">
+    
+    <header>
+      <img src="images/CD_Word.png" alt="CloseDose" class="header-wordmark" />
+      <button class="menu-btn" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="siteMenu" aria-label="Open menu">
+        <span class="label">Menu</span>
+        <span class="hamburger" aria-hidden="true"><span></span><span></span><span></span></span>
+      </button>
+    </header>
+    <button class="cappy-floating-btn" type="button" data-cappy-trigger aria-controls="cappyWaitlistModal" aria-expanded="false" aria-label="Join the Cappy wait list">
+      <img src="cappy/assets/Cappy circle.png" alt="Cappy Logo" />
+      <div class="cappy-waitlist-content">
+        <span class="cappy-waitlist-brand">Cappy!</span>
+        <span class="cappy-waitlist-tagline">Join the waitlist today</span>
+      </div>
+    </button>
+    <main>
+      <div class="layout">
+        
         <section class="timer-app" aria-label="PALS cardiac arrest timers">
           <h1>PALS Cardiac Arrest Multi‑Timer</h1>
           <p class="lead">
@@ -405,56 +42,46 @@
             <button id="addTimerBtn" type="button">+ Add Timer</button>
           </div>
         </section>
-      </main>
-    </div>
-    <div id="doseLog" class="hidden" role="status" aria-live="polite"></div>
-
-    <div id="timerPopup" class="popup hidden" role="dialog" aria-modal="true" aria-labelledby="popupTitle">
-      <div class="popup-content">
-        <h2 id="popupTitle">New Timer Setup</h2>
-        <div class="popup-field">
-          <label for="timerNameInput">Timer name</label>
-          <input id="timerNameInput" type="text" maxlength="24" placeholder="Custom reminder" />
-        </div>
-        <div class="popup-field">
-          <label for="timerTypeOption">Type</label>
-          <select id="timerTypeOption">
-            <option value="countUp">Count Up</option>
-            <option value="countDown">Count Down</option>
-          </select>
-        </div>
-        <div class="popup-field">
-          <label for="timerMinutesInput">Minutes (count down only)</label>
-          <input id="timerMinutesInput" type="number" min="1" max="60" value="2" />
-        </div>
-        <div class="popup-field">
-          <button id="colorToggleBtn" type="button" class="secondary">Choose Accent Color</button>
-          <div id="colorPicker" class="color-picker hidden" role="listbox" aria-label="Timer accent color"></div>
-        </div>
-        <div class="popup-actions">
-          <button type="button" class="secondary" onclick="closePopup()">Cancel</button>
-          <button type="button" onclick="createNewTimer()">Create Timer</button>
-        </div>
+      
       </div>
-    </div>
+    </main>
+  </div>
+  
+  <footer class="cd-footer">
+    <p class="cd-copy">2026 CloseDose. All rights reserved.</p>
+    <nav class="cd-legal cd-legal--full">
+      <a href="https://nsm0101.github.io/CloseDose/legal/terms">Terms</a>
+      <a href="https://nsm0101.github.io/CloseDose/legal/privacy">Privacy</a>
+      <a href="https://nsm0101.github.io/CloseDose/legal/disclaimer">Disclaimer</a>
+    </nav>
+  </footer>
 
-    <div
-      id="accentPickerOverlay"
-      class="popup hidden"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="accentPickerTitle"
-    >
-      <div class="popup-content">
-        <h2 id="accentPickerTitle">Choose Accent Color</h2>
-        <div id="accentPickerList" class="color-picker" role="listbox" aria-label="Accent colors"></div>
-        <div class="popup-actions">
-          <button type="button" class="secondary" onclick="closeAccentPicker()">Close</button>
-        </div>
-      </div>
+  <div class="menu-overlay" id="siteMenu" hidden>
+    <div class="menu-panel">
+      <nav class="menu-links">
+        <a href="index.html" class="nav-calc">Calculator</a>
+        <a href="medication-guides.html" class="nav-guides">Medication Guides</a>
+        <a href="about.html" class="nav-about">About</a>
+        <a href="donations.html" class="nav-support">Support</a>
+        <a href="contact.html" class="nav-contact">Contact</a>
+      </nav>
+      <button class="close-menu" type="button">Close</button>
     </div>
+  </div>
 
-    <script>
+  <div id="cappyWaitlistModal" class="cappy-modal-overlay" style="display:none" aria-hidden="true">
+    <div class="cappy-modal-dialog">
+      <button class="cappy-modal-close">&times;</button>
+      <h2>Cappy is coming soon!</h2>
+      <p>Join the waitlist to get early access!</p>
+      <form id="waitlistForm" class="cappy-waitlist-form">
+        <input type="email" placeholder="Enter email" required />
+        <button type="submit">Join</button>
+      </form>
+    </div>
+  </div>
+  <script src="global.js" defer></script>
+  <script>
       const accentColors = [
         { name: 'Red', val: '#e53935', class: 'red' },
         { name: 'Orange', val: '#ff9800', class: 'orange' },
@@ -869,6 +496,5 @@
 
       renderTimers();
     </script>
-    <script src="nfc.js" defer></script>
 </body>
 </html>
