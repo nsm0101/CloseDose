@@ -79,6 +79,7 @@
   const disclaimerCard = document.querySelector('.card--disclaimer');
   if (disclaimerCard) {
     const content = disclaimerCard.querySelector('.disclaimer-content');
+    const toggleBtn = disclaimerCard.querySelector('.disclaimer-toggle');
     const closeBtn = disclaimerCard.querySelector('.disclaimer-close');
     const root = document.documentElement;
     let manualDismiss = false;
@@ -87,11 +88,13 @@
       disclaimerCard.classList.toggle('is-expanded', expanded);
       disclaimerCard.setAttribute('aria-expanded', expanded);
       if (content) content.hidden = !expanded;
+      if (toggleBtn) toggleBtn.setAttribute('aria-expanded', String(expanded));
       if (expanded) {
         manualDismiss = false;
         if (closeBtn) closeBtn.focus({ preventScroll: true });
-      } else {
-        if (manual) manualDismiss = true;
+      } else if (manual) {
+        manualDismiss = true;
+        if (toggleBtn) toggleBtn.focus({ preventScroll: true });
       }
     };
 
@@ -102,11 +105,12 @@
       }
     }, { passive: true });
 
-    disclaimerCard.addEventListener('click', (e) => {
-      if (!disclaimerCard.classList.contains('is-expanded') && !e.target.closest('button, a')) {
+    if (toggleBtn) {
+      toggleBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
         setExpanded(true, true);
-      }
-    });
+      });
+    }
 
     if (closeBtn) {
       closeBtn.addEventListener('click', (e) => {
