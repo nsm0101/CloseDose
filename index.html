@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"/>
+  <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>CloseDose: Pediatric Medication Calculator</title>
+  <meta name="description" content="A free, physician-built pediatric fever and pain medication calculator. Get accurate acetaminophen and ibuprofen dosing in seconds." />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
@@ -23,9 +24,12 @@
 </head>
 <body>
   <a class="skip-link" href="#calculator-card">Skip to calculator</a>
+
   <div class="wrap">
     <header>
-      <img src="images/CD_Word.png" alt="CloseDose" class="header-wordmark" />
+      <a href="index.html" class="header-link" aria-label="CloseDose home">
+        <img src="images/CD_Word.png" alt="CloseDose" class="header-wordmark" />
+      </a>
       <button class="menu-btn" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="siteMenu" aria-label="Open menu">
         <span class="label">Menu</span>
         <span class="hamburger" aria-hidden="true"><span></span><span></span><span></span></span>
@@ -33,7 +37,7 @@
     </header>
 
     <button class="cappy-floating-btn" type="button" data-cappy-trigger aria-controls="cappyWaitlistModal" aria-expanded="false" aria-label="Join the Cappy wait list">
-      <img src="cappy/assets/Cappy circle.png" alt="Cappy Logo" />
+      <img src="cappy/assets/Cappy circle.png" alt="" />
       <div class="cappy-waitlist-content">
         <span class="cappy-waitlist-brand">Cappy!</span>
         <span class="cappy-waitlist-tagline">Join the waitlist today</span>
@@ -41,42 +45,88 @@
     </button>
 
     <main>
-      <div class="layout layout--inline">
-        <div class="calculator-widget-host" id="calculator-card" data-calculator-root></div>
+      <section class="hero" aria-labelledby="hero-heading">
+        <p class="hero-eyebrow">Built by pediatric physicians · Free for families</p>
+        <h1 id="hero-heading" class="hero-title">Confident pediatric dosing in seconds.</h1>
+        <p class="hero-sub">Enter your child's age and weight to get accurate acetaminophen and ibuprofen dosing — no account, no math, no guesswork.</p>
+      </section>
 
+      <div class="layout layout--grid">
+        <aside class="info-column" aria-label="How to use and safety reminders">
+          <section class="card info-card info-card--steps">
+            <h2 class="info-card-title">How to use CloseDose</h2>
+            <ol class="info-steps">
+              <li><span class="step-num">1</span><span><strong>Pick an age group.</strong> Tap the band that matches your child.</span></li>
+              <li><span class="step-num">2</span><span><strong>Enter the weight.</strong> Pounds or kilograms — both work.</span></li>
+              <li><span class="step-num">3</span><span><strong>Calculate.</strong> Get a single recommended dose with the safest interval.</span></li>
+            </ol>
+          </section>
+
+          <section class="card info-card info-card--safety">
+            <h2 class="info-card-title">Safety quick-reference</h2>
+            <ul class="info-list">
+              <li>Always use the syringe or cup that came with the medicine.</li>
+              <li>Re-check your child's weight every few months.</li>
+              <li>Wait <strong>at least 6 hours</strong> between doses of the same medicine.</li>
+              <li>Ibuprofen is <strong>not for infants under 6 months</strong>.</li>
+            </ul>
+          </section>
+
+          <section class="card info-card info-card--urgent">
+            <h2 class="info-card-title">When to call for help</h2>
+            <p class="info-urgent-line"><strong>Call 911</strong> for trouble breathing, persistent vomiting, or seizures.</p>
+            <p class="info-urgent-line"><strong>Poison Control:</strong> <a href="tel:18002221222">1-800-222-1222</a></p>
+            <p class="info-urgent-line">Any fever in a child <strong>under 2 months</strong> is a medical emergency — contact your pediatrician immediately.</p>
+          </section>
+        </aside>
+
+        <div class="calculator-column">
+          <div class="calculator-widget-host" id="calculator-card" data-calculator-root></div>
+
+          <p class="calculator-trust">
+            CloseDose is free, ad-free, and reviewed by an actively practicing pediatric emergency physician.
+            <a href="about.html">Learn more about CloseDose →</a>
+          </p>
+        </div>
+      </div>
+
+      <div class="layout layout--secondary">
         <section class="card donate-card" aria-labelledby="donate-heading">
           <div class="donate-content">
-            <div class="donate-primary">
+            <h2 id="donate-heading" class="donate-heading">Powered by donations</h2>
+            <p class="donate-intro">
+              CloseDose stays free for every family because of generous donors.
+              Every contribution keeps the calculator current, accessible, and ad-free.
+            </p>
+            <div class="donate-actions">
               <button class="donate-pill" type="button" id="donateBtn" data-gb-account="r8SGiZ0RhFRoIkXu" data-gb-campaign="93Xrjv">
                 <span class="donate-pill-lines">
-                  <span class="donate-pill-line">Powered by Donations!</span>
-                  <span class="donate-pill-sub">Please consider donating today!</span>
+                  <span class="donate-pill-line">Donate today</span>
+                  <span class="donate-pill-sub">Every dollar helps</span>
                 </span>
                 <img src="images/piggyFINAL.svg" alt="" aria-hidden="true" />
               </button>
+              <ul class="donate-links">
+                <li><a class="donate-link--kofi" href="https://ko-fi.com/drnsm" target="_blank" rel="noopener">Support on Ko-fi</a></li>
+                <li><a class="donate-link--givebutter" href="https://givebutter.com/93Xrjv" target="_blank" rel="noopener">GiveButter Campaign</a></li>
+                <li><a href="mailto:hello@closedose.com?subject=CloseDose%20Sponsorship" rel="noopener">Connect for Sponsorships</a></li>
+              </ul>
             </div>
-            <p class="donate-intro">
-              Please consider supporting me to continue development of this tool!
-              We seek to provide full free access to every family and every contribution helps!
-            </p>
-            <ul class="donate-links">
-              <li><a class="donate-link--kofi" href="https://ko-fi.com/drnsm" target="_blank" rel="noopener">Support on Ko-fi</a></li>
-              <li><a class="donate-link--givebutter" href="https://givebutter.com/93Xrjv" target="_blank" rel="noopener">GiveButter Campaign</a></li>
-              <li><a href="mailto:hello@closedose.com?subject=CloseDose%20Support" rel="noopener">Connect for Sponsorships</a></li>
-            </ul>
           </div>
         </section>
 
-        <section class="card card--disclaimer" id="disclaimer-card" aria-expanded="false">
+        <section class="card card--disclaimer" id="disclaimer-card" aria-expanded="false" aria-labelledby="disclaimer-heading">
           <div class="disclaimer-header">
-            <h2 id="disclaimer-heading">Disclaimer</h2>
-            <button type="button" class="disclaimer-close" aria-label="Close disclaimer">Close</button>
+            <span class="disclaimer-eyebrow">Important</span>
+            <h2 id="disclaimer-heading">Disclaimer &amp; medical safety</h2>
+            <button type="button" class="disclaimer-toggle" aria-controls="disclaimer-panel" aria-expanded="false">Read</button>
           </div>
           <div class="disclaimer-content" id="disclaimer-panel" hidden>
             <p>This calculator is for educational support only and does not replace guidance from your pediatrician or pharmacist. Always confirm dosing before administering medication.</p>
-            <p>If your child is 0-2 months of age, has any complex medical history, please consult with your medical care team prior to use.</p>
+            <p>If your child is 0–2 months of age or has any complex medical history, please consult with your medical care team prior to use.</p>
             <p class="disclaimer-seek-care"><strong>When to seek care:</strong> Call 911 or your pediatrician for trouble breathing, persistent vomiting, or seizures.</p>
-            <a class="disclaimer-link" href="/legal/disclaimer">Full Disclaimer</a>
+            <a class="disclaimer-link" href="/legal/disclaimer">Read the full disclaimer →</a>
+            <button type="button" class="disclaimer-close" aria-label="Close disclaimer">Close</button>
           </div>
         </section>
       </div>
@@ -85,17 +135,17 @@
 
   <footer class="cd-footer" role="contentinfo">
     <p class="cd-copy">2026 CloseDose. All rights reserved.</p>
-    <nav class="cd-legal cd-legal--full">
+    <nav class="cd-legal cd-legal--full" aria-label="Legal">
       <a href="/legal/terms">Terms</a>
       <a href="/legal/privacy">Privacy</a>
       <a href="/legal/disclaimer">Disclaimer</a>
     </nav>
-    <p class="cd-note">For medical emergencies, call 911.</p>
+    <p class="cd-note">For medical emergencies, call 911. For poisoning, call Poison Control at 1-800-222-1222.</p>
   </footer>
 
   <div class="menu-overlay" id="siteMenu" hidden>
     <div class="menu-panel">
-      <nav class="menu-links">
+      <nav class="menu-links" aria-label="Site">
         <a href="index.html" aria-current="page">Calculator</a>
         <a href="medication-guides.html">Medication Guides</a>
         <a href="about.html">About</a>
@@ -107,16 +157,16 @@
   </div>
 
   <div id="cappyWaitlistModal" class="cappy-modal-overlay" aria-hidden="true">
-    <div class="cappy-modal-dialog">
-      <button class="cappy-modal-close">&times;</button>
+    <div class="cappy-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="cappyWaitlistTitle">
+      <button class="cappy-modal-close" aria-label="Close waitlist dialog">&times;</button>
       <div class="cappy-badge"><img src="cappy/assets/Cappy circle.png" alt="" /></div>
-      <h2>Cappy is coming soon!</h2>
-      <p>Join the waitlist to get early access!</p>
+      <h2 id="cappyWaitlistTitle">Cappy is coming soon!</h2>
+      <p>Join the waitlist to get early access.</p>
       <form id="waitlistForm" class="cappy-waitlist-form">
-        <input type="email" placeholder="Enter email" required />
+        <input type="email" placeholder="Enter email" required aria-label="Email address" />
         <button type="submit">Join Waitlist</button>
       </form>
-      <div id="waitlistSuccess" class="cappy-waitlist-success" style="display: none;">🎉 Thanks!</div>
+      <div id="waitlistSuccess" class="cappy-waitlist-success" style="display: none;">Thanks! We'll be in touch.</div>
     </div>
   </div>
 
