@@ -5,6 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>CloseDose: Pediatric Medication Calculator</title>
   <meta name="description" content="A free, physician-built pediatric fever and pain medication calculator. Get accurate acetaminophen and ibuprofen dosing in seconds." />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="CloseDose" />
+  <meta property="og:title" content="CloseDose – Pediatric Medication Calculator" />
+  <meta property="og:description" content="Free, physician-built pediatric dosing calculator. Get accurate acetaminophen and ibuprofen doses by weight in seconds — no account required." />
+  <meta property="og:image" content="https://closedose.com/images/favicon-192.png" />
+  <meta property="og:url" content="https://closedose.com/" />
+  <meta name="twitter:card" content="summary" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
@@ -117,13 +124,15 @@
               Every contribution keeps the calculator current, accessible, and ad-free.
             </p>
             <div class="donate-actions">
-              <button class="donate-pill" type="button" id="donateBtn" data-gb-account="r8SGiZ0RhFRoIkXu" data-gb-campaign="93Xrjv">
-                <span class="donate-pill-lines">
-                  <span class="donate-pill-line">Donate today</span>
-                  <span class="donate-pill-sub">Every dollar helps</span>
-                </span>
-                <img src="images/piggyFINAL.svg" alt="" aria-hidden="true" />
-              </button>
+              <givebutter-widget id="gOeyDj">
+                <button class="donate-pill" type="button" aria-label="Donate to CloseDose via GiveButter">
+                  <span class="donate-pill-lines">
+                    <span class="donate-pill-line">Donate today</span>
+                    <span class="donate-pill-sub">Every dollar helps</span>
+                  </span>
+                  <img src="images/piggyFINAL.svg" alt="" aria-hidden="true" />
+                </button>
+              </givebutter-widget>
               <ul class="donate-links">
                 <li><a class="donate-link--kofi" href="https://ko-fi.com/drnsm" target="_blank" rel="noopener">Support on Ko-fi</a></li>
                 <li><a class="donate-link--givebutter" href="https://givebutter.com/93Xrjv" target="_blank" rel="noopener">GiveButter Campaign</a></li>
@@ -200,6 +209,7 @@
     });
   </script>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+  <script async src="https://widgets.givebutter.com/latest.umd.cjs?acct=r8SGiZ0RhFRoIkXu&p=other"></script>
   <script src="global.js" defer></script>
 </body>
 </html>
