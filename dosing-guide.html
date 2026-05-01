@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="How to measure and give liquid medicine to your child — the right syringe, the right markings, and common mistakes to avoid." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32.png">
+  <link rel="stylesheet" href="global.css" />
+  <title>CloseDose – How to measure liquid medicine</title>
+</head>
+<body>
+  <div class="wrap">
+
+    <header>
+      <a href="index.html" class="header-link" aria-label="CloseDose home">
+        <img src="images/CD_Word.png" alt="CloseDose" class="header-wordmark" />
+      </a>
+      <button class="menu-btn" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="siteMenu" aria-label="Open menu">
+        <span class="label">Menu</span>
+        <span class="hamburger" aria-hidden="true"><span></span><span></span><span></span></span>
+      </button>
+    </header>
+
+    <button class="cappy-floating-btn" type="button" data-cappy-trigger aria-controls="cappyWaitlistModal" aria-expanded="false" aria-label="Join the Cappy wait list">
+      <img src="cappy/assets/Cappy circle.png" alt="" />
+      <div class="cappy-waitlist-content">
+        <span class="cappy-waitlist-brand">Cappy!</span>
+        <span class="cappy-waitlist-tagline">Join the waitlist today</span>
+      </div>
+    </button>
+
+    <main>
+      <div class="layout layout--inline">
+
+        <!-- Hero -->
+        <section class="card guide-hero">
+          <h1>How to Measure Liquid Medicine</h1>
+          <p>Kitchen spoons are not dosing tools. A difference of just <strong>1 mL</strong> can mean an under-dose that won't help — or an over-dose that could harm. This guide shows you exactly how to use the right tool, the right way.</p>
+        </section>
+
+        <!-- Big visual alert: always use the device that came with the medicine -->
+        <div class="dose-alert" role="alert">
+          <span class="dose-alert__icon" aria-hidden="true">⚠️</span>
+          <div>
+            <strong>Always use the measuring device that came with the medicine.</strong>
+            <span>If it's missing, ask your pharmacist for an oral syringe — never use a kitchen spoon.</span>
+          </div>
+        </div>
+
+        <!-- Syringe section -->
+        <article class="card med-guide" id="syringe-guide" aria-labelledby="syringe-heading">
+          <div class="med-guide__header">
+            <div class="med-guide__header-text">
+              <h2 id="syringe-heading">Oral syringe <span class="conc-badge conc-badge--ace">Best for infants &amp; small doses</span></h2>
+              <p>An oral syringe is the most accurate tool for doses under 10 mL. It lets you draw exactly the right amount with no guesswork.</p>
+            </div>
+          </div>
+
+          <!-- Animated SVG: syringe fill demo -->
+          <div class="tare-demo">
+            <svg
+              class="tare-svg dose-svg"
+              viewBox="0 0 420 300"
+              xmlns="http://www.w3.org/2000/svg"
+              role="img"
+              aria-label="Animation: an oral syringe is inserted into a medicine bottle, pulled back to the correct mL marking, then tilted to show medicine given into a child's cheek."
+            >
+              <!-- Background: soft card -->
+              <rect x="0" y="0" width="420" height="300" rx="18" fill="rgba(255,255,255,0)" />
+
+              <!-- === MEDICINE BOTTLE (left side) === -->
+              <g class="dose-bottle">
+                <!-- Bottle body -->
+                <rect x="38" y="80" width="56" height="130" rx="10" fill="#e0f2fe" stroke="#0ea5e9" stroke-width="2" />
+                <!-- Bottle neck -->
+                <rect x="52" y="60" width="28" height="26" rx="4" fill="#bae6fd" stroke="#0ea5e9" stroke-width="1.5" />
+                <!-- Bottle cap -->
+                <rect x="46" y="44" width="40" height="18" rx="6" fill="#f97316" stroke="#ea580c" stroke-width="1.5" />
+                <!-- Cap highlight -->
+                <rect x="50" y="48" width="32" height="6" rx="3" fill="rgba(255,255,255,0.4)" />
+                <!-- Liquid in bottle -->
+                <rect x="40" y="140" width="52" height="68" rx="0 0 8 8" fill="#7dd3fc" opacity="0.75">
+                  <animate attributeName="height" values="68;55;42;55;68" dur="12s" repeatCount="indefinite" />
+                  <animate attributeName="y" values="140;153;166;153;140" dur="12s" repeatCount="indefinite" />
+                </rect>
+                <!-- Liquid surface wave (subtle) -->
+                <ellipse cx="66" cy="140" rx="26" ry="3" fill="#38bdf8" opacity="0.5">
+                  <animate attributeName="cy" values="140;153;166;153;140" dur="12s" repeatCount="indefinite" />
+                </ellipse>
+                <!-- Bottle label -->
+                <rect x="44" y="108" width="44" height="28" rx="4" fill="rgba(255,255,255,0.85)" stroke="rgba(14,165,233,0.3)" stroke-width="1" />
+                <text x="66" y="119" text-anchor="middle" font-family="Nunito, sans-serif" font-size="6" font-weight="900" fill="#0c4a6e">Children's</text>
+                <text x="66" y="128" text-anchor="middle" font-family="Nunito, sans-serif" font-size="5.5" font-weight="700" fill="#0369a1">160 mg / 5 mL</text>
+              </g>
+
+              <!-- === ORAL SYRINGE (center / animated) === -->
+              <g class="dose-syringe">
+                <!-- Syringe barrel -->
+                <rect x="160" y="92" width="22" height="120" rx="5" fill="rgba(255,255,255,0.9)" stroke="#94a3b8" stroke-width="1.5" />
+                <!-- Syringe plunger rod -->
+                <rect x="169" y="195" width="4" height="50" rx="2" fill="#64748b" />
+                <!-- Plunger handle -->
+                <rect x="158" y="240" width="26" height="8" rx="4" fill="#475569" />
+                <!-- Syringe tip -->
+                <path d="M167 212 L173 212 L171 228 L169 228 Z" fill="#94a3b8" />
+
+                <!-- Graduation marks on syringe (left side) -->
+                <line x1="160" y1="110" x2="155" y2="110" stroke="#64748b" stroke-width="1.2" />
+                <text x="153" y="114" text-anchor="end" font-family="'Courier New', monospace" font-size="8" fill="#334155" font-weight="700">10</text>
+                <line x1="160" y1="122" x2="157" y2="122" stroke="#64748b" stroke-width="1" />
+                <line x1="160" y1="134" x2="155" y2="134" stroke="#64748b" stroke-width="1.2" />
+                <text x="153" y="138" text-anchor="end" font-family="'Courier New', monospace" font-size="8" fill="#334155" font-weight="700">7.5</text>
+                <line x1="160" y1="146" x2="157" y2="146" stroke="#64748b" stroke-width="1" />
+                <line x1="160" y1="158" x2="155" y2="158" stroke="#64748b" stroke-width="1.2" />
+                <text x="153" y="162" text-anchor="end" font-family="'Courier New', monospace" font-size="8" fill="#334155" font-weight="700">5</text>
+                <line x1="160" y1="170" x2="157" y2="170" stroke="#64748b" stroke-width="1" />
+                <line x1="160" y1="182" x2="155" y2="182" stroke="#64748b" stroke-width="1.2" />
+                <text x="153" y="186" text-anchor="end" font-family="'Courier New', monospace" font-size="8" fill="#334155" font-weight="700">2.5</text>
+                <line x1="160" y1="194" x2="157" y2="194" stroke="#64748b" stroke-width="1" />
+                <line x1="160" y1="206" x2="155" y2="206" stroke="#64748b" stroke-width="1.2" />
+                <text x="153" y="210" text-anchor="end" font-family="'Courier New', monospace" font-size="8" fill="#334155" font-weight="700">0</text>
+
+                <!-- Liquid in syringe (animated fill) -->
+                <rect x="162" y="158" width="18" height="49" rx="0 0 4 4" fill="#7dd3fc" opacity="0.85" class="syringe-liquid">
+                  <animate attributeName="height" values="0;0;49;49;49;10;0" dur="12s" keyTimes="0;0.15;0.35;0.55;0.70;0.85;1" repeatCount="indefinite" />
+                  <animate attributeName="y" values="207;207;158;158;158;197;207" dur="12s" keyTimes="0;0.15;0.35;0.55;0.70;0.85;1" repeatCount="indefinite" />
+                </rect>
+
+                <!-- "5 mL" target line indicator -->
+                <line x1="160" y1="158" x2="183" y2="158" stroke="#16a34a" stroke-width="2" stroke-dasharray="3,2" class="dose-target-line" />
+                <text x="186" y="162" font-family="Nunito, sans-serif" font-size="9" font-weight="900" fill="#16a34a" class="dose-target-label">← 5 mL</text>
+              </g>
+
+              <!-- === CHILD FACE (right side) === -->
+              <g class="dose-child">
+                <!-- Head -->
+                <circle cx="340" cy="130" r="38" fill="#fde68a" />
+                <!-- Ear left -->
+                <ellipse cx="304" cy="132" rx="7" ry="10" fill="#fcd34d" />
+                <!-- Hair -->
+                <ellipse cx="340" cy="100" rx="32" ry="18" fill="#92400e" />
+                <!-- Eyes (closed during dose) -->
+                <g class="child-eyes-open">
+                  <circle cx="328" cy="126" r="5" fill="#0f2c2a" />
+                  <circle cx="352" cy="126" r="5" fill="#0f2c2a" />
+                  <circle cx="329.5" cy="124.5" r="1.5" fill="white" />
+                  <circle cx="353.5" cy="124.5" r="1.5" fill="white" />
+                </g>
+                <!-- Cheek -->
+                <ellipse cx="360" cy="142" rx="10" ry="7" fill="rgba(249,115,22,0.2)" />
+                <!-- Mouth (slight smile) -->
+                <path d="M330 145 Q340 152 350 145" stroke="#92400e" stroke-width="2" fill="none" stroke-linecap="round" class="child-mouth-smile" />
+                <!-- Mouth open for dose -->
+                <ellipse cx="340" cy="148" rx="10" ry="7" fill="#b45309" class="child-mouth-open" opacity="0" />
+              </g>
+
+              <!-- Caption text (animated) -->
+              <text x="210" y="284" text-anchor="middle" font-family="Nunito, sans-serif" font-size="12" font-weight="800" fill="#0f2c2a" class="caption caption--1">Step 1 — Insert tip into medicine bottle</text>
+              <text x="210" y="284" text-anchor="middle" font-family="Nunito, sans-serif" font-size="12" font-weight="800" fill="#0f2c2a" class="caption caption--2" opacity="0">Step 2 — Pull the plunger to the mL mark</text>
+              <text x="210" y="284" text-anchor="middle" font-family="Nunito, sans-serif" font-size="12" font-weight="800" fill="#16a34a" class="caption caption--3" opacity="0">Step 3 — Check you're at exactly 5 mL</text>
+              <text x="210" y="284" text-anchor="middle" font-family="Nunito, sans-serif" font-size="12" font-weight="800" fill="#0d8f8a" class="caption caption--4" opacity="0">Step 4 — Aim at the cheek, give slowly</text>
+            </svg>
+
+            <!-- Step dots -->
+            <div class="tare-dots" aria-hidden="true">
+              <span class="tare-dot tare-dot--1"></span>
+              <span class="tare-dot tare-dot--2"></span>
+              <span class="tare-dot tare-dot--3"></span>
+              <span class="tare-dot tare-dot--4"></span>
+            </div>
+          </div>
+
+          <!-- Step cards -->
+          <div class="step-grid">
+            <div class="step-card">
+              <div class="step-card__num">1</div>
+              <div class="step-card__body">
+                <h3 class="step-card__title">Insert tip into the bottle</h3>
+                <p class="step-card__text">Turn the medicine bottle upside-down. Insert the syringe tip through the adapter or opening and push in until snug.</p>
+              </div>
+            </div>
+            <div class="step-card">
+              <div class="step-card__num">2</div>
+              <div class="step-card__body">
+                <h3 class="step-card__title">Pull the plunger slowly</h3>
+                <p class="step-card__text">Draw back the plunger until the <strong>bottom edge of the plunger</strong> lines up exactly with your dose marking. Go slowly — you can always push back excess.</p>
+              </div>
+            </div>
+            <div class="step-card">
+              <div class="step-card__num">3</div>
+              <div class="step-card__body">
+                <h3 class="step-card__title">Read the mark at eye level</h3>
+                <p class="step-card__text">Hold the syringe at <strong>eye level</strong> to read the line accurately. Viewing from above or below makes the marking look different than it actually is.</p>
+              </div>
+            </div>
+            <div class="step-card">
+              <div class="step-card__num">4</div>
+              <div class="step-card__body">
+                <h3 class="step-card__title">Aim at the inner cheek</h3>
+                <p class="step-card__text">Place the tip toward the inside of the cheek — <strong>not the back of the throat</strong>. Squirt slowly in small amounts so your child can swallow without choking.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- How to read the syringe markings (key visual tip) -->
+          <div class="dose-reading-tip">
+            <h3>Reading the markings correctly</h3>
+            <div class="dose-marking-grid">
+              <div class="dose-marking-card dose-marking-card--correct">
+                <div class="dose-marking-label">✓ Correct</div>
+                <svg viewBox="0 0 80 120" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                  <rect x="28" y="8" width="24" height="100" rx="5" fill="rgba(255,255,255,0.9)" stroke="#94a3b8" stroke-width="1.5"/>
+                  <rect x="30" y="60" width="20" height="46" rx="0 0 4 4" fill="#7dd3fc" opacity="0.85"/>
+                  <line x1="28" y1="30" x2="22" y2="30" stroke="#64748b" stroke-width="1.2"/>
+                  <line x1="28" y1="45" x2="25" y2="45" stroke="#64748b" stroke-width="1"/>
+                  <line x1="28" y1="60" x2="22" y2="60" stroke="#16a34a" stroke-width="2.5"/>
+                  <line x1="28" y1="75" x2="25" y2="75" stroke="#64748b" stroke-width="1"/>
+                  <line x1="28" y1="90" x2="22" y2="90" stroke="#64748b" stroke-width="1.2"/>
+                  <text x="20" y="34" text-anchor="end" font-family="monospace" font-size="7" fill="#334155" font-weight="700">10</text>
+                  <text x="20" y="64" text-anchor="end" font-family="monospace" font-size="7" fill="#16a34a" font-weight="900">5</text>
+                  <text x="20" y="94" text-anchor="end" font-family="monospace" font-size="7" fill="#334155" font-weight="700">0</text>
+                  <!-- Eye level indicator -->
+                  <line x1="52" y1="60" x2="72" y2="60" stroke="#16a34a" stroke-width="1.5" stroke-dasharray="3,2"/>
+                  <circle cx="68" cy="60" r="5" fill="none" stroke="#16a34a" stroke-width="1.5"/>
+                  <circle cx="68" cy="60" r="2" fill="#16a34a"/>
+                </svg>
+                <p>Read at eye level — plunger bottom aligns with the line</p>
+              </div>
+              <div class="dose-marking-card dose-marking-card--wrong">
+                <div class="dose-marking-label">✗ Wrong</div>
+                <svg viewBox="0 0 80 120" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                  <rect x="28" y="8" width="24" height="100" rx="5" fill="rgba(255,255,255,0.9)" stroke="#94a3b8" stroke-width="1.5"/>
+                  <rect x="30" y="55" width="20" height="51" rx="0 0 4 4" fill="#7dd3fc" opacity="0.85"/>
+                  <line x1="28" y1="30" x2="22" y2="30" stroke="#64748b" stroke-width="1.2"/>
+                  <line x1="28" y1="45" x2="25" y2="45" stroke="#64748b" stroke-width="1"/>
+                  <line x1="28" y1="60" x2="22" y2="60" stroke="#dc2626" stroke-width="2"/>
+                  <line x1="28" y1="75" x2="25" y2="75" stroke="#64748b" stroke-width="1"/>
+                  <line x1="28" y1="90" x2="22" y2="90" stroke="#64748b" stroke-width="1.2"/>
+                  <text x="20" y="34" text-anchor="end" font-family="monospace" font-size="7" fill="#334155" font-weight="700">10</text>
+                  <text x="20" y="64" text-anchor="end" font-family="monospace" font-size="7" fill="#dc2626" font-weight="900">5</text>
+                  <text x="20" y="94" text-anchor="end" font-family="monospace" font-size="7" fill="#334155" font-weight="700">0</text>
+                  <!-- Angle indicator (looking down from above) -->
+                  <path d="M56 45 L70 60 L56 62" stroke="#dc2626" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                  <text x="72" y="50" font-family="Nunito, sans-serif" font-size="7" fill="#dc2626" font-weight="700">↗</text>
+                  <text x="59" y="44" font-family="Nunito, sans-serif" font-size="6.5" fill="#dc2626" font-weight="700">Looking</text>
+                  <text x="59" y="52" font-family="Nunito, sans-serif" font-size="6.5" fill="#dc2626" font-weight="700">from above</text>
+                </svg>
+                <p>Viewing from an angle makes it look like less medicine than it is</p>
+              </div>
+            </div>
+          </div>
+
+        </article>
+
+        <!-- Dosing cup section -->
+        <article class="card med-guide" id="cup-guide" aria-labelledby="cup-heading">
+          <div class="med-guide__header">
+            <div class="med-guide__header-text">
+              <h2 id="cup-heading">Dosing cup <span class="conc-badge conc-badge--child">For older children, larger doses</span></h2>
+              <p>Dosing cups work well for children old enough to drink from a cup and for doses of 5 mL or more. Accuracy matters just as much as with a syringe.</p>
+            </div>
+          </div>
+
+          <!-- Cup animated SVG -->
+          <div class="tare-demo">
+            <svg
+              class="tare-svg dose-svg"
+              viewBox="0 0 420 280"
+              xmlns="http://www.w3.org/2000/svg"
+              role="img"
+              aria-label="Animation: a parent pours medicine into a dosing cup, holds it at eye level to read the correct marking, then hands it to a child to drink."
+            >
+              <!-- Cup body -->
+              <g class="dose-cup">
+                <!-- Cup shape -->
+                <path d="M160 80 L150 210 L270 210 L260 80 Z" fill="rgba(255,255,255,0.85)" stroke="#94a3b8" stroke-width="2"/>
+                <!-- Cup liquid (animated fill) -->
+                <clipPath id="cupClip">
+                  <path d="M160 80 L150 210 L270 210 L260 80 Z"/>
+                </clipPath>
+                <rect x="148" y="160" width="124" height="52" fill="#7dd3fc" opacity="0.8" clip-path="url(#cupClip)">
+                  <animate attributeName="height" values="0;0;52;52;52;0" dur="12s" keyTimes="0;0.1;0.35;0.6;0.8;1" repeatCount="indefinite" />
+                  <animate attributeName="y" values="210;210;160;160;160;210" dur="12s" keyTimes="0;0.1;0.35;0.6;0.8;1" repeatCount="indefinite" />
+                </rect>
+
+                <!-- Graduation marks on cup -->
+                <line x1="155" y1="130" x2="148" y2="130" stroke="#64748b" stroke-width="1.5"/>
+                <text x="145" y="134" text-anchor="end" font-family="'Courier New', monospace" font-size="9" fill="#334155" font-weight="700">15 mL</text>
+                <line x1="156" y1="148" x2="151" y2="148" stroke="#64748b" stroke-width="1"/>
+                <line x1="157" y1="160" x2="148" y2="160" stroke="#16a34a" stroke-width="2.5"/>
+                <text x="145" y="164" text-anchor="end" font-family="'Courier New', monospace" font-size="9" fill="#16a34a" font-weight="900">10 mL</text>
+                <line x1="158" y1="172" x2="153" y2="172" stroke="#64748b" stroke-width="1"/>
+                <line x1="159" y1="185" x2="150" y2="185" stroke="#64748b" stroke-width="1.5"/>
+                <text x="145" y="189" text-anchor="end" font-family="'Courier New', monospace" font-size="9" fill="#334155" font-weight="700">5 mL</text>
+
+                <!-- Right-side mL markings -->
+                <line x1="265" y1="130" x2="272" y2="130" stroke="#64748b" stroke-width="1.5"/>
+                <text x="275" y="134" font-family="'Courier New', monospace" font-size="9" fill="#334155" font-weight="700">½ tsp</text>
+                <line x1="263" y1="160" x2="272" y2="160" stroke="#16a34a" stroke-width="2"/>
+                <text x="275" y="164" font-family="'Courier New', monospace" font-size="9" fill="#16a34a" font-weight="900">2 tsp</text>
+                <line x1="261" y1="185" x2="272" y2="185" stroke="#64748b" stroke-width="1.5"/>
+                <text x="275" y="189" font-family="'Courier New', monospace" font-size="9" fill="#334155" font-weight="700">1 tsp</text>
+
+                <!-- Target level label -->
+                <text x="210" y="154" text-anchor="middle" font-family="Nunito, sans-serif" font-size="10" font-weight="900" fill="#16a34a" class="cup-dose-label">← 10 mL target</text>
+              </g>
+
+              <!-- Caption text (animated) -->
+              <text x="210" y="258" text-anchor="middle" font-family="Nunito, sans-serif" font-size="12" font-weight="800" fill="#0f2c2a" class="caption caption--1">Step 1 — Set cup on a flat surface</text>
+              <text x="210" y="258" text-anchor="middle" font-family="Nunito, sans-serif" font-size="12" font-weight="800" fill="#0f2c2a" class="caption caption--2" opacity="0">Step 2 — Pour slowly to the correct line</text>
+              <text x="210" y="258" text-anchor="middle" font-family="Nunito, sans-serif" font-size="12" font-weight="800" fill="#16a34a" class="caption caption--3" opacity="0">Step 3 — Read at eye level, then adjust</text>
+              <text x="210" y="258" text-anchor="middle" font-family="Nunito, sans-serif" font-size="12" font-weight="800" fill="#0d8f8a" class="caption caption--4" opacity="0">Step 4 — Give the full amount right away</text>
+            </svg>
+
+            <div class="tare-dots" aria-hidden="true">
+              <span class="tare-dot tare-dot--1"></span>
+              <span class="tare-dot tare-dot--2"></span>
+              <span class="tare-dot tare-dot--3"></span>
+              <span class="tare-dot tare-dot--4"></span>
+            </div>
+          </div>
+
+          <div class="step-grid">
+            <div class="step-card">
+              <div class="step-card__num">1</div>
+              <div class="step-card__body">
+                <h3 class="step-card__title">Set the cup on a flat surface</h3>
+                <p class="step-card__text">Place the dosing cup on a counter or table before pouring. Holding it in your hand while pouring makes it harder to read the level accurately.</p>
+              </div>
+            </div>
+            <div class="step-card">
+              <div class="step-card__num">2</div>
+              <div class="step-card__body">
+                <h3 class="step-card__title">Pour slowly to the line</h3>
+                <p class="step-card__text">Tilt the bottle gently and pour until the medicine surface reaches the correct graduation mark. Thick liquids (like some suspension medicines) can be hard to pour — go slow.</p>
+              </div>
+            </div>
+            <div class="step-card">
+              <div class="step-card__num">3</div>
+              <div class="step-card__body">
+                <h3 class="step-card__title">Read at eye level</h3>
+                <p class="step-card__text">Crouch down so your eyes are level with the graduation line, or lift the cup to eye height. The bottom of the curved liquid surface (the meniscus) should sit on the line.</p>
+              </div>
+            </div>
+            <div class="step-card">
+              <div class="step-card__num">4</div>
+              <div class="step-card__body">
+                <h3 class="step-card__title">Give the full amount</h3>
+                <p class="step-card__text">Have your child drink from the cup completely — medicine left behind means an under-dose. For thick liquids, let it drain fully before rinsing.</p>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- What NOT to use (kitchen spoons, etc.) -->
+        <article class="card med-guide dose-pitfalls" id="pitfalls" aria-labelledby="pitfalls-heading">
+          <div class="med-guide__header">
+            <div class="med-guide__header-text">
+              <h2 id="pitfalls-heading">Common measuring mistakes</h2>
+              <p>These are the most frequent dosing errors seen in pediatric emergency rooms. All are easy to avoid once you know what to look for.</p>
+            </div>
+          </div>
+
+          <div class="pitfall-grid">
+            <div class="pitfall-card pitfall-card--danger">
+              <div class="pitfall-card__icon" aria-hidden="true">🥄</div>
+              <h3>Kitchen spoons</h3>
+              <p>A household teaspoon holds anywhere from <strong>3 to 7 mL</strong> depending on the spoon — not the 5 mL it should. This can mean double the intended dose.</p>
+              <div class="pitfall-verdict pitfall-verdict--never">Never use a kitchen spoon</div>
+            </div>
+            <div class="pitfall-card pitfall-card--danger">
+              <div class="pitfall-card__icon" aria-hidden="true">📐</div>
+              <h3>Reading from an angle</h3>
+              <p>Viewing the syringe or cup from above makes the liquid level appear lower than it is — leading to too much medicine being drawn. Always read at eye level.</p>
+              <div class="pitfall-verdict pitfall-verdict--always">Always read at eye level</div>
+            </div>
+            <div class="pitfall-card pitfall-card--danger">
+              <div class="pitfall-card__icon" aria-hidden="true">🔄</div>
+              <h3>Concentration mix-up</h3>
+              <p>Children's and Infant formulas of the same medicine can have <strong>very different concentrations</strong>. The dose in mL is different for each. Always check the bottle label.</p>
+              <div class="pitfall-verdict pitfall-verdict--always">Always match the mL to your bottle</div>
+            </div>
+            <div class="pitfall-card pitfall-card--caution">
+              <div class="pitfall-card__icon" aria-hidden="true">🍵</div>
+              <h3>Dosing cups for small amounts</h3>
+              <p>Cups are harder to read accurately for doses under 5 mL. For infants or small children, an oral syringe is significantly more precise for small volumes.</p>
+              <div class="pitfall-verdict pitfall-verdict--prefer">Use a syringe for doses &lt; 5 mL</div>
+            </div>
+            <div class="pitfall-card pitfall-card--caution">
+              <div class="pitfall-card__icon" aria-hidden="true">💊</div>
+              <h3>Guessing when no device is present</h3>
+              <p>If the measuring device is lost, pharmacies provide free oral syringes on request. Ask before using anything else — guessing is never safe.</p>
+              <div class="pitfall-verdict pitfall-verdict--always">Ask your pharmacist for a syringe</div>
+            </div>
+            <div class="pitfall-card pitfall-card--caution">
+              <div class="pitfall-card__icon" aria-hidden="true">⏱️</div>
+              <h3>Dosing too soon</h3>
+              <p>Wait the full interval between doses — at least <strong>4 hours for acetaminophen</strong> and <strong>6 hours for ibuprofen</strong>. Giving another dose early can cause an accidental overdose even with correct volume.</p>
+              <div class="pitfall-verdict pitfall-verdict--always">Always check the time of the last dose</div>
+            </div>
+          </div>
+        </article>
+
+        <!-- mL vs mg explainer -->
+        <section class="card dose-unit-card" aria-labelledby="units-heading">
+          <h2 id="units-heading">mL vs mg — what's the difference?</h2>
+          <div class="dose-unit-grid">
+            <div class="dose-unit-block dose-unit-block--ml">
+              <div class="dose-unit-block__letter">mL</div>
+              <div class="dose-unit-block__name">milliliters</div>
+              <p>This is the <strong>volume</strong> you measure and give — it's what the syringe or cup markings show.</p>
+              <p class="dose-unit-example">Example: draw to the <strong>5 mL</strong> line on the syringe.</p>
+            </div>
+            <div class="dose-unit-divider" aria-hidden="true">≠</div>
+            <div class="dose-unit-block dose-unit-block--mg">
+              <div class="dose-unit-block__letter">mg</div>
+              <div class="dose-unit-block__name">milligrams</div>
+              <p>This is the <strong>amount of medicine</strong> in each mL. It depends on the concentration of the bottle.</p>
+              <p class="dose-unit-example">Example: 5 mL of 160 mg/5 mL liquid = <strong>160 mg</strong> of acetaminophen.</p>
+            </div>
+          </div>
+          <p class="dose-unit-note">CloseDose shows you the <strong>mL to measure</strong> — that's all you need to give the right dose. The mg is calculated for you.</p>
+        </section>
+
+        <!-- CTA back to calculator -->
+        <a class="cross-link-card" href="index.html">
+          <span class="cross-link-card__emoji">🧮</span>
+          <span class="cross-link-card__body">
+            <span class="cross-link-card__title">Ready to calculate the dose?</span>
+            <span class="cross-link-card__sub">Enter your child's weight and get the exact mL to measure — no math required.</span>
+          </span>
+          <span class="cross-link-card__arrow" aria-hidden="true">→</span>
+        </a>
+
+        <!-- Weighing guide CTA -->
+        <a class="cross-link-card cross-link-card--secondary" href="weighing-guide.html">
+          <span class="cross-link-card__emoji">⚖️</span>
+          <span class="cross-link-card__body">
+            <span class="cross-link-card__title">Don't know your child's weight?</span>
+            <span class="cross-link-card__sub">See the tared scale weighing guide for infants who can't stand alone.</span>
+          </span>
+          <span class="cross-link-card__arrow" aria-hidden="true">→</span>
+        </a>
+
+        <!-- Disclaimer -->
+        <section class="card card--disclaimer" role="button" tabindex="0" aria-expanded="false">
+          <div class="disclaimer-header">
+            <span class="eyebrow">Disclaimer</span>
+            <h2>Medication Safety &amp; Usage</h2>
+            <p>Tap to read important safety information</p>
+          </div>
+          <div class="disclaimer-content" hidden>
+            <button class="disclaimer-close" aria-label="Close disclaimer">&times;</button>
+            <p><strong>This tool does not provide medical advice.</strong> The dosing information is for educational purposes only and should be verified with a healthcare provider.</p>
+            <ul>
+              <li>Always use the dosing device (syringe or cup) that came with the medication.</li>
+              <li>Confirm your child's weight if it has been more than 3 months.</li>
+              <li>Contact Poison Control (1-800-222-1222) if an overdose is suspected.</li>
+            </ul>
+          </div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+  <footer class="cd-footer">
+    <p class="cd-copy">2026 CloseDose. All rights reserved.</p>
+    <nav class="cd-legal cd-legal--full">
+      <a href="/legal/terms">Terms</a>
+      <a href="/legal/privacy">Privacy</a>
+      <a href="/legal/disclaimer">Disclaimer</a>
+    </nav>
+  </footer>
+
+  <div class="menu-overlay" id="siteMenu" hidden>
+    <div class="menu-panel">
+      <nav class="menu-links">
+        <a href="index.html" class="nav-calc">Calculator</a>
+        <a href="medication-guides.html" class="nav-guides">Medication Guides</a>
+        <a href="weighing-guide.html" class="nav-weighing">Weighing Guide</a>
+        <a href="dosing-guide.html" class="nav-dosing" aria-current="page">Dosing Guide</a>
+        <a href="about.html" class="nav-about">About</a>
+        <a href="donations.html" class="nav-support">Support</a>
+        <a href="contact.html" class="nav-contact">Contact</a>
+      </nav>
+      <button class="close-menu" type="button">Close</button>
+    </div>
+  </div>
+
+  <div id="cappyWaitlistModal" class="cappy-modal-overlay" style="display:none" aria-hidden="true">
+    <div class="cappy-modal-dialog">
+      <button class="cappy-modal-close">&times;</button>
+      <h2>Cappy is coming soon!</h2>
+      <p>Join the waitlist to get early access!</p>
+      <form id="waitlistForm" class="cappy-waitlist-form">
+        <input type="email" placeholder="Enter email" required />
+        <button type="submit">Join</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="global.js" defer></script>
+</body>
+</html>
