@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="How to accurately weigh an infant or young child at home using the tared scale method or simple subtraction." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32.png">
+  <link rel="stylesheet" href="global.css" />
+  <title>CloseDose – How to weigh your baby at home</title>
+</head>
+<body>
+  <div class="wrap">
+
+    <header>
+      <a href="index.html" class="header-link" aria-label="CloseDose home">
+        <img src="images/CD_Word.png" alt="CloseDose" class="header-wordmark" />
+      </a>
+      <button class="menu-btn" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="siteMenu" aria-label="Open menu">
+        <span class="label">Menu</span>
+        <span class="hamburger" aria-hidden="true"><span></span><span></span><span></span></span>
+      </button>
+    </header>
+
+    <button class="cappy-floating-btn" type="button" data-cappy-trigger aria-controls="cappyWaitlistModal" aria-expanded="false" aria-label="Join the Cappy wait list">
+      <img src="cappy/assets/Cappy circle.png" alt="" />
+      <div class="cappy-waitlist-content">
+        <span class="cappy-waitlist-brand">Cappy!</span>
+        <span class="cappy-waitlist-tagline">Join the waitlist today</span>
+      </div>
+    </button>
+
+    <main>
+      <div class="layout layout--inline">
+
+        <!-- Hero -->
+        <section class="card guide-hero">
+          <h1>How to Weigh Your Baby at Home</h1>
+          <p>Babies and toddlers can't safely stand on a scale alone. Use the <strong>tared scale</strong> method below for the most accurate weight — and the most accurate dose.</p>
+        </section>
+
+        <!-- Animated demo + step cards -->
+        <article class="card med-guide" id="tare-method">
+          <div class="med-guide__header">
+            <div class="med-guide__header-text">
+              <h2>The tared scale method</h2>
+              <p>Watch the demo, then follow the four numbered steps below. The whole process takes about 30 seconds.</p>
+            </div>
+          </div>
+
+          <!-- Animated SVG demo -->
+          <div class="tare-demo">
+            <svg
+              class="tare-svg"
+              viewBox="0 0 400 290"
+              xmlns="http://www.w3.org/2000/svg"
+              role="img"
+              aria-label="Animation: a parent steps on a bathroom scale alone, steps off, presses the TARE button so the scale reads zero, then steps on again holding their baby. The scale now displays only the baby's weight."
+            >
+              <!-- Floor -->
+              <line x1="20" y1="248" x2="380" y2="248" stroke="#cbd5e1" stroke-width="2" stroke-linecap="round" />
+
+              <!-- Scale shadow -->
+              <ellipse cx="200" cy="252" rx="92" ry="4" fill="rgba(15,44,42,0.12)" />
+
+              <!-- Scale base -->
+              <rect x="115" y="220" width="170" height="26" rx="5" fill="#1f2937" />
+              <rect x="120" y="226" width="160" height="14" rx="3" fill="#374151" />
+
+              <!-- Scale display screen -->
+              <rect x="155" y="194" width="90" height="26" rx="5" fill="#0f172a" stroke="#374151" stroke-width="1" />
+
+              <!-- Display values (overlapping, animated opacity) -->
+              <text x="200" y="213" class="display-num display-num--1" text-anchor="middle"
+                    font-family="'Courier New', monospace" font-size="15" fill="#22c55e" font-weight="900">150.4</text>
+              <text x="200" y="213" class="display-num display-num--2" text-anchor="middle"
+                    font-family="'Courier New', monospace" font-size="15" fill="#22c55e" font-weight="900">0.0</text>
+              <text x="200" y="213" class="display-num display-num--3" text-anchor="middle"
+                    font-family="'Courier New', monospace" font-size="15" fill="#fbbf24" font-weight="900">17.6</text>
+
+              <!-- "lb" label always visible -->
+              <text x="237" y="213" font-family="'Courier New', monospace" font-size="10" fill="#94a3b8" font-weight="700">lb</text>
+
+              <!-- TARE button (always visible) -->
+              <circle cx="285" cy="232" r="6" fill="#475569" stroke="#1f2937" stroke-width="1" />
+              <text x="285" y="245" text-anchor="middle" font-family="Nunito, sans-serif" font-size="6" fill="#0f2c2a" font-weight="700">TARE</text>
+
+              <!-- TARE button glow (animated highlight) -->
+              <g class="tare-button-glow">
+                <circle cx="285" cy="232" r="14" fill="none" stroke="#fbbf24" stroke-width="2.5" opacity="0.85" />
+                <circle cx="285" cy="232" r="20" fill="none" stroke="#fbbf24" stroke-width="1.5" opacity="0.5" />
+              </g>
+
+              <!-- Person silhouette (animated) -->
+              <g class="person">
+                <!-- Head -->
+                <circle cx="200" cy="115" r="22" fill="#0d8f8a" />
+                <!-- Body -->
+                <rect x="178" y="138" width="44" height="78" rx="10" fill="#0d8f8a" />
+                <!-- Arms -->
+                <rect x="166" y="148" width="14" height="50" rx="7" fill="#0d8f8a" />
+                <rect x="220" y="148" width="14" height="50" rx="7" fill="#0d8f8a" />
+                <!-- Legs (peek below the body) -->
+                <rect x="184" y="210" width="13" height="14" rx="3" fill="#0a706c" />
+                <rect x="203" y="210" width="13" height="14" rx="3" fill="#0a706c" />
+              </g>
+
+              <!-- Baby bundle (animated) -->
+              <g class="baby">
+                <ellipse cx="200" cy="158" rx="20" ry="24" fill="#fbbf24" />
+                <circle cx="200" cy="142" r="9" fill="#fde68a" />
+                <circle cx="197" cy="141" r="1.2" fill="#0f2c2a" />
+                <circle cx="203" cy="141" r="1.2" fill="#0f2c2a" />
+                <path d="M197 145 Q200 147 203 145" stroke="#0f2c2a" stroke-width="0.8" fill="none" stroke-linecap="round" />
+              </g>
+
+              <!-- Captions -->
+              <text x="200" y="278" text-anchor="middle" font-family="Nunito, sans-serif" font-size="12" font-weight="800" fill="#0f2c2a" class="caption caption--1">Step 1 — Step on the scale alone</text>
+              <text x="200" y="278" text-anchor="middle" font-family="Nunito, sans-serif" font-size="12" font-weight="800" fill="#0f2c2a" class="caption caption--2" opacity="0">Step 2 — Step off and wait</text>
+              <text x="200" y="278" text-anchor="middle" font-family="Nunito, sans-serif" font-size="12" font-weight="800" fill="#6b4000" class="caption caption--3" opacity="0">Step 3 — Press the TARE button</text>
+              <text x="200" y="278" text-anchor="middle" font-family="Nunito, sans-serif" font-size="12" font-weight="800" fill="#0d8f8a" class="caption caption--4" opacity="0">Step 4 — Step on holding your baby!</text>
+            </svg>
+
+            <!-- Step indicator dots -->
+            <div class="tare-dots" aria-hidden="true">
+              <span class="tare-dot tare-dot--1"></span>
+              <span class="tare-dot tare-dot--2"></span>
+              <span class="tare-dot tare-dot--3"></span>
+              <span class="tare-dot tare-dot--4"></span>
+            </div>
+          </div>
+
+          <!-- Step-by-step cards (static reference) -->
+          <div class="step-grid">
+            <div class="step-card">
+              <div class="step-card__num">1</div>
+              <div class="step-card__body">
+                <h3 class="step-card__title">Step on alone</h3>
+                <p class="step-card__text">Place a digital bathroom scale on a hard, flat surface. Step on without your baby and wait for the reading to settle.</p>
+              </div>
+            </div>
+            <div class="step-card">
+              <div class="step-card__num">2</div>
+              <div class="step-card__body">
+                <h3 class="step-card__title">Step off the scale</h3>
+                <p class="step-card__text">Step away. Most digital scales will keep displaying your weight for a few seconds.</p>
+              </div>
+            </div>
+            <div class="step-card">
+              <div class="step-card__num">3</div>
+              <div class="step-card__body">
+                <h3 class="step-card__title">Press TARE / ZERO</h3>
+                <p class="step-card__text">Press the <strong>TARE</strong> or <strong>ZERO</strong> button on the scale until the display reads <code>0.0</code>. This tells the scale to ignore your weight on the next reading.</p>
+              </div>
+            </div>
+            <div class="step-card">
+              <div class="step-card__num">4</div>
+              <div class="step-card__body">
+                <h3 class="step-card__title">Step back on with baby</h3>
+                <p class="step-card__text">Hold your baby securely against your chest and step back on. The number now shown is your <strong>baby's weight</strong> alone.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Subtraction method (alternative for non-tare scales) -->
+          <details class="tare-alt">
+            <summary>Don't see a TARE / ZERO button on your scale?</summary>
+            <p>Use the <strong>subtraction method</strong>. Weigh yourself, then weigh again holding your baby — the difference is your baby's weight.</p>
+            <ol>
+              <li>Step on the scale alone, write down your weight.</li>
+              <li>Step on again holding your baby, write down that weight.</li>
+              <li>Subtract — that's your baby's weight in pounds.</li>
+            </ol>
+
+            <!-- Inline subtraction calculator -->
+            <div class="tare-calc" role="group" aria-label="Subtraction weight calculator">
+              <label>
+                <span>Your weight alone (lb)</span>
+                <input type="number" id="weight-alone" inputmode="decimal" step="0.1" min="0" placeholder="e.g. 150.4" autocomplete="off" />
+              </label>
+              <label>
+                <span>Weight holding baby (lb)</span>
+                <input type="number" id="weight-with-baby" inputmode="decimal" step="0.1" min="0" placeholder="e.g. 168.0" autocomplete="off" />
+              </label>
+              <div class="tare-calc__result" id="tare-result" aria-live="polite">
+                Enter both weights to see your baby's weight.
+              </div>
+            </div>
+          </details>
+
+          <!-- Tips card -->
+          <div class="tip-card">
+            <h3>Tips for an accurate reading</h3>
+            <ul>
+              <li>Use a <strong>digital</strong> scale — they're more accurate than dial scales for small differences.</li>
+              <li>Place the scale on a <strong>hard, flat floor</strong> (not carpet) before weighing.</li>
+              <li>Weigh in the same clothing each time so changes reflect your child, not their outfit.</li>
+              <li>Re-check your child's weight every 1–3 months — kids grow fast, and the right dose grows with them.</li>
+              <li>If your reading seems off, repeat the process to confirm before dosing.</li>
+            </ul>
+          </div>
+
+          <!-- CTA back to calculator -->
+          <a class="cross-link-card" href="index.html" style="margin-top: 18px;">
+            <span class="cross-link-card__emoji">🧮</span>
+            <span class="cross-link-card__body">
+              <span class="cross-link-card__title">Got the weight? Calculate the dose.</span>
+              <span class="cross-link-card__sub">Enter the weight in the CloseDose calculator for an exact, age-appropriate recommendation.</span>
+            </span>
+            <span class="cross-link-card__arrow" aria-hidden="true">→</span>
+          </a>
+        </article>
+
+        <!-- Disclaimer -->
+        <section class="card card--disclaimer" role="button" tabindex="0" aria-expanded="false">
+          <div class="disclaimer-header">
+            <span class="eyebrow">Disclaimer</span>
+            <h2>Medication Safety &amp; Usage</h2>
+            <p>Tap to read important safety information</p>
+          </div>
+          <div class="disclaimer-content" hidden>
+            <button class="disclaimer-close" aria-label="Close disclaimer">&times;</button>
+            <p><strong>This tool does not provide medical advice.</strong> The dosing information is for educational purposes only and should be verified with a healthcare provider.</p>
+            <ul>
+              <li>If your baby is gaining or losing weight unusually quickly, contact your pediatrician.</li>
+              <li>For the most accurate weight (especially for newborns or unwell infants) ask your pediatrician's office to weigh your child on their clinic scale.</li>
+              <li>Contact Poison Control (1-800-222-1222) if an overdose is suspected.</li>
+            </ul>
+          </div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+  <footer class="cd-footer">
+    <p class="cd-copy">2026 CloseDose. All rights reserved.</p>
+    <nav class="cd-legal cd-legal--full">
+      <a href="/legal/terms">Terms</a>
+      <a href="/legal/privacy">Privacy</a>
+      <a href="/legal/disclaimer">Disclaimer</a>
+    </nav>
+  </footer>
+
+  <div class="menu-overlay" id="siteMenu" hidden>
+    <div class="menu-panel">
+      <nav class="menu-links">
+        <a href="index.html" class="nav-calc">Calculator</a>
+        <a href="medication-guides.html" class="nav-guides">Medication Guides</a>
+        <a href="weighing-guide.html" class="nav-weighing" aria-current="page">Weighing Guide</a>
+        <a href="about.html" class="nav-about">About</a>
+        <a href="donations.html" class="nav-support">Support</a>
+        <a href="contact.html" class="nav-contact">Contact</a>
+      </nav>
+      <button class="close-menu" type="button">Close</button>
+    </div>
+  </div>
+
+  <div id="cappyWaitlistModal" class="cappy-modal-overlay" style="display:none" aria-hidden="true">
+    <div class="cappy-modal-dialog">
+      <button class="cappy-modal-close">&times;</button>
+      <h2>Cappy is coming soon!</h2>
+      <p>Join the waitlist to get early access!</p>
+      <form id="waitlistForm" class="cappy-waitlist-form">
+        <input type="email" placeholder="Enter email" required />
+        <button type="submit">Join</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="global.js" defer></script>
+  <script>
+    // Subtraction calculator (live update)
+    (function () {
+      var alone = document.getElementById('weight-alone');
+      var withBaby = document.getElementById('weight-with-baby');
+      var result = document.getElementById('tare-result');
+      if (!alone || !withBaby || !result) return;
+
+      function update() {
+        var a = parseFloat(alone.value);
+        var b = parseFloat(withBaby.value);
+        if (isFinite(a) && isFinite(b)) {
+          if (b > a) {
+            var diff = (b - a).toFixed(1);
+            result.innerHTML = "Baby's weight: <strong>" + diff + " lb</strong>";
+            result.classList.add('has-result');
+          } else {
+            result.textContent = "The 'with baby' weight should be greater than your weight alone.";
+            result.classList.remove('has-result');
+          }
+        } else {
+          result.textContent = "Enter both weights to see your baby's weight.";
+          result.classList.remove('has-result');
+        }
+      }
+      alone.addEventListener('input', update);
+      withBaby.addEventListener('input', update);
+    })();
+  </script>
+</body>
+</html>
