@@ -31,75 +31,6 @@
   <link rel="stylesheet" href="global.css" />
   <style>
     /* ── EnteralID-scoped styles ─────────────────────────── */
-    .ei-api-banner {
-      background: var(--teal-50, #f0fdfa);
-      border: 1.5px solid var(--teal-300, #5eead4);
-      border-radius: 16px;
-      padding: 20px 24px;
-      margin-bottom: 32px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      align-items: center;
-    }
-    .ei-api-banner.ei-api-banner--hidden { display: none; }
-    .ei-api-banner__label {
-      font-weight: 800;
-      font-size: 0.9rem;
-      color: var(--ink-900, #0f172a);
-      flex: 1 1 200px;
-    }
-    .ei-api-banner__sub {
-      font-size: 0.78rem;
-      color: var(--ink-500, #64748b);
-      display: block;
-      font-weight: 400;
-      margin-top: 2px;
-    }
-    .ei-api-banner__form {
-      display: flex;
-      gap: 8px;
-      flex: 2 1 300px;
-    }
-    .ei-api-banner__input {
-      flex: 1;
-      padding: 10px 14px;
-      border: 1.5px solid var(--teal-300, #5eead4);
-      border-radius: 10px;
-      font-family: inherit;
-      font-size: 0.85rem;
-      background: #fff;
-      outline: none;
-      transition: border-color 0.2s;
-    }
-    .ei-api-banner__input:focus { border-color: var(--teal-500, #14b8a6); }
-    .ei-api-banner__btn {
-      padding: 10px 20px;
-      background: var(--teal-500, #14b8a6);
-      color: #fff;
-      font-weight: 800;
-      font-size: 0.85rem;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-      transition: background 0.2s;
-      font-family: inherit;
-    }
-    .ei-api-banner__btn:hover { background: var(--teal-600, #0d9488); }
-    .ei-api-change {
-      font-size: 0.78rem;
-      color: var(--teal-600, #0d9488);
-      background: none;
-      border: none;
-      cursor: pointer;
-      font-family: inherit;
-      font-weight: 700;
-      padding: 4px 8px;
-      border-radius: 6px;
-      text-decoration: underline;
-    }
-    .ei-api-change:hover { background: var(--teal-50, #f0fdfa); }
-
     .ei-tool-grid {
       display: grid;
       grid-template-columns: 1fr;
@@ -656,30 +587,6 @@
 
       <div class="layout layout--secondary" style="max-width: 960px; margin: 0 auto 48px;">
 
-        <!-- API Key Banner -->
-        <div class="ei-api-banner" id="apiBanner" role="region" aria-label="Gemini API key setup">
-          <!-- State: key not set -->
-          <div id="apiBannerForm" class="ei-api-banner__label" style="display:flex;flex-wrap:wrap;gap:12px;align-items:center;width:100%">
-            <div style="flex:1 1 200px">
-              Gemini API Key Required
-              <span class="ei-api-banner__sub">Enter your Google AI Studio key. Stored for this session only — never transmitted except to Google's API.</span>
-            </div>
-            <form style="display:flex;gap:8px;flex:2 1 260px" onsubmit="saveApiKey(event)">
-              <input type="password" id="apiKeyInput" class="ei-api-banner__input" placeholder="AIza…" autocomplete="off" aria-label="Gemini API key" />
-              <button type="submit" class="ei-api-banner__btn">Save</button>
-            </form>
-          </div>
-          <!-- State: key saved -->
-          <div id="apiBannerSaved" style="display:none;align-items:center;gap:12px;width:100%">
-            <span style="font-weight:800;font-size:0.9rem;color:#0f172a;flex:1">✓ API key active this session</span>
-            <button type="button" class="ei-api-change" onclick="resetApiKey()">Change key</button>
-          </div>
-          <!-- State: server proxy active (Cloudflare Pages with GEMINI_API_KEY env var) -->
-          <div id="apiBannerProxy" style="display:none;align-items:center;gap:12px;width:100%">
-            <span style="font-weight:800;font-size:0.9rem;color:#0f172a;flex:1">🔒 Server proxy active — no API key required</span>
-          </div>
-        </div>
-
         <!-- ID Tool -->
         <section id="enteral-tool" aria-labelledby="enteral-tool-heading">
           <span class="ei-eyebrow">Clinical Decision Support</span>
@@ -1000,43 +907,8 @@
     const HISTORY_KEY  = 'enteralIdHistory';
     const MAX_HISTORY  = 5;
 
-    let currentBase64  = null;
+    let currentBase64   = null;
     let currentMimeType = 'image/jpeg';
-    let _proxyAvailable = null; // null=unknown, true/false=cached
-
-    /* ── API key management ─────────────────────────────── */
-
-    function getApiKey() {
-      return sessionStorage.getItem('enteralIdApiKey') || '';
-    }
-
-    function showApiBannerState(state) {
-      // state: 'form' | 'saved' | 'proxy'
-      document.getElementById('apiBannerForm').style.display  = state === 'form'  ? 'flex' : 'none';
-      document.getElementById('apiBannerSaved').style.display = state === 'saved' ? 'flex' : 'none';
-      document.getElementById('apiBannerProxy').style.display = state === 'proxy' ? 'flex' : 'none';
-    }
-
-    function saveApiKey(event) {
-      event.preventDefault();
-      const key = document.getElementById('apiKeyInput').value.trim();
-      if (!key) return;
-      sessionStorage.setItem('enteralIdApiKey', key);
-      showApiBannerState('saved');
-    }
-
-    function resetApiKey() {
-      sessionStorage.removeItem('enteralIdApiKey');
-      document.getElementById('apiKeyInput').value = '';
-      showApiBannerState('form');
-      document.getElementById('apiKeyInput').focus();
-    }
-
-    function promptApiKey() {
-      showApiBannerState('form');
-      document.getElementById('apiBanner').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-      setTimeout(() => document.getElementById('apiKeyInput').focus(), 300);
-    }
 
     /* ── Image compression (canvas resize ≤1024 px) ─────── */
 
@@ -1115,27 +987,6 @@
             </svg>
           </div>
           <p class="ei-empty-text">No active scan. Upload a photo or enter a description to begin identification.</p>`;
-        win.appendChild(s);
-      });
-    }
-
-    function showNoKeyState() {
-      renderInResults(win => {
-        const s = document.createElement('div');
-        s.className = 'ei-empty-state';
-        const icon = document.createElement('div');
-        icon.className = 'ei-empty-icon';
-        icon.setAttribute('aria-hidden', 'true');
-        icon.textContent = '🔑';
-        icon.style.fontSize = '1.8rem';
-        const text = document.createElement('p');
-        text.className = 'ei-empty-text';
-        text.textContent = 'Enter your Gemini API key above to enable AI analysis.';
-        const link = document.createElement('a');
-        link.href = '#ref-lib-heading';
-        link.textContent = 'View Reference Library below →';
-        link.style.cssText = 'color:#2563eb;font-size:0.82rem;font-weight:700;margin-top:4px;display:block';
-        s.appendChild(icon); s.appendChild(text); s.appendChild(link);
         win.appendChild(s);
       });
     }
@@ -1269,36 +1120,14 @@
       return `${Math.round(mins / 60)} hr ago`;
     }
 
-    /* ── Proxy-aware Gemini API caller ──────────────────── */
-
-    async function detectProxy() {
-      if (_proxyAvailable !== null) return _proxyAvailable;
-      try {
-        const ctrl = new AbortController();
-        const tid  = setTimeout(() => ctrl.abort(), 1200);
-        const r = await fetch('/api/gemini', { method: 'OPTIONS', signal: ctrl.signal });
-        clearTimeout(tid);
-        _proxyAvailable = r.status !== 404 && r.status !== 405;
-      } catch { _proxyAvailable = false; }
-      return _proxyAvailable;
-    }
+    /* ── Gemini API caller (server proxy) ──────────────── */
 
     async function callGeminiApi(payload) {
-      const proxyOk = await detectProxy();
-      if (proxyOk) {
-        return fetch('/api/gemini', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ model: GEMINI_MODEL, payload })
-        });
-      }
-      // Direct call with session key
-      const key = getApiKey();
-      if (!key) throw new Error('no-key');
-      return fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${encodeURIComponent(key)}`,
-        { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }
-      );
+      return fetch('/api/gemini', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ model: GEMINI_MODEL, payload })
+      });
     }
 
     /* ── Main identification flow ───────────────────────── */
@@ -1306,14 +1135,6 @@
     async function identifyDevice(textPrompt) {
       if (!textPrompt) {
         textPrompt = 'Identify this enteral feeding device. Focus on: 1. Brand (e.g. MIC-KEY, Mini-One, or others), 2. Device Type (G vs GJ), 3. Connector (EnFit purple threads vs Legacy cone).';
-      }
-
-      // Gate on key availability (unless proxy is active)
-      const proxyOk = _proxyAvailable; // use cached value; null means unknown, allow attempt
-      if (proxyOk === false && !getApiKey()) {
-        promptApiKey();
-        showNoKeyState();
-        return;
       }
 
       showLoading();
@@ -1334,9 +1155,8 @@
           if (!response.ok) {
             const errData = await response.json().catch(() => ({}));
             const msg = errData?.error?.message || `HTTP ${response.status}`;
-            if (response.status === 400 || response.status === 401 || response.status === 403) {
-              showError(`API error: ${msg}. Check your API key.`);
-              if (!_proxyAvailable) promptApiKey();
+            if (response.status === 503) {
+              showError('Service temporarily unavailable. Please try again later.');
               return;
             }
             throw new Error(msg);
@@ -1349,7 +1169,6 @@
           return;
 
         } catch (err) {
-          if (err.message === 'no-key') { promptApiKey(); showNoKeyState(); return; }
           if (i === 4) {
             showError('Analysis failed after multiple attempts. Please check your connection and try again.');
             return;
@@ -1370,19 +1189,8 @@
 
     /* ── Boot ───────────────────────────────────────────── */
 
-    document.addEventListener('DOMContentLoaded', async function() {
-      // Check for server proxy — adjusts banner state and hides key requirement
-      const proxyOk = await detectProxy();
-      if (proxyOk) {
-        showApiBannerState('proxy');
-      } else {
-        showApiBannerState(getApiKey() ? 'saved' : 'form');
-      }
-
-      // Render existing history
+    document.addEventListener('DOMContentLoaded', function() {
       renderHistory();
-
-      // Enter key for text description
       document.getElementById('manualDescription').addEventListener('keydown', function(e) {
         if (e.key === 'Enter') { e.preventDefault(); sendManualDescription(); }
       });
