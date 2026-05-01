@@ -10,6 +10,13 @@
   <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32.png">
   <link rel="stylesheet" href="global.css" />
   <title>CloseDose – Support our work</title>
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="CloseDose" />
+  <meta property="og:title" content="CloseDose – Support our work" />
+  <meta property="og:description" content="CloseDose is free for families because of generous donors. Help keep pediatric dosing guidance ad-free and accessible to all." />
+  <meta property="og:image" content="https://closedose.com/images/favicon-192.png" />
+  <meta property="og:url" content="https://closedose.com/donations.html" />
+  <meta name="twitter:card" content="summary" />
 </head>
 <body>
   <div class="wrap">
@@ -92,20 +99,21 @@
         </section>
 
         <!-- Disclaimer -->
-        <section class="card card--disclaimer" role="button" tabindex="0" aria-expanded="false">
+        <section class="card card--disclaimer" id="disclaimer-card" aria-labelledby="disclaimer-heading" aria-expanded="false">
           <div class="disclaimer-header">
-            <span class="eyebrow">Disclaimer</span>
-            <h2>Medication Safety &amp; Usage</h2>
-            <p>Tap to read important safety information</p>
+            <span class="disclaimer-eyebrow">Disclaimer</span>
+            <h2 id="disclaimer-heading">Medication Safety &amp; Usage</h2>
+            <button type="button" class="disclaimer-toggle" aria-controls="disclaimer-panel" aria-expanded="false">Read</button>
           </div>
-          <div class="disclaimer-content" hidden>
-            <button class="disclaimer-close" aria-label="Close disclaimer">&times;</button>
-            <p><strong>This tool does not provide medical advice.</strong> The dosing information is for educational purposes and should be verified with a healthcare provider.</p>
+          <div class="disclaimer-content" id="disclaimer-panel" hidden>
+            <p><strong>This tool does not provide medical advice.</strong> The dosing information is for educational purposes only and should be verified with a healthcare provider.</p>
             <ul>
               <li>Always use the dosing device (syringe or cup) that came with the medication.</li>
               <li>Confirm your child's weight if it has been more than 3 months.</li>
               <li>Contact Poison Control (1-800-222-1222) if an overdose is suspected.</li>
             </ul>
+            <a class="disclaimer-link" href="/legal/disclaimer">Read the full disclaimer →</a>
+            <button type="button" class="disclaimer-close" aria-label="Close disclaimer">Close</button>
           </div>
         </section>
 
@@ -113,13 +121,14 @@
     </main>
   </div>
 
-  <footer class="cd-footer">
+  <footer class="cd-footer" role="contentinfo">
     <p class="cd-copy">2026 CloseDose. All rights reserved.</p>
-    <nav class="cd-legal cd-legal--full">
+    <nav class="cd-legal cd-legal--full" aria-label="Legal">
       <a href="/legal/terms">Terms</a>
       <a href="/legal/privacy">Privacy</a>
       <a href="/legal/disclaimer">Disclaimer</a>
     </nav>
+    <p class="cd-note">For medical emergencies, call 911. For poisoning, call Poison Control at 1-800-222-1222.</p>
   </footer>
 
   <div class="menu-overlay" id="siteMenu" hidden>
@@ -137,15 +146,17 @@
     </div>
   </div>
 
-  <div id="cappyWaitlistModal" class="cappy-modal-overlay" style="display:none" aria-hidden="true">
-    <div class="cappy-modal-dialog">
-      <button class="cappy-modal-close">&times;</button>
-      <h2>Cappy is coming soon!</h2>
-      <p>Join the waitlist to get early access!</p>
+  <div id="cappyWaitlistModal" class="cappy-modal-overlay" aria-hidden="true">
+    <div class="cappy-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="cappyWaitlistTitle">
+      <button class="cappy-modal-close" aria-label="Close waitlist dialog">&times;</button>
+      <div class="cappy-badge"><img src="cappy/assets/Cappy circle.png" alt="" /></div>
+      <h2 id="cappyWaitlistTitle">Cappy is coming soon!</h2>
+      <p>Join the waitlist to get early access.</p>
       <form id="waitlistForm" class="cappy-waitlist-form">
-        <input type="email" placeholder="Enter email" required />
-        <button type="submit">Join</button>
+        <input type="email" placeholder="Enter email" required aria-label="Email address" />
+        <button type="submit">Join Waitlist</button>
       </form>
+      <div id="waitlistSuccess" class="cappy-waitlist-success" style="display: none;">Thanks! We'll be in touch.</div>
     </div>
   </div>
 

@@ -170,7 +170,7 @@ main {
   flex-direction: column;
   align-items: center;
   gap: clamp(24px, 4vw, 40px);
-  padding: clamp(8px, 2vw, 24px) clamp(18px, 5vw, 52px) 120px;
+  padding: clamp(8px, 2vw, 24px) clamp(18px, 5vw, 52px) clamp(64px, 8vw, 80px);
   box-sizing: border-box;
   overflow-x: hidden;
 }
@@ -560,12 +560,20 @@ main {
 .cappy-waitlist-tagline { font-weight: 700; font-size: 0.55rem; color: #0f2c2a; text-transform: uppercase; letter-spacing: 0.04em; opacity: 0.8; }
 .cappy-floating-btn:hover, .cappy-floating-btn:focus-visible { animation-play-state: paused; transform: translateY(-3px) scale(1.02); box-shadow: 0 8px 0 rgba(15, 44, 42, 0.26); outline: none; }
 
-@media (max-width: 960px) {
-  .cappy-floating-btn { position: static !important; width: 100% !important; margin: 24px auto 0 !important; justify-content: flex-start !important; padding: 12px !important; animation: none !important; transform: none !important; min-height: 100px !important; gap: 16px !important; border-radius: 24px !important; }
-  .cappy-floating-btn img { height: 80px !important; width: 80px !important; }
-  .cappy-floating-btn .cappy-waitlist-brand { font-size: 1.5rem !important; }
-  .cappy-floating-btn .cappy-waitlist-tagline { font-size: 0.7rem !important; }
-  .cappy-floating-btn:hover { transform: translateY(-2px) !important; }
+@media (max-width: 700px) {
+  .cappy-floating-btn {
+    padding: 0;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    gap: 0;
+    justify-content: center;
+    animation: none;
+    bottom: 16px;
+    right: 16px;
+  }
+  .cappy-floating-btn img { height: 40px !important; width: 40px !important; }
+  .cappy-waitlist-content { display: none !important; }
 }
 
 /* Modal */
@@ -793,6 +801,7 @@ main {
   scroll-snap-type: x mandatory;
   scrollbar-width: none;
   -webkit-overflow-scrolling: touch;
+  touch-action: pan-x;
   padding: 4px 2px 14px;
   cursor: grab;
 }
@@ -1876,3 +1885,66 @@ main {
 
 /* Navigation: highlight dosing guide link color */
 .nav-dosing { color: var(--teal-500) !important; }
+
+/* =============================================
+   HOVER GUARDS — prevent sticky hover on touch
+   ============================================= */
+
+@media (hover: none), (pointer: coarse) {
+  .menu-links a:hover { transform: none; color: var(--ink-900); }
+  .cross-link-card:hover,
+  .cross-link-card:focus-visible { transform: none; box-shadow: var(--shadow-card); }
+  .product-card:hover { transform: none; box-shadow: var(--shadow-card); }
+  .feature-item:hover { transform: none; box-shadow: none; }
+  .impact-card:hover { transform: none; box-shadow: var(--shadow-card); }
+  .about-cta a:hover { transform: none; box-shadow: none; }
+  .donation-card:hover { transform: none; box-shadow: var(--shadow-card); }
+  .contact-card:hover { transform: none; background: rgba(255,255,255,0.65); box-shadow: none; }
+  .donate-pill:hover { transform: none; box-shadow: 0 4px 0 rgba(15,44,42,0.25); }
+}
+
+/* =============================================
+   LAST REVIEWED BADGE
+   ============================================= */
+
+.last-reviewed {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 10px;
+  padding: 4px 12px;
+  background: rgba(13,143,138,0.08);
+  border: 1px solid rgba(13,143,138,0.22);
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--teal-500);
+  letter-spacing: 0.02em;
+}
+
+.last-reviewed::before {
+  content: '✓';
+  font-size: 0.72rem;
+  font-weight: 900;
+}
+
+/* eyebrow alias (disclaimer header label on non-index pages) */
+.eyebrow {
+  font-size: 0.75rem;
+  font-weight: 900;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #8b1111;
+  background: rgba(139,17,17,0.1);
+  padding: 4px 10px;
+  border-radius: 999px;
+}
+
+/* cd-note on footer (emergency line) */
+.cd-note {
+  font-size: 0.75rem;
+  color: rgba(255,255,255,0.55);
+  margin: 0;
+  text-align: center;
+  line-height: 1.5;
+}
