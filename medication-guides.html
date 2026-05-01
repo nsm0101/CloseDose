@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -9,19 +8,21 @@
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
   <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32.png">
   <link rel="stylesheet" href="global.css" />
-
   <title>CloseDose – Medication Guides</title>
 </head>
 <body>
   <div class="wrap">
-    
+
     <header>
-      <img src="images/CD_Word.png" alt="CloseDose" class="header-wordmark" />
+      <a href="index.html" class="header-link">
+        <img src="images/CD_Word.png" alt="CloseDose" class="header-wordmark" />
+      </a>
       <button class="menu-btn" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="siteMenu" aria-label="Open menu">
         <span class="label">Menu</span>
         <span class="hamburger" aria-hidden="true"><span></span><span></span><span></span></span>
       </button>
     </header>
+
     <button class="cappy-floating-btn" type="button" data-cappy-trigger aria-controls="cappyWaitlistModal" aria-expanded="false" aria-label="Join the Cappy wait list">
       <img src="cappy/assets/Cappy circle.png" alt="Cappy Logo" />
       <div class="cappy-waitlist-content">
@@ -29,707 +30,422 @@
         <span class="cappy-waitlist-tagline">Join the waitlist today</span>
       </div>
     </button>
+
     <main>
       <div class="layout layout--inline">
-        <section class="card hero">
-          <div class="tab-stack" aria-hidden="true"><span></span><span></span><span></span></div>
+
+        <!-- Hero -->
+        <section class="card guide-hero">
           <h1>Fever &amp; Pain Medication Guides</h1>
-          <p>Use these quick references to view common acetaminophen and ibuprofen products for infants and children. Double-check concentrations and dosing with your pediatrician or pharmacist.</p>
+          <p>Quick-reference product galleries for acetaminophen and ibuprofen, organized by concentration so you always grab the right bottle.</p>
         </section>
 
-        <section class="card guide-section" id="guides">
-          <div class="guide-intro">
-            <h2>Product comparisons</h2>
-            <p>Swipe through brand-name and generic options, then review dosing reminders tailored to your patient.</p>
+        <!-- ══════════════════════════════════════
+             ACETAMINOPHEN GUIDE
+        ══════════════════════════════════════ -->
+        <article class="card med-guide" id="acetaminophen">
+          <div class="med-guide__header">
+            <div class="med-guide__header-text">
+              <h2>Acetaminophen</h2>
+              <p>Safe for all ages, including infants under 6 months. All liquid suspensions listed below share the same concentration.</p>
+            </div>
+            <span class="conc-badge conc-badge--ace">160 mg / 5 mL</span>
           </div>
 
-          <div class="card guide-grid">
-            <article class="guide-card guide-card--acetaminophen" id="acetaminophen" data-carousel>
-              <h2>Acetaminophen <span class="medication-concentration">[160 mg / 5 mL]</span></h2>
-              <div class="carousel-track">
-                <figure class="carousel-slide">
-                  <img src="images/Acetaminophen/Tylenol acetaminophen iso.png" alt="Tylenol children's acetaminophen suspension 160 mg per 5 mL">
-                  <figcaption>Tylenol® Children's Oral Suspension</figcaption>
-                </figure>
-                <figure class="carousel-slide">
-                  <img src="images/Acetaminophen/amazon acetaminophen iso.png" alt="Amazon Basics children's acetaminophen 160 mg per 5 mL">
-                  <figcaption>Amazon Basics® Children's Acetaminophen</figcaption>
-                </figure>
-                <figure class="carousel-slide">
-                  <img src="images/Acetaminophen/Target acetaminophen iso.png" alt="Target up & up children's acetaminophen 160mg per 5 mL">
-                  <figcaption>up &amp; up® Children's Acetaminophen</figcaption>
-                </figure>
-                <figure class="carousel-slide">
-                  <img src="images/Acetaminophen/Equate acetaminophen iso.png" alt="Walmart Equate children's acetaminophen 160mg per 5 mL">
-                  <figcaption>Equate® Children's Acetaminophen</figcaption>
-                </figure>
+          <!-- Featured Brands -->
+          <div class="product-section">
+            <p class="product-section__label">Featured brands</p>
+            <div class="product-strip" id="ace-strip-brands" role="list" aria-label="Acetaminophen featured brands">
+              <div class="product-card" role="listitem">
+                <div class="product-card__img-wrap">
+                  <img class="product-card__img" src="images/Acetaminophen/Tylenol acetaminophen iso.png" alt="Tylenol Children's Oral Suspension 160 mg per 5 mL" loading="eager" />
+                </div>
+                <p class="product-card__name">Tylenol® Children's</p>
+                <span class="conc-badge conc-badge--ace">160 mg / 5 mL</span>
               </div>
-              <div class="carousel-controls">
-                <button type="button" data-carousel-prev aria-label="Show previous acetaminophen product">←</button>
-                <div class="carousel-dots"></div>
-                <button type="button" data-carousel-next aria-label="Show next acetaminophen product">→</button>
+              <div class="product-card" role="listitem">
+                <div class="product-card__img-wrap">
+                  <img class="product-card__img" src="images/Acetaminophen/amazon acetaminophen iso.png" alt="Amazon Basics Children's Acetaminophen 160 mg per 5 mL" loading="lazy" />
+                </div>
+                <p class="product-card__name">Amazon Basics® Children's</p>
+                <span class="conc-badge conc-badge--ace">160 mg / 5 mL</span>
               </div>
-              <div class="mini-carousel-stack">
-                <section
-                  class="mini-carousel"
-                  data-carousel
-                  aria-label="Acetaminophen liquids gallery"
-                >
-                  <h3 class="mini-carousel__heading">160 mg / 5 mL liquids</h3>
-                  <div class="carousel-track">
-                    <figure class="carousel-slide">
-                      <div class="mini-carousel__image">
-                        <img
-                          src="images/Carousel/ace/k/k1.png"
-                          alt="Children's acetaminophen product photo (variant 1)"
-                          loading="lazy"
-                          decoding="async"
-                        />
-                      </div>
-                      <figcaption>
-                        <span class="mini-carousel__caption">Children's Acetaminophen Suspension</span>
-                        <span class="mini-carousel__meta">160 mg / 5 mL</span>
-                      </figcaption>
-                    </figure>
-                    <figure class="carousel-slide">
-                      <div class="mini-carousel__image">
-                        <img
-                          src="images/Carousel/ace/k/k2.png"
-                          alt="Children's acetaminophen product photo (variant 2)"
-                          loading="lazy"
-                          decoding="async"
-                        />
-                      </div>
-                      <figcaption>
-                        <span class="mini-carousel__caption">Children's Acetaminophen Suspension</span>
-                        <span class="mini-carousel__meta">160 mg / 5 mL</span>
-                      </figcaption>
-                    </figure>
-                    <figure class="carousel-slide">
-                      <div class="mini-carousel__image">
-                        <img
-                          src="images/Carousel/ace/k/k3.png"
-                          alt="Children's acetaminophen product photo (variant 3)"
-                          loading="lazy"
-                          decoding="async"
-                        />
-                      </div>
-                      <figcaption>
-                        <span class="mini-carousel__caption">Children's Acetaminophen Suspension</span>
-                        <span class="mini-carousel__meta">160 mg / 5 mL</span>
-                      </figcaption>
-                    </figure>
-                    <figure class="carousel-slide">
-                      <div class="mini-carousel__image">
-                        <img
-                          src="images/Carousel/ace/k/k4.png"
-                          alt="Children's acetaminophen product photo (variant 4)"
-                          loading="lazy"
-                          decoding="async"
-                        />
-                      </div>
-                      <figcaption>
-                        <span class="mini-carousel__caption">Children's Acetaminophen Suspension</span>
-                        <span class="mini-carousel__meta">160 mg / 5 mL</span>
-                      </figcaption>
-                    </figure>
-                    <figure class="carousel-slide">
-                      <div class="mini-carousel__image">
-                        <img
-                          src="images/Carousel/ace/k/k5.png"
-                          alt="Children's acetaminophen product photo (variant 5)"
-                          loading="lazy"
-                          decoding="async"
-                        />
-                      </div>
-                      <figcaption>
-                        <span class="mini-carousel__caption">Children's Acetaminophen Suspension</span>
-                        <span class="mini-carousel__meta">160 mg / 5 mL</span>
-                      </figcaption>
-                    </figure>
-                    <figure class="carousel-slide">
-                      <div class="mini-carousel__image">
-                        <img
-                          src="images/Carousel/ace/k/k6.png"
-                          alt="Children's acetaminophen product photo (variant 6)"
-                          loading="lazy"
-                          decoding="async"
-                        />
-                      </div>
-                      <figcaption>
-                        <span class="mini-carousel__caption">Children's Acetaminophen Suspension</span>
-                        <span class="mini-carousel__meta">160 mg / 5 mL</span>
-                      </figcaption>
-                    </figure>
-                    <figure class="carousel-slide">
-                      <div class="mini-carousel__image">
-                        <img
-                          src="images/Carousel/ace/k/k7.png"
-                          alt="Children's acetaminophen product photo (variant 7)"
-                          loading="lazy"
-                          decoding="async"
-                        />
-                      </div>
-                      <figcaption>
-                        <span class="mini-carousel__caption">Children's Acetaminophen Suspension</span>
-                        <span class="mini-carousel__meta">160 mg / 5 mL</span>
-                      </figcaption>
-                    </figure>
-                    <figure class="carousel-slide">
-                      <div class="mini-carousel__image">
-                        <img
-                          src="images/Carousel/ace/k/k8.png"
-                          alt="Children's acetaminophen product photo (variant 8)"
-                          loading="lazy"
-                          decoding="async"
-                        />
-                      </div>
-                      <figcaption>
-                        <span class="mini-carousel__caption">Children's Acetaminophen Suspension</span>
-                        <span class="mini-carousel__meta">160 mg / 5 mL</span>
-                      </figcaption>
-                    </figure>
-                    <figure class="carousel-slide">
-                      <div class="mini-carousel__image">
-                        <img
-                          src="images/Carousel/ace/k/k9.png"
-                          alt="Children's acetaminophen product photo (variant 9)"
-                          loading="lazy"
-                          decoding="async"
-                        />
-                      </div>
-                      <figcaption>
-                        <span class="mini-carousel__caption">Children's Acetaminophen Suspension</span>
-                        <span class="mini-carousel__meta">160 mg / 5 mL</span>
-                      </figcaption>
-                    </figure>
-                  </div>
-                  <div class="mini-carousel__controls">
-                    <button
-                      type="button"
-                      class="mini-carousel__control"
-                      data-carousel-prev
-                      aria-label="Show previous acetaminophen product"
-                    >
-                      ←
-                    </button>
-                    <div class="mini-carousel__dots carousel-dots"></div>
-                    <button
-                      type="button"
-                      class="mini-carousel__control"
-                      data-carousel-next
-                      aria-label="Show next acetaminophen product"
-                    >
-                      →
-                    </button>
-                  </div>
-                </section>
-                <section
-                  class="mini-carousel"
-                  data-carousel
-                  aria-label="Alternate acetaminophen products"
-                >
-                  <h3 class="mini-carousel__heading">Chewables, meltaways &amp; more</h3>
-                  <div class="carousel-track">
-                    <figure class="carousel-slide">
-                      <div class="mini-carousel__image">
-                        <img
-                          src="data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22320%22%20height%3D%22320%22%20viewBox%3D%220%200%20320%20320%22%3E%0A%20%20%20%20%20%20%20%20%3Cdefs%3E%0A%20%20%20%20%20%20%20%20%20%20%3ClinearGradient%20id%3D%22miniBadgeGradient%22%20x1%3D%2250%25%22%20x2%3D%2250%25%22%20y1%3D%220%25%22%20y2%3D%22100%25%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%23fde68a%22%20stop-opacity%3D%220.92%22%20%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23fde68a%22%20stop-opacity%3D%221%22%20%2F%3E%0A%20%20%20%20%20%20%20%20%3C%2Fdefs%3E%0A%20%20%20%20%20%20%20%20%3Crect%20width%3D%22320%22%20height%3D%22320%22%20rx%3D%2248%22%20fill%3D%22url(%23miniBadgeGradient)%22%20%2F%3E%0A%20%20%20%20%20%20%20%20%3Ctext%20x%3D%2250%25%22%20y%3D%22120%22%20font-family%3D%22Nunito%2C%20Arial%2C%20sans-serif%22%20font-size%3D%2276%22%20text-anchor%3D%22middle%22%20fill%3D%22%230f2c2a%22%3E%F0%9F%8D%93%3C%2Ftext%3E%0A%20%20%20%20%20%20%20%20%3Ctext%20x%3D%2250%25%22%20y%3D%22188%22%20font-family%3D%22Nunito%2C%20Arial%2C%20sans-serif%22%20font-size%3D%2234%22%20font-weight%3D%22700%22%20text-anchor%3D%22middle%22%20fill%3D%22%230f2c2a%22%3EMeltaways%3C%2Ftext%3E%0A%20%20%20%20%20%20%20%20%3Ctext%20x%3D%2250%25%22%20y%3D%22232%22%20font-family%3D%22Nunito%2C%20Arial%2C%20sans-serif%22%20font-size%3D%2226%22%20text-anchor%3D%22middle%22%20fill%3D%22%230f2c2a%22%3E160%20mg%20each%3C%2Ftext%3E%0A%20%20%20%20%20%20%3C%2Fsvg%3E"
-                          alt="Illustration representing Tylenol Children's Meltaways acetaminophen tablets 160 mg each"
-                          loading="lazy"
-                          decoding="async"
-                        />
-                      </div>
-                      <figcaption>
-                        <span class="mini-carousel__caption">Tylenol® Children's Meltaways</span>
-                        <span class="mini-carousel__meta">160 mg orally disintegrating tablet</span>
-                      </figcaption>
-                    </figure>
-                    <figure class="carousel-slide">
-                      <div class="mini-carousel__image">
-                        <img
-                          src="data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22320%22%20height%3D%22320%22%20viewBox%3D%220%200%20320%20320%22%3E%0A%20%20%20%20%20%20%20%20%3Cdefs%3E%0A%20%20%20%20%20%20%20%20%20%20%3ClinearGradient%20id%3D%22miniBadgeGradient%22%20x1%3D%2250%25%22%20x2%3D%2250%25%22%20y1%3D%220%25%22%20y2%3D%22100%25%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%23fbcfe8%22%20stop-opacity%3D%220.92%22%20%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23fbcfe8%22%20stop-opacity%3D%221%22%20%2F%3E%0A%20%20%20%20%20%20%20%20%3C%2Fdefs%3E%0A%20%20%20%20%20%20%20%20%3Crect%20width%3D%22320%22%20height%3D%22320%22%20rx%3D%2248%22%20fill%3D%22url(%23miniBadgeGradient)%22%20%2F%3E%0A%20%20%20%20%20%20%20%20%3Ctext%20x%3D%2250%25%22%20y%3D%22120%22%20font-family%3D%22Nunito%2C%20Arial%2C%20sans-serif%22%20font-size%3D%2276%22%20text-anchor%3D%22middle%22%20fill%3D%22%230f2c2a%22%3E%F0%9F%A7%A1%3C%2Ftext%3E%0A%20%20%20%20%20%20%20%20%3Ctext%20x%3D%2250%25%22%20y%3D%22188%22%20font-family%3D%22Nunito%2C%20Arial%2C%20sans-serif%22%20font-size%3D%2234%22%20font-weight%3D%22700%22%20text-anchor%3D%22middle%22%20fill%3D%22%230f2c2a%22%3EChewables%3C%2Ftext%3E%0A%20%20%20%20%20%20%20%20%3Ctext%20x%3D%2250%25%22%20y%3D%22232%22%20font-family%3D%22Nunito%2C%20Arial%2C%20sans-serif%22%20font-size%3D%2226%22%20text-anchor%3D%22middle%22%20fill%3D%22%230f2c2a%22%3E160%20mg%20each%3C%2Ftext%3E%0A%20%20%20%20%20%20%3C%2Fsvg%3E"
-                          alt="Illustration representing children's chewable acetaminophen tablets 160 mg each"
-                          loading="lazy"
-                          decoding="async"
-                        />
-                      </div>
-                      <figcaption>
-                        <span class="mini-carousel__caption">Generic Children's Chewables</span>
-                        <span class="mini-carousel__meta">160 mg chewable tablet</span>
-                      </figcaption>
-                    </figure>
-                    <figure class="carousel-slide">
-                      <div class="mini-carousel__image">
-                        <img
-                          src="data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22320%22%20height%3D%22320%22%20viewBox%3D%220%200%20320%20320%22%3E%0A%20%20%20%20%20%20%20%20%3Cdefs%3E%0A%20%20%20%20%20%20%20%20%20%20%3ClinearGradient%20id%3D%22miniBadgeGradient%22%20x1%3D%2250%25%22%20x2%3D%2250%25%22%20y1%3D%220%25%22%20y2%3D%22100%25%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%23bfdbfe%22%20stop-opacity%3D%220.92%22%20%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23bfdbfe%22%20stop-opacity%3D%221%22%20%2F%3E%0A%20%20%20%20%20%20%20%20%3C%2Fdefs%3E%0A%20%20%20%20%20%20%20%20%3Crect%20width%3D%22320%22%20height%3D%22320%22%20rx%3D%2248%22%20fill%3D%22url(%23miniBadgeGradient)%22%20%2F%3E%0A%20%20%20%20%20%20%20%20%3Ctext%20x%3D%2250%25%22%20y%3D%22120%22%20font-family%3D%22Nunito%2C%20Arial%2C%20sans-serif%22%20font-size%3D%2276%22%20text-anchor%3D%22middle%22%20fill%3D%22%230f2c2a%22%3E%F0%9F%8C%99%3C%2Ftext%3E%0A%20%20%20%20%20%20%20%20%3Ctext%20x%3D%2250%25%22%20y%3D%22188%22%20font-family%3D%22Nunito%2C%20Arial%2C%20sans-serif%22%20font-size%3D%2234%22%20font-weight%3D%22700%22%20text-anchor%3D%22middle%22%20fill%3D%22%230f2c2a%22%3ESuppository%3C%2Ftext%3E%0A%20%20%20%20%20%20%20%20%3Ctext%20x%3D%2250%25%22%20y%3D%22232%22%20font-family%3D%22Nunito%2C%20Arial%2C%20sans-serif%22%20font-size%3D%2226%22%20text-anchor%3D%22middle%22%20fill%3D%22%230f2c2a%22%3E80-160%20mg%3C%2Ftext%3E%0A%20%20%20%20%20%20%3C%2Fsvg%3E"
-                          alt="Illustration representing acetaminophen suppositories in the 80-160 mg range"
-                          loading="lazy"
-                          decoding="async"
-                        />
-                      </div>
-                      <figcaption>
-                        <span class="mini-carousel__caption">Rectal Suppositories</span>
-                        <span class="mini-carousel__meta">80-160 mg per dose (check label)</span>
-                      </figcaption>
-                    </figure>
-                  </div>
-                  <div class="mini-carousel__controls">
-                    <button
-                      type="button"
-                      class="mini-carousel__control"
-                      data-carousel-prev
-                      aria-label="Show previous alternate acetaminophen product"
-                    >
-                      ←
-                    </button>
-                    <div class="mini-carousel__dots carousel-dots"></div>
-                    <button
-                      type="button"
-                      class="mini-carousel__control"
-                      data-carousel-next
-                      aria-label="Show next alternate acetaminophen product"
-                    >
-                      →
-                    </button>
-                  </div>
-                </section>
+              <div class="product-card" role="listitem">
+                <div class="product-card__img-wrap">
+                  <img class="product-card__img" src="images/Acetaminophen/Target acetaminophen iso.png" alt="Target up &amp; up Children's Acetaminophen 160 mg per 5 mL" loading="lazy" />
+                </div>
+                <p class="product-card__name">up &amp; up® Children's</p>
+                <span class="conc-badge conc-badge--ace">160 mg / 5 mL</span>
               </div>
-              <div class="acetaminophen-safety">
-                <h3>Safety Tips</h3>
-                <ul>
-                  <li>Do not exceed 6 doses in 24 hours.</li>
-                  <li>&lt;6 months: dose every 4 hours as needed.</li>
-                  <li>&gt;6 months: dose every 6 hours as needed.</li>
-                  <li>Alternate acetaminophen and ibuprofen (every 6 hours) to allow dosing every 3 hours.</li>
-                  <li>Seek care for infants under 2 months with fever or fever lasting longer than 3 days.</li>
-                  <li>Keep a log of medication, time, and dose to avoid repeat dosing.</li>
-                </ul>
+              <div class="product-card" role="listitem">
+                <div class="product-card__img-wrap">
+                  <img class="product-card__img" src="images/Acetaminophen/Equate acetaminophen iso.png" alt="Equate Children's Acetaminophen 160 mg per 5 mL" loading="lazy" />
+                </div>
+                <p class="product-card__name">Equate® Children's</p>
+                <span class="conc-badge conc-badge--ace">160 mg / 5 mL</span>
               </div>
-            </article>
-
-            <article class="guide-card guide-card--ibuprofen" id="ibuprofen">
-              <h2>Ibuprofen Comparisons</h2>
-              <p class="ibuprofen-lede">Review children's and infant ibuprofen suspensions side-by-side to ensure the correct strength for your patient.</p>
-              <div class="ibuprofen-comparison">
-                <section class="ibuprofen-panel" id="ibuprofen-children" data-carousel>
-                  <h3>Children's Ibuprofen <span class="medication-concentration">[100 mg / 5 mL]</span></h3>
-                  <div class="carousel-track">
-                    <figure class="carousel-slide">
-                      <img src="images/Ibuprofen/Children/Motrin Children ibuprofen iso.png" alt="Motrin Children's ibuprofen 100 mg per 5 mL">
-                      <figcaption>Motrin® Children's Suspension</figcaption>
-                    </figure>
-                    <figure class="carousel-slide">
-                      <img src="images/Ibuprofen/Children/Advil Children Ibuprofen iso.png" alt="Advil Children's ibuprofen 100 mg per 5 mL">
-                      <figcaption>Advil® Children's Suspension</figcaption>
-                    </figure>
-                    <figure class="carousel-slide">
-                      <img src="images/Ibuprofen/Children/Amazon Children ibuprofen iso.png" alt="Amazon Basics Children's ibuprofen 100 mg per 5 mL">
-                      <figcaption>Amazon Basics® Children's Ibuprofen</figcaption>
-                    </figure>
-                    <figure class="carousel-slide">
-                      <img src="images/Ibuprofen/Children/Target Children ibuprofen iso.png" alt="Target up &amp; up Children's ibuprofen 100 mg per 5 mL">
-                      <figcaption>up &amp; up® Children's Ibuprofen</figcaption>
-                    </figure>
-                    <figure class="carousel-slide">
-                      <img src="images/Ibuprofen/Children/Equate Children ibuprofen iso.png" alt="Equate Children's ibuprofen 100 mg per 5 mL">
-                      <figcaption>Equate® Children's Ibuprofen</figcaption>
-                    </figure>
-                  </div>
-                  <div class="carousel-controls">
-                    <button type="button" data-carousel-prev aria-label="Show previous children's ibuprofen product">←</button>
-                    <div class="carousel-dots"></div>
-                    <button type="button" data-carousel-next aria-label="Show next children's ibuprofen product">→</button>
-                  </div>
-                </section>
-
-                <section class="ibuprofen-panel" id="ibuprofen-infant" data-carousel>
-                  <h3>Infant Ibuprofen <span class="medication-concentration">[50 mg / 1.25 mL]</span></h3>
-                  <div class="carousel-track">
-                    <figure class="carousel-slide">
-                      <img src="images/Ibuprofen/Infants/Motrin Infant ibuprofen iso.png" alt="Infant's Motrin concentrated ibuprofen 50 mg per 1.25 mL">
-                      <figcaption>Infant's Motrin® Concentrated Drops</figcaption>
-                    </figure>
-                    <figure class="carousel-slide">
-                      <img src="images/Ibuprofen/Infants/Advil Infant Ibuprofen iso.png" alt="Infants' Advil concentrated ibuprofen 50 mg per 1.25 mL">
-                      <figcaption>Infants' Advil® Concentrated Drops</figcaption>
-                    </figure>
-                    <figure class="carousel-slide">
-                      <img src="images/Ibuprofen/Infants/Amazon Infant ibuprofen iso.png" alt="Amazon Basics infant ibuprofen 50 mg per 1.25 mL">
-                      <figcaption>Amazon Basics® Infant Ibuprofen</figcaption>
-                    </figure>
-                    <figure class="carousel-slide">
-                      <img src="images/Ibuprofen/Infants/Target Infant ibuprofen iso.png" alt="Target up &amp; up infant ibuprofen 50 mg per 1.25 mL">
-                      <figcaption>up &amp; up® Infant Ibuprofen</figcaption>
-                    </figure>
-                    <figure class="carousel-slide">
-                      <img src="images/Ibuprofen/Infants/Equate Infant ibuprofen iso.png" alt="Equate infant ibuprofen 50 mg per 1.25 mL">
-                      <figcaption>Equate® Infant Ibuprofen</figcaption>
-                    </figure>
-                  </div>
-                  <div class="carousel-controls">
-                    <button type="button" data-carousel-prev aria-label="Show previous infant ibuprofen product">←</button>
-                    <div class="carousel-dots"></div>
-                    <button type="button" data-carousel-next aria-label="Show next infant ibuprofen product">→</button>
-                  </div>
-                </section>
-              </div>
-              <div class="mini-carousel-stack">
-                <section
-                  class="mini-carousel"
-                  data-carousel
-                  aria-label="Children's ibuprofen liquids"
-                >
-                  <h3 class="mini-carousel__heading">Children's 100 mg / 5 mL</h3>
-                  <div class="carousel-track">
-                    <figure class="carousel-slide">
-                      <div class="mini-carousel__image">
-                        <img
-                          src="images/Carousel/ibu/k1.png"
-                          alt="Quality Choice children's ibuprofen oral suspension box showing 100 mg per 5 mL dosing information."
-                          loading="lazy"
-                          decoding="async"
-                        />
-                      </div>
-                      <figcaption>
-                        <span class="mini-carousel__caption">Quality Choice® Children’s Ibuprofen</span>
-                        <span class="mini-carousel__meta">100 mg / 5 mL oral suspension</span>
-                      </figcaption>
-                    </figure>
-                    <figure class="carousel-slide">
-                      <div class="mini-carousel__image">
-                        <img
-                          src="images/Carousel/ibu/k2.png"
-                          alt="Quality Choice children's ibuprofen packaging highlighting an alcohol-free, non-staining suspension."
-                          loading="lazy"
-                          decoding="async"
-                        />
-                      </div>
-                      <figcaption>
-                        <span class="mini-carousel__caption">Quality Choice® Dye-Free Suspension</span>
-                        <span class="mini-carousel__meta">100 mg / 5 mL oral suspension</span>
-                      </figcaption>
-                    </figure>
-                    <figure class="carousel-slide">
-                      <div class="mini-carousel__image">
-                        <img
-                          src="images/Carousel/ibu/k3.png"
-                          alt="Dye-free children’s ibuprofen 100 mg per 5 mL box for ages 2 to 11 years."
-                          loading="lazy"
-                          decoding="async"
-                        />
-                      </div>
-                      <figcaption>
-                        <span class="mini-carousel__caption">Dye-Free Children’s Ibuprofen</span>
-                        <span class="mini-carousel__meta">100 mg / 5 mL oral suspension</span>
-                      </figcaption>
-                    </figure>
-                    <figure class="carousel-slide">
-                      <div class="mini-carousel__image">
-                        <img
-                          src="images/Carousel/ibu/k4.png"
-                          alt="Equate children's ibuprofen oral suspension 100 mg per 5 mL packaging."
-                          loading="lazy"
-                          decoding="async"
-                        />
-                      </div>
-                      <figcaption>
-                        <span class="mini-carousel__caption">Equate® Children’s Ibuprofen</span>
-                        <span class="mini-carousel__meta">100 mg / 5 mL oral suspension</span>
-                      </figcaption>
-                    </figure>
-                    <figure class="carousel-slide">
-                      <div class="mini-carousel__image">
-                        <img
-                          src="images/Carousel/ibu/k5.png"
-                          alt="Children's Advil oral suspension 100 mg per 5 mL bottle and box."
-                          loading="lazy"
-                          decoding="async"
-                        />
-                      </div>
-                      <figcaption>
-                        <span class="mini-carousel__caption">Children’s Advil® Suspension</span>
-                        <span class="mini-carousel__meta">100 mg / 5 mL oral suspension</span>
-                      </figcaption>
-                    </figure>
-                    <figure class="carousel-slide">
-                      <div class="mini-carousel__image">
-                        <img
-                          src="images/Carousel/ibu/k6.png"
-                          alt="Generic children's ibuprofen packaging comparing to Children's Motrin for ages 2 to 11 years."
-                          loading="lazy"
-                          decoding="async"
-                        />
-                      </div>
-                      <figcaption>
-                        <span class="mini-carousel__caption">Compare to Children’s Motrin®</span>
-                        <span class="mini-carousel__meta">100 mg / 5 mL oral suspension</span>
-                      </figcaption>
-                    </figure>
-                    <figure class="carousel-slide">
-                      <div class="mini-carousel__image">
-                        <img
-                          src="images/Carousel/ibu/k7.png"
-                          alt="Children's ibuprofen dosing directions panel noting 100 mg per 5 mL oral suspension."
-                          loading="lazy"
-                          decoding="async"
-                        />
-                      </div>
-                      <figcaption>
-                        <span class="mini-carousel__caption">Children’s Ibuprofen Directions</span>
-                        <span class="mini-carousel__meta">Dosing guidance (100 mg / 5 mL)</span>
-                      </figcaption>
-                    </figure>
-                    <figure class="carousel-slide">
-                      <div class="mini-carousel__image">
-                        <img
-                          src="images/Carousel/ibu/k8.png"
-                          alt="Store-brand children's ibuprofen bubble gum flavor package comparing to Children's Motrin."
-                          loading="lazy"
-                          decoding="async"
-                        />
-                      </div>
-                      <figcaption>
-                        <span class="mini-carousel__caption">Store-Brand Bubble Gum Ibuprofen</span>
-                        <span class="mini-carousel__meta">100 mg / 5 mL oral suspension</span>
-                      </figcaption>
-                    </figure>
-                    <figure class="carousel-slide">
-                      <div class="mini-carousel__image">
-                        <img
-                          src="images/Carousel/ibu/k9.png"
-                          alt="Children's ibuprofen oral suspension bottle with a lasts up to 8 hours callout."
-                          loading="lazy"
-                          decoding="async"
-                        />
-                      </div>
-                      <figcaption>
-                        <span class="mini-carousel__caption">Children’s Ibuprofen (8 Hour Relief)</span>
-                        <span class="mini-carousel__meta">100 mg / 5 mL oral suspension</span>
-                      </figcaption>
-                    </figure>
-                  </div>
-                  <div class="mini-carousel__controls">
-                    <button
-                      type="button"
-                      class="mini-carousel__control"
-                      data-carousel-prev
-                      aria-label="Show previous children's ibuprofen product"
-                    >
-                      ←
-                    </button>
-                    <div class="mini-carousel__dots carousel-dots"></div>
-                    <button
-                      type="button"
-                      class="mini-carousel__control"
-                      data-carousel-next
-                      aria-label="Show next children's ibuprofen product"
-                    >
-                      →
-                    </button>
-                  </div>
-                </section>
-                <section
-                  class="mini-carousel"
-                  data-carousel
-                  aria-label="Infant ibuprofen liquids"
-                >
-                  <h3 class="mini-carousel__heading">Infant 50 mg / 1.25 mL</h3>
-                  <div class="carousel-track">
-                    <figure class="carousel-slide">
-                      <div class="mini-carousel__image">
-                        <img
-                          src="images/Ibuprofen/Infants/Motrin Infant ibuprofen iso.png"
-                          alt="Infant's Motrin concentrated ibuprofen 50 mg per 1.25 mL"
-                          loading="lazy"
-                          decoding="async"
-                        />
-                      </div>
-                      <figcaption>
-                        <span class="mini-carousel__caption">Infant's Motrin® Concentrated Drops</span>
-                        <span class="mini-carousel__meta">50 mg / 1.25 mL</span>
-                      </figcaption>
-                    </figure>
-                    <figure class="carousel-slide">
-                      <div class="mini-carousel__image">
-                        <img
-                          src="images/Ibuprofen/Infants/Advil Infant Ibuprofen iso.png"
-                          alt="Infants' Advil concentrated ibuprofen 50 mg per 1.25 mL"
-                          loading="lazy"
-                          decoding="async"
-                        />
-                      </div>
-                      <figcaption>
-                        <span class="mini-carousel__caption">Infants' Advil® Concentrated Drops</span>
-                        <span class="mini-carousel__meta">50 mg / 1.25 mL</span>
-                      </figcaption>
-                    </figure>
-                    <figure class="carousel-slide">
-                      <div class="mini-carousel__image">
-                        <img
-                          src="images/Ibuprofen/Infants/Amazon Infant ibuprofen iso.png"
-                          alt="Amazon Basics infant ibuprofen 50 mg per 1.25 mL"
-                          loading="lazy"
-                          decoding="async"
-                        />
-                      </div>
-                      <figcaption>
-                        <span class="mini-carousel__caption">Amazon Basics® Infant Ibuprofen</span>
-                        <span class="mini-carousel__meta">50 mg / 1.25 mL</span>
-                      </figcaption>
-                    </figure>
-                    <figure class="carousel-slide">
-                      <div class="mini-carousel__image">
-                        <img
-                          src="images/Ibuprofen/Infants/Target Infant ibuprofen iso.png"
-                          alt="Target up &amp; up infant ibuprofen 50 mg per 1.25 mL"
-                          loading="lazy"
-                          decoding="async"
-                        />
-                      </div>
-                      <figcaption>
-                        <span class="mini-carousel__caption">up &amp; up® Infant Ibuprofen</span>
-                        <span class="mini-carousel__meta">50 mg / 1.25 mL</span>
-                      </figcaption>
-                    </figure>
-                    <figure class="carousel-slide">
-                      <div class="mini-carousel__image">
-                        <img
-                          src="images/Ibuprofen/Infants/Equate Infant ibuprofen iso.png"
-                          alt="Equate infant ibuprofen 50 mg per 1.25 mL"
-                          loading="lazy"
-                          decoding="async"
-                        />
-                      </div>
-                      <figcaption>
-                        <span class="mini-carousel__caption">Equate® Infant Ibuprofen</span>
-                        <span class="mini-carousel__meta">50 mg / 1.25 mL</span>
-                      </figcaption>
-                    </figure>
-                  </div>
-                  <div class="mini-carousel__controls">
-                    <button
-                      type="button"
-                      class="mini-carousel__control"
-                      data-carousel-prev
-                      aria-label="Show previous infant ibuprofen product"
-                    >
-                      ←
-                    </button>
-                    <div class="mini-carousel__dots carousel-dots"></div>
-                    <button
-                      type="button"
-                      class="mini-carousel__control"
-                      data-carousel-next
-                      aria-label="Show next infant ibuprofen product"
-                    >
-                      →
-                    </button>
-                  </div>
-                </section>
-                <section
-                  class="mini-carousel"
-                  data-carousel
-                  aria-label="Other ibuprofen formulations"
-                >
-                  <h3 class="mini-carousel__heading">Tablets, capsules &amp; chewables</h3>
-                  <div class="carousel-track">
-                    <figure class="carousel-slide">
-                      <div class="mini-carousel__image">
-                        <img
-                          src="data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22320%22%20height%3D%22320%22%20viewBox%3D%220%200%20320%20320%22%3E%0A%20%20%20%20%20%20%20%20%3Cdefs%3E%0A%20%20%20%20%20%20%20%20%20%20%3ClinearGradient%20id%3D%22miniBadgeGradient%22%20x1%3D%2250%25%22%20x2%3D%2250%25%22%20y1%3D%220%25%22%20y2%3D%22100%25%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%23fecdd3%22%20stop-opacity%3D%220.92%22%20%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23fecdd3%22%20stop-opacity%3D%221%22%20%2F%3E%0A%20%20%20%20%20%20%20%20%3C%2Fdefs%3E%0A%20%20%20%20%20%20%20%20%3Crect%20width%3D%22320%22%20height%3D%22320%22%20rx%3D%2248%22%20fill%3D%22url(%23miniBadgeGradient)%22%20%2F%3E%0A%20%20%20%20%20%20%20%20%3Ctext%20x%3D%2250%25%22%20y%3D%22120%22%20font-family%3D%22Nunito%2C%20Arial%2C%20sans-serif%22%20font-size%3D%2276%22%20text-anchor%3D%22middle%22%20fill%3D%22%230f2c2a%22%3E%F0%9F%8D%8A%3C%2Ftext%3E%0A%20%20%20%20%20%20%20%20%3Ctext%20x%3D%2250%25%22%20y%3D%22188%22%20font-family%3D%22Nunito%2C%20Arial%2C%20sans-serif%22%20font-size%3D%2234%22%20font-weight%3D%22700%22%20text-anchor%3D%22middle%22%20fill%3D%22%230f2c2a%22%3EChewables%3C%2Ftext%3E%0A%20%20%20%20%20%20%20%20%3Ctext%20x%3D%2250%25%22%20y%3D%22232%22%20font-family%3D%22Nunito%2C%20Arial%2C%20sans-serif%22%20font-size%3D%2226%22%20text-anchor%3D%22middle%22%20fill%3D%22%230f2c2a%22%3E100%20mg%20each%3C%2Ftext%3E%0A%20%20%20%20%20%20%3C%2Fsvg%3E"
-                          alt="Illustration representing Motrin children's chewable ibuprofen tablets 100 mg each"
-                          loading="lazy"
-                          decoding="async"
-                        />
-                      </div>
-                      <figcaption>
-                        <span class="mini-carousel__caption">Motrin® Children's Chewables</span>
-                        <span class="mini-carousel__meta">100 mg chewable tablet</span>
-                      </figcaption>
-                    </figure>
-                    <figure class="carousel-slide">
-                      <div class="mini-carousel__image">
-                        <img
-                          src="data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22320%22%20height%3D%22320%22%20viewBox%3D%220%200%20320%20320%22%3E%0A%20%20%20%20%20%20%20%20%3Cdefs%3E%0A%20%20%20%20%20%20%20%20%20%20%3ClinearGradient%20id%3D%22miniBadgeGradient%22%20x1%3D%2250%25%22%20x2%3D%2250%25%22%20y1%3D%220%25%22%20y2%3D%22100%25%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%23d8b4fe%22%20stop-opacity%3D%220.92%22%20%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23d8b4fe%22%20stop-opacity%3D%221%22%20%2F%3E%0A%20%20%20%20%20%20%20%20%3C%2Fdefs%3E%0A%20%20%20%20%20%20%20%20%3Crect%20width%3D%22320%22%20height%3D%22320%22%20rx%3D%2248%22%20fill%3D%22url(%23miniBadgeGradient)%22%20%2F%3E%0A%20%20%20%20%20%20%20%20%3Ctext%20x%3D%2250%25%22%20y%3D%22120%22%20font-family%3D%22Nunito%2C%20Arial%2C%20sans-serif%22%20font-size%3D%2276%22%20text-anchor%3D%22middle%22%20fill%3D%22%230f2c2a%22%3E%E2%AD%90%3C%2Ftext%3E%0A%20%20%20%20%20%20%20%20%3Ctext%20x%3D%2250%25%22%20y%3D%22188%22%20font-family%3D%22Nunito%2C%20Arial%2C%20sans-serif%22%20font-size%3D%2234%22%20font-weight%3D%22700%22%20text-anchor%3D%22middle%22%20fill%3D%22%230f2c2a%22%3EJunior%20Tabs%3C%2Ftext%3E%0A%20%20%20%20%20%20%20%20%3Ctext%20x%3D%2250%25%22%20y%3D%22232%22%20font-family%3D%22Nunito%2C%20Arial%2C%20sans-serif%22%20font-size%3D%2226%22%20text-anchor%3D%22middle%22%20fill%3D%22%230f2c2a%22%3E100%20mg%20each%3C%2Ftext%3E%0A%20%20%20%20%20%20%3C%2Fsvg%3E"
-                          alt="Illustration representing Advil Junior Strength ibuprofen tablets 100 mg each"
-                          loading="lazy"
-                          decoding="async"
-                        />
-                      </div>
-                      <figcaption>
-                        <span class="mini-carousel__caption">Advil® Junior Strength Tablets</span>
-                        <span class="mini-carousel__meta">100 mg coated tablet</span>
-                      </figcaption>
-                    </figure>
-                    <figure class="carousel-slide">
-                      <div class="mini-carousel__image">
-                        <img
-                          src="data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22320%22%20height%3D%22320%22%20viewBox%3D%220%200%20320%20320%22%3E%0A%20%20%20%20%20%20%20%20%3Cdefs%3E%0A%20%20%20%20%20%20%20%20%20%20%3ClinearGradient%20id%3D%22miniBadgeGradient%22%20x1%3D%2250%25%22%20x2%3D%2250%25%22%20y1%3D%220%25%22%20y2%3D%22100%25%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%23bbf7d0%22%20stop-opacity%3D%220.92%22%20%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23bbf7d0%22%20stop-opacity%3D%221%22%20%2F%3E%0A%20%20%20%20%20%20%20%20%3C%2Fdefs%3E%0A%20%20%20%20%20%20%20%20%3Crect%20width%3D%22320%22%20height%3D%22320%22%20rx%3D%2248%22%20fill%3D%22url(%23miniBadgeGradient)%22%20%2F%3E%0A%20%20%20%20%20%20%20%20%3Ctext%20x%3D%2250%25%22%20y%3D%22120%22%20font-family%3D%22Nunito%2C%20Arial%2C%20sans-serif%22%20font-size%3D%2276%22%20text-anchor%3D%22middle%22%20fill%3D%22%230f2c2a%22%3E%F0%9F%92%8A%3C%2Ftext%3E%0A%20%20%20%20%20%20%20%20%3Ctext%20x%3D%2250%25%22%20y%3D%22188%22%20font-family%3D%22Nunito%2C%20Arial%2C%20sans-serif%22%20font-size%3D%2234%22%20font-weight%3D%22700%22%20text-anchor%3D%22middle%22%20fill%3D%22%230f2c2a%22%3ECaplets%3C%2Ftext%3E%0A%20%20%20%20%20%20%20%20%3Ctext%20x%3D%2250%25%22%20y%3D%22232%22%20font-family%3D%22Nunito%2C%20Arial%2C%20sans-serif%22%20font-size%3D%2226%22%20text-anchor%3D%22middle%22%20fill%3D%22%230f2c2a%22%3E200%20mg%20each%3C%2Ftext%3E%0A%20%20%20%20%20%20%3C%2Fsvg%3E"
-                          alt="Illustration representing generic ibuprofen caplets 200 mg each"
-                          loading="lazy"
-                          decoding="async"
-                        />
-                      </div>
-                      <figcaption>
-                        <span class="mini-carousel__caption">Ibuprofen Caplets</span>
-                        <span class="mini-carousel__meta">200 mg tablet/capsule (adolescents+)</span>
-                      </figcaption>
-                    </figure>
-                  </div>
-                  <div class="mini-carousel__controls">
-                    <button
-                      type="button"
-                      class="mini-carousel__control"
-                      data-carousel-prev
-                      aria-label="Show previous ibuprofen formulation"
-                    >
-                      ←
-                    </button>
-                    <div class="mini-carousel__dots carousel-dots"></div>
-                    <button
-                      type="button"
-                      class="mini-carousel__control"
-                      data-carousel-next
-                      aria-label="Show next ibuprofen formulation"
-                    >
-                      →
-                    </button>
-                  </div>
-                </section>
-              </div>
-              <div class="ibuprofen-safety">
-                <h3>Safety Tips</h3>
-                <ul>
-                  <li>Do not give to infants &lt;6 months unless directed by a doctor.</li>
-                  <li>Allow at least 6 hours between doses.</li>
-                  <li>Do not exceed 4 doses in 24 hours.</li>
-                  <li>Give with food or milk to lessen stomach upset.</li>
-                </ul>
-              </div>
-            </article>
+            </div>
           </div>
-        </section>
-<section class="card card--disclaimer" role="button" tabindex="0" aria-expanded="false">
+
+          <!-- More Market Products -->
+          <div class="product-section">
+            <p class="product-section__label">More products at your pharmacy</p>
+            <div class="product-strip" id="ace-strip-more" role="list" aria-label="More acetaminophen suspension products">
+              <div class="product-card" role="listitem">
+                <div class="product-card__img-wrap">
+                  <img class="product-card__img" src="images/Carousel/ace/k/k1.png" alt="Generic children's acetaminophen suspension 160 mg per 5 mL, variant 1" loading="lazy" decoding="async" />
+                </div>
+                <p class="product-card__name">Children's Acetaminophen Suspension</p>
+                <span class="conc-badge conc-badge--ace">160 mg / 5 mL</span>
+              </div>
+              <div class="product-card" role="listitem">
+                <div class="product-card__img-wrap">
+                  <img class="product-card__img" src="images/Carousel/ace/k/k2.png" alt="Generic children's acetaminophen suspension 160 mg per 5 mL, variant 2" loading="lazy" decoding="async" />
+                </div>
+                <p class="product-card__name">Children's Acetaminophen Suspension</p>
+                <span class="conc-badge conc-badge--ace">160 mg / 5 mL</span>
+              </div>
+              <div class="product-card" role="listitem">
+                <div class="product-card__img-wrap">
+                  <img class="product-card__img" src="images/Carousel/ace/k/k3.png" alt="Generic children's acetaminophen suspension 160 mg per 5 mL, variant 3" loading="lazy" decoding="async" />
+                </div>
+                <p class="product-card__name">Children's Acetaminophen Suspension</p>
+                <span class="conc-badge conc-badge--ace">160 mg / 5 mL</span>
+              </div>
+              <div class="product-card" role="listitem">
+                <div class="product-card__img-wrap">
+                  <img class="product-card__img" src="images/Carousel/ace/k/k4.png" alt="Generic children's acetaminophen suspension 160 mg per 5 mL, variant 4" loading="lazy" decoding="async" />
+                </div>
+                <p class="product-card__name">Children's Acetaminophen Suspension</p>
+                <span class="conc-badge conc-badge--ace">160 mg / 5 mL</span>
+              </div>
+              <div class="product-card" role="listitem">
+                <div class="product-card__img-wrap">
+                  <img class="product-card__img" src="images/Carousel/ace/k/k5.png" alt="Generic children's acetaminophen suspension 160 mg per 5 mL, variant 5" loading="lazy" decoding="async" />
+                </div>
+                <p class="product-card__name">Children's Acetaminophen Suspension</p>
+                <span class="conc-badge conc-badge--ace">160 mg / 5 mL</span>
+              </div>
+              <div class="product-card" role="listitem">
+                <div class="product-card__img-wrap">
+                  <img class="product-card__img" src="images/Carousel/ace/k/k6.png" alt="Generic children's acetaminophen suspension 160 mg per 5 mL, variant 6" loading="lazy" decoding="async" />
+                </div>
+                <p class="product-card__name">Children's Acetaminophen Suspension</p>
+                <span class="conc-badge conc-badge--ace">160 mg / 5 mL</span>
+              </div>
+              <div class="product-card" role="listitem">
+                <div class="product-card__img-wrap">
+                  <img class="product-card__img" src="images/Carousel/ace/k/k7.png" alt="Generic children's acetaminophen suspension 160 mg per 5 mL, variant 7" loading="lazy" decoding="async" />
+                </div>
+                <p class="product-card__name">Children's Acetaminophen Suspension</p>
+                <span class="conc-badge conc-badge--ace">160 mg / 5 mL</span>
+              </div>
+              <div class="product-card" role="listitem">
+                <div class="product-card__img-wrap">
+                  <img class="product-card__img" src="images/Carousel/ace/k/k8.png" alt="Generic children's acetaminophen suspension 160 mg per 5 mL, variant 8" loading="lazy" decoding="async" />
+                </div>
+                <p class="product-card__name">Children's Acetaminophen Suspension</p>
+                <span class="conc-badge conc-badge--ace">160 mg / 5 mL</span>
+              </div>
+              <div class="product-card" role="listitem">
+                <div class="product-card__img-wrap">
+                  <img class="product-card__img" src="images/Carousel/ace/k/k9.png" alt="Generic children's acetaminophen suspension 160 mg per 5 mL, variant 9" loading="lazy" decoding="async" />
+                </div>
+                <p class="product-card__name">Children's Acetaminophen Suspension</p>
+                <span class="conc-badge conc-badge--ace">160 mg / 5 mL</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Other Acetaminophen Formulations -->
+          <div class="product-section">
+            <p class="product-section__label">Other formulations</p>
+            <div class="formulation-grid">
+              <div class="formulation-card">
+                <div class="formulation-card__emoji">🍓</div>
+                <p class="formulation-card__name">Meltaways</p>
+                <p class="formulation-card__dose">160 mg each · orally disintegrating</p>
+              </div>
+              <div class="formulation-card">
+                <div class="formulation-card__emoji">🍬</div>
+                <p class="formulation-card__name">Chewable Tablets</p>
+                <p class="formulation-card__dose">160 mg each</p>
+              </div>
+              <div class="formulation-card">
+                <div class="formulation-card__emoji">🌙</div>
+                <p class="formulation-card__name">Suppositories</p>
+                <p class="formulation-card__dose">80–160 mg · check label carefully</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Acetaminophen Safety Tips -->
+          <div class="safety-card" aria-label="Acetaminophen safety tips">
+            <p class="safety-card__title">Safety tips</p>
+            <ul>
+              <li>Do not exceed 5 doses in 24 hours.</li>
+              <li>Under 6 months: may dose every 4–6 hours as needed.</li>
+              <li>Over 6 months: dose every 6 hours as needed.</li>
+              <li>Alternating acetaminophen and ibuprofen every 3 hours (offset by 3 h) can improve fever and pain control — ask your pediatrician.</li>
+              <li>All liquids on this page share the same 160 mg / 5 mL concentration — they are interchangeable.</li>
+              <li>Keep a log of medication, time, and dose to prevent accidental repeat dosing.</li>
+              <li>Seek care for any infant under 2 months with fever, or for fever lasting more than 3 days in older children.</li>
+            </ul>
+          </div>
+        </article>
+
+        <!-- ══════════════════════════════════════
+             IBUPROFEN GUIDE
+        ══════════════════════════════════════ -->
+        <article class="card med-guide" id="ibuprofen">
+          <div class="med-guide__header">
+            <div class="med-guide__header-text">
+              <h2>Ibuprofen</h2>
+              <p>Available in two concentrations. The infant drops are more concentrated — always confirm which bottle you have before measuring a dose.</p>
+            </div>
+          </div>
+
+          <!-- Age restriction notice -->
+          <div class="med-warning">
+            Not recommended for infants under 6 months of age unless directed by a physician. Always give with food or milk to reduce stomach upset.
+          </div>
+
+          <!-- Concentration tab switcher -->
+          <div class="conc-switcher" role="tablist" aria-label="Select ibuprofen concentration">
+            <button
+              class="conc-tab is-active"
+              role="tab"
+              aria-selected="true"
+              aria-controls="ibu-children"
+              data-conc-target="ibu-children"
+              type="button"
+            >
+              Children's
+              <span class="conc-badge conc-badge--child">100 mg / 5 mL</span>
+            </button>
+            <button
+              class="conc-tab"
+              role="tab"
+              aria-selected="false"
+              aria-controls="ibu-infant"
+              data-conc-target="ibu-infant"
+              type="button"
+            >
+              Infant Drops
+              <span class="conc-badge conc-badge--infant">50 mg / 1.25 mL</span>
+            </button>
+          </div>
+
+          <!-- ── Children's Panel ── -->
+          <div class="conc-panel is-active" id="ibu-children" role="tabpanel" aria-label="Children's ibuprofen 100 mg per 5 mL">
+
+            <div class="product-section">
+              <p class="product-section__label">Featured brands · 100 mg / 5 mL</p>
+              <div class="product-strip" role="list" aria-label="Children's ibuprofen featured brands">
+                <div class="product-card" role="listitem">
+                  <div class="product-card__img-wrap">
+                    <img class="product-card__img" src="images/Ibuprofen/Children/Motrin Children ibuprofen iso.png" alt="Motrin Children's Ibuprofen Suspension 100 mg per 5 mL" loading="eager" />
+                  </div>
+                  <p class="product-card__name">Motrin® Children's</p>
+                  <span class="conc-badge conc-badge--child">100 mg / 5 mL</span>
+                </div>
+                <div class="product-card" role="listitem">
+                  <div class="product-card__img-wrap">
+                    <img class="product-card__img" src="images/Ibuprofen/Children/Advil Children Ibuprofen iso.png" alt="Advil Children's Ibuprofen Suspension 100 mg per 5 mL" loading="lazy" />
+                  </div>
+                  <p class="product-card__name">Advil® Children's</p>
+                  <span class="conc-badge conc-badge--child">100 mg / 5 mL</span>
+                </div>
+                <div class="product-card" role="listitem">
+                  <div class="product-card__img-wrap">
+                    <img class="product-card__img" src="images/Ibuprofen/Children/Amazon Children ibuprofen iso.png" alt="Amazon Basics Children's Ibuprofen Suspension 100 mg per 5 mL" loading="lazy" />
+                  </div>
+                  <p class="product-card__name">Amazon Basics® Children's</p>
+                  <span class="conc-badge conc-badge--child">100 mg / 5 mL</span>
+                </div>
+                <div class="product-card" role="listitem">
+                  <div class="product-card__img-wrap">
+                    <img class="product-card__img" src="images/Ibuprofen/Children/Target Children ibuprofen iso.png" alt="Target up &amp; up Children's Ibuprofen Suspension 100 mg per 5 mL" loading="lazy" />
+                  </div>
+                  <p class="product-card__name">up &amp; up® Children's</p>
+                  <span class="conc-badge conc-badge--child">100 mg / 5 mL</span>
+                </div>
+                <div class="product-card" role="listitem">
+                  <div class="product-card__img-wrap">
+                    <img class="product-card__img" src="images/Ibuprofen/Children/Equate Children ibuprofen iso.png" alt="Equate Children's Ibuprofen Suspension 100 mg per 5 mL" loading="lazy" />
+                  </div>
+                  <p class="product-card__name">Equate® Children's</p>
+                  <span class="conc-badge conc-badge--child">100 mg / 5 mL</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="product-section">
+              <p class="product-section__label">More children's products · 100 mg / 5 mL</p>
+              <div class="product-strip" role="list" aria-label="More children's ibuprofen products">
+                <div class="product-card" role="listitem">
+                  <div class="product-card__img-wrap">
+                    <img class="product-card__img" src="images/Carousel/ibu/k1.png" alt="Quality Choice Children's Ibuprofen Suspension 100 mg per 5 mL" loading="lazy" decoding="async" />
+                  </div>
+                  <p class="product-card__name">Quality Choice® Children's</p>
+                  <span class="conc-badge conc-badge--child">100 mg / 5 mL</span>
+                </div>
+                <div class="product-card" role="listitem">
+                  <div class="product-card__img-wrap">
+                    <img class="product-card__img" src="images/Carousel/ibu/k2.png" alt="Quality Choice Dye-Free Children's Ibuprofen 100 mg per 5 mL" loading="lazy" decoding="async" />
+                  </div>
+                  <p class="product-card__name">Quality Choice® Dye-Free</p>
+                  <span class="conc-badge conc-badge--child">100 mg / 5 mL</span>
+                </div>
+                <div class="product-card" role="listitem">
+                  <div class="product-card__img-wrap">
+                    <img class="product-card__img" src="images/Carousel/ibu/k3.png" alt="Dye-free Children's Ibuprofen 100 mg per 5 mL for ages 2 to 11" loading="lazy" decoding="async" />
+                  </div>
+                  <p class="product-card__name">Dye-Free Children's Ibuprofen</p>
+                  <span class="conc-badge conc-badge--child">100 mg / 5 mL</span>
+                </div>
+                <div class="product-card" role="listitem">
+                  <div class="product-card__img-wrap">
+                    <img class="product-card__img" src="images/Carousel/ibu/k4.png" alt="Equate Children's Ibuprofen Oral Suspension 100 mg per 5 mL" loading="lazy" decoding="async" />
+                  </div>
+                  <p class="product-card__name">Equate® Children's Suspension</p>
+                  <span class="conc-badge conc-badge--child">100 mg / 5 mL</span>
+                </div>
+                <div class="product-card" role="listitem">
+                  <div class="product-card__img-wrap">
+                    <img class="product-card__img" src="images/Carousel/ibu/k5.png" alt="Children's Advil Oral Suspension 100 mg per 5 mL" loading="lazy" decoding="async" />
+                  </div>
+                  <p class="product-card__name">Advil® Children's Suspension</p>
+                  <span class="conc-badge conc-badge--child">100 mg / 5 mL</span>
+                </div>
+                <div class="product-card" role="listitem">
+                  <div class="product-card__img-wrap">
+                    <img class="product-card__img" src="images/Carousel/ibu/k6.png" alt="Store-brand ibuprofen compare to Children's Motrin 100 mg per 5 mL" loading="lazy" decoding="async" />
+                  </div>
+                  <p class="product-card__name">Store Brand (compare to Motrin®)</p>
+                  <span class="conc-badge conc-badge--child">100 mg / 5 mL</span>
+                </div>
+                <div class="product-card" role="listitem">
+                  <div class="product-card__img-wrap">
+                    <img class="product-card__img" src="images/Carousel/ibu/k7.png" alt="Children's Ibuprofen dosing directions panel 100 mg per 5 mL" loading="lazy" decoding="async" />
+                  </div>
+                  <p class="product-card__name">Children's Ibuprofen (Dosing Panel)</p>
+                  <span class="conc-badge conc-badge--child">100 mg / 5 mL</span>
+                </div>
+                <div class="product-card" role="listitem">
+                  <div class="product-card__img-wrap">
+                    <img class="product-card__img" src="images/Carousel/ibu/k8.png" alt="Bubble gum flavored store-brand ibuprofen suspension 100 mg per 5 mL" loading="lazy" decoding="async" />
+                  </div>
+                  <p class="product-card__name">Bubble Gum Flavor Suspension</p>
+                  <span class="conc-badge conc-badge--child">100 mg / 5 mL</span>
+                </div>
+                <div class="product-card" role="listitem">
+                  <div class="product-card__img-wrap">
+                    <img class="product-card__img" src="images/Carousel/ibu/k9.png" alt="Children's Ibuprofen 8-hour relief suspension 100 mg per 5 mL" loading="lazy" decoding="async" />
+                  </div>
+                  <p class="product-card__name">Children's Ibuprofen (8-hr relief)</p>
+                  <span class="conc-badge conc-badge--child">100 mg / 5 mL</span>
+                </div>
+              </div>
+            </div>
+
+          </div><!-- /ibu-children -->
+
+          <!-- ── Infant Panel ── -->
+          <div class="conc-panel" id="ibu-infant" role="tabpanel" aria-label="Infant ibuprofen drops 50 mg per 1.25 mL">
+
+            <div class="med-warning">
+              <strong>Infant drops are more concentrated.</strong> The 50 mg / 1.25 mL formula delivers the same mg of ibuprofen in a smaller volume — do not use the children's dosing chart with this product, and vice versa. Double-check the label before every dose.
+            </div>
+
+            <div class="product-section">
+              <p class="product-section__label">Infant concentrated drops · 50 mg / 1.25 mL</p>
+              <div class="product-strip" role="list" aria-label="Infant ibuprofen drop products">
+                <div class="product-card" role="listitem">
+                  <div class="product-card__img-wrap">
+                    <img class="product-card__img" src="images/Ibuprofen/Infants/Motrin Infant ibuprofen iso.png" alt="Infant's Motrin Concentrated Ibuprofen Drops 50 mg per 1.25 mL" loading="lazy" />
+                  </div>
+                  <p class="product-card__name">Infant's Motrin® Concentrated Drops</p>
+                  <span class="conc-badge conc-badge--infant">50 mg / 1.25 mL</span>
+                </div>
+                <div class="product-card" role="listitem">
+                  <div class="product-card__img-wrap">
+                    <img class="product-card__img" src="images/Ibuprofen/Infants/Amazon Infant ibuprofen iso.png" alt="Amazon Basics Infant Ibuprofen Drops 50 mg per 1.25 mL" loading="lazy" />
+                  </div>
+                  <p class="product-card__name">Amazon Basics® Infant Drops</p>
+                  <span class="conc-badge conc-badge--infant">50 mg / 1.25 mL</span>
+                </div>
+                <div class="product-card" role="listitem">
+                  <div class="product-card__img-wrap">
+                    <img class="product-card__img" src="images/Ibuprofen/Infants/Target Infant ibuprofen iso.png" alt="Target up &amp; up Infant Ibuprofen Drops 50 mg per 1.25 mL" loading="lazy" />
+                  </div>
+                  <p class="product-card__name">up &amp; up® Infant Drops</p>
+                  <span class="conc-badge conc-badge--infant">50 mg / 1.25 mL</span>
+                </div>
+              </div>
+            </div>
+
+          </div><!-- /ibu-infant -->
+
+          <!-- Other Ibuprofen Formulations (shown regardless of tab) -->
+          <div class="product-section">
+            <p class="product-section__label">Other formulations · older children &amp; adolescents</p>
+            <div class="formulation-grid">
+              <div class="formulation-card">
+                <div class="formulation-card__emoji">🍊</div>
+                <p class="formulation-card__name">Children's Chewables</p>
+                <p class="formulation-card__dose">100 mg each · ages 2–11</p>
+              </div>
+              <div class="formulation-card">
+                <div class="formulation-card__emoji">⭐</div>
+                <p class="formulation-card__name">Junior Strength Tablets</p>
+                <p class="formulation-card__dose">100 mg each · ages 6–11</p>
+              </div>
+              <div class="formulation-card">
+                <div class="formulation-card__emoji">💊</div>
+                <p class="formulation-card__name">Adult Tablets / Caplets</p>
+                <p class="formulation-card__dose">200 mg each · adolescents only</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Ibuprofen Safety Tips -->
+          <div class="safety-card" aria-label="Ibuprofen safety tips">
+            <p class="safety-card__title">Safety tips</p>
+            <ul>
+              <li>Do not give to infants under 6 months unless directed by a physician.</li>
+              <li>Allow at least 6 hours between doses. Do not exceed 4 doses in 24 hours.</li>
+              <li>Give with food or milk to reduce stomach upset.</li>
+              <li><strong>Infant drops (50 mg / 1.25 mL) and Children's suspension (100 mg / 5 mL) require different dosing charts</strong> — never use one chart for the other product.</li>
+              <li>Avoid in children with kidney disease, dehydration, or known NSAIDs allergy.</li>
+              <li>Alternating with acetaminophen every 3 hours can improve pain and fever control — confirm the schedule with your pediatrician first.</li>
+            </ul>
+          </div>
+        </article>
+
+        <!-- Disclaimer -->
+        <section class="card card--disclaimer" role="button" tabindex="0" aria-expanded="false">
           <div class="disclaimer-header">
             <span class="eyebrow">Disclaimer</span>
-            <h2>Medication Safety & Usage</h2>
+            <h2>Medication Safety &amp; Usage</h2>
             <p>Tap to read important safety information</p>
           </div>
           <div class="disclaimer-content" hidden>
             <button class="disclaimer-close" aria-label="Close disclaimer">&times;</button>
-            <p><strong>This tool does not provide medical advice.</strong> The dosing information is for educational purposes and should be verified with a healthcare provider.</p>
+            <p><strong>This tool does not provide medical advice.</strong> The dosing information is for educational purposes only and should be verified with a healthcare provider or pharmacist before use.</p>
             <ul>
-              <li>Always use the dosing device (syringe or cup) that came with the medication.</li>
-              <li>Confirm your child's weight if it has been more than 3 months.</li>
-              <li>Contact Poison Control (1-800-222-1222) if an overdose is suspected.</li>
+              <li>Always use the measuring device (oral syringe or dosing cup) that came with the medication — household spoons are not accurate.</li>
+              <li>Confirm your child's current weight if it has been more than 3 months since the last measurement.</li>
+              <li>Contact Poison Control (1-800-222-1222) immediately if an overdose is suspected.</li>
+              <li>All product photos are for identification purposes only; availability may vary by region.</li>
             </ul>
           </div>
         </section>
+
       </div>
     </main>
   </div>
-  
+
   <footer class="cd-footer">
     <p class="cd-copy">2026 CloseDose. All rights reserved.</p>
     <nav class="cd-legal cd-legal--full">
@@ -763,7 +479,55 @@
       </form>
     </div>
   </div>
+
   <script src="global.js" defer></script>
-  <script src="script.js"></script>
+  <script>
+    // Ibuprofen concentration tab switcher
+    (function () {
+      const switcher = document.querySelector('.conc-switcher');
+      if (!switcher) return;
+      const tabs = switcher.querySelectorAll('.conc-tab');
+      tabs.forEach(function (tab) {
+        tab.addEventListener('click', function () {
+          tabs.forEach(function (t) {
+            t.classList.remove('is-active');
+            t.setAttribute('aria-selected', 'false');
+          });
+          tab.classList.add('is-active');
+          tab.setAttribute('aria-selected', 'true');
+          const targetId = tab.getAttribute('data-conc-target');
+          document.querySelectorAll('.conc-panel').forEach(function (panel) {
+            panel.classList.remove('is-active');
+          });
+          var target = document.getElementById(targetId);
+          if (target) target.classList.add('is-active');
+        });
+      });
+    })();
+
+    // Mouse-drag scroll for product strips on desktop
+    (function () {
+      document.querySelectorAll('.product-strip').forEach(function (strip) {
+        var isDown = false;
+        var startX;
+        var scrollLeft;
+        strip.addEventListener('mousedown', function (e) {
+          isDown = true;
+          strip.classList.add('is-dragging');
+          startX = e.pageX - strip.offsetLeft;
+          scrollLeft = strip.scrollLeft;
+        });
+        strip.addEventListener('mouseleave', function () { isDown = false; strip.classList.remove('is-dragging'); });
+        strip.addEventListener('mouseup', function () { isDown = false; strip.classList.remove('is-dragging'); });
+        strip.addEventListener('mousemove', function (e) {
+          if (!isDown) return;
+          e.preventDefault();
+          var x = e.pageX - strip.offsetLeft;
+          var walk = (x - startX) * 1.5;
+          strip.scrollLeft = scrollLeft - walk;
+        });
+      });
+    })();
+  </script>
 </body>
 </html>
