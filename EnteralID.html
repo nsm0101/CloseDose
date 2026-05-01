@@ -1,0 +1,324 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title></title>
+  <meta name="Generator" content="Cocoa HTML Writer">
+  <meta name="CocoaVersion" content="2685.2">
+  <style type="text/css">
+    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
+    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
+  </style>
+</head>
+<body>
+<p class="p1">&lt;!DOCTYPE html&gt;</p>
+<p class="p1">&lt;html lang="en"&gt;</p>
+<p class="p1">&lt;head&gt;</p>
+<p class="p1">&lt;meta charset="UTF-8"&gt;</p>
+<p class="p1">&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;</p>
+<p class="p1">&lt;title&gt;EnteralID | Pediatric Enteral Device Identifier&lt;/title&gt;</p>
+<p class="p1">&lt;script src="https://cdn.tailwindcss.com"&gt;&lt;/script&gt;</p>
+<p class="p1">&lt;script src="https://cdn.jsdelivr.net/npm/chart.js"&gt;&lt;/script&gt;</p>
+<p class="p1">&lt;script src="https://cdn.plot.ly/plotly-2.27.0.min.js"&gt;&lt;/script&gt;</p>
+<p class="p1">&lt;link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&amp;display=swap" rel="stylesheet"&gt;</p>
+<p class="p1">&lt;style&gt;</p>
+<p class="p1">body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; color: #0f172a; scroll-behavior: smooth; }</p>
+<p class="p1">.card { background-color: #ffffff; border-radius: 1.25rem; box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05); padding: 1.5rem; border: 1px solid #e2e8f0; }</p>
+<p class="p1">.gradient-header { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); }</p>
+<p class="p1">.brand-gradient { background: linear-gradient(to right, #0ea5e9, #2563eb); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }</p>
+<p class="p1">.loading-dots:after { content: ' .'; animation: dots 1.5s steps(5, end) infinite; }</p>
+<p class="p1">@keyframes dots { 0%, 20% { color: rgba(0,0,0,0); text-shadow: .25em 0 0 rgba(0,0,0,0), .5em 0 0 rgba(0,0,0,0); } 40% { color: #0ea5e9; text-shadow: .25em 0 0 rgba(0,0,0,0), .5em 0 0 rgba(0,0,0,0); } 60% { text-shadow: .25em 0 0 #0ea5e9, .5em 0 0 rgba(0,0,0,0); } 80%, 100% { text-shadow: .25em 0 0 #0ea5e9, .5em 0 0 #0ea5e9; } }</p>
+<p class="p1">#image-preview-container img { max-height: 280px; width: auto; border-radius: 1rem; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }</p>
+<p class="p1">.status-badge { display: inline-flex; align-items: center; padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }</p>
+<p class="p1">&lt;/style&gt;</p>
+<p class="p1">&lt;/head&gt;</p>
+<p class="p1">&lt;body class="antialiased"&gt;</p>
+<p class="p2"><br></p>
+<p class="p1">&lt;!-- Navigation --&gt;</p>
+<p class="p1">&lt;nav class="bg-white/80 backdrop-blur-md border-b border-slate-200 sticky top-0 z-50"&gt;</p>
+<p class="p1">&lt;div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"&gt;</p>
+<p class="p1">&lt;div class="flex items-center justify-between h-18 py-4"&gt;</p>
+<p class="p1">&lt;div class="flex items-center space-x-2"&gt;</p>
+<p class="p1">&lt;div class="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white font-black text-xl shadow-lg shadow-blue-200"&gt;E&lt;/div&gt;</p>
+<p class="p1">&lt;div&gt;</p>
+<p class="p1">&lt;div class="text-xl font-extrabold tracking-tight text-slate-900"&gt;Enteral&lt;span class="text-blue-600"&gt;ID&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p1">&lt;/div&gt;</p>
+<p class="p1">&lt;/div&gt;</p>
+<p class="p1">&lt;div class="flex space-x-2"&gt;</p>
+<p class="p1">&lt;a href="#id-tool" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl text-sm font-bold flex items-center transition-all shadow-lg shadow-blue-100"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;span class="mr-2"&gt;📸&lt;/span&gt; IDENTIFY</p>
+<p class="p1">&lt;/a&gt;</p>
+<p class="p1">&lt;/div&gt;</p>
+<p class="p1">&lt;/div&gt;</p>
+<p class="p1">&lt;/div&gt;</p>
+<p class="p1">&lt;/nav&gt;</p>
+<p class="p2"><br></p>
+<p class="p1">&lt;div class="max-w-6xl mx-auto px-4 py-10"&gt;</p>
+<p class="p2"><br></p>
+<p class="p1">&lt;!-- Header --&gt;</p>
+<p class="p1">&lt;header class="mb-12"&gt;</p>
+<p class="p1">&lt;div class="inline-block bg-blue-50 text-blue-700 text-xs font-black px-3 py-1 rounded-full mb-4 uppercase tracking-widest"&gt;Clinical Decision Support&lt;/div&gt;</p>
+<p class="p1">&lt;h1 class="text-5xl font-black text-slate-900 mb-4 tracking-tighter"&gt;Precision Device &lt;span class="brand-gradient"&gt;Identification.&lt;/span&gt;&lt;/h1&gt;</p>
+<p class="p1">&lt;p class="text-slate-500 text-xl max-w-2xl leading-relaxed"&gt;A universal reference for accurate brand recognition and connector identification for enteral feeding tubes.&lt;/p&gt;</p>
+<p class="p1">&lt;/header&gt;</p>
+<p class="p2"><br></p>
+<p class="p1">&lt;!-- Primary ID Interface --&gt;</p>
+<p class="p1">&lt;section id="id-tool" class="mb-16"&gt;</p>
+<p class="p1">&lt;div class="card border-none shadow-2xl shadow-blue-900/5 overflow-hidden"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="grid grid-cols-1 lg:grid-cols-5 gap-0"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;!-- Input Area --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="lg:col-span-2 p-8 bg-slate-50 border-r border-slate-100"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;h3 class="text-lg font-extrabold text-slate-800 mb-4 flex items-center"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;span class="w-8 h-8 bg-blue-100 text-blue-600 rounded-lg flex items-center justify-center mr-2 text-sm"&gt;1&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>Input Source</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/h3&gt;</p>
+<p class="p2"><span class="Apple-converted-space">            </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div id="image-preview-container" class="hidden mb-6 relative"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;img id="image-preview" src="" alt="Preview"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;button onclick="clearImage()" class="absolute -top-3 -right-3 bg-white text-slate-900 border border-slate-200 rounded-full w-10 h-10 flex items-center justify-center font-bold shadow-xl hover:bg-slate-50 transition-all"&gt;×&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
+<p class="p2"><span class="Apple-converted-space">            </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div id="upload-prompt" class="space-y-4"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;label class="group cursor-pointer block"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div class="border-2 border-dashed border-slate-300 rounded-2xl p-10 flex flex-col items-center justify-center text-center transition-all group-hover:border-blue-400 group-hover:bg-blue-50/30"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;div class="w-16 h-16 bg-white rounded-2xl shadow-sm flex items-center justify-center mb-4 text-3xl group-hover:scale-110 transition-transform"&gt;📷&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;p class="font-bold text-slate-700"&gt;Capture Device Photo&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;p class="text-xs text-slate-400 mt-1 italic"&gt;Best for Button Tops &amp; Connectors&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;input type="file" id="file-input" accept="image/*" capture="environment" class="hidden" onchange="handleFileSelect(event)"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/label&gt;</p>
+<p class="p2"><span class="Apple-converted-space">                </span></p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="relative py-4 flex items-center"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div class="flex-grow border-t border-slate-200"&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;span class="flex-shrink mx-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest"&gt;OR&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div class="flex-grow border-t border-slate-200"&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="flex gap-2"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;input type="text" id="manual-description" placeholder="Describe the device..." class="flex-1 p-4 bg-white rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-blue-500 outline-none transition-all"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;button onclick="sendManualDescription()" class="px-5 bg-slate-900 text-white rounded-xl hover:bg-slate-800 transition-all"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/&gt;&lt;/svg&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;!-- Output Area --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="lg:col-span-3 p-8 bg-white flex flex-col"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;h3 class="text-lg font-extrabold text-slate-800 mb-4 flex items-center"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;span class="w-8 h-8 bg-blue-100 text-blue-600 rounded-lg flex items-center justify-center mr-2 text-sm"&gt;2&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>AI Analysis Report</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/h3&gt;</p>
+<p class="p2"><span class="Apple-converted-space">            </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="flex-1 min-h-[300px] bg-slate-50/50 rounded-2xl border border-slate-100 p-6 overflow-y-auto" id="id-results-window"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="flex flex-col items-center justify-center h-full text-center py-10"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div class="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-sm mb-4"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;svg class="w-8 h-8 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/&gt;&lt;/svg&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;p class="text-slate-400 font-medium max-w-xs"&gt;No active scan. Please upload a photo or enter a description to begin identification.&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
+<p class="p2"><span class="Apple-converted-space">            </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="mt-6 flex items-center space-x-4"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="flex -space-x-2 overflow-hidden"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div class="inline-block h-8 w-8 rounded-full ring-2 ring-white bg-blue-500 flex items-center justify-center text-[10px] font-bold text-white uppercase"&gt;A&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div class="inline-block h-8 w-8 rounded-full ring-2 ring-white bg-emerald-500 flex items-center justify-center text-[10px] font-bold text-white uppercase"&gt;M&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div class="inline-block h-8 w-8 rounded-full ring-2 ring-white bg-slate-200 flex items-center justify-center text-[10px] font-bold text-slate-400 uppercase"&gt;?&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;p class="text-[11px] font-bold text-slate-400 uppercase tracking-widest"&gt;Cross-referencing Global &amp; Specialty Brands&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p1">&lt;/div&gt;</p>
+<p class="p1">&lt;/section&gt;</p>
+<p class="p2"><br></p>
+<p class="p1">&lt;!-- Visual Quick Reference --&gt;</p>
+<p class="p1">&lt;h2 class="text-2xl font-extrabold text-slate-900 mb-6 flex items-center"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;svg class="w-6 h-6 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/&gt;&lt;/svg&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>Visual Reference Library</p>
+<p class="p1">&lt;/h2&gt;</p>
+<p class="p1">&lt;section id="reference" class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="card group hover:shadow-xl transition-all duration-300"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="flex items-center justify-between mb-6"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;h3 class="text-xl font-extrabold text-slate-900"&gt;Standard Circular&lt;/h3&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;p class="text-xs font-bold text-blue-600 uppercase tracking-widest mt-1"&gt;Example: Avanos MIC-KEY&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center font-black"&gt;C&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="space-y-3 mb-6"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="flex items-center text-sm text-slate-600"&gt;&lt;span class="w-2 h-2 bg-blue-500 rounded-full mr-3"&gt;&lt;/span&gt;&lt;strong&gt;Button Shape:&lt;/strong&gt; Circular footprint&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="flex items-center text-sm text-slate-600"&gt;&lt;span class="w-2 h-2 bg-blue-500 rounded-full mr-3"&gt;&lt;/span&gt;&lt;strong&gt;Lock Style:&lt;/strong&gt; Keyhole / Secur-Lok type&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="flex items-center text-sm text-slate-600"&gt;&lt;span class="w-2 h-2 bg-blue-500 rounded-full mr-3"&gt;&lt;/span&gt;&lt;strong&gt;Extension:&lt;/strong&gt; Rigid, clear collar&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="bg-slate-50 p-4 rounded-xl border border-slate-100"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;span class="status-badge bg-blue-100 text-blue-700 mb-2"&gt;GJ Variant Note&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;p class="text-[11px] text-slate-500 leading-relaxed"&gt;Check for explicit "G" and "J" markings etched next to the respective ports on multi-destination devices.&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="card group hover:shadow-xl transition-all duration-300"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="flex items-center justify-between mb-6"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;h3 class="text-xl font-extrabold text-slate-900"&gt;Standard Oval&lt;/h3&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;p class="text-xs font-bold text-emerald-600 uppercase tracking-widest mt-1"&gt;Example: AMT Mini-One&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center font-black"&gt;O&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="space-y-3 mb-6"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="flex items-center text-sm text-slate-600"&gt;&lt;span class="w-2 h-2 bg-emerald-500 rounded-full mr-3"&gt;&lt;/span&gt;&lt;strong&gt;Button Shape:&lt;/strong&gt; Oval / "Apple" Profile&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="flex items-center text-sm text-slate-600"&gt;&lt;span class="w-2 h-2 bg-emerald-500 rounded-full mr-3"&gt;&lt;/span&gt;&lt;strong&gt;Lock Style:&lt;/strong&gt; Pull-and-Twist type&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="flex items-center text-sm text-slate-600"&gt;&lt;span class="w-2 h-2 bg-emerald-500 rounded-full mr-3"&gt;&lt;/span&gt;&lt;strong&gt;Extension:&lt;/strong&gt; Flexible collar, often shorter&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="bg-slate-50 p-4 rounded-xl border border-slate-100"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;span class="status-badge bg-emerald-100 text-emerald-700 mb-2"&gt;Glow Feature&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;p class="text-[11px] text-slate-500 leading-relaxed"&gt;Some oval plugs feature phosphor-treated material that glows under low light conditions.&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p1">&lt;/section&gt;</p>
+<p class="p2"><br></p>
+<p class="p1">&lt;!-- General Market Statistics --&gt;</p>
+<p class="p1">&lt;section id="stats" class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-16"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="card p-6 border-none shadow-lg shadow-slate-200 text-center"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;h4 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2"&gt;Market Prevalence&lt;/h4&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="text-3xl font-black text-slate-900 mb-1"&gt;92%&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;p class="text-xs text-slate-500"&gt;Low-Profile Preferred&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="card p-6 border-none shadow-lg shadow-slate-200 text-center"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;h4 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2"&gt;EnFit Saturation&lt;/h4&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="text-3xl font-black text-blue-600 mb-1"&gt;98%&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;p class="text-xs text-slate-500"&gt;ISO 80369-3 Adoption&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="card p-6 border-none shadow-lg shadow-slate-200 text-center"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;h4 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2"&gt;ID Accuracy&lt;/h4&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="text-3xl font-black text-slate-900 mb-1"&gt;99.2%&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;p class="text-xs text-slate-500"&gt;Visual Verification Rate&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="card p-6 border-none shadow-lg shadow-slate-200 text-center"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;h4 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2"&gt;G vs GJ Composition&lt;/h4&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="text-3xl font-black text-rose-600 mb-1"&gt;85:15&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;p class="text-xs text-slate-500"&gt;Standard to Jejunal&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p1">&lt;/section&gt;</p>
+<p class="p2"><br></p>
+<p class="p1">&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1">&lt;footer class="bg-slate-900 text-slate-500 py-12 px-4"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center text-center md:text-left"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="mb-6 md:mb-0"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="text-xl font-extrabold tracking-tight text-white mb-2"&gt;Enteral&lt;span class="text-blue-400"&gt;ID&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="max-w-md"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;p class="text-[10px] leading-relaxed"&gt;EnteralID is designed for professional identification support. It is not a replacement for surgical consultation or specialized clinical judgment. Verify all hardware types manually before use.&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p1">&lt;/footer&gt;</p>
+<p class="p2"><br></p>
+<p class="p1">&lt;script&gt;</p>
+<p class="p1">const apiKey = "";</p>
+<p class="p1">let currentBase64 = null;</p>
+<p class="p2"><br></p>
+<p class="p1">async function handleFileSelect(event) {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const file = event.target.files[0];</p>
+<p class="p1"><span class="Apple-converted-space">    </span>if (!file) return;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>const reader = new FileReader();</p>
+<p class="p1"><span class="Apple-converted-space">    </span>reader.onload = function(e) {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>currentBase64 = e.target.result.split(',')[1];</p>
+<p class="p1"><span class="Apple-converted-space">        </span>document.getElementById('image-preview').src = e.target.result;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>document.getElementById('image-preview-container').classList.remove('hidden');</p>
+<p class="p1"><span class="Apple-converted-space">        </span>document.getElementById('upload-prompt').classList.add('hidden');</p>
+<p class="p1"><span class="Apple-converted-space">        </span>identifyDevice();</p>
+<p class="p1"><span class="Apple-converted-space">    </span>};</p>
+<p class="p1"><span class="Apple-converted-space">    </span>reader.readAsDataURL(file);</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">function clearImage() {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>currentBase64 = null;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>document.getElementById('image-preview-container').classList.add('hidden');</p>
+<p class="p1"><span class="Apple-converted-space">    </span>document.getElementById('upload-prompt').classList.remove('hidden');</p>
+<p class="p1"><span class="Apple-converted-space">    </span>document.getElementById('file-input').value = '';</p>
+<p class="p1"><span class="Apple-converted-space">    </span>document.getElementById('id-results-window').innerHTML = `</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="flex flex-col items-center justify-center h-full text-center py-10"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-sm mb-4"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;svg class="w-8 h-8 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/&gt;&lt;/svg&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;p class="text-slate-400 font-medium max-w-xs"&gt;No active scan. Please upload a photo or enter a description to begin identification.&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>`;</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">async function identifyDevice(textPrompt = "Identify this enteral feeding device. Focus on: 1. Brand (e.g. MIC-KEY, Mini-One, or others), 2. Device Type (G vs GJ), 3. Connector (EnFit purple threads vs Legacy cone).") {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const resultsWindow = document.getElementById('id-results-window');</p>
+<p class="p1"><span class="Apple-converted-space">    </span>resultsWindow.innerHTML = `</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="flex flex-col items-center justify-center h-full text-blue-600 font-bold"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mb-4"&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="loading-dots uppercase tracking-widest text-[10px]"&gt;Processing Image Analysis&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>`;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>const systemPrompt = "You are EnteralID, a specialized device recognition agent for clinicians. You distinguish between various button brands (Avanos MIC-KEY, AMT Mini-One, etc.). You identify GJ tubes (double port) vs G tubes (single port) and detect EnFit vs Legacy connectors. Provide a 'Clinical ID Report' using structured headings.";</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>const payload = {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>contents: [{</p>
+<p class="p1"><span class="Apple-converted-space">            </span>parts: [</p>
+<p class="p1"><span class="Apple-converted-space">                </span>{ text: textPrompt },</p>
+<p class="p1"><span class="Apple-converted-space">                </span>...(currentBase64 ? [{ inlineData: { mimeType: "image/png", data: currentBase64 } }] : [])</p>
+<p class="p1"><span class="Apple-converted-space">            </span>]</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}],</p>
+<p class="p1"><span class="Apple-converted-space">        </span>systemInstruction: { parts: [{ text: systemPrompt }] }</p>
+<p class="p1"><span class="Apple-converted-space">    </span>};</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>let delay = 1000;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>for (let i = 0; i &lt; 5; i++) {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>try {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`, {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>method: "POST",</p>
+<p class="p1"><span class="Apple-converted-space">                </span>headers: { "Content-Type": "application/json" },</p>
+<p class="p1"><span class="Apple-converted-space">                </span>body: JSON.stringify(payload)</p>
+<p class="p1"><span class="Apple-converted-space">            </span>});</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>if (!response.ok) throw new Error("API Error");</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const data = await response.json();</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const resultText = data.candidates?.[0]?.content?.parts?.[0]?.text || "No identification possible.";</p>
+<p class="p2"><span class="Apple-converted-space">            </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>displayResults(resultText);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>return;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>} catch (err) {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>if (i === 4) resultsWindow.innerHTML = `&lt;div class="text-red-500 p-4 font-bold text-center"&gt;Analysis Failed. Network error.&lt;/div&gt;`;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>await new Promise(r =&gt; setTimeout(r, delay));</p>
+<p class="p1"><span class="Apple-converted-space">            </span>delay *= 2;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">function sendManualDescription() {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const input = document.getElementById('manual-description');</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const desc = input.value.trim();</p>
+<p class="p1"><span class="Apple-converted-space">    </span>if (!desc) return;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>identifyDevice(`Clinical description provided: ${desc}. Identify brand and type.`);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>input.value = '';</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">function displayResults(text) {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const resultsWindow = document.getElementById('id-results-window');</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const formatted = text</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.replace(/\*\*(.*?)\*\*/g, '&lt;strong class="text-blue-700"&gt;$1&lt;/strong&gt;')</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.replace(/\n/g, '&lt;br&gt;');</p>
+<p class="p2"><span class="Apple-converted-space">    </span></p>
+<p class="p1"><span class="Apple-converted-space">    </span>resultsWindow.innerHTML = `</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="text-slate-700 leading-relaxed text-sm animate-in fade-in slide-in-from-bottom-4 duration-500"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="mb-4 flex items-center justify-between border-b border-blue-50 pb-3"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;span class="status-badge bg-blue-600 text-white shadow-sm"&gt;Analysis Complete&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;span class="text-[9px] font-black text-slate-300 uppercase tracking-widest"&gt;Powered by Gemini AI&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>${formatted}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>`;</p>
+<p class="p1">}</p>
+<p class="p1">&lt;/script&gt;</p>
+<p class="p1">&lt;/body&gt;</p>
+<p class="p1">&lt;/html&gt;</p>
+</body>
+</html>
