@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -44,6 +45,7 @@
     @media (min-width: 800px) {
       .ei-tool-grid { grid-template-columns: 2fr 3fr; }
     }
+
     .ei-input-col {
       padding: 32px;
       background: #f8fafc;
@@ -61,6 +63,7 @@
       display: flex;
       flex-direction: column;
     }
+
     .ei-col-label {
       display: flex;
       align-items: center;
@@ -83,6 +86,7 @@
       font-weight: 800;
       flex-shrink: 0;
     }
+
     .ei-upload-zone {
       display: flex;
       flex-direction: column;
@@ -97,9 +101,23 @@
       margin-bottom: 16px;
     }
     .ei-upload-zone:hover { border-color: #3b82f6; background: #eff6ff; }
-    .ei-upload-icon { font-size: 2.5rem; margin-bottom: 12px; display: block; }
-    .ei-upload-zone__title { font-weight: 800; color: #334155; font-size: 0.95rem; margin-bottom: 4px; }
-    .ei-upload-zone__sub { font-size: 0.75rem; color: #94a3b8; font-style: italic; }
+    .ei-upload-icon {
+      font-size: 2.5rem;
+      margin-bottom: 12px;
+      display: block;
+    }
+    .ei-upload-zone__title {
+      font-weight: 800;
+      color: #334155;
+      font-size: 0.95rem;
+      margin-bottom: 4px;
+    }
+    .ei-upload-zone__sub {
+      font-size: 0.75rem;
+      color: #94a3b8;
+      font-style: italic;
+    }
+
     .ei-divider {
       display: flex;
       align-items: center;
@@ -111,8 +129,16 @@
       text-transform: uppercase;
       letter-spacing: 0.08em;
     }
-    .ei-divider::before, .ei-divider::after { content: ''; flex: 1; border-top: 1px solid #e2e8f0; }
-    .ei-text-row { display: flex; gap: 8px; }
+    .ei-divider::before, .ei-divider::after {
+      content: '';
+      flex: 1;
+      border-top: 1px solid #e2e8f0;
+    }
+
+    .ei-text-row {
+      display: flex;
+      gap: 8px;
+    }
     .ei-text-input {
       flex: 1;
       padding: 12px 14px;
@@ -141,7 +167,11 @@
     }
     .ei-send-btn:hover { background: #1e293b; }
     .ei-send-btn svg { width: 18px; height: 18px; }
-    .ei-preview-wrap { position: relative; margin-bottom: 20px; }
+
+    .ei-preview-wrap {
+      position: relative;
+      margin-bottom: 20px;
+    }
     .ei-preview-wrap.ei-hidden { display: none; }
     .ei-preview-img {
       max-height: 260px;
@@ -171,6 +201,7 @@
     }
     .ei-clear-btn:hover { background: #f1f5f9; }
     .ei-upload-prompt.ei-hidden { display: none; }
+
     .ei-results-win {
       flex: 1;
       min-height: 280px;
@@ -201,7 +232,13 @@
       box-shadow: 0 2px 8px rgba(0,0,0,0.05);
     }
     .ei-empty-icon svg { width: 28px; height: 28px; color: #cbd5e1; }
-    .ei-empty-text { color: #94a3b8; font-weight: 600; font-size: 0.9rem; max-width: 240px; }
+    .ei-empty-text {
+      color: #94a3b8;
+      font-weight: 600;
+      font-size: 0.9rem;
+      max-width: 240px;
+    }
+
     .ei-loading {
       display: flex;
       flex-direction: column;
@@ -220,7 +257,14 @@
       animation: ei-spin 0.8s linear infinite;
     }
     @keyframes ei-spin { to { transform: rotate(360deg); } }
-    .ei-loading-text { font-size: 0.75rem; font-weight: 800; color: #2563eb; text-transform: uppercase; letter-spacing: 0.08em; }
+    .ei-loading-text {
+      font-size: 0.75rem;
+      font-weight: 800;
+      color: #2563eb;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
     .ei-result-header {
       display: flex;
       align-items: center;
@@ -241,96 +285,275 @@
     }
     .ei-badge--complete { background: #2563eb; color: #fff; }
     .ei-badge--error { background: #fef2f2; color: #dc2626; }
-    .ei-powered { font-size: 0.65rem; font-weight: 800; color: #cbd5e1; text-transform: uppercase; letter-spacing: 0.08em; }
-    .ei-result-body { font-size: 0.88rem; color: #334155; line-height: 1.7; }
+    .ei-powered {
+      font-size: 0.65rem;
+      font-weight: 800;
+      color: #cbd5e1;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    .ei-result-body {
+      font-size: 0.88rem;
+      color: #334155;
+      line-height: 1.7;
+    }
     .ei-result-body strong { color: #1d4ed8; }
-    .ei-output-footer { display: flex; align-items: center; gap: 12px; margin-top: 16px; }
-    .ei-avatars { display: flex; }
+
+    .ei-output-footer {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 16px;
+    }
+    .ei-avatars {
+      display: flex;
+    }
     .ei-avatar {
-      width: 28px; height: 28px; border-radius: 50%; border: 2px solid #fff;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 0.6rem; font-weight: 800; color: #fff; margin-right: -8px;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 2px solid #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.6rem;
+      font-weight: 800;
+      color: #fff;
+      margin-right: -8px;
     }
     .ei-avatar--a { background: #3b82f6; }
     .ei-avatar--m { background: #10b981; }
     .ei-avatar--q { background: #e2e8f0; color: #94a3b8; }
-    .ei-xref-text { font-size: 0.65rem; font-weight: 800; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.08em; }
+    .ei-xref-text {
+      font-size: 0.65rem;
+      font-weight: 800;
+      color: #94a3b8;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    /* Section headings */
     .ei-section-head {
-      display: flex; align-items: center; gap: 10px;
-      font-size: 1.3rem; font-weight: 900; color: var(--ink-900, #0f172a); margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 1.3rem;
+      font-weight: 900;
+      color: var(--ink-900, #0f172a);
+      margin-bottom: 24px;
     }
-    .ei-section-head svg { width: 22px; height: 22px; color: #2563eb; flex-shrink: 0; }
+    .ei-section-head svg {
+      width: 22px;
+      height: 22px;
+      color: #2563eb;
+      flex-shrink: 0;
+    }
+
+    /* Reference cards */
     .ei-ref-grid {
-      display: grid; grid-template-columns: 1fr; gap: 24px; margin-bottom: 48px;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 24px;
+      margin-bottom: 48px;
     }
-    @media (min-width: 640px) { .ei-ref-grid { grid-template-columns: 1fr 1fr; } }
+    @media (min-width: 640px) {
+      .ei-ref-grid { grid-template-columns: 1fr 1fr; }
+    }
     .ei-ref-card {
-      background: #fff; border-radius: 16px; border: 1px solid #e2e8f0;
-      padding: 24px; box-shadow: 0 2px 12px rgba(15,23,42,0.04); transition: box-shadow 0.2s;
+      background: #fff;
+      border-radius: 16px;
+      border: 1px solid #e2e8f0;
+      padding: 24px;
+      box-shadow: 0 2px 12px rgba(15, 23, 42, 0.04);
+      transition: box-shadow 0.2s;
     }
-    .ei-ref-card:hover { box-shadow: 0 8px 32px rgba(15,23,42,0.08); }
-    .ei-ref-card__header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 20px; }
+    .ei-ref-card:hover { box-shadow: 0 8px 32px rgba(15, 23, 42, 0.08); }
+    .ei-ref-card__header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
     .ei-ref-card__title { font-size: 1.1rem; font-weight: 900; color: #0f172a; margin-bottom: 4px; }
     .ei-ref-card__brand { font-size: 0.7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; }
     .ei-ref-card__brand--blue { color: #2563eb; }
     .ei-ref-card__brand--green { color: #059669; }
     .ei-ref-card__icon {
-      width: 44px; height: 44px; border-radius: 12px;
-      display: flex; align-items: center; justify-content: center;
-      font-weight: 900; font-size: 1rem; flex-shrink: 0;
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 1rem;
+      flex-shrink: 0;
     }
     .ei-ref-card__icon--blue { background: #eff6ff; color: #2563eb; }
     .ei-ref-card__icon--green { background: #ecfdf5; color: #059669; }
-    .ei-ref-trait { display: flex; align-items: center; gap: 10px; font-size: 0.85rem; color: #475569; margin-bottom: 10px; }
-    .ei-ref-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .ei-ref-trait {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.85rem;
+      color: #475569;
+      margin-bottom: 10px;
+    }
+    .ei-ref-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
     .ei-ref-dot--blue { background: #3b82f6; }
     .ei-ref-dot--green { background: #10b981; }
-    .ei-ref-note { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 14px; margin-top: 16px; }
+    .ei-ref-note {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 14px;
+      margin-top: 16px;
+    }
     .ei-ref-note__badge {
-      display: inline-flex; padding: 2px 10px; border-radius: 999px;
-      font-size: 0.65rem; font-weight: 800; text-transform: uppercase;
-      letter-spacing: 0.05em; margin-bottom: 8px;
+      display: inline-flex;
+      padding: 2px 10px;
+      border-radius: 999px;
+      font-size: 0.65rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 8px;
     }
     .ei-ref-note__badge--blue { background: #dbeafe; color: #1d4ed8; }
     .ei-ref-note__badge--green { background: #d1fae5; color: #065f46; }
     .ei-ref-note__text { font-size: 0.75rem; color: #64748b; line-height: 1.5; }
+
+    /* Stats grid */
     .ei-stats-grid {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 48px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 48px;
     }
-    @media (min-width: 640px) { .ei-stats-grid { grid-template-columns: repeat(4, 1fr); } }
+    @media (min-width: 640px) {
+      .ei-stats-grid { grid-template-columns: repeat(4, 1fr); }
+    }
     .ei-stat-card {
-      background: #fff; border-radius: 16px; border: 1px solid #e2e8f0;
-      padding: 20px; text-align: center; box-shadow: 0 2px 12px rgba(15,23,42,0.04);
+      background: #fff;
+      border-radius: 16px;
+      border: 1px solid #e2e8f0;
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 2px 12px rgba(15, 23, 42, 0.04);
     }
-    .ei-stat-label { font-size: 0.65rem; font-weight: 800; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px; }
-    .ei-stat-value { font-size: 1.75rem; font-weight: 900; margin-bottom: 4px; line-height: 1; }
+    .ei-stat-label {
+      font-size: 0.65rem;
+      font-weight: 800;
+      color: #94a3b8;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 8px;
+    }
+    .ei-stat-value {
+      font-size: 1.75rem;
+      font-weight: 900;
+      margin-bottom: 4px;
+      line-height: 1;
+    }
     .ei-stat-value--default { color: #0f172a; }
     .ei-stat-value--blue { color: #2563eb; }
     .ei-stat-value--rose { color: #e11d48; }
     .ei-stat-sub { font-size: 0.75rem; color: #64748b; }
+
+    /* Clinical eyebrow */
     .ei-eyebrow {
-      display: inline-block; background: #eff6ff; color: #1d4ed8;
-      font-size: 0.7rem; font-weight: 900; text-transform: uppercase;
-      letter-spacing: 0.1em; padding: 4px 12px; border-radius: 999px; margin-bottom: 16px;
+      display: inline-block;
+      background: #eff6ff;
+      color: #1d4ed8;
+      font-size: 0.7rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      padding: 4px 12px;
+      border-radius: 999px;
+      margin-bottom: 16px;
     }
+
+    /* Analysis history panel */
     .ei-history-panel {
-      background: #fff; border: 1px solid #e2e8f0; border-radius: 16px;
-      padding: 20px 24px; margin-bottom: 48px;
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 16px;
+      padding: 20px 24px;
+      margin-bottom: 48px;
     }
-    .ei-history-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
-    .ei-history-heading { display: flex; align-items: center; gap: 8px; font-size: 1rem; font-weight: 800; color: #0f172a; margin: 0; }
+    .ei-history-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+    .ei-history-heading {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 1rem;
+      font-weight: 800;
+      color: #0f172a;
+      margin: 0;
+    }
     .ei-history-heading svg { width: 18px; height: 18px; color: #64748b; }
-    .ei-history-clear { font-size: 0.75rem; font-weight: 700; color: #94a3b8; background: none; border: none; cursor: pointer; font-family: inherit; padding: 4px 8px; border-radius: 6px; }
+    .ei-history-clear {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #94a3b8;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-family: inherit;
+      padding: 4px 8px;
+      border-radius: 6px;
+    }
     .ei-history-clear:hover { background: #f1f5f9; color: #64748b; }
     .ei-history-list { display: flex; flex-direction: column; gap: 8px; }
     .ei-history-item {
-      width: 100%; text-align: left; background: #f8fafc; border: 1px solid #e2e8f0;
-      border-radius: 10px; padding: 12px 16px; cursor: pointer; font-family: inherit; transition: background 0.15s;
+      width: 100%;
+      text-align: left;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 12px 16px;
+      cursor: pointer;
+      font-family: inherit;
+      transition: background 0.15s;
     }
     .ei-history-item:hover { background: #eff6ff; border-color: #bfdbfe; }
-    .ei-history-item__meta { display: block; font-size: 0.7rem; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
-    .ei-history-item__snippet { display: block; font-size: 0.82rem; color: #475569; font-weight: 500; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
-    .ei-compress-note { font-size: 0.7rem; color: #94a3b8; text-align: center; margin-top: 8px; }
+    .ei-history-item__meta {
+      display: block;
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: #94a3b8;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 4px;
+    }
+    .ei-history-item__snippet {
+      display: block;
+      font-size: 0.82rem;
+      color: #475569;
+      font-weight: 500;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    /* Image compression indicator */
+    .ei-compress-note {
+      font-size: 0.7rem;
+      color: #94a3b8;
+      text-align: center;
+      margin-top: 8px;
+    }
   </style>
 </head>
 <body>
@@ -379,7 +602,7 @@
               <!-- Image preview -->
               <div class="ei-preview-wrap ei-hidden" id="imagePreviewWrap">
                 <img id="imagePreview" src="" alt="Selected device photo" class="ei-preview-img" />
-                <button type="button" class="ei-clear-btn" onclick="clearImage()" aria-label="Remove image">&times;</button>
+                <button type="button" class="ei-clear-btn" onclick="clearImage()" aria-label="Remove image">×</button>
               </div>
 
               <!-- Upload prompt -->
@@ -390,7 +613,7 @@
                   <span class="ei-upload-zone__sub">Best for button tops &amp; connectors</span>
                   <input type="file" id="fileInput" accept="image/*" capture="environment" class="visually-hidden" onchange="handleFileSelect(event)" />
                 </label>
-                <p class="ei-compress-note">Images are automatically resized to &le;1024 px before upload</p>
+                <p class="ei-compress-note">Images are automatically resized to ≤1024 px before upload</p>
 
                 <div class="ei-divider" aria-hidden="true">or</div>
 
@@ -413,7 +636,7 @@
               </div>
 
               <div class="ei-results-win" id="resultsWindow" role="region" aria-live="polite" aria-label="Analysis results">
-                <div class="ei-empty-state">
+                <div class="ei-empty-state" id="emptyState">
                   <div class="ei-empty-icon">
                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
@@ -467,13 +690,22 @@
                 <div class="ei-ref-card__icon ei-ref-card__icon--blue">C</div>
               </div>
               <div>
-                <div class="ei-ref-trait"><span class="ei-ref-dot ei-ref-dot--blue"></span><span><strong>Button Shape:</strong> Circular footprint</span></div>
-                <div class="ei-ref-trait"><span class="ei-ref-dot ei-ref-dot--blue"></span><span><strong>Lock Style:</strong> Keyhole / Secur-Lok type</span></div>
-                <div class="ei-ref-trait"><span class="ei-ref-dot ei-ref-dot--blue"></span><span><strong>Extension:</strong> Rigid, clear collar</span></div>
+                <div class="ei-ref-trait">
+                  <span class="ei-ref-dot ei-ref-dot--blue"></span>
+                  <span><strong>Button Shape:</strong> Circular footprint</span>
+                </div>
+                <div class="ei-ref-trait">
+                  <span class="ei-ref-dot ei-ref-dot--blue"></span>
+                  <span><strong>Lock Style:</strong> Keyhole / Secur-Lok type</span>
+                </div>
+                <div class="ei-ref-trait">
+                  <span class="ei-ref-dot ei-ref-dot--blue"></span>
+                  <span><strong>Extension:</strong> Rigid, clear collar</span>
+                </div>
               </div>
               <div class="ei-ref-note">
                 <span class="ei-ref-note__badge ei-ref-note__badge--blue">GJ Variant Note</span>
-                <p class="ei-ref-note__text">Check for explicit &ldquo;G&rdquo; and &ldquo;J&rdquo; markings etched next to the respective ports on multi-destination devices.</p>
+                <p class="ei-ref-note__text">Check for explicit "G" and "J" markings etched next to the respective ports on multi-destination devices.</p>
               </div>
             </div>
 
@@ -486,9 +718,18 @@
                 <div class="ei-ref-card__icon ei-ref-card__icon--green">O</div>
               </div>
               <div>
-                <div class="ei-ref-trait"><span class="ei-ref-dot ei-ref-dot--green"></span><span><strong>Button Shape:</strong> Oval / &ldquo;Apple&rdquo; profile</span></div>
-                <div class="ei-ref-trait"><span class="ei-ref-dot ei-ref-dot--green"></span><span><strong>Lock Style:</strong> Pull-and-twist type</span></div>
-                <div class="ei-ref-trait"><span class="ei-ref-dot ei-ref-dot--green"></span><span><strong>Extension:</strong> Flexible collar, often shorter</span></div>
+                <div class="ei-ref-trait">
+                  <span class="ei-ref-dot ei-ref-dot--green"></span>
+                  <span><strong>Button Shape:</strong> Oval / "Apple" profile</span>
+                </div>
+                <div class="ei-ref-trait">
+                  <span class="ei-ref-dot ei-ref-dot--green"></span>
+                  <span><strong>Lock Style:</strong> Pull-and-twist type</span>
+                </div>
+                <div class="ei-ref-trait">
+                  <span class="ei-ref-dot ei-ref-dot--green"></span>
+                  <span><strong>Extension:</strong> Flexible collar, often shorter</span>
+                </div>
               </div>
               <div class="ei-ref-note">
                 <span class="ei-ref-note__badge ei-ref-note__badge--green">Glow Feature</span>
@@ -505,9 +746,18 @@
                 <div class="ei-ref-card__icon" style="background:#fffbeb;color:#d97706">B</div>
               </div>
               <div>
-                <div class="ei-ref-trait"><span class="ei-ref-dot" style="background:#f59e0b"></span><span><strong>Profile:</strong> Low dome above skin, no external tab mechanism</span></div>
-                <div class="ei-ref-trait"><span class="ei-ref-dot" style="background:#f59e0b"></span><span><strong>Retention:</strong> Internal water-filled balloon (3&ndash;5 mL)</span></div>
-                <div class="ei-ref-trait"><span class="ei-ref-dot" style="background:#f59e0b"></span><span><strong>Fill Port:</strong> Small secondary port visible on the base flange</span></div>
+                <div class="ei-ref-trait">
+                  <span class="ei-ref-dot" style="background:#f59e0b"></span>
+                  <span><strong>Profile:</strong> Low dome above skin, no external tab mechanism</span>
+                </div>
+                <div class="ei-ref-trait">
+                  <span class="ei-ref-dot" style="background:#f59e0b"></span>
+                  <span><strong>Retention:</strong> Internal water-filled balloon (3–5 mL)</span>
+                </div>
+                <div class="ei-ref-trait">
+                  <span class="ei-ref-dot" style="background:#f59e0b"></span>
+                  <span><strong>Fill Port:</strong> Small secondary port visible on the base flange</span>
+                </div>
               </div>
               <div class="ei-ref-note">
                 <span class="ei-ref-note__badge" style="background:#fef3c7;color:#92400e">Replacement Check</span>
@@ -521,25 +771,43 @@
                   <div class="ei-ref-card__title">EnFit vs Legacy Connector</div>
                   <div class="ei-ref-card__brand" style="color:#0891b2">ISO 80369-3 Standard</div>
                 </div>
-                <div class="ei-ref-card__icon" style="background:#ecfeff;color:#0891b2">&asymp;</div>
+                <div class="ei-ref-card__icon" style="background:#ecfeff;color:#0891b2">≈</div>
               </div>
               <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
                 <div>
                   <p style="font-size:0.78rem;font-weight:800;color:#0891b2;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px">EnFit (Current Standard)</p>
-                  <div class="ei-ref-trait"><span class="ei-ref-dot" style="background:#0891b2"></span><span>Purple or teal ribbed external threads</span></div>
-                  <div class="ei-ref-trait"><span class="ei-ref-dot" style="background:#0891b2"></span><span>8 mm diameter, asymmetric thread pitch</span></div>
-                  <div class="ei-ref-trait"><span class="ei-ref-dot" style="background:#0891b2"></span><span>Physically incompatible with IV Luer-lock</span></div>
+                  <div class="ei-ref-trait">
+                    <span class="ei-ref-dot" style="background:#0891b2"></span>
+                    <span>Purple or teal ribbed external threads</span>
+                  </div>
+                  <div class="ei-ref-trait">
+                    <span class="ei-ref-dot" style="background:#0891b2"></span>
+                    <span>8 mm diameter, asymmetric thread pitch</span>
+                  </div>
+                  <div class="ei-ref-trait">
+                    <span class="ei-ref-dot" style="background:#0891b2"></span>
+                    <span>Physically incompatible with IV Luer-lock</span>
+                  </div>
                 </div>
                 <div>
                   <p style="font-size:0.78rem;font-weight:800;color:#64748b;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px">Legacy (Being Phased Out)</p>
-                  <div class="ei-ref-trait"><span class="ei-ref-dot" style="background:#94a3b8"></span><span>Smooth cone tip, clear or white plastic</span></div>
-                  <div class="ei-ref-trait"><span class="ei-ref-dot" style="background:#94a3b8"></span><span>Luer-lock compatible (the hazard it creates)</span></div>
-                  <div class="ei-ref-trait"><span class="ei-ref-dot" style="background:#94a3b8"></span><span>Requires adapter to use with EnFit tubing</span></div>
+                  <div class="ei-ref-trait">
+                    <span class="ei-ref-dot" style="background:#94a3b8"></span>
+                    <span>Smooth cone tip, clear or white plastic</span>
+                  </div>
+                  <div class="ei-ref-trait">
+                    <span class="ei-ref-dot" style="background:#94a3b8"></span>
+                    <span>Luer-lock compatible (the hazard it creates)</span>
+                  </div>
+                  <div class="ei-ref-trait">
+                    <span class="ei-ref-dot" style="background:#94a3b8"></span>
+                    <span>Requires adapter to use with EnFit tubing</span>
+                  </div>
                 </div>
               </div>
               <div class="ei-ref-note" style="margin-top:16px">
                 <span class="ei-ref-note__badge" style="background:#ecfeff;color:#155e75">Safety Note</span>
-                <p class="ei-ref-note__text">EnFit was specifically designed to prevent wrong-route errors &mdash; an IV syringe cannot physically connect to an EnFit port. If legacy connectors are still in use, alert the care team to initiate transition per facility protocol.</p>
+                <p class="ei-ref-note__text">EnFit was specifically designed to prevent wrong-route errors — an IV syringe cannot physically connect to an EnFit port. If legacy connectors are still in use, alert the care team to initiate transition per facility protocol.</p>
               </div>
             </div>
           </div>
@@ -549,10 +817,26 @@
         <section aria-labelledby="stats-heading">
           <h2 id="stats-heading" class="visually-hidden">Market Statistics</h2>
           <div class="ei-stats-grid">
-            <div class="ei-stat-card"><div class="ei-stat-label">Market Prevalence</div><div class="ei-stat-value ei-stat-value--default">92%</div><div class="ei-stat-sub">Low-profile preferred</div></div>
-            <div class="ei-stat-card"><div class="ei-stat-label">EnFit Saturation</div><div class="ei-stat-value ei-stat-value--blue">98%</div><div class="ei-stat-sub">ISO 80369-3 adoption</div></div>
-            <div class="ei-stat-card"><div class="ei-stat-label">ID Accuracy</div><div class="ei-stat-value ei-stat-value--default">99.2%</div><div class="ei-stat-sub">Visual verification rate</div></div>
-            <div class="ei-stat-card"><div class="ei-stat-label">G vs GJ Composition</div><div class="ei-stat-value ei-stat-value--rose">85:15</div><div class="ei-stat-sub">Standard to jejunal</div></div>
+            <div class="ei-stat-card">
+              <div class="ei-stat-label">Market Prevalence</div>
+              <div class="ei-stat-value ei-stat-value--default">92%</div>
+              <div class="ei-stat-sub">Low-profile preferred</div>
+            </div>
+            <div class="ei-stat-card">
+              <div class="ei-stat-label">EnFit Saturation</div>
+              <div class="ei-stat-value ei-stat-value--blue">98%</div>
+              <div class="ei-stat-sub">ISO 80369-3 adoption</div>
+            </div>
+            <div class="ei-stat-card">
+              <div class="ei-stat-label">ID Accuracy</div>
+              <div class="ei-stat-value ei-stat-value--default">99.2%</div>
+              <div class="ei-stat-sub">Visual verification rate</div>
+            </div>
+            <div class="ei-stat-card">
+              <div class="ei-stat-label">G vs GJ Composition</div>
+              <div class="ei-stat-value ei-stat-value--rose">85:15</div>
+              <div class="ei-stat-sub">Standard to jejunal</div>
+            </div>
           </div>
         </section>
 
@@ -565,9 +849,9 @@
           </div>
           <div class="disclaimer-content" id="enteral-disclaimer-panel" hidden>
             <p>EnteralID is designed for professional identification support only. It is not a replacement for surgical consultation or specialized clinical judgment.</p>
-            <p>Always verify all hardware types manually before use. AI identification may be incorrect &mdash; cross-reference findings with physical inspection and clinical documentation.</p>
+            <p>Always verify all hardware types manually before use. AI identification may be incorrect — cross-reference findings with physical inspection and clinical documentation.</p>
             <p class="disclaimer-seek-care"><strong>If in doubt:</strong> Contact the prescribing clinician or device manufacturer directly before proceeding.</p>
-            <a class="disclaimer-link" href="/legal/disclaimer">Read the full disclaimer &rarr;</a>
+            <a class="disclaimer-link" href="/legal/disclaimer">Read the full disclaimer →</a>
             <button type="button" class="disclaimer-close" aria-label="Close disclaimer">Close</button>
           </div>
         </section>
@@ -617,11 +901,16 @@
 
   <script src="global.js" defer></script>
   <script>
+    /* ── EnteralID logic ──────────────────────────────────── */
+
     const GEMINI_MODEL = 'gemini-2.0-flash';
     const HISTORY_KEY  = 'enteralIdHistory';
     const MAX_HISTORY  = 5;
+
     let currentBase64   = null;
     let currentMimeType = 'image/jpeg';
+
+    /* ── Image compression (canvas resize ≤1024 px) ─────── */
 
     function compressImage(file, maxDim = 1024, quality = 0.85) {
       return new Promise(resolve => {
@@ -651,16 +940,21 @@
     async function handleFileSelect(event) {
       const file = event.target.files[0];
       if (!file) return;
+
+      // Show preview immediately from the original file
       const previewUrl = URL.createObjectURL(file);
       document.getElementById('imagePreview').src = previewUrl;
       document.getElementById('imagePreviewWrap').classList.remove('ei-hidden');
       document.getElementById('uploadPrompt').classList.add('ei-hidden');
+
+      // Compress before sending
       const compressed = await compressImage(file);
       URL.revokeObjectURL(previewUrl);
       if (compressed) {
-        currentBase64 = compressed.base64;
+        currentBase64   = compressed.base64;
         currentMimeType = compressed.mimeType;
       } else {
+        // Fall back to raw FileReader if canvas fails
         currentMimeType = file.type || 'image/jpeg';
         await new Promise(res => {
           const r = new FileReader();
@@ -679,27 +973,34 @@
       showEmptyState();
     }
 
-    function renderInResults(fn) {
-      const win = document.getElementById('resultsWindow');
-      win.innerHTML = '';
-      fn(win);
-    }
+    /* ── Results window states ──────────────────────────── */
 
     function showEmptyState() {
       renderInResults(win => {
         const s = document.createElement('div');
         s.className = 'ei-empty-state';
-        s.innerHTML = '<div class="ei-empty-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg></div><p class="ei-empty-text">No active scan. Upload a photo or enter a description to begin identification.</p>';
+        s.innerHTML = `
+          <div class="ei-empty-icon">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+            </svg>
+          </div>
+          <p class="ei-empty-text">No active scan. Upload a photo or enter a description to begin identification.</p>`;
         win.appendChild(s);
       });
     }
 
     function showLoading() {
       renderInResults(win => {
-        const d = document.createElement('div'); d.className = 'ei-loading';
-        const sp = document.createElement('div'); sp.className = 'ei-spinner';
-        sp.setAttribute('role','status'); sp.setAttribute('aria-label','Analyzing…');
-        const lb = document.createElement('div'); lb.className = 'ei-loading-text';
+        const d = document.createElement('div');
+        d.className = 'ei-loading';
+        const sp = document.createElement('div');
+        sp.className = 'ei-spinner';
+        sp.setAttribute('role', 'status');
+        sp.setAttribute('aria-label', 'Analyzing…');
+        const lb = document.createElement('div');
+        lb.className = 'ei-loading-text';
         lb.textContent = 'Processing Analysis…';
         d.appendChild(sp); d.appendChild(lb); win.appendChild(d);
       });
@@ -707,27 +1008,48 @@
 
     function showError(message) {
       renderInResults(win => {
-        const h = document.createElement('div'); h.className = 'ei-result-header';
-        const b = document.createElement('span'); b.className = 'ei-badge ei-badge--error';
-        b.textContent = 'Analysis Failed'; h.appendChild(b);
-        const body = document.createElement('div'); body.className = 'ei-result-body';
+        const h = document.createElement('div');
+        h.className = 'ei-result-header';
+        const b = document.createElement('span');
+        b.className = 'ei-badge ei-badge--error';
+        b.textContent = 'Analysis Failed';
+        h.appendChild(b);
+        const body = document.createElement('div');
+        body.className = 'ei-result-body';
         body.textContent = message;
         win.appendChild(h); win.appendChild(body);
       });
     }
 
+    function renderInResults(fn) {
+      const win = document.getElementById('resultsWindow');
+      win.innerHTML = '';
+      fn(win);
+    }
+
+    /* ── Render analysis result (XSS-safe) ─────────────── */
+
     function buildResultDOM(text) {
       const wrapper = document.createElement('div');
-      const header = document.createElement('div'); header.className = 'ei-result-header';
-      const badge = document.createElement('span'); badge.className = 'ei-badge ei-badge--complete';
+      const header = document.createElement('div');
+      header.className = 'ei-result-header';
+      const badge = document.createElement('span');
+      badge.className = 'ei-badge ei-badge--complete';
       badge.textContent = 'Analysis Complete';
-      const powered = document.createElement('span'); powered.className = 'ei-powered';
+      const powered = document.createElement('span');
+      powered.className = 'ei-powered';
       powered.textContent = 'Powered by Gemini AI';
-      header.appendChild(badge); header.appendChild(powered); wrapper.appendChild(header);
-      const body = document.createElement('div'); body.className = 'ei-result-body';
+      header.appendChild(badge); header.appendChild(powered);
+      wrapper.appendChild(header);
+
+      const body = document.createElement('div');
+      body.className = 'ei-result-body';
+      // Parse **bold** markers without innerHTML
       text.split(/(\*\*[^*]+\*\*)/g).forEach(seg => {
         if (seg.startsWith('**') && seg.endsWith('**')) {
-          const s = document.createElement('strong'); s.textContent = seg.slice(2,-2); body.appendChild(s);
+          const s = document.createElement('strong');
+          s.textContent = seg.slice(2, -2);
+          body.appendChild(s);
         } else {
           seg.split('\n').forEach((line, i, arr) => {
             body.appendChild(document.createTextNode(line));
@@ -742,6 +1064,8 @@
     function displayResults(text) {
       renderInResults(win => win.appendChild(buildResultDOM(text)));
     }
+
+    /* ── Analysis history (sessionStorage) ─────────────── */
 
     function getHistory() {
       try { return JSON.parse(sessionStorage.getItem(HISTORY_KEY) || '[]'); }
@@ -766,15 +1090,19 @@
       const list  = document.getElementById('historyList');
       panel.style.display = history.length ? '' : 'none';
       list.innerHTML = '';
-      history.forEach(entry => {
-        const mins = Math.round((Date.now() - entry.ts) / 60000);
-        const age = mins < 1 ? 'Just now' : mins < 60 ? mins + ' min ago' : Math.round(mins/60) + ' hr ago';
-        const snippet = entry.text.replace(/\*\*/g,'').replace(/\n/g,' ').slice(0,80);
+
+      history.forEach((entry, idx) => {
+        const age = formatAge(entry.ts);
+        const snippet = entry.text.replace(/\*\*/g, '').replace(/\n/g, ' ').slice(0, 80);
         const btn = document.createElement('button');
-        btn.className = 'ei-history-item'; btn.setAttribute('role','listitem'); btn.type = 'button';
-        const meta = document.createElement('span'); meta.className = 'ei-history-item__meta';
-        meta.textContent = age + ' · ' + (entry.hasImage ? 'Photo' : 'Text description');
-        const snip = document.createElement('span'); snip.className = 'ei-history-item__snippet';
+        btn.className = 'ei-history-item';
+        btn.setAttribute('role', 'listitem');
+        btn.type = 'button';
+        const meta = document.createElement('span');
+        meta.className = 'ei-history-item__meta';
+        meta.textContent = `${age} · ${entry.hasImage ? 'Photo' : 'Text description'}`;
+        const snip = document.createElement('span');
+        snip.className = 'ei-history-item__snippet';
         snip.textContent = snippet + (entry.text.length > 80 ? '…' : '');
         btn.appendChild(meta); btn.appendChild(snip);
         btn.addEventListener('click', () => {
@@ -785,6 +1113,15 @@
       });
     }
 
+    function formatAge(ts) {
+      const mins = Math.round((Date.now() - ts) / 60000);
+      if (mins < 1)  return 'Just now';
+      if (mins < 60) return `${mins} min ago`;
+      return `${Math.round(mins / 60)} hr ago`;
+    }
+
+    /* ── Gemini API caller (server proxy) ──────────────── */
+
     async function callGeminiApi(payload) {
       return fetch('/api/gemini', {
         method: 'POST',
@@ -793,32 +1130,58 @@
       });
     }
 
+    /* ── Main identification flow ───────────────────────── */
+
     async function identifyDevice(textPrompt) {
       if (!textPrompt) {
         textPrompt = 'Identify this enteral feeding device. Focus on: 1. Brand (e.g. MIC-KEY, Mini-One, or others), 2. Device Type (G vs GJ), 3. Connector (EnFit purple threads vs Legacy cone).';
       }
+
       showLoading();
+
       const systemPrompt = 'You are EnteralID, a specialized device recognition agent for clinicians. You distinguish between various button brands (Avanos MIC-KEY, AMT Mini-One, Balloon-top devices, etc.). You identify GJ tubes (double port) vs G tubes (single port) and detect EnFit (purple ribbed threads) vs Legacy connectors. Provide a structured "Clinical ID Report" using clear headings.';
+
       const parts = [{ text: textPrompt }];
-      if (currentBase64) parts.push({ inlineData: { mimeType: currentMimeType, data: currentBase64 } });
+      if (currentBase64) {
+        parts.push({ inlineData: { mimeType: currentMimeType, data: currentBase64 } });
+      }
       const payload = { contents: [{ parts }], systemInstruction: { parts: [{ text: systemPrompt }] } };
+
+      let lastErr = '';
       let delay = 1000;
-      for (let i = 0; i < 5; i++) {
+      for (let i = 0; i < 3; i++) {
         try {
           const response = await callGeminiApi(payload);
+
           if (!response.ok) {
-            const errData = await response.json().catch(() => ({}));
-            const msg = errData?.error?.message || 'HTTP ' + response.status;
-            if (response.status === 503) { showError('Service temporarily unavailable. Please try again later.'); return; }
-            throw new Error(msg);
+            const rawText = await response.text().catch(() => '');
+            let errMsg = '';
+            try { errMsg = JSON.parse(rawText)?.error?.message || ''; } catch {}
+            lastErr = errMsg || `HTTP ${response.status}`;
+
+            if (response.status === 503) {
+              showError('Service temporarily unavailable — the server-side API key may not be configured. Check Cloudflare Pages → Settings → Environment variables for GEMINI_API_KEY.');
+              return;
+            }
+            if (response.status === 404) {
+              showError('API route not found (HTTP 404). The Cloudflare Pages Function may not be deployed yet. Check the Functions tab in your CF Pages dashboard.');
+              return;
+            }
+            throw new Error(lastErr);
           }
+
           const data = await response.json();
           const resultText = data.candidates?.[0]?.content?.parts?.[0]?.text || 'No identification possible.';
           displayResults(resultText);
           saveToHistory(resultText, !!currentBase64);
           return;
+
         } catch (err) {
-          if (i === 4) { showError('Analysis failed after multiple attempts. Please check your connection and try again.'); return; }
+          lastErr = err.message || lastErr;
+          if (i === 2) {
+            showError(`Analysis failed: ${lastErr}`);
+            return;
+          }
           await new Promise(r => setTimeout(r, delay));
           delay *= 2;
         }
@@ -830,8 +1193,10 @@
       const desc = input.value.trim();
       if (!desc) return;
       input.value = '';
-      identifyDevice('Clinical description provided: ' + desc + '. Identify brand and type.');
+      identifyDevice(`Clinical description provided: ${desc}. Identify brand and type.`);
     }
+
+    /* ── Boot ───────────────────────────────────────────── */
 
     document.addEventListener('DOMContentLoaded', function() {
       renderHistory();
@@ -840,5 +1205,7 @@
       });
     });
   </script>
+
+
 </body>
 </html>
