@@ -1147,19 +1147,27 @@
       }
       const payload = { contents: [{ parts }], systemInstruction: { parts: [{ text: systemPrompt }] } };
 
+      let lastErr = '';
       let delay = 1000;
-      for (let i = 0; i < 5; i++) {
+      for (let i = 0; i < 3; i++) {
         try {
           const response = await callGeminiApi(payload);
 
           if (!response.ok) {
-            const errData = await response.json().catch(() => ({}));
-            const msg = errData?.error?.message || `HTTP ${response.status}`;
+            const rawText = await response.text().catch(() => '');
+            let errMsg = '';
+            try { errMsg = JSON.parse(rawText)?.error?.message || ''; } catch {}
+            lastErr = errMsg || `HTTP ${response.status}`;
+
             if (response.status === 503) {
-              showError('Service temporarily unavailable. Please try again later.');
+              showError('Service temporarily unavailable — the server-side API key may not be configured. Check Cloudflare Pages → Settings → Environment variables for GEMINI_API_KEY.');
               return;
             }
-            throw new Error(msg);
+            if (response.status === 404) {
+              showError('API route not found (HTTP 404). The Cloudflare Pages Function may not be deployed yet. Check the Functions tab in your CF Pages dashboard.');
+              return;
+            }
+            throw new Error(lastErr);
           }
 
           const data = await response.json();
@@ -1169,8 +1177,9 @@
           return;
 
         } catch (err) {
-          if (i === 4) {
-            showError('Analysis failed after multiple attempts. Please check your connection and try again.');
+          lastErr = err.message || lastErr;
+          if (i === 2) {
+            showError(`Analysis failed: ${lastErr}`);
             return;
           }
           await new Promise(r => setTimeout(r, delay));
