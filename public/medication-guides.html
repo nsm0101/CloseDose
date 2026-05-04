@@ -48,6 +48,15 @@
           <p>Quick-reference product galleries for acetaminophen and ibuprofen, organized by concentration so you always grab the right bottle.</p>
         </section>
 
+        <!-- Shopping Mode toolbar -->
+        <div class="shopping-toolbar" role="region" aria-label="Shopping mode">
+          <p class="shopping-toolbar__hint">Turn on <strong>Shopping Mode</strong> to tap any product and jump to retailer search results — pick the right bottle without leaving home.</p>
+          <button id="shoppingToggle" class="shopping-toggle" type="button" role="switch" aria-checked="false" aria-label="Toggle Shopping Mode">
+            <span class="shopping-toggle__switch" aria-hidden="true"></span>
+            <span class="shopping-toggle__label">Shopping Mode</span>
+          </button>
+        </div>
+
         <!-- ══════════════════════════════════════
              ACETAMINOPHEN GUIDE
         ══════════════════════════════════════ -->
@@ -170,20 +179,37 @@
           <div class="product-section">
             <p class="product-section__label">Other formulations</p>
             <div class="formulation-grid">
-              <div class="formulation-card">
-                <div class="formulation-card__emoji">🍓</div>
+              <div class="formulation-card" data-product="Children's Acetaminophen Meltaways 160 mg">
+                <div class="formulation-card__media">
+                  <img src="images/Formulations/ace-meltaways.png" alt="Children's acetaminophen meltaway tablets 160 mg" loading="lazy" onerror="this.remove()" />
+                  <div class="formulation-card__emoji" aria-hidden="true">🍓</div>
+                </div>
                 <p class="formulation-card__name">Meltaways</p>
                 <p class="formulation-card__dose">160 mg each · orally disintegrating</p>
               </div>
-              <div class="formulation-card">
-                <div class="formulation-card__emoji">🍬</div>
+              <div class="formulation-card" data-product="Children's Acetaminophen Chewable Tablets 160 mg">
+                <div class="formulation-card__media">
+                  <img src="images/Formulations/ace-chewables.png" alt="Children's acetaminophen chewable tablets 160 mg" loading="lazy" onerror="this.remove()" />
+                  <div class="formulation-card__emoji" aria-hidden="true">🍬</div>
+                </div>
                 <p class="formulation-card__name">Chewable Tablets</p>
                 <p class="formulation-card__dose">160 mg each</p>
               </div>
-              <div class="formulation-card">
-                <div class="formulation-card__emoji">🌙</div>
+              <div class="formulation-card" data-product="Acetaminophen Suppositories Children">
+                <div class="formulation-card__media">
+                  <img src="images/Formulations/ace-suppositories.png" alt="Children's acetaminophen suppositories" loading="lazy" onerror="this.remove()" />
+                  <div class="formulation-card__emoji" aria-hidden="true">🌙</div>
+                </div>
                 <p class="formulation-card__name">Suppositories</p>
                 <p class="formulation-card__dose">80–160 mg · check label carefully</p>
+              </div>
+              <div class="formulation-card" data-product="Children's Acetaminophen Dissolvable Powder Packets">
+                <div class="formulation-card__media">
+                  <img src="images/Formulations/ace-powder.png" alt="Children's acetaminophen dissolvable powder packets" loading="lazy" onerror="this.remove()" />
+                  <div class="formulation-card__emoji" aria-hidden="true">✨</div>
+                </div>
+                <p class="formulation-card__name">Dissolvable Powder</p>
+                <p class="formulation-card__dose">160 mg per packet · mix with liquid</p>
               </div>
             </div>
           </div>
@@ -401,20 +427,37 @@
           <div class="product-section">
             <p class="product-section__label">Other formulations · older children &amp; adolescents</p>
             <div class="formulation-grid">
-              <div class="formulation-card">
-                <div class="formulation-card__emoji">🍊</div>
+              <div class="formulation-card" data-product="Children's Ibuprofen Chewable Tablets 100 mg">
+                <div class="formulation-card__media">
+                  <img src="images/Formulations/ibu-chewables.png" alt="Children's ibuprofen chewable tablets 100 mg" loading="lazy" onerror="this.remove()" />
+                  <div class="formulation-card__emoji" aria-hidden="true">🍊</div>
+                </div>
                 <p class="formulation-card__name">Children's Chewables</p>
                 <p class="formulation-card__dose">100 mg each · ages 2–11</p>
               </div>
-              <div class="formulation-card">
-                <div class="formulation-card__emoji">⭐</div>
+              <div class="formulation-card" data-product="Junior Strength Ibuprofen Tablets 100 mg">
+                <div class="formulation-card__media">
+                  <img src="images/Formulations/ibu-junior.png" alt="Junior strength ibuprofen tablets 100 mg" loading="lazy" onerror="this.remove()" />
+                  <div class="formulation-card__emoji" aria-hidden="true">⭐</div>
+                </div>
                 <p class="formulation-card__name">Junior Strength Tablets</p>
                 <p class="formulation-card__dose">100 mg each · ages 6–11</p>
               </div>
-              <div class="formulation-card">
-                <div class="formulation-card__emoji">💊</div>
+              <div class="formulation-card" data-product="Ibuprofen Tablets 200 mg">
+                <div class="formulation-card__media">
+                  <img src="images/Formulations/ibu-adult.png" alt="Adult ibuprofen 200 mg tablets and caplets" loading="lazy" onerror="this.remove()" />
+                  <div class="formulation-card__emoji" aria-hidden="true">💊</div>
+                </div>
                 <p class="formulation-card__name">Adult Tablets / Caplets</p>
                 <p class="formulation-card__dose">200 mg each · adolescents only</p>
+              </div>
+              <div class="formulation-card" data-product="Children's Ibuprofen Dissolvable Powder Packets 100 mg">
+                <div class="formulation-card__media">
+                  <img src="images/Formulations/ibu-powder.png" alt="Children's ibuprofen dissolvable powder packets" loading="lazy" onerror="this.remove()" />
+                  <div class="formulation-card__emoji" aria-hidden="true">✨</div>
+                </div>
+                <p class="formulation-card__name">Dissolvable Powder</p>
+                <p class="formulation-card__dose">100 mg per packet · mix with liquid</p>
               </div>
             </div>
           </div>
@@ -474,7 +517,7 @@
         <a href="medication-guides.html" class="nav-guides" aria-current="page">Medication Guides</a>
         <a href="weighing-guide.html" class="nav-weighing">Weighing Guide</a>
         <a href="dosing-guide.html" class="nav-dosing">Dosing Guide</a>
-        <a href="EnteralID.html" class="nav-enteral">EnteralID</a>
+        <a href="https://enteral-id.click" class="nav-enteral" target="_blank" rel="noopener">EnteralID</a>
         <a href="about.html" class="nav-about">About</a>
         <a href="donations.html" class="nav-support">Support</a>
         <a href="contact.html" class="nav-contact">Contact</a>
@@ -494,6 +537,17 @@
         <button type="submit">Join Waitlist</button>
       </form>
       <div id="waitlistSuccess" class="cappy-waitlist-success" style="display: none;">Thanks! We'll be in touch.</div>
+    </div>
+  </div>
+
+  <!-- Shopping Mode popover -->
+  <div class="shop-popover-overlay" id="shopPopover" aria-hidden="true">
+    <div class="shop-popover" role="dialog" aria-modal="true" aria-labelledby="shopPopoverTitle">
+      <p class="shop-popover__title" id="shopPopoverTitle">Shop this product</p>
+      <p class="shop-popover__sub" id="shopPopoverSub"></p>
+      <div class="shop-popover__list" id="shopPopoverList"></div>
+      <p class="shop-popover__disclaimer">Links open external retailer search results. CloseDose is not affiliated with these retailers and does not earn a commission. Always confirm the concentration on the bottle before dosing.</p>
+      <button type="button" class="shop-popover__close" id="shopPopoverClose">Close</button>
     </div>
   </div>
 
@@ -520,6 +574,83 @@
           if (target) target.classList.add('is-active');
         });
       });
+    })();
+
+    // ── Shopping Mode ──
+    (function () {
+      var toggle = document.getElementById('shoppingToggle');
+      var overlay = document.getElementById('shopPopover');
+      var listEl = document.getElementById('shopPopoverList');
+      var subEl = document.getElementById('shopPopoverSub');
+      var closeBtn = document.getElementById('shopPopoverClose');
+      if (!toggle || !overlay) return;
+
+      var STORAGE_KEY = 'cd_shopping_mode';
+
+      var retailers = [
+        { name: 'Amazon',    build: function (q) { return 'https://www.amazon.com/s?k=' + encodeURIComponent(q); } },
+        { name: 'Target',    build: function (q) { return 'https://www.target.com/s?searchTerm=' + encodeURIComponent(q); } },
+        { name: 'Walmart',   build: function (q) { return 'https://www.walmart.com/search?q=' + encodeURIComponent(q); } },
+        { name: 'CVS',       build: function (q) { return 'https://www.cvs.com/search?searchTerm=' + encodeURIComponent(q); } },
+        { name: 'Walgreens', build: function (q) { return 'https://www.walgreens.com/search/results.jsp?Ntt=' + encodeURIComponent(q); } }
+      ];
+
+      function setMode(on) {
+        document.body.classList.toggle('shopping-mode', on);
+        toggle.classList.toggle('is-on', on);
+        toggle.setAttribute('aria-checked', on ? 'true' : 'false');
+        try { localStorage.setItem(STORAGE_KEY, on ? '1' : '0'); } catch (e) {}
+      }
+
+      function getQueryFromCard(card) {
+        if (card.dataset && card.dataset.product) return card.dataset.product;
+        var nameEl = card.querySelector('.product-card__name, .formulation-card__name');
+        return nameEl ? nameEl.textContent.replace(/[®™]/g, '').trim() : '';
+      }
+
+      function openShop(query) {
+        if (!query) return;
+        subEl.textContent = query;
+        listEl.innerHTML = '';
+        retailers.forEach(function (r) {
+          var a = document.createElement('a');
+          a.className = 'shop-popover__link';
+          a.href = r.build(query);
+          a.target = '_blank';
+          a.rel = 'noopener noreferrer';
+          a.textContent = 'Search on ' + r.name;
+          listEl.appendChild(a);
+        });
+        overlay.classList.add('is-open');
+        overlay.setAttribute('aria-hidden', 'false');
+      }
+
+      function closeShop() {
+        overlay.classList.remove('is-open');
+        overlay.setAttribute('aria-hidden', 'true');
+      }
+
+      toggle.addEventListener('click', function () {
+        setMode(!document.body.classList.contains('shopping-mode'));
+      });
+
+      document.addEventListener('click', function (e) {
+        if (!document.body.classList.contains('shopping-mode')) return;
+        var card = e.target.closest('.product-card, .formulation-card');
+        if (!card) return;
+        e.preventDefault();
+        openShop(getQueryFromCard(card));
+      });
+
+      closeBtn.addEventListener('click', closeShop);
+      overlay.addEventListener('click', function (e) { if (e.target === overlay) closeShop(); });
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && overlay.classList.contains('is-open')) closeShop();
+      });
+
+      try {
+        if (localStorage.getItem(STORAGE_KEY) === '1') setMode(true);
+      } catch (e) {}
     })();
 
     // Mouse-drag scroll for product strips on desktop
