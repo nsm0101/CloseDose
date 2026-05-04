@@ -1130,7 +1130,7 @@
 
       const parts = [{ text: textPrompt }];
       if (currentBase64) {
-        parts.push({ inlineData: { mimeType: currentMimeType, data: currentBase64 } });
+        parts.push({ inline_Data: { mimeType: currentMimeType, data: currentBase64 } });
       }
       const payload = { contents: [{ parts }], systemInstruction: { parts: [{ text: systemPrompt }] } };
 
