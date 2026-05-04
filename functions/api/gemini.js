@@ -1,11 +1,3 @@
-/**
- * Cloudflare Pages Function: /api/gemini
- *
- * Proxies requests to Google's Gemini API so the API key never reaches
- * the browser. Set the environment variable GEMINI_API_KEY in Cloudflare
- * Pages → Settings → Environment variables.
- */
-
 const ALLOWED_MODELS = new Set(['gemini-2.0-flash', 'gemini-1.5-flash', 'gemini-1.5-pro']);
 const GEMINI_BASE = 'https://generativelanguage.googleapis.com/v1beta/models';
 
