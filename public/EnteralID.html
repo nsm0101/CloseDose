@@ -583,7 +583,7 @@
           <span class="ei-eyebrow">Clinical Decision Support</span>
           <h2 id="enteral-tool-heading" class="visually-hidden">Device Identification Tool</h2>
           <div class="ei-tool-grid">
-            <!-- Input column -->
+            <!-- Input card -->
             <div class="ei-input-col">
               <div class="ei-col-label">
                 <span class="ei-col-num" aria-hidden="true">1</span>
@@ -619,7 +619,7 @@
               </div>
             </div>
 
-            <!-- Output column -->
+            <!-- Output card -->
             <div class="ei-output-col">
               <div class="ei-col-label">
                 <span class="ei-col-num" aria-hidden="true">2</span>
@@ -932,20 +932,17 @@
       const file = event.target.files[0];
       if (!file) return;
 
-      // Show preview immediately from the original file
       const previewUrl = URL.createObjectURL(file);
       document.getElementById('imagePreview').src = previewUrl;
       document.getElementById('imagePreviewWrap').classList.remove('ei-hidden');
       document.getElementById('uploadPrompt').classList.add('ei-hidden');
 
-      // Compress before sending
       const compressed = await compressImage(file);
       URL.revokeObjectURL(previewUrl);
       if (compressed) {
         currentBase64   = compressed.base64;
         currentMimeType = compressed.mimeType;
       } else {
-        // Fall back to raw FileReader if canvas fails
         currentMimeType = file.type || 'image/jpeg';
         await new Promise(res => {
           const r = new FileReader();
@@ -1035,7 +1032,6 @@
 
       const body = document.createElement('div');
       body.className = 'ei-result-body';
-      // Parse **bold** markers without innerHTML
       text.split(/(\*\*[^*]+\*\*)/g).forEach(seg => {
         if (seg.startsWith('**') && seg.endsWith('**')) {
           const s = document.createElement('strong');
