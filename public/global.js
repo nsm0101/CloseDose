@@ -1,4 +1,46 @@
 (function () {
+  // --- Theme Management ---
+  const THEME_KEY = 'cd-theme';
+
+  function getEffectiveTheme() {
+    const saved = localStorage.getItem(THEME_KEY);
+    if (saved) return saved;
+    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  }
+
+  function applyTheme(theme, save) {
+    document.documentElement.setAttribute('data-theme', theme);
+    if (save) localStorage.setItem(THEME_KEY, theme);
+    const btn = document.querySelector('.theme-toggle');
+    if (btn) {
+      btn.textContent = theme === 'dark' ? '☀️' : '🌙';
+      btn.setAttribute('aria-label', theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');
+    }
+  }
+
+  // Inject theme toggle button and wire up click
+  document.addEventListener('DOMContentLoaded', function () {
+    const toggle = document.createElement('button');
+    toggle.className = 'theme-toggle';
+    toggle.type = 'button';
+    const currentTheme = getEffectiveTheme();
+    toggle.textContent = currentTheme === 'dark' ? '☀️' : '🌙';
+    toggle.setAttribute('aria-label', currentTheme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');
+    document.body.appendChild(toggle);
+
+    toggle.addEventListener('click', function () {
+      const active = document.documentElement.getAttribute('data-theme') || getEffectiveTheme();
+      applyTheme(active === 'dark' ? 'light' : 'dark', true);
+    });
+
+    // Sync if system preference changes and no manual override is stored
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function (e) {
+      if (!localStorage.getItem(THEME_KEY)) {
+        applyTheme(e.matches ? 'dark' : 'light', false);
+      }
+    });
+  });
+
   // --- Site Menu Logic ---
   const menuButton = document.querySelector('.menu-btn');
   const overlay = document.getElementById('siteMenu');
