@@ -3,16 +3,15 @@ export async function onRequestPost(context) {
   const apiKey = env.GEMINI_API_KEY;
 
   try {
-    // 1. Get the data your website is sending
     const body = await request.json();
-    const { model, payload } = body; 
+    const { model, payload } = body;
 
-    // 2. Send that data to Gemini with safety filters turned off
+    // We override safety settings here because Gemini often blocks medical device photos
     const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        ...payload, 
+        ...payload,
         safetySettings: [
           { category: "HARM_CATEGORY_DANGEROUS_CONTENT", threshold: "BLOCK_NONE" },
           { category: "HARM_CATEGORY_HARASSMENT", threshold: "BLOCK_NONE" },
@@ -24,10 +23,14 @@ export async function onRequestPost(context) {
 
     const data = await response.json();
     
-    // 3. Return the result back to your website
+    // If Google still blocks it, this will tell you why in the browser console
+    if (data.promptFeedback?.blockReason) {
+      console.error("Gemini Blocked Request:", data.promptFeedback.blockReason);
+    }
+
     return new Response(JSON.stringify(data), {
       headers: { 
-        "Content-Type": "application/json",
+        "Content-Type": "application/json", 
         "Access-Control-Allow-Origin": "*" 
       }
     });
