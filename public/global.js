@@ -42,39 +42,6 @@
     window.addEventListener('resize', updateMenuPresentation);
   }
 
-  // --- Cappy Waitlist Logic ---
-  const triggers = document.querySelectorAll('[data-cappy-trigger]');
-  const modal = document.getElementById('cappyWaitlistModal');
-  if (modal) {
-    const closeBtn = modal.querySelector('.cappy-modal-close');
-    const form = document.getElementById('waitlistForm');
-    const successMsg = document.getElementById('waitlistSuccess');
-
-    const openModal = (e) => {
-      if(e) e.preventDefault();
-      modal.style.display = 'flex';
-      modal.setAttribute('aria-hidden', 'false');
-      setTimeout(() => modal.classList.add('is-visible'), 10);
-    };
-
-    const closeModal = () => {
-      modal.classList.remove('is-visible');
-      modal.setAttribute('aria-hidden', 'true');
-      setTimeout(() => { modal.style.display = 'none'; }, 250);
-    };
-
-    triggers.forEach(t => t.addEventListener('click', openModal));
-    if (closeBtn) closeBtn.addEventListener('click', closeModal);
-    modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
-    if (form) {
-      form.addEventListener('submit', (e) => {
-        e.preventDefault();
-        form.style.display = 'none';
-        if (successMsg) successMsg.style.display = 'block';
-      });
-    }
-  }
-
   // --- Disclaimer Expansion Logic ---
   const disclaimerCard = document.querySelector('.card--disclaimer');
   if (disclaimerCard) {

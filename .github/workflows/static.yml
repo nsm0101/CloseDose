@@ -24,34 +24,15 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        
-      # 1. Setup Node.js
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          
-      # 2. Install dependencies and build the Cappy app
-      - name: Build Cappy React App
-        run: |
-          cd cappy
-          npm install
-          npm run build
-          # Vite outputs the compiled app to the "dist" folder.
-          # We need to replace the raw code folder with this compiled folder.
-          cd ..
-          mv cappy/dist cappy_temp
-          rm -rf cappy
-          mv cappy_temp cappy
-          
+
       - name: Setup Pages
         uses: actions/configure-pages@v5
-        
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: '.'
-          
+
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4

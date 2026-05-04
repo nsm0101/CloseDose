@@ -1,1 +1,0 @@
-export { supabase, supabaseConfigured } from '../supabaseClient'

@@ -31,13 +31,6 @@
       </button>
     </header>
 
-    <button class="cappy-floating-btn" type="button" data-cappy-trigger aria-controls="cappyWaitlistModal" aria-expanded="false" aria-label="Join the Cappy wait list">
-      <img src="cappy/assets/cappy_circle.png" alt="" />
-      <div class="cappy-waitlist-content">
-        <span class="cappy-waitlist-brand">Cappy!</span>
-        <span class="cappy-waitlist-tagline">Join the waitlist today</span>
-      </div>
-    </button>
 
     <main>
       <div class="layout layout--inline">
@@ -84,12 +77,6 @@
             <li><strong>Suspected poisoning or overdose:</strong> Call Poison Control at <a href="tel:18002221222">1-800-222-1222</a> (US, free, 24/7).</li>
             <li><strong>Non-urgent medical questions:</strong> Contact your child's pediatrician or pharmacist — they know your child best.</li>
           </ul>
-        </section>
-
-        <!-- Cappy mention -->
-        <section class="card cappy-info-card" aria-labelledby="cappy-heading">
-          <h2 id="cappy-heading">Want a more personalized experience?</h2>
-          <p>We're building <strong>Cappy!</strong> — a companion app for families that adds dose tracking, multiple-child profiles, dosing-time reminders, and a shared family dashboard. Tap the floating Cappy! button on any page to join the waitlist.</p>
         </section>
 
         <!-- Disclaimer -->
@@ -141,19 +128,6 @@
     </div>
   </div>
 
-  <div id="cappyWaitlistModal" class="cappy-modal-overlay" aria-hidden="true">
-    <div class="cappy-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="cappyWaitlistTitle">
-      <button class="cappy-modal-close" aria-label="Close waitlist dialog">&times;</button>
-      <div class="cappy-badge"><img src="cappy/assets/cappy_circle.png" alt="" /></div>
-      <h2 id="cappyWaitlistTitle">Cappy is coming soon!</h2>
-      <p>Join the waitlist to get early access.</p>
-      <form id="waitlistForm" class="cappy-waitlist-form">
-        <input type="email" placeholder="Enter email" required aria-label="Email address" />
-        <button type="submit">Join Waitlist</button>
-      </form>
-      <div id="waitlistSuccess" class="cappy-waitlist-success" style="display: none;">Thanks! We'll be in touch.</div>
-    </div>
-  </div>
 
   <script src="global.js" defer></script>
 </body>
