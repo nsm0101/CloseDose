@@ -169,15 +169,15 @@ main {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: clamp(24px, 4vw, 40px);
-  padding: clamp(8px, 2vw, 24px) clamp(18px, 5vw, 52px) clamp(64px, 8vw, 80px);
+  gap: clamp(16px, 3vw, 28px);
+  padding: clamp(8px, 2vw, 20px) clamp(16px, 4vw, 32px) clamp(48px, 6vw, 64px);
   box-sizing: border-box;
   overflow-x: hidden;
 }
 
 /* --- Hero --- */
 .hero {
-  width: min(1200px, 100%);
+  width: min(720px, 100%);
   text-align: center;
   color: var(--white);
   padding: clamp(8px, 2vw, 16px) 0 clamp(8px, 2vw, 12px);
@@ -212,65 +212,33 @@ main {
   color: rgba(255, 255, 255, 0.86);
 }
 
-/* --- Layout: grid (calculator + info column) --- */
+/* --- Layout: single-column scrolling --- */
 .layout {
-  width: min(1200px, 100%);
+  width: min(720px, 100%);
   margin: 0 auto;
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  gap: clamp(20px, 3vw, 32px);
+  gap: clamp(16px, 2.5vw, 24px);
 }
 
 .layout--grid,
 .layout--secondary {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: clamp(20px, 3vw, 32px);
-}
-
-@media (min-width: 961px) {
-  .layout--grid {
-    grid-template-columns: minmax(280px, 1fr) minmax(0, 1.4fr);
-    align-items: start;
-  }
-
-  .layout--secondary {
-    grid-template-columns: 1.15fr 1fr;
-    align-items: start;
-  }
-
-  .calculator-column {
-    position: sticky;
-    top: 24px;
-  }
-}
-
-@media (min-width: 1280px) {
-  .layout--grid {
-    grid-template-columns: minmax(320px, 1fr) minmax(0, 1.5fr);
-  }
-}
-
-/* On mobile/tablet show calculator first, then the info column */
-@media (max-width: 960px) {
-  .layout--grid {
-    display: flex;
-    flex-direction: column;
-  }
-  .layout--grid .calculator-column { order: 1; }
-  .layout--grid .info-column { order: 2; }
+  display: flex;
+  flex-direction: column;
+  gap: clamp(16px, 2.5vw, 24px);
 }
 
 .info-column {
-  display: grid;
-  gap: clamp(14px, 2vw, 20px);
-  align-content: start;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(12px, 2vw, 16px);
 }
 
 .calculator-column {
-  display: grid;
-  gap: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
 .calculator-trust {
@@ -306,7 +274,7 @@ main {
   animation: slam-in 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
 }
 
-.layout > .card { max-width: min(720px, 100%); margin-inline: auto; }
+.layout > .card { width: 100%; }
 
 .card:nth-child(2) { animation-delay: 0.08s; }
 .card:nth-child(3) { animation-delay: 0.16s; }
