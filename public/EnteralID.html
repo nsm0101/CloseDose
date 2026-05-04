@@ -1110,7 +1110,7 @@
     /* ── Gemini API caller (server proxy) ──────────────── */
 
     async function callGeminiApi(payload) {
-      return fetch('/api/gemini', {
+      return fetch('/api/identify', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ model: GEMINI_MODEL, payload })
