@@ -3,23 +3,28 @@ export async function onRequestPost(context) {
   const apiKey = env.GEMINI_API_KEY;
 
   try {
-    // This expects your frontend to send { "image": "base64-string-here" }
-    const { image } = await request.json();
+    // 1. Get the data your website is sending
+    const body = await request.json();
+    const { model, payload } = body; 
 
-    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+    // 2. Send that data to Gemini with safety filters turned off
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        contents: [{
-          parts: [
-            { text: "Identify this enteral feeding device (G-tube or GJ-tube). Return Brand, Type, and Connector type." },
-            { inline_data: { mime_type: "image/jpeg", data: image } }
-          ]
-        }]
+        ...payload, 
+        safetySettings: [
+          { category: "HARM_CATEGORY_DANGEROUS_CONTENT", threshold: "BLOCK_NONE" },
+          { category: "HARM_CATEGORY_HARASSMENT", threshold: "BLOCK_NONE" },
+          { category: "HARM_CATEGORY_HATE_SPEECH", threshold: "BLOCK_NONE" },
+          { category: "HARM_CATEGORY_SEXUALLY_EXPLICIT", threshold: "BLOCK_NONE" }
+        ]
       })
     });
 
     const data = await response.json();
+    
+    // 3. Return the result back to your website
     return new Response(JSON.stringify(data), {
       headers: { 
         "Content-Type": "application/json",
