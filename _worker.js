@@ -6,7 +6,10 @@ export default {
     const url = new URL(request.url);
 
     if (url.pathname !== '/api/gemini') {
-      return env.ASSETS.fetch(request);
+      if (env.ASSETS) {
+        return env.ASSETS.fetch(request);
+      }
+      return fetch(request);
     }
 
     const cors = {
