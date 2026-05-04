@@ -156,7 +156,7 @@ header {
 
 @media (max-width: 960px) {
   header { padding-inline: clamp(16px, 5vw, 32px); }
-  .menu-btn { top: auto; bottom: clamp(20px, 6vw, 40px); right: clamp(20px, 6vw, 40px); box-shadow: 0 8px 0 rgba(15, 44, 42, 0.35); }
+  .menu-btn { top: auto; bottom: clamp(20px, 6vw, 40px); right: auto; left: clamp(20px, 6vw, 40px); box-shadow: 0 8px 0 rgba(15, 44, 42, 0.35); }
 }
 
 @media (max-width: 640px) {
@@ -908,7 +908,7 @@ main {
   transition: transform 0.18s ease;
   box-shadow: 0 1px 3px rgba(0,0,0,0.2);
 }
-.shopping-toggle.is-on { background: rgba(36,166,135,0.12); border-color: rgba(36,166,135,0.45); color: #0e6e57; }
+.shopping-toggle.is-on { background: rgba(36,166,135,0.18); border-color: rgba(36,166,135,0.55); color: #0e6e57; }
 .shopping-toggle.is-on .shopping-toggle__switch { background: #24a687; }
 .shopping-toggle.is-on .shopping-toggle__switch::after { transform: translateX(16px); }
 
@@ -920,9 +920,11 @@ main {
   gap: 12px;
   margin: 8px 0 18px;
   padding: 12px 16px;
-  background: rgba(255,255,255,0.55);
-  border: 1px dashed rgba(15,44,42,0.15);
+  background: var(--card-bg);
+  backdrop-filter: blur(18px);
+  border: 1px dashed rgba(15,44,42,0.2);
   border-radius: 14px;
+  box-shadow: var(--shadow-card);
 }
 .shopping-toolbar__hint { font-size: 0.78rem; color: var(--text-muted); margin: 0; flex: 1 1 220px; }
 
