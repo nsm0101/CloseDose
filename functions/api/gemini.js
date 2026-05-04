@@ -1,21 +1,3 @@
-/**
- * Cloudflare Pages Function: /api/gemini
- *
- * Proxies requests to Google's Gemini API so the API key never reaches
- * the browser. Deploy to Cloudflare Pages and set the environment variable:
- *
- *   GEMINI_API_KEY = <your Google AI Studio key>
- *
- * The EnteralID page automatically uses this proxy when it is available
- * (detected via OPTIONS probe). On GitHub Pages (no CF function), the page
- * falls back to the user's session-stored key.
- *
- * Setup:
- *   1. Connect the CloseDose repo to Cloudflare Pages
- *   2. Add GEMINI_API_KEY in Settings → Environment variables
- *   3. Deploy — the proxy becomes active at https://closedose.com/api/gemini
- */
-
 const ALLOWED_MODELS = new Set(['gemini-2.0-flash', 'gemini-1.5-flash', 'gemini-1.5-pro']);
 const GEMINI_BASE = 'https://generativelanguage.googleapis.com/v1beta/models';
 
