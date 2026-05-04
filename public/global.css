@@ -846,6 +846,163 @@ main {
 .formulation-card__name { font-size: 0.82rem; font-weight: 700; color: var(--ink-900); margin: 0; line-height: 1.3; }
 .formulation-card__dose { font-size: 0.71rem; color: var(--text-muted); margin: 0; }
 
+.formulation-card__media {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+  padding: 6px;
+}
+.formulation-card__media img {
+  max-width: 100%;
+  max-height: 100%;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.formulation-card__media .formulation-card__emoji {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+}
+
+/* ── Shopping Mode ── */
+.shopping-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.85);
+  border: 1px solid rgba(15,44,42,0.15);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--ink-900);
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+.shopping-toggle__switch {
+  position: relative;
+  width: 36px;
+  height: 20px;
+  background: #d4d4d4;
+  border-radius: 999px;
+  transition: background 0.18s ease;
+}
+.shopping-toggle__switch::after {
+  content: "";
+  position: absolute;
+  top: 2px; left: 2px;
+  width: 16px; height: 16px;
+  background: #fff;
+  border-radius: 50%;
+  transition: transform 0.18s ease;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+.shopping-toggle.is-on { background: rgba(36,166,135,0.12); border-color: rgba(36,166,135,0.45); color: #0e6e57; }
+.shopping-toggle.is-on .shopping-toggle__switch { background: #24a687; }
+.shopping-toggle.is-on .shopping-toggle__switch::after { transform: translateX(16px); }
+
+.shopping-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 8px 0 18px;
+  padding: 12px 16px;
+  background: rgba(255,255,255,0.55);
+  border: 1px dashed rgba(15,44,42,0.15);
+  border-radius: 14px;
+}
+.shopping-toolbar__hint { font-size: 0.78rem; color: var(--text-muted); margin: 0; flex: 1 1 220px; }
+
+body.shopping-mode .product-card,
+body.shopping-mode .formulation-card { cursor: pointer; }
+body.shopping-mode .product-card:hover .product-card__img-wrap,
+body.shopping-mode .formulation-card:hover .formulation-card__media {
+  outline: 2px solid #24a687;
+  outline-offset: 2px;
+}
+body.shopping-mode .product-card[data-product]::after,
+body.shopping-mode .formulation-card[data-product]::after {
+  content: "🛒 Shop";
+  display: inline-block;
+  margin-top: 2px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: #24a687;
+  color: #fff;
+  font-size: 0.66rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+}
+
+/* Shopping popover */
+.shop-popover-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15,44,42,0.45);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 16px;
+}
+.shop-popover-overlay.is-open { display: flex; }
+.shop-popover {
+  background: #fff;
+  border-radius: 18px;
+  width: 100%;
+  max-width: 380px;
+  padding: 22px 22px 18px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+}
+.shop-popover__title { font-size: 1rem; font-weight: 800; color: var(--ink-900); margin: 0 0 4px; }
+.shop-popover__sub { font-size: 0.78rem; color: var(--text-muted); margin: 0 0 14px; }
+.shop-popover__list { display: flex; flex-direction: column; gap: 8px; }
+.shop-popover__link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: rgba(36,166,135,0.07);
+  border: 1px solid rgba(36,166,135,0.22);
+  text-decoration: none;
+  color: var(--ink-900);
+  font-weight: 700;
+  font-size: 0.88rem;
+  transition: background 0.15s ease;
+}
+.shop-popover__link:hover { background: rgba(36,166,135,0.16); }
+.shop-popover__link::after { content: "↗"; font-size: 0.95rem; opacity: 0.7; }
+.shop-popover__close {
+  margin-top: 14px;
+  width: 100%;
+  padding: 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(15,44,42,0.15);
+  background: #fff;
+  font-weight: 700;
+  cursor: pointer;
+}
+.shop-popover__disclaimer {
+  margin: 12px 0 0;
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
 /* Safety quick-reference card */
 .safety-card {
   background: rgba(36,166,135,0.07);
