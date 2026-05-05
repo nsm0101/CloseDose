@@ -40,18 +40,20 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --page-bg: #0d2433;
-    --page-overlay-start: rgba(0, 0, 0, 0.85);
-    --page-overlay-end: rgba(24, 24, 24, 0.95);
+    --page-bg: #111827;
+    --page-overlay-start: rgba(10, 15, 25, 0.78);
+    --page-overlay-end: rgba(17, 24, 39, 0.88);
     --hero-color: #ffffff;
     --hero-eyebrow-color: rgba(255, 255, 255, 0.78);
     --hero-sub-color: rgba(255, 255, 255, 0.86);
     --hero-shadow: 0 2px 18px rgba(0, 0, 0, 0.35);
     --on-bg-muted: rgba(255, 255, 255, 0.78);
     --on-bg-link: var(--teal-400);
-    --menu-overlay-bg: rgba(245, 249, 249, 0.98);
-    --menu-link-color: var(--ink-900);
+    --menu-overlay-bg: rgba(13, 18, 30, 0.98);
+    --menu-link-color: #e2e8f0;
     --theme-toggle-icon: '☀️';
+    --card-bg: rgba(255, 255, 255, 0.97);
+    --card-border: 1px solid rgba(255, 255, 255, 0.18);
   }
 }
 
@@ -69,16 +71,20 @@ html[data-theme="light"] {
 }
 
 html[data-theme="dark"] {
-  --page-bg: #0d2433;
-  --page-overlay-start: rgba(0, 0, 0, 0.85);
-  --page-overlay-end: rgba(24, 24, 24, 0.95);
+  --page-bg: #111827;
+  --page-overlay-start: rgba(10, 15, 25, 0.78);
+  --page-overlay-end: rgba(17, 24, 39, 0.88);
   --hero-color: #ffffff;
   --hero-eyebrow-color: rgba(255, 255, 255, 0.78);
   --hero-sub-color: rgba(255, 255, 255, 0.86);
   --hero-shadow: 0 2px 18px rgba(0, 0, 0, 0.35);
   --on-bg-muted: rgba(255, 255, 255, 0.78);
   --on-bg-link: var(--teal-400);
+  --menu-overlay-bg: rgba(13, 18, 30, 0.98);
+  --menu-link-color: #e2e8f0;
   --theme-toggle-icon: '☀️';
+  --card-bg: rgba(255, 255, 255, 0.97);
+  --card-border: 1px solid rgba(255, 255, 255, 0.18);
 }
 
 @keyframes slam-in {
@@ -2230,4 +2236,210 @@ html[data-theme="light"] .cross-link-card--secondary {
     height: 40px;
     font-size: 1rem;
   }
+}
+
+/* =============================================
+   DARK MODE — GUIDE CARDS & STEP BOXES
+   ============================================= */
+
+/* Step cards: boost opacity in dark mode so text stays crisp */
+@media (prefers-color-scheme: dark) {
+  .step-card {
+    background: rgba(255, 255, 255, 0.93);
+    border-color: rgba(255, 255, 255, 0.2);
+  }
+  .tare-alt {
+    background: rgba(255, 200, 100, 0.12);
+    border-color: rgba(255, 192, 56, 0.4);
+  }
+  .tip-card {
+    background: rgba(13, 143, 138, 0.14);
+    border-color: rgba(36, 166, 135, 0.38);
+  }
+}
+
+html[data-theme="dark"] .step-card {
+  background: rgba(255, 255, 255, 0.93);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+html[data-theme="dark"] .tare-alt {
+  background: rgba(255, 200, 100, 0.12);
+  border-color: rgba(255, 192, 56, 0.4);
+}
+
+html[data-theme="dark"] .tip-card {
+  background: rgba(13, 143, 138, 0.14);
+  border-color: rgba(36, 166, 135, 0.38);
+}
+
+html[data-theme="light"] .step-card {
+  background: rgba(255, 255, 255, 0.65);
+  border-color: rgba(15, 44, 42, 0.08);
+}
+
+/* Dose marking cards (dosing guide) */
+@media (prefers-color-scheme: dark) {
+  .dose-marking-card--correct {
+    background: rgba(22, 163, 74, 0.14);
+  }
+  .dose-marking-card--wrong {
+    background: rgba(220, 38, 38, 0.12);
+  }
+}
+html[data-theme="dark"] .dose-marking-card--correct { background: rgba(22, 163, 74, 0.14); }
+html[data-theme="dark"] .dose-marking-card--wrong   { background: rgba(220, 38, 38, 0.12); }
+
+/* =============================================
+   DARK MODE — MENU OVERLAY
+   ============================================= */
+
+@media (prefers-color-scheme: dark) {
+  .menu-overlay {
+    background: rgba(13, 18, 30, 0.98);
+  }
+  .menu-links a {
+    color: #e2e8f0;
+  }
+  .menu-links a[aria-current="page"] {
+    color: var(--teal-400);
+  }
+  .close-menu {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.14);
+    color: #e2e8f0;
+  }
+  .close-menu:hover {
+    background: rgba(255, 255, 255, 0.14);
+  }
+}
+
+html[data-theme="dark"] .menu-overlay {
+  background: rgba(13, 18, 30, 0.98);
+}
+html[data-theme="dark"] .menu-links a {
+  color: #e2e8f0;
+}
+html[data-theme="dark"] .menu-links a[aria-current="page"] {
+  color: var(--teal-400);
+}
+html[data-theme="dark"] .close-menu {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.14);
+  color: #e2e8f0;
+}
+html[data-theme="dark"] .close-menu:hover {
+  background: rgba(255, 255, 255, 0.14);
+}
+html[data-theme="light"] .menu-overlay  { background: rgba(245, 249, 249, 0.98); }
+html[data-theme="light"] .menu-links a  { color: var(--ink-900); }
+html[data-theme="light"] .close-menu    { background: var(--white); color: var(--ink-900); }
+
+/* =============================================
+   MENU THEME PICKER (System / Day / Night)
+   ============================================= */
+
+.menu-theme-picker {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 28px;
+}
+
+.menu-theme-label {
+  margin: 0;
+  font-size: 0.68rem;
+  font-weight: 900;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--on-bg-muted);
+}
+
+.menu-theme-options {
+  display: flex;
+  gap: 8px;
+}
+
+.menu-theme-btn {
+  appearance: none;
+  border: 1px solid rgba(15, 44, 42, 0.18);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.72);
+  color: var(--ink-900);
+  font-family: inherit;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 7px 16px;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+  box-shadow: none;
+}
+
+.menu-theme-btn:hover {
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 2px 8px rgba(15, 44, 42, 0.12);
+}
+
+.menu-theme-btn.is-active {
+  background: var(--ink-900);
+  color: #fff;
+  border-color: var(--ink-900);
+  box-shadow: 0 3px 10px rgba(15, 44, 42, 0.28);
+}
+
+/* Dark mode picker styles */
+@media (prefers-color-scheme: dark) {
+  .menu-theme-btn {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.16);
+    color: #e2e8f0;
+  }
+  .menu-theme-btn:hover {
+    background: rgba(255, 255, 255, 0.14);
+  }
+  .menu-theme-btn.is-active {
+    background: var(--teal-400);
+    border-color: var(--teal-400);
+    color: #fff;
+    box-shadow: 0 3px 10px rgba(36, 166, 135, 0.4);
+  }
+  .menu-theme-label {
+    color: rgba(255, 255, 255, 0.6);
+  }
+}
+
+html[data-theme="dark"] .menu-theme-btn {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.16);
+  color: #e2e8f0;
+}
+html[data-theme="dark"] .menu-theme-btn:hover {
+  background: rgba(255, 255, 255, 0.14);
+}
+html[data-theme="dark"] .menu-theme-btn.is-active {
+  background: var(--teal-400);
+  border-color: var(--teal-400);
+  color: #fff;
+  box-shadow: 0 3px 10px rgba(36, 166, 135, 0.4);
+}
+html[data-theme="dark"] .menu-theme-label {
+  color: rgba(255, 255, 255, 0.6);
+}
+html[data-theme="light"] .menu-theme-btn {
+  background: rgba(255, 255, 255, 0.72);
+  border-color: rgba(15, 44, 42, 0.18);
+  color: var(--ink-900);
+}
+html[data-theme="light"] .menu-theme-btn.is-active {
+  background: var(--ink-900);
+  border-color: var(--ink-900);
+  color: #fff;
+}
+
+/* Mobile: keep theme picker compact */
+@media (max-width: 480px) {
+  .menu-theme-btn { padding: 6px 12px; font-size: 0.72rem; }
 }
