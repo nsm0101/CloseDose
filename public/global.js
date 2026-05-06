@@ -31,14 +31,13 @@
     const activeChoice = stored || 'system';
     const effective = getEffectiveTheme();
 
-    // Floating quick-toggle icon
-    const floatBtn = document.querySelector('.theme-toggle');
-    if (floatBtn) {
-      floatBtn.textContent = effective === 'dark' ? '☀️' : '🌙';
-      floatBtn.setAttribute('aria-label', effective === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');
+    // Animated toggle checkbox in the menu
+    const themeSwitch = document.getElementById('menu-theme-switch');
+    if (themeSwitch) {
+      themeSwitch.checked = effective === 'dark';
     }
 
-    // Menu picker active states
+    // System button active state
     document.querySelectorAll('.menu-theme-btn').forEach(b => {
       const isActive = b.dataset.themeChoice === activeChoice;
       b.classList.toggle('is-active', isActive);
@@ -46,33 +45,54 @@
     });
   }
 
-  // Inject theme toggle button and wire up click
+  // Inject theme toggle and wire up click
   document.addEventListener('DOMContentLoaded', function () {
-    // Floating quick-toggle (top-right on desktop, top-right on mobile)
-    const toggle = document.createElement('button');
-    toggle.className = 'theme-toggle';
-    toggle.type = 'button';
-    document.body.appendChild(toggle);
-
-    toggle.addEventListener('click', function () {
-      const effective = getEffectiveTheme();
-      applyTheme(effective === 'dark' ? 'light' : 'dark');
-    });
-
-    // Inject System / Day / Night picker into the menu panel
+    // Inject animated Day/Night toggle + System button into the menu panel
     const menuPanel = document.querySelector('.menu-panel');
     if (menuPanel) {
       const picker = document.createElement('div');
       picker.className = 'menu-theme-picker';
       picker.innerHTML =
         '<p class="menu-theme-label">Appearance</p>' +
-        '<div class="menu-theme-options" role="group" aria-label="Appearance">' +
-          '<button type="button" class="menu-theme-btn" data-theme-choice="system" aria-pressed="false">System</button>' +
-          '<button type="button" class="menu-theme-btn" data-theme-choice="light" aria-pressed="false">Day</button>' +
-          '<button type="button" class="menu-theme-btn" data-theme-choice="dark" aria-pressed="false">Night</button>' +
-        '</div>';
+        '<label class="theme-toggle-wrapper" for="menu-theme-switch" aria-label="Toggle dark mode">' +
+          '<input type="checkbox" id="menu-theme-switch">' +
+          '<svg class="toggle-bg-day" viewBox="0 0 180 72" preserveAspectRatio="none">' +
+            '<rect width="180" height="72" fill="#74a1d3"/>' +
+            '<circle cx="36" cy="36" r="45" fill="#8bb3de"/>' +
+            '<circle cx="36" cy="36" r="70" fill="#9ebfe5"/>' +
+            '<circle cx="36" cy="36" r="95" fill="#b0cbec"/>' +
+            '<g fill="#e3f0fa"><circle cx="15" cy="76" r="24"/><circle cx="65" cy="74" r="30"/><circle cx="115" cy="76" r="26"/><circle cx="165" cy="74" r="32"/></g>' +
+            '<g fill="#ffffff"><circle cx="10" cy="80" r="24"/><circle cx="55" cy="80" r="30"/><circle cx="105" cy="80" r="26"/><circle cx="155" cy="80" r="32"/><circle cx="190" cy="80" r="24"/></g>' +
+          '</svg>' +
+          '<svg class="toggle-bg-night" viewBox="0 0 180 72" preserveAspectRatio="none">' +
+            '<rect width="180" height="72" fill="#2f3640"/>' +
+            '<circle cx="144" cy="36" r="45" fill="#3b434f"/>' +
+            '<circle cx="144" cy="36" r="70" fill="#464f5d"/>' +
+            '<circle cx="144" cy="36" r="95" fill="#525c6b"/>' +
+            '<path d="M 40 15 Q 40 22 47 22 Q 40 22 40 29 Q 40 22 33 22 Q 40 22 40 15" fill="#ffffff" opacity="0.9"/>' +
+            '<path d="M 85 40 Q 85 44 89 44 Q 85 44 85 48 Q 85 44 81 44 Q 85 44 85 40" fill="#ffffff" opacity="0.7"/>' +
+            '<circle cx="20" cy="45" r="1.5" fill="#ffffff" opacity="0.8"/>' +
+            '<circle cx="65" cy="25" r="1" fill="#ffffff" opacity="0.6"/>' +
+            '<circle cx="100" cy="18" r="2" fill="#ffffff" opacity="0.9"/>' +
+            '<circle cx="110" cy="55" r="1.5" fill="#ffffff" opacity="0.5"/>' +
+          '</svg>' +
+          '<div class="toggle-knob">' +
+            '<div class="crater crater-1"></div>' +
+            '<div class="crater crater-2"></div>' +
+            '<div class="crater crater-3"></div>' +
+          '</div>' +
+        '</label>' +
+        '<button type="button" class="menu-theme-btn" data-theme-choice="system" aria-pressed="false">Use system setting</button>';
+
       const closeBtn = menuPanel.querySelector('.close-menu');
       menuPanel.insertBefore(picker, closeBtn);
+
+      const themeSwitch = picker.querySelector('#menu-theme-switch');
+      if (themeSwitch) {
+        themeSwitch.addEventListener('change', function () {
+          applyTheme(this.checked ? 'dark' : 'light');
+        });
+      }
 
       picker.querySelectorAll('.menu-theme-btn').forEach(function (btn) {
         btn.addEventListener('click', function () { applyTheme(btn.dataset.themeChoice); });

@@ -1428,106 +1428,231 @@ body.shopping-mode .formulation-card[data-product]::after {
 .step-card__title { margin: 0; font-size: 0.95rem; font-weight: 900; color: var(--ink-900); line-height: 1.25; }
 .step-card__text { margin: 0; font-size: 0.85rem; line-height: 1.45; color: var(--ink-900); }
 
-/* Subtraction calculator widget (no-tare alternative) */
-.tare-alt {
-  background: rgba(255, 200, 100, 0.08);
-  border: 1px solid rgba(255, 192, 56, 0.3);
-  border-radius: 12px;
-  padding: 16px 18px;
+/* Animated SVG on weighing guide */
+.tare-anim-img {
+  width: 100%;
+  max-width: 500px;
+  height: auto;
+  display: block;
+}
+
+/* No-tare toggle button */
+.tare-alt-wrapper {
   margin: 0 0 24px;
 }
 
-.tare-alt[open] { padding-bottom: 20px; }
-
-.tare-alt summary {
-  cursor: pointer;
-  font-weight: 800;
-  color: var(--ink-900);
-  font-size: 0.92rem;
-  list-style: none;
+.no-tare-btn {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
+  width: 100%;
+  padding: 14px 18px;
+  background: rgba(255, 200, 100, 0.1);
+  border: 1.5px solid rgba(255, 192, 56, 0.35);
+  border-radius: 12px;
+  font-family: inherit;
+  font-size: 0.92rem;
+  font-weight: 800;
+  color: var(--ink-900);
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.2s ease, border-color 0.2s ease, border-radius 0.2s ease;
 }
 
-.tare-alt summary::-webkit-details-marker { display: none; }
-.tare-alt summary::before {
+.no-tare-btn::before {
   content: '+';
   display: inline-grid;
   place-items: center;
-  width: 22px;
-  height: 22px;
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
   border-radius: 50%;
-  background: rgba(255, 192, 56, 0.35);
+  background: rgba(255, 192, 56, 0.4);
   color: var(--ink-900);
   font-weight: 900;
   font-size: 1rem;
   transition: transform 0.2s ease;
 }
 
-.tare-alt[open] summary::before { content: '−'; }
-
-.tare-alt p, .tare-alt ol { margin: 12px 0 0; line-height: 1.55; font-size: 0.9rem; color: var(--ink-900); }
-.tare-alt ol { padding-left: 1.2rem; display: grid; gap: 4px; }
-
-.tare-calc {
-  display: grid;
-  gap: 12px;
-  margin-top: 16px;
+.no-tare-btn[aria-expanded="true"] {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  border-bottom-color: transparent;
 }
 
-@media (min-width: 600px) { .tare-calc { grid-template-columns: 1fr 1fr; } }
+.no-tare-btn[aria-expanded="true"]::before {
+  content: '−';
+}
 
-.tare-calc label {
+.no-tare-btn:hover {
+  background: rgba(255, 200, 100, 0.18);
+  border-color: rgba(255, 192, 56, 0.55);
+}
+
+/* Subtraction calculator card (calculator-style) */
+.subtraction-calc-card {
+  border: 1.5px solid rgba(255, 192, 56, 0.35);
+  border-top: none;
+  border-radius: 0 0 14px 14px;
+  overflow: hidden;
+  box-shadow: 0 6px 20px rgba(15, 44, 42, 0.1);
+  margin-bottom: 0;
+}
+
+.subtraction-calc {
+  background: #18232f;
+  border-radius: 0 0 12px 12px;
+  overflow: hidden;
+}
+
+.subtraction-calc__header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background: #111b25;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+.subtraction-calc__header-icon {
+  font-size: 1rem;
+  font-weight: 900;
+  color: rgba(255, 192, 56, 0.7);
+  line-height: 1;
+}
+
+.subtraction-calc__header-title {
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.4);
+}
+
+.subtraction-calc__screen {
+  padding: 18px 20px 14px;
+  background: #0c1520;
+  text-align: right;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 4px;
+  min-height: 76px;
+}
+
+.subtraction-calc__screen-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(36, 166, 135, 0.65);
+}
+
+.subtraction-calc__screen-val {
+  font-family: 'Courier New', monospace;
+  font-size: 2rem;
+  font-weight: 900;
+  line-height: 1;
+  transition: color 0.2s ease;
+}
+
+.subtraction-calc__screen-val--placeholder { color: rgba(255,255,255,0.2); }
+.subtraction-calc__screen-val--result      { color: #22c55e; }
+.subtraction-calc__screen-val--error       { color: #ef4444; font-size: 1.4rem; }
+
+.subtraction-calc__keys {
+  padding: 18px 18px 20px;
   display: grid;
   gap: 6px;
-  font-size: 0.78rem;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--text-muted);
 }
 
-.tare-calc input {
-  appearance: none;
-  -webkit-appearance: none;
-  width: 100%;
-  padding: 12px 14px;
-  border: 2px solid rgba(15,44,42,0.18);
-  border-radius: 10px;
-  background: #fff;
-  font-family: inherit;
-  font-size: 1rem;
+.subtraction-calc__field {
+  display: grid;
+  gap: 5px;
+}
+
+.subtraction-calc__field-label {
+  font-size: 0.7rem;
   font-weight: 700;
-  color: var(--ink-900);
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.4);
+}
+
+.subtraction-calc__field-row {
+  display: flex;
+  align-items: center;
+  background: rgba(255,255,255,0.07);
+  border: 1.5px solid rgba(255,255,255,0.1);
+  border-radius: 10px;
+  overflow: hidden;
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
-.tare-calc input:focus {
-  outline: none;
+.subtraction-calc__field-row:focus-within {
   border-color: var(--teal-400);
-  box-shadow: 0 0 0 4px rgba(36,166,135,0.15);
+  box-shadow: 0 0 0 3px rgba(36, 166, 135, 0.18);
 }
 
-.tare-calc__result {
-  grid-column: 1 / -1;
-  padding: 14px 16px;
-  background: rgba(255,255,255,0.7);
-  border-radius: 10px;
-  font-size: 0.95rem;
-  color: var(--text-muted);
-  text-align: center;
-  font-weight: 600;
-  transition: background 0.2s ease, color 0.2s ease;
-}
-
-.tare-calc__result.has-result {
-  background: rgba(36,166,135,0.12);
-  color: var(--teal-600);
+.subtraction-calc__field-row input {
+  appearance: none;
+  -webkit-appearance: none;
+  flex: 1;
+  padding: 11px 14px;
+  background: transparent;
+  border: none;
+  font-family: 'Courier New', monospace;
+  font-size: 1.15rem;
   font-weight: 700;
+  color: #fff;
+  outline: none;
+  min-width: 0;
 }
 
-.tare-calc__result strong { color: var(--ink-900); font-size: 1.15rem; font-weight: 900; }
+.subtraction-calc__field-row input::placeholder {
+  color: rgba(255,255,255,0.18);
+}
+
+.subtraction-calc__unit {
+  padding: 0 14px 0 6px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: rgba(255,255,255,0.3);
+  letter-spacing: 0.05em;
+  flex-shrink: 0;
+}
+
+.subtraction-calc__op {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 16px;
+  font-size: 1.6rem;
+  font-weight: 900;
+  color: rgba(255,255,255,0.22);
+  line-height: 1;
+  margin: -2px 0;
+  user-select: none;
+}
+
+.subtraction-calc__error {
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #fca5a5;
+  line-height: 1.4;
+}
+
+/* Dark mode overrides for no-tare btn */
+@media (prefers-color-scheme: dark) {
+  .no-tare-btn { background: rgba(255, 200, 100, 0.07); }
+}
+html[data-theme="dark"] .no-tare-btn { background: rgba(255, 200, 100, 0.07); }
 
 /* Tip card on weighing page */
 .tip-card {
@@ -2178,79 +2303,107 @@ html[data-theme="light"] .cross-link-card--secondary {
 }
 
 /* =============================================
-   THEME TOGGLE BUTTON
+   ANIMATED DAY / NIGHT TOGGLE (menu)
    ============================================= */
 
-.theme-toggle {
-  appearance: none;
-  border: var(--card-border);
-  border-radius: 50%;
-  background: var(--white);
-  color: var(--ink-900);
-  padding: 0;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+.theme-toggle-wrapper {
+  width: 160px;
+  height: 64px;
+  border-radius: 999px;
+  position: relative;
   cursor: pointer;
-  box-shadow: var(--shadow-btn);
-  transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
-  position: fixed;
-  /* Desktop: sit to the left of the hamburger menu (top-right) */
-  top: clamp(16px, 3vw, 32px);
-  right: calc(clamp(18px, 5vw, 48px) + 56px + 14px);
-  z-index: 1200;
-  width: 48px;
-  height: 48px;
-  font-size: 1.2rem;
-  line-height: 1;
+  overflow: hidden;
+  box-shadow: 0 6px 14px rgba(0,0,0,0.12), inset 0 3px 8px rgba(0,0,0,0.22);
+  border: 3px solid #ffffff;
+  display: inline-block;
+  -webkit-tap-highlight-color: transparent;
+  transition: border-color 0.6s ease, box-shadow 0.6s ease;
 }
 
-.theme-toggle:hover, .theme-toggle:focus-visible {
-  background: #f0faf6;
-  box-shadow: 0 5px 0 rgba(15, 44, 42, 0.35);
-  outline: none;
-  transform: translateY(-1px);
+.theme-toggle-wrapper:has(input:checked) {
+  border-color: #0f172a;
+  box-shadow: 0 6px 14px rgba(0,0,0,0.45), inset 0 3px 8px rgba(0,0,0,0.35);
 }
 
-.theme-toggle:active {
-  transform: translateY(2px);
-  box-shadow: inset 0 4px 8px rgba(15, 44, 42, 0.25);
+.theme-toggle-wrapper input {
+  display: none;
 }
 
-/* On mobile the hamburger moves to bottom-left; keep toggle top-right */
-@media (max-width: 960px) {
-  .theme-toggle {
-    top: clamp(14px, 3vw, 28px);
-    right: clamp(16px, 5vw, 32px);
-    width: 44px;
-    height: 44px;
-    font-size: 1.1rem;
-  }
+.toggle-bg-day,
+.toggle-bg-night {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-@media (max-width: 640px) {
-  .theme-toggle {
-    top: 12px;
-    right: 12px;
-    width: 40px;
-    height: 40px;
-    font-size: 1rem;
-  }
+.toggle-bg-night {
+  opacity: 0;
+  transform: translateY(-18px);
+}
+
+input:checked ~ .toggle-bg-day {
+  opacity: 0;
+  transform: translateY(18px);
+}
+
+input:checked ~ .toggle-bg-night {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.toggle-knob {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  background-color: #f6c83b;
+  box-shadow: inset -4px -4px 8px rgba(0,0,0,0.15), 0 4px 8px rgba(0,0,0,0.2);
+  transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1),
+              background-color 0.6s ease,
+              box-shadow 0.6s ease;
+  z-index: 10;
+}
+
+/* 160px - 54px knob - 10px total margin = 96px travel */
+input:checked ~ .toggle-knob {
+  transform: translateX(96px);
+  background-color: #c1c8d4;
+  box-shadow: inset -4px -4px 8px rgba(0,0,0,0.3), 0 4px 8px rgba(0,0,0,0.25);
+}
+
+.crater {
+  position: absolute;
+  background-color: #a3acb9;
+  border-radius: 50%;
+  box-shadow: inset 2px 2px 4px rgba(0,0,0,0.2);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.crater-1 { width: 12px; height: 12px; top: 12px; left: 28px; }
+.crater-2 { width: 9px;  height: 9px;  top: 30px; left: 14px; }
+.crater-3 { width: 7px;  height: 7px;  top: 34px; left: 32px; }
+
+input:checked ~ .toggle-knob .crater {
+  opacity: 1;
+  transition-delay: 0.2s;
 }
 
 /* =============================================
    DARK MODE — GUIDE CARDS & STEP BOXES
    ============================================= */
 
-/* Step cards: boost opacity in dark mode so text stays crisp */
+/* Dark mode overrides for weighing guide elements */
 @media (prefers-color-scheme: dark) {
-  .step-card {
-    background: rgba(255, 255, 255, 0.93);
-    border-color: rgba(255, 255, 255, 0.2);
-  }
-  .tare-alt {
-    background: rgba(255, 200, 100, 0.12);
-    border-color: rgba(255, 192, 56, 0.4);
+  .no-tare-btn {
+    background: rgba(255, 200, 100, 0.08);
+    border-color: rgba(255, 192, 56, 0.35);
   }
   .tip-card {
     background: rgba(13, 143, 138, 0.14);
@@ -2258,24 +2411,14 @@ html[data-theme="light"] .cross-link-card--secondary {
   }
 }
 
-html[data-theme="dark"] .step-card {
-  background: rgba(255, 255, 255, 0.93);
-  border-color: rgba(255, 255, 255, 0.2);
-}
-
-html[data-theme="dark"] .tare-alt {
-  background: rgba(255, 200, 100, 0.12);
-  border-color: rgba(255, 192, 56, 0.4);
+html[data-theme="dark"] .no-tare-btn {
+  background: rgba(255, 200, 100, 0.08);
+  border-color: rgba(255, 192, 56, 0.35);
 }
 
 html[data-theme="dark"] .tip-card {
   background: rgba(13, 143, 138, 0.14);
   border-color: rgba(36, 166, 135, 0.38);
-}
-
-html[data-theme="light"] .step-card {
-  background: rgba(255, 255, 255, 0.65);
-  border-color: rgba(15, 44, 42, 0.08);
 }
 
 /* Dose marking cards (dosing guide) */
@@ -2343,7 +2486,7 @@ html[data-theme="light"] .close-menu    { background: var(--white); color: var(-
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
+  gap: 14px;
   margin-bottom: 28px;
 }
 
@@ -2356,11 +2499,7 @@ html[data-theme="light"] .close-menu    { background: var(--white); color: var(-
   color: var(--on-bg-muted);
 }
 
-.menu-theme-options {
-  display: flex;
-  gap: 8px;
-}
-
+/* System/auto button below the animated toggle */
 .menu-theme-btn {
   appearance: none;
   border: 1px solid rgba(15, 44, 42, 0.18);
@@ -2368,11 +2507,11 @@ html[data-theme="light"] .close-menu    { background: var(--white); color: var(-
   background: rgba(255, 255, 255, 0.72);
   color: var(--ink-900);
   font-family: inherit;
-  font-size: 0.78rem;
+  font-size: 0.75rem;
   font-weight: 800;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  padding: 7px 16px;
+  padding: 6px 18px;
   cursor: pointer;
   transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
   box-shadow: none;
@@ -2437,9 +2576,4 @@ html[data-theme="light"] .menu-theme-btn.is-active {
   background: var(--ink-900);
   border-color: var(--ink-900);
   color: #fff;
-}
-
-/* Mobile: keep theme picker compact */
-@media (max-width: 480px) {
-  .menu-theme-btn { padding: 6px 12px; font-size: 0.72rem; }
 }
