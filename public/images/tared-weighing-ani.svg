@@ -1,0 +1,236 @@
+<?xml version="1.0" standalone="no"?>
+<svg id="generated-svg" width="500" height="500" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <filter id="dropShadow" x="-10%" y="-10%" width="120%" height="120%">
+                    <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#0f172a" flood-opacity="0.08"/>
+                </filter>
+                <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%">
+                    <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#0f172a" flood-opacity="0.05"/>
+                </filter>
+
+                <style>
+                    /* Typography Base */
+                    text {
+                        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+                    }
+
+                    /* 15-Second Choreographed Loop */
+                    
+                    /* Digital Display Opacity Toggles */
+                    @keyframes tZero1 { 0%, 19.9% { opacity: 1; } 20%, 100% { opacity: 0; } }
+                    @keyframes tCalc1 { 0%, 19.9% { opacity: 0; } 20%, 24.9% { opacity: 1; } 25%, 100% { opacity: 0; } }
+                    @keyframes tAdult { 0%, 24.9% { opacity: 0; } 25%, 39.9% { opacity: 1; } 40%, 100% { opacity: 0; } }
+                    @keyframes tTare  { 0%, 39.9% { opacity: 0; } 40%, 44.9% { opacity: 1; } 45%, 100% { opacity: 0; } }
+                    @keyframes tZero2 { 0%, 44.9% { opacity: 0; } 45%, 59.9% { opacity: 1; } 60%, 100% { opacity: 0; } }
+                    @keyframes tCalc2 { 0%, 59.9% { opacity: 0; } 60%, 74.9% { opacity: 1; } 75%, 100% { opacity: 0; } }
+                    @keyframes tBaby  { 0%, 74.9% { opacity: 0; } 75%, 95.9% { opacity: 1; } 96%, 100% { opacity: 0; } }
+
+                    /* Tare Button UI Flash Effect */
+                    @keyframes tareFlash {
+                        0%, 39% { fill: #334155; transform: scale(1); }
+                        40%, 44% { fill: #facc15; transform: scale(0.96); }
+                        45%, 100% { fill: #334155; transform: scale(1); }
+                    }
+
+                    /* Step Highlighter Styles (Individual Targeted Properties) */
+                    @keyframes c_stroke1 { 0%, 19.9% { stroke: #3b82f6; stroke-width: 2.5; } 20%, 100% { stroke: #cbd5e1; stroke-width: 1.5; } }
+                    @keyframes t_num1 { 0%, 19.9% { fill: #3b82f6; font-weight: 900; } 20%, 100% { fill: #64748b; font-weight: 500; } }
+                    @keyframes t_title1 { 0%, 19.9% { font-weight: 800; fill: #0f172a; } 20%, 100% { font-weight: 500; fill: #475569; } }
+                    @keyframes t_sub1 { 0%, 19.9% { font-weight: 700; fill: #334155; } 20%, 100% { font-weight: 400; fill: #64748b; } }
+
+                    @keyframes c_stroke2 { 0%, 19.9% { stroke: #cbd5e1; stroke-width: 1.5; } 20%, 39.9% { stroke: #3b82f6; stroke-width: 2.5; } 40%, 100% { stroke: #cbd5e1; stroke-width: 1.5; } }
+                    @keyframes t_num2 { 0%, 19.9% { fill: #64748b; font-weight: 500; } 20%, 39.9% { fill: #3b82f6; font-weight: 900; } 40%, 100% { fill: #64748b; font-weight: 500; } }
+                    @keyframes t_title2 { 0%, 19.9% { font-weight: 500; fill: #475569; } 20%, 39.9% { font-weight: 800; fill: #0f172a; } 40%, 100% { font-weight: 500; fill: #475569; } }
+                    @keyframes t_sub2 { 0%, 19.9% { font-weight: 400; fill: #64748b; } 20%, 39.9% { font-weight: 700; fill: #334155; } 40%, 100% { font-weight: 400; fill: #64748b; } }
+
+                    @keyframes c_stroke3 { 0%, 39.9% { stroke: #cbd5e1; stroke-width: 1.5; } 40%, 59.9% { stroke: #3b82f6; stroke-width: 2.5; } 60%, 100% { stroke: #cbd5e1; stroke-width: 1.5; } }
+                    @keyframes t_num3 { 0%, 39.9% { fill: #64748b; font-weight: 500; } 40%, 59.9% { fill: #3b82f6; font-weight: 900; } 60%, 100% { fill: #64748b; font-weight: 500; } }
+                    @keyframes t_title3 { 0%, 39.9% { font-weight: 500; fill: #475569; } 40%, 59.9% { font-weight: 800; fill: #0f172a; } 60%, 100% { font-weight: 500; fill: #475569; } }
+                    @keyframes t_sub3 { 0%, 39.9% { font-weight: 400; fill: #64748b; } 40%, 59.9% { font-weight: 700; fill: #334155; } 60%, 100% { font-weight: 400; fill: #64748b; } }
+
+                    @keyframes c_stroke4 { 0%, 59.9% { stroke: #cbd5e1; stroke-width: 1.5; } 60%, 74.9% { stroke: #3b82f6; stroke-width: 2.5; } 75%, 100% { stroke: #cbd5e1; stroke-width: 1.5; } }
+                    @keyframes t_num4 { 0%, 59.9% { fill: #64748b; font-weight: 500; } 60%, 74.9% { fill: #3b82f6; font-weight: 900; } 75%, 100% { fill: #64748b; font-weight: 500; } }
+                    @keyframes t_title4 { 0%, 59.9% { font-weight: 500; fill: #475569; } 60%, 74.9% { font-weight: 800; fill: #0f172a; } 75%, 100% { font-weight: 500; fill: #475569; } }
+                    @keyframes t_sub4 { 0%, 59.9% { font-weight: 400; fill: #64748b; } 60%, 74.9% { font-weight: 700; fill: #334155; } 75%, 100% { font-weight: 400; fill: #64748b; } }
+
+                    @keyframes c_stroke5 { 0%, 74.9% { stroke: #cbd5e1; stroke-width: 1.5; } 75%, 95.9% { stroke: #10b981; stroke-width: 2.5; } 96%, 100% { stroke: #cbd5e1; stroke-width: 1.5; } }
+                    @keyframes t_num5 { 0%, 74.9% { fill: #64748b; font-weight: 500; } 75%, 95.9% { fill: #10b981; font-weight: 900; } 96%, 100% { fill: #64748b; font-weight: 500; } }
+                    @keyframes t_title5 { 0%, 74.9% { font-weight: 500; fill: #475569; } 75%, 95.9% { font-weight: 800; fill: #0f172a; } 96%, 100% { font-weight: 500; fill: #475569; } }
+                    @keyframes t_sub5 { 0%, 74.9% { font-weight: 400; fill: #64748b; } 75%, 95.9% { font-weight: 700; fill: #334155; } 96%, 100% { font-weight: 400; fill: #64748b; } }
+
+                    /* Box Background &amp; Border Shading */
+                    @keyframes r_box1 { 0%, 19.9% { fill: #eff6ff; stroke: #3b82f6; stroke-width: 2; } 20%, 100% { fill: #ffffff; stroke: #e2e8f0; stroke-width: 1.5; } }
+                    @keyframes r_box2 { 0%, 19.9% { fill: #ffffff; stroke: #e2e8f0; stroke-width: 1.5; } 20%, 39.9% { fill: #eff6ff; stroke: #3b82f6; stroke-width: 2; } 40%, 100% { fill: #ffffff; stroke: #e2e8f0; stroke-width: 1.5; } }
+                    @keyframes r_box3 { 0%, 39.9% { fill: #ffffff; stroke: #e2e8f0; stroke-width: 1.5; } 40%, 59.9% { fill: #eff6ff; stroke: #3b82f6; stroke-width: 2; } 60%, 100% { fill: #ffffff; stroke: #e2e8f0; stroke-width: 1.5; } }
+                    @keyframes r_box4 { 0%, 59.9% { fill: #ffffff; stroke: #e2e8f0; stroke-width: 1.5; } 60%, 74.9% { fill: #eff6ff; stroke: #3b82f6; stroke-width: 2; } 75%, 100% { fill: #ffffff; stroke: #e2e8f0; stroke-width: 1.5; } }
+                    @keyframes r_box5 { 0%, 74.9% { fill: #ffffff; stroke: #e2e8f0; stroke-width: 1.5; } 75%, 95.9% { fill: #ecfdf5; stroke: #10b981; stroke-width: 2; } 96%, 100% { fill: #ffffff; stroke: #e2e8f0; stroke-width: 1.5; } }
+
+                    /* Character Animations */
+                    @keyframes adultWalk {
+                        0%, 15% { transform: translateX(-180px); opacity: 0; }
+                        20%, 95% { transform: translateX(0); opacity: 1; }
+                        97%, 100% { transform: translateX(40px); opacity: 0; }
+                    }
+
+                    @keyframes babyFade {
+                        0%, 58% { opacity: 0; transform: translateY(-10px); }
+                        62%, 95% { opacity: 1; transform: translateY(0); }
+                        97%, 100% { transform: translateY(0); opacity: 0; }
+                    }
+                </style>
+            </defs>
+
+            <!-- Flat White Canvas Background -->
+            <rect width="100%" height="100%" fill="#ffffff"/>
+
+            <!-- ================= TOP UI: MODERN DIGITAL SCALE ================= -->
+            <g id="ui-display" transform="translate(20, 20)">
+                <!-- Display Housing -->
+                <rect width="460" height="80" rx="12" fill="#0f172a" filter="url(#dropShadow)"/>
+                
+                <!-- Digital Screen -->
+                <rect x="16" y="14" width="280" height="52" rx="6" fill="#022c22" stroke="#064e3b" stroke-width="2"/>
+                
+                <!-- Screen Values (Timed by CSS Keyframes) -->
+                <g fill="#10b981" font-family="monospace" font-size="36" font-weight="bold" text-anchor="end">
+                    <text x="235" y="52" style="animation: tZero1 15s infinite;">0.00</text>
+                    <text x="235" y="52" style="animation: tCalc1 15s infinite;">---</text>
+                    <text x="235" y="52" style="animation: tAdult 15s infinite;">150.00</text>
+                    <text x="235" y="52" style="animation: tTare  15s infinite;">TARE...</text>
+                    <text x="235" y="52" style="animation: tZero2 15s infinite;">0.00</text>
+                    <text x="235" y="52" style="animation: tCalc2 15s infinite;">---</text>
+                    <text x="235" y="52" style="animation: tBaby  15s infinite; fill: #34d399;">10.00</text>
+                </g>
+                <text x="245" y="50" fill="#475569" font-family="monospace" font-size="24" font-weight="bold">lbs</text>
+
+                <!-- TARE Button on Display -->
+                <g style="animation: tareFlash 15s infinite; transform-origin: 382px 40px;">
+                    <rect x="320" y="14" width="124" height="52" rx="8"/>
+                    <text x="382" y="47" fill="#ffffff" font-size="18" font-weight="900" text-anchor="middle" letter-spacing="1.5">TARE</text>
+                </g>
+            </g>
+
+
+            <!-- ================= RIGHT UI: PROCEDURE STEPS ================= -->
+            <g id="ui-steps" transform="translate(245, 110)">
+                
+                <!-- Step 1 Box -->
+                <g>
+                    <rect width="245" height="68" rx="10" filter="url(#softShadow)" style="animation: r_box1 15s infinite;"/>
+                    <circle cx="34" cy="34" r="18" fill="#f8fafc" style="animation: c_stroke1 15s infinite;"/>
+                    <text x="34" y="40" font-size="18" text-anchor="middle" style="animation: t_num1 15s infinite;">1</text>
+                    <text x="66" y="29" font-size="16" style="animation: t_title1 15s infinite;">Prepare Scale</text>
+                    <text x="66" y="51" font-size="13" style="animation: t_sub1 15s infinite;">Place flat &amp; turn on</text>
+                </g>
+
+                <!-- Step 2 Box -->
+                <g transform="translate(0, 75)">
+                    <rect width="245" height="68" rx="10" filter="url(#softShadow)" style="animation: r_box2 15s infinite;"/>
+                    <circle cx="34" cy="34" r="18" fill="#f8fafc" style="animation: c_stroke2 15s infinite;"/>
+                    <text x="34" y="40" font-size="18" text-anchor="middle" style="animation: t_num2 15s infinite;">2</text>
+                    <text x="66" y="29" font-size="16" style="animation: t_title2 15s infinite;">Initial Weight</text>
+                    <text x="66" y="51" font-size="13" style="animation: t_sub2 15s infinite;">Adult steps on alone</text>
+                </g>
+
+                <!-- Step 3 Box -->
+                <g transform="translate(0, 150)">
+                    <rect width="245" height="68" rx="10" filter="url(#softShadow)" style="animation: r_box3 15s infinite;"/>
+                    <circle cx="34" cy="34" r="18" fill="#f8fafc" style="animation: c_stroke3 15s infinite;"/>
+                    <text x="34" y="40" font-size="18" text-anchor="middle" style="animation: t_num3 15s infinite;">3</text>
+                    <text x="66" y="29" font-size="16" style="animation: t_title3 15s infinite;">Tare (Zero)</text>
+                    <text x="66" y="51" font-size="13" style="animation: t_sub3 15s infinite;">Press TARE to reset to 0</text>
+                </g>
+
+                <!-- Step 4 Box -->
+                <g transform="translate(0, 225)">
+                    <rect width="245" height="68" rx="10" filter="url(#softShadow)" style="animation: r_box4 15s infinite;"/>
+                    <circle cx="34" cy="34" r="18" fill="#f8fafc" style="animation: c_stroke4 15s infinite;"/>
+                    <text x="34" y="40" font-size="18" text-anchor="middle" style="animation: t_num4 15s infinite;">4</text>
+                    <text x="66" y="29" font-size="16" style="animation: t_title4 15s infinite;">Add the Infant</text>
+                    <text x="66" y="51" font-size="13" style="animation: t_sub4 15s infinite;">Hold unclothed infant</text>
+                </g>
+
+                <!-- Step 5 Box -->
+                <g transform="translate(0, 300)">
+                    <rect width="245" height="68" rx="10" filter="url(#softShadow)" style="animation: r_box5 15s infinite;"/>
+                    <circle cx="34" cy="34" r="18" fill="#f8fafc" style="animation: c_stroke5 15s infinite;"/>
+                    <text x="34" y="40" font-size="18" text-anchor="middle" style="animation: t_num5 15s infinite;">5</text>
+                    <text x="66" y="29" font-size="16" style="animation: t_title5 15s infinite;">Record Weight</text>
+                    <text x="66" y="51" font-size="13" style="animation: t_sub5 15s infinite;">Read baby's exact weight</text>
+                </g>
+            </g>
+
+
+            <!-- ================= LEFT SCENE: PROFESSIONAL SILHOUETTES ================= -->
+            <g id="scene" transform="translate(-8, 0)">
+                
+                <!-- Environment (Floor Line lowered) -->
+                <line x1="15" y1="475" x2="245" y2="475" stroke="#e2e8f0" stroke-width="4" stroke-linecap="round"/>
+
+                <!-- Physical Floor Scale -->
+                <g id="floor-scale">
+                    <ellipse cx="130" cy="475" rx="75" ry="15" fill="#0f172a" opacity="0.08"/> <!-- Floor shadow -->
+                    <ellipse cx="130" cy="470" rx="70" ry="12" fill="#94a3b8"/> <!-- Base -->
+                    <ellipse cx="130" cy="465" rx="66" ry="10" fill="#1e293b"/> <!-- Top Plate -->
+                    <!-- Physical button that pulses yellow during Tare -->
+                    <ellipse cx="175" cy="467" rx="6" ry="2" fill="#334155" style="animation: tareFlash 15s infinite; transform-origin: 175px 467px;"/>
+                </g>
+
+                <!-- ================= ADULT MODEL (Front-Facing Pictogram) ================= -->
+                <!-- Modeled exactly on standard solid front-facing pictograms -->
+                <g id="adult" style="animation: adultWalk 15s infinite;">
+                    
+                    <!-- Legs (Straight down, distinct gap) -->
+                    <path d="M 118 360 L 118 470" stroke="#1e293b" stroke-width="16" stroke-linecap="round"/>
+                    <path d="M 142 360 L 142 470" stroke="#1e293b" stroke-width="16" stroke-linecap="round"/>
+
+                    <!-- Torso (Standard pill shape) -->
+                    <path d="M 130 235 L 130 360" stroke="#1e293b" stroke-width="40" stroke-linecap="round"/>
+
+                    <!-- Adult Head (Perfectly circular, detached) -->
+                    <circle cx="130" cy="180" r="22" fill="#1e293b"/>
+
+                    <!-- ================= ADULT LEFT ARM (Animated to wrap baby) ================= -->
+                    <!-- Behind the baby to support the head/back. Uses path morphing for a natural elbow bend. -->
+                    <g>
+                        <path stroke="#ffffff" stroke-width="18" stroke-linecap="round" fill="none">
+                            <animate attributeName="d" dur="15s" repeatCount="indefinite" calcMode="spline" keySplines="0 0 1 1; 0.4 0 0.2 1; 0 0 1 1; 0.4 0 0.2 1; 0 0 1 1" keyTimes="0; 0.58; 0.62; 0.95; 0.97; 1" values="M 99 235 Q 99 285 99 335;&#10;                                        M 99 235 Q 99 285 99 335;&#10;                                        M 99 235 Q 85 300 140 295;&#10;                                        M 99 235 Q 85 300 140 295;&#10;                                        M 99 235 Q 99 285 99 335;&#10;                                        M 99 235 Q 99 285 99 335"/>
+                        </path>
+                        <path stroke="#1e293b" stroke-width="14" stroke-linecap="round" fill="none">
+                            <animate attributeName="d" dur="15s" repeatCount="indefinite" calcMode="spline" keySplines="0 0 1 1; 0.4 0 0.2 1; 0 0 1 1; 0.4 0 0.2 1; 0 0 1 1" keyTimes="0; 0.58; 0.62; 0.95; 0.97; 1" values="M 99 235 Q 99 285 99 335;&#10;                                        M 99 235 Q 99 285 99 335;&#10;                                        M 99 235 Q 85 300 140 295;&#10;                                        M 99 235 Q 85 300 140 295;&#10;                                        M 99 235 Q 99 285 99 335;&#10;                                        M 99 235 Q 99 285 99 335"/>
+                        </path>
+                    </g>
+                    
+                    <!-- ================= UNCLOTHED INFANT MODEL ================= -->
+                    <g id="baby" style="animation: babyFade 15s infinite;">
+                        <!-- Negative Space Cutouts: Separates baby from adult torso -->
+                        <path d="M 95 260 Q 130 285 160 255" stroke="#ffffff" stroke-width="26" stroke-linecap="round" fill="none"/>
+                        <!-- Baby Body -->
+                        <path d="M 95 260 Q 130 285 160 255" stroke="#64748b" stroke-width="20" stroke-linecap="round" fill="none"/>
+                        
+                        <!-- Negative Space for Head -->
+                        <circle cx="80" cy="245" r="18" fill="#ffffff"/>
+                        <!-- Baby Head -->
+                        <circle cx="80" cy="245" r="15" fill="#64748b"/>
+                        
+                        <!-- Baby Legs overlapping slightly -->
+                        <path d="M 155 260 L 170 245" stroke="#ffffff" stroke-width="14" stroke-linecap="round" fill="none"/>
+                        <path d="M 155 260 L 170 245" stroke="#64748b" stroke-width="10" stroke-linecap="round" fill="none"/>
+                    </g>
+
+                    <!-- ================= ADULT RIGHT ARM (Animated to wrap baby) ================= -->
+                    <!-- In front of the baby to cradle securely. Uses path morphing for a natural elbow bend. -->
+                    <g>
+                        <!-- Cutout to stand out from baby and torso -->
+                        <path stroke="#ffffff" stroke-width="18" stroke-linecap="round" fill="none">
+                            <animate attributeName="d" dur="15s" repeatCount="indefinite" calcMode="spline" keySplines="0 0 1 1; 0.4 0 0.2 1; 0 0 1 1; 0.4 0 0.2 1; 0 0 1 1" keyTimes="0; 0.58; 0.62; 0.95; 0.97; 1" values="M 161 235 Q 161 285 161 335;&#10;                                        M 161 235 Q 161 285 161 335;&#10;                                        M 161 235 Q 175 300 110 270;&#10;                                        M 161 235 Q 175 300 110 270;&#10;                                        M 161 235 Q 161 285 161 335;&#10;                                        M 161 235 Q 161 285 161 335"/>
+                        </path>
+                        <path stroke="#1e293b" stroke-width="14" stroke-linecap="round" fill="none">
+                            <animate attributeName="d" dur="15s" repeatCount="indefinite" calcMode="spline" keySplines="0 0 1 1; 0.4 0 0.2 1; 0 0 1 1; 0.4 0 0.2 1; 0 0 1 1" keyTimes="0; 0.58; 0.62; 0.95; 0.97; 1" values="M 161 235 Q 161 285 161 335;&#10;                                        M 161 235 Q 161 285 161 335;&#10;                                        M 161 235 Q 175 300 110 270;&#10;                                        M 161 235 Q 175 300 110 270;&#10;                                        M 161 235 Q 161 285 161 335;&#10;                                        M 161 235 Q 161 285 161 335"/>
+                        </path>
+                    </g>
+
+                </g>
+            </g>
+
+        </svg>

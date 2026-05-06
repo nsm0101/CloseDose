@@ -1,0 +1,240 @@
+<?xml version="1.0" standalone="no"?>
+<svg id="generated-svg" width="500" height="500" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <radialGradient id="bgGrad" cx="50%" cy="50%" r="70%">
+                    <stop offset="0%" stop-color="#ffffff"/>
+                    <stop offset="100%" stop-color="#f8fafc"/>
+                </radialGradient>
+                
+                <!-- Classic Medicine Red/Amber Gradients -->
+                <linearGradient id="bottleBody" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stop-color="#7f1d1d"/>
+                    <stop offset="15%" stop-color="#b91c1c"/>
+                    <stop offset="40%" stop-color="#ef4444"/>
+                    <stop offset="70%" stop-color="#dc2626"/>
+                    <stop offset="85%" stop-color="#991b1b"/>
+                    <stop offset="100%" stop-color="#450a0a"/>
+                </linearGradient>
+
+                <linearGradient id="capGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stop-color="#cbd5e1"/>
+                    <stop offset="25%" stop-color="#ffffff"/>
+                    <stop offset="75%" stop-color="#f1f5f9"/>
+                    <stop offset="100%" stop-color="#94a3b8"/>
+                </linearGradient>
+
+                <!-- Classic Acetaminophen Branding (Deep Red) -->
+                <linearGradient id="brandGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#E31837"/>
+                    <stop offset="100%" stop-color="#9f1239"/>
+                </linearGradient>
+
+                <!-- 3D Label Text Curve Paths -->
+                <path id="labelCurve1" d="M -70 65 A 80 26 0 0 0 70 65"/>
+                <path id="labelCurve2" d="M -70 85 A 80 26 0 0 0 70 85"/>
+
+                <!-- Cappy Image Clipping Mask -->
+                <clipPath id="cappyClip">
+                    <circle cx="0" cy="0" r="30"/> <!-- Adjusted perfectly to hide JPEG black background edges -->
+                </clipPath>
+
+                <filter id="shadowHeavy" x="-30%" y="-30%" width="160%" height="160%">
+                    <feDropShadow dx="0" dy="15" stdDeviation="12" flood-color="#0f172a" flood-opacity="0.25"/>
+                </filter>
+                <filter id="shadowSoft" x="-20%" y="-20%" width="140%" height="140%">
+                    <feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="#0f172a" flood-opacity="0.15"/>
+                </filter>
+
+                <style>
+                    /* 10-Second Choreographed Loop */
+                    @keyframes phoneSwoop {
+                        0%, 5% { transform: translate(320px, -20px) rotate(-10deg); }
+                        /* Origin is 75px, 20px. Translate 105, 175 puts the top edge precisely at 180, 195 (the cap) */
+                        15%, 19% { transform: translate(105px, 175px) rotate(-80deg); } 
+                        28%, 85% { transform: translate(220px, 70px) rotate(-2deg); } /* Lift and read */
+                        95%, 100% { transform: translate(320px, -20px) rotate(-10deg); } /* Exit */
+                    }
+                    
+                    @keyframes wave1 {
+                        0%, 14% { transform: scale(0.1); opacity: 0; }
+                        15% { transform: scale(0.3); opacity: 1; }
+                        23%, 100% { transform: scale(1.6); opacity: 0; }
+                    }
+                    @keyframes wave2 {
+                        0%, 15% { transform: scale(0.1); opacity: 0; }
+                        16% { transform: scale(0.3); opacity: 1; }
+                        24%, 100% { transform: scale(1.6); opacity: 0; }
+                    }
+                    @keyframes wave3 {
+                        0%, 16% { transform: scale(0.1); opacity: 0; }
+                        17% { transform: scale(0.3); opacity: 1; }
+                        25%, 100% { transform: scale(1.6); opacity: 0; }
+                    }
+
+                    @keyframes uiContent {
+                        0%, 30% { opacity: 0; transform: translateY(15px); }
+                        36%, 85% { opacity: 1; transform: translateY(0); }
+                        90%, 100% { opacity: 0; transform: translateY(10px); }
+                    }
+
+                    @keyframes selectionPulse {
+                        0%, 45% { stroke-width: 0; transform: scale(1); filter: none; }
+                        50%, 85% { stroke-width: 3; transform: scale(1.05); filter: drop-shadow(0 0 6px rgba(59,130,246,0.4)); }
+                        90%, 100% { stroke-width: 0; transform: scale(1); filter: none; }
+                    }
+
+                    @keyframes doseFadeIn {
+                        0%, 48% { opacity: 0; transform: translateY(-5px); }
+                        52%, 85% { opacity: 1; transform: translateY(0); }
+                        90%, 100% { opacity: 0; }
+                    }
+                </style>
+            </defs>
+
+            <rect width="100%" height="100%" fill="url(#bgGrad)"/>
+
+            <!-- ================= BOTTLE (Oblique / Isometric Tylenol Shape) ================= -->
+            <g id="bottle" transform="translate(180, 290)">
+                <!-- Base Floor Shadow -->
+                <ellipse cx="0" cy="115" rx="85" ry="26" fill="#0f172a" opacity="0.15" filter="blur(6px)"/>
+                
+                <!-- Lower Body & Base Arc -->
+                <path d="M -80 20 L -80 115 A 80 26 0 0 0 80 115 L 80 20 Z" fill="url(#bottleBody)"/>
+                
+                <!-- Rounded Shoulders -->
+                <path d="M -80 20 C -80 -10, -45 -30, -38 -35 L 38 -35 C 45 -30, 80 -10, 80 20 Z" fill="url(#bottleBody)"/>
+                
+                <!-- ================= 3D WRAPPED LABEL (Maximized White Area) ================= -->
+                <!-- Full White Base Layer spanning entire label height -->
+                <path d="M -80 20 L -80 115 A 80 26 0 0 0 80 115 L 80 20 A 80 26 0 0 1 -80 20 Z" fill="#ffffff" filter="url(#shadowSoft)"/>
+                
+                <!-- Thin Top Red Band -->
+                <path d="M -80 20 L -80 35 A 80 26 0 0 0 80 35 L 80 20 A 80 26 0 0 1 -80 20 Z" fill="url(#brandGrad)"/>
+                
+                <!-- Classic Yellow Accent Band -->
+                <path d="M -80 35 L -80 38 A 80 26 0 0 0 80 38 L 80 35 A 80 26 0 0 1 -80 35 Z" fill="#FACC15"/>
+                
+                <!-- Thin Bottom Red Band -->
+                <path d="M -80 100 L -80 115 A 80 26 0 0 0 80 115 L 80 100 A 80 26 0 0 1 -80 100 Z" fill="url(#brandGrad)"/>
+
+                <!-- Text mapping exactly to 3D cylinder curve (Centered in white space) -->
+                <text font-family="sans-serif" font-weight="900" font-size="13" fill="#b91c1c" letter-spacing="1">
+                    <textPath href="#labelCurve1" startOffset="50%" text-anchor="middle">ACETAMINOPHEN</textPath>
+                </text>
+                <text font-family="sans-serif" font-weight="bold" font-size="9" fill="#1e293b" letter-spacing="0.5">
+                    <textPath href="#labelCurve2" startOffset="50%" text-anchor="middle">160mg / 5mL</textPath>
+                </text>
+
+                <!-- Bottle Neck -->
+                <path d="M -38 -35 L -38 -55 A 38 12 0 0 0 38 -55 L 38 -35 Z" fill="#7f1d1d"/>
+
+                <!-- White Child-Proof Cap (Isometric Cylinder) -->
+                <path d="M -46 -50 L -46 -95 A 46 14 0 0 1 46 -95 L 46 -50 A 46 14 0 0 1 -46 -50 Z" fill="url(#capGrad)"/>
+                
+                <!-- Cap Ridges -->
+                <g stroke="#cbd5e1" stroke-width="2" opacity="0.6">
+                    <line x1="-36" y1="-48" x2="-36" y2="-92"/><line x1="-24" y1="-46" x2="-24" y2="-94"/>
+                    <line x1="-12" y1="-45" x2="-12" y2="-95"/><line x1="0" y1="-45" x2="0" y2="-95"/>
+                    <line x1="12" y1="-45" x2="12" y2="-95"/><line x1="24" y1="-46" x2="24" y2="-94"/>
+                    <line x1="36" y1="-48" x2="36" y2="-92"/>
+                </g>
+
+                <!-- ================= FLAT TOP OF CAP & CAPPY NFC ================= -->
+                <!-- Explicit ellipse creating the flat 3D top surface -->
+                <ellipse cx="0" cy="-95" rx="46" ry="14" fill="#ffffff"/>
+                
+                <!-- Cappy NFC Sticker mapped perfectly to the top plane -->
+                <g transform="translate(0, -95)">
+                    <!-- Scale Y squashes the perfect circle image into correct isometric perspective -->
+                    <g transform="scale(1, 0.3)">
+                        <!-- Outer NFC Ring / Sticker Border -->
+                        <circle cx="0" cy="0" r="32" fill="#ffffff" stroke="#14b8a6" stroke-width="3"/>
+                        <circle cx="0" cy="0" r="30" fill="#ffffff"/> <!-- White backing -->
+                        <!-- Cappy User Image (Black corners masked by circular clipPath) -->
+                        <image href="cappytop.jpg" x="-30" y="-30" width="60" height="60" clip-path="url(#cappyClip)" preserveAspectRatio="xMidYMid slice"/>
+                    </g>
+                </g>
+            </g>
+
+            <!-- ================= TAP EFFECT (Radiating Waves) ================= -->
+            <g transform="translate(180, 195)">
+                <g transform="scale(1, 0.3)">
+                    <circle cx="0" cy="0" r="60" fill="none" stroke="#3b82f6" stroke-width="6" style="animation: wave1 10s infinite;"/>
+                    <circle cx="0" cy="0" r="60" fill="none" stroke="#60a5fa" stroke-width="4" style="animation: wave2 10s infinite;"/>
+                    <circle cx="0" cy="0" r="60" fill="none" stroke="#93c5fd" stroke-width="2" style="animation: wave3 10s infinite;"/>
+                </g>
+            </g>
+
+            <!-- ================= SMARTPHONE ================= -->
+            <!-- Phone transform-origin is perfectly set near the camera notch so the top edge strikes the cap -->
+            <g id="phone" style="animation: phoneSwoop 10s infinite cubic-bezier(0.3, 0.8, 0.4, 1); transform-origin: 75px 20px;">
+                <rect x="0" y="0" width="150" height="300" rx="25" fill="#1e293b" filter="url(#shadowHeavy)"/>
+                <rect x="5" y="5" width="140" height="290" rx="20" fill="#ffffff"/>
+                
+                <!-- Dynamic UI -->
+                <g style="animation: uiContent 10s infinite;">
+                    
+                    <!-- 1. Vibrant Brand Header -->
+                    <!-- Red Block Background -->
+                    <path d="M 5 25 Q 5 5 25 5 L 125 5 Q 145 5 145 25 L 145 95 L 5 95 Z" fill="url(#brandGrad)"/>
+                    
+                    <!-- Yellow Accent Bar -->
+                    <rect x="5" y="95" width="140" height="15" fill="#FACC15"/>
+                    <text x="75" y="106" font-family="sans-serif" font-weight="900" font-size="8" fill="#1e293b" text-anchor="middle" letter-spacing="2">AUTHENTICATED ✓</text>
+
+                    <!-- Header Text Centered -->
+                    <g transform="translate(75, 50)">
+                        <text x="0" y="2" font-family="sans-serif" font-weight="900" font-size="22" fill="#ffffff" text-anchor="middle" letter-spacing="1">ACETA-MED</text>
+                        <text x="0" y="18" font-family="sans-serif" font-weight="bold" font-size="9" fill="#fecdd3" text-anchor="middle" letter-spacing="0.5">160mg / 5mL</text>
+                    </g>
+
+                    <!-- 2. Patient Selection Avatars (Middle) -->
+                    <text x="75" y="135" font-family="sans-serif" font-weight="bold" font-size="11" fill="#64748b" text-anchor="middle">Select Patient</text>
+                    
+                    <!-- Left Avatar: Blonde Girl (Lily) -->
+                    <g transform="translate(30, 175)">
+                        <circle cx="0" cy="0" r="16" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+                        <path d="M-8 8 Q-10 -10 0 -12 Q10 -10 8 8" fill="#fcd34d"/> <!-- Long blonde hair -->
+                        <circle cx="0" cy="-3" r="5" fill="#ffedd5"/> <!-- Face -->
+                        <path d="M-7 12 Q0 2 7 12 Z" fill="#f43f5e"/> <!-- Shirt -->
+                        <text y="24" font-family="sans-serif" font-size="8" font-weight="bold" fill="#64748b" text-anchor="middle">Lily</text>
+                    </g>
+                    
+                    <!-- Center Avatar: Brown Hair Boy (Leo) - Selected -->
+                    <g transform="translate(75, 175)">
+                        <circle cx="0" cy="0" r="22" fill="#eff6ff" stroke="#3b82f6" style="animation: selectionPulse 10s infinite;"/>
+                        <circle cx="0" cy="-4" r="6" fill="#ffedd5"/> <!-- Face -->
+                        <path d="M-6 -6 Q0 -12 6 -6 Q8 -2 6 -2 Q0 -6 -6 -2" fill="#78350f"/> <!-- Short brown hair -->
+                        <path d="M-10 14 Q0 2 10 14 Z" fill="#3b82f6"/> <!-- Shirt -->
+                        
+                        <!-- Checkmark badge -->
+                        <circle cx="14" cy="14" r="7" fill="#10b981" stroke="#ffffff" stroke-width="2"/>
+                        <path d="M 11 14 L 13 16 L 17 12" fill="none" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        <text y="30" font-family="sans-serif" font-size="9" font-weight="bold" fill="#3b82f6" text-anchor="middle">Leo (You)</text>
+                    </g>
+                    
+                    <!-- Right Avatar: Long Brown Hair Boy (Sam) -->
+                    <g transform="translate(120, 175)">
+                        <circle cx="0" cy="0" r="16" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+                        <path d="M-8 10 Q-12 -12 0 -13 Q12 -12 8 10" fill="#451a03"/> <!-- Long brown hair -->
+                        <circle cx="0" cy="-3" r="5" fill="#ffedd5"/> <!-- Face -->
+                        <path d="M-7 12 Q0 2 7 12 Z" fill="#0ea5e9"/> <!-- Shirt -->
+                        <text y="24" font-family="sans-serif" font-size="8" font-weight="bold" fill="#64748b" text-anchor="middle">Sam</text>
+                    </g>
+
+                    <!-- 3. Dynamic Dose Amount (Appears after selection) -->
+                    <g style="animation: doseFadeIn 10s infinite;">
+                        <text x="75" y="235" font-family="sans-serif" font-weight="900" font-size="14" fill="#10b981" text-anchor="middle">5 mL</text>
+                    </g>
+
+                    <!-- 4. LOG DOSE BUTTON (Bottom) -->
+                    <g transform="translate(15, 245)">
+                        <rect width="120" height="36" rx="18" fill="#10b981" filter="url(#shadowSoft)"/>
+                        <text x="60" y="22" font-family="sans-serif" font-weight="bold" font-size="12" fill="#ffffff" text-anchor="middle" letter-spacing="1">LOG DOSE</text>
+                    </g>
+                </g>
+                
+                <!-- Hardware Notch (Used as physical pivot visually during the tap) -->
+                <rect x="55" y="12" width="40" height="8" rx="4" fill="#0f172a"/>
+            </g>
+        </svg>
