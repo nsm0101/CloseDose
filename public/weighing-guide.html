@@ -54,149 +54,55 @@
           <div class="med-guide__header">
             <div class="med-guide__header-text">
               <h2>The tared scale method</h2>
-              <p>Watch the demo, then follow the four numbered steps below. The whole process takes about 30 seconds.</p>
+              <p>Watch the animation below to see how to use the tared scale method. The whole process takes about 30 seconds.</p>
             </div>
           </div>
 
-          <!-- Animated SVG demo -->
+          <!-- Animated demo -->
           <div class="tare-demo">
-            <svg
-              class="tare-svg"
-              viewBox="0 0 400 290"
-              xmlns="http://www.w3.org/2000/svg"
-              role="img"
-              aria-label="Animation: a parent steps on a bathroom scale alone, steps off, presses the TARE button so the scale reads zero, then steps on again holding their baby. The scale now displays only the baby's weight."
-            >
-              <!-- Floor -->
-              <line x1="20" y1="248" x2="380" y2="248" stroke="#cbd5e1" stroke-width="2" stroke-linecap="round" />
-
-              <!-- Scale shadow -->
-              <ellipse cx="200" cy="252" rx="92" ry="4" fill="rgba(15,44,42,0.12)" />
-
-              <!-- Scale base -->
-              <rect x="115" y="220" width="170" height="26" rx="5" fill="#1f2937" />
-              <rect x="120" y="226" width="160" height="14" rx="3" fill="#374151" />
-
-              <!-- Scale display screen -->
-              <rect x="155" y="194" width="90" height="26" rx="5" fill="#0f172a" stroke="#374151" stroke-width="1" />
-
-              <!-- Display values (overlapping, animated opacity) -->
-              <text x="200" y="213" class="display-num display-num--1" text-anchor="middle"
-                    font-family="'Courier New', monospace" font-size="15" fill="#22c55e" font-weight="900">150.4</text>
-              <text x="200" y="213" class="display-num display-num--2" text-anchor="middle"
-                    font-family="'Courier New', monospace" font-size="15" fill="#22c55e" font-weight="900">0.0</text>
-              <text x="200" y="213" class="display-num display-num--3" text-anchor="middle"
-                    font-family="'Courier New', monospace" font-size="15" fill="#fbbf24" font-weight="900">17.6</text>
-
-              <!-- "lb" label always visible -->
-              <text x="237" y="213" font-family="'Courier New', monospace" font-size="10" fill="#94a3b8" font-weight="700">lb</text>
-
-              <!-- TARE button (always visible) -->
-              <circle cx="285" cy="232" r="6" fill="#475569" stroke="#1f2937" stroke-width="1" />
-              <text x="285" y="245" text-anchor="middle" font-family="Nunito, sans-serif" font-size="6" fill="#0f2c2a" font-weight="700">TARE</text>
-
-              <!-- TARE button glow (animated highlight) -->
-              <g class="tare-button-glow">
-                <circle cx="285" cy="232" r="14" fill="none" stroke="#fbbf24" stroke-width="2.5" opacity="0.85" />
-                <circle cx="285" cy="232" r="20" fill="none" stroke="#fbbf24" stroke-width="1.5" opacity="0.5" />
-              </g>
-
-              <!-- Person silhouette (animated) -->
-              <g class="person">
-                <!-- Head -->
-                <circle cx="200" cy="115" r="22" fill="#0d8f8a" />
-                <!-- Body -->
-                <rect x="178" y="138" width="44" height="78" rx="10" fill="#0d8f8a" />
-                <!-- Arms -->
-                <rect x="166" y="148" width="14" height="50" rx="7" fill="#0d8f8a" />
-                <rect x="220" y="148" width="14" height="50" rx="7" fill="#0d8f8a" />
-                <!-- Legs (peek below the body) -->
-                <rect x="184" y="210" width="13" height="14" rx="3" fill="#0a706c" />
-                <rect x="203" y="210" width="13" height="14" rx="3" fill="#0a706c" />
-              </g>
-
-              <!-- Baby bundle (animated) -->
-              <g class="baby">
-                <ellipse cx="200" cy="158" rx="20" ry="24" fill="#fbbf24" />
-                <circle cx="200" cy="142" r="9" fill="#fde68a" />
-                <circle cx="197" cy="141" r="1.2" fill="#0f2c2a" />
-                <circle cx="203" cy="141" r="1.2" fill="#0f2c2a" />
-                <path d="M197 145 Q200 147 203 145" stroke="#0f2c2a" stroke-width="0.8" fill="none" stroke-linecap="round" />
-              </g>
-
-              <!-- Captions -->
-              <text x="200" y="278" text-anchor="middle" font-family="Nunito, sans-serif" font-size="12" font-weight="800" fill="#0f2c2a" class="caption caption--1">Step 1 — Step on the scale alone</text>
-              <text x="200" y="278" text-anchor="middle" font-family="Nunito, sans-serif" font-size="12" font-weight="800" fill="#0f2c2a" class="caption caption--2" opacity="0">Step 2 — Step off and wait</text>
-              <text x="200" y="278" text-anchor="middle" font-family="Nunito, sans-serif" font-size="12" font-weight="800" fill="#6b4000" class="caption caption--3" opacity="0">Step 3 — Press the TARE button</text>
-              <text x="200" y="278" text-anchor="middle" font-family="Nunito, sans-serif" font-size="12" font-weight="800" fill="#0d8f8a" class="caption caption--4" opacity="0">Step 4 — Step on holding your baby!</text>
-            </svg>
-
-            <!-- Step indicator dots -->
-            <div class="tare-dots" aria-hidden="true">
-              <span class="tare-dot tare-dot--1"></span>
-              <span class="tare-dot tare-dot--2"></span>
-              <span class="tare-dot tare-dot--3"></span>
-              <span class="tare-dot tare-dot--4"></span>
-            </div>
-          </div>
-
-          <!-- Step-by-step cards (static reference) -->
-          <div class="step-grid">
-            <div class="step-card">
-              <div class="step-card__num">1</div>
-              <div class="step-card__body">
-                <h3 class="step-card__title">Step on alone</h3>
-                <p class="step-card__text">Place a digital bathroom scale on a hard, flat surface. Step on without your baby and wait for the reading to settle.</p>
-              </div>
-            </div>
-            <div class="step-card">
-              <div class="step-card__num">2</div>
-              <div class="step-card__body">
-                <h3 class="step-card__title">Step off the scale</h3>
-                <p class="step-card__text">Step away. Most digital scales will keep displaying your weight for a few seconds.</p>
-              </div>
-            </div>
-            <div class="step-card">
-              <div class="step-card__num">3</div>
-              <div class="step-card__body">
-                <h3 class="step-card__title">Press TARE / ZERO</h3>
-                <p class="step-card__text">Press the <strong>TARE</strong> or <strong>ZERO</strong> button on the scale until the display reads <code>0.0</code>. This tells the scale to ignore your weight on the next reading.</p>
-              </div>
-            </div>
-            <div class="step-card">
-              <div class="step-card__num">4</div>
-              <div class="step-card__body">
-                <h3 class="step-card__title">Step back on with baby</h3>
-                <p class="step-card__text">Hold your baby securely against your chest and step back on. The number now shown is your <strong>baby's weight</strong> alone.</p>
-              </div>
-            </div>
+            <img
+              src="images/tared-weighing-ani.svg"
+              class="tare-anim-img"
+              alt="Animation showing the tared scale method: step on the scale alone, press TARE so the display reads zero, then step back on holding your baby — the scale now shows only your baby's weight."
+            />
           </div>
 
           <!-- Subtraction method (alternative for non-tare scales) -->
-          <details class="tare-alt">
-            <summary>Don't see a TARE / ZERO button on your scale?</summary>
-            <p>Use the <strong>subtraction method</strong>. Weigh yourself, then weigh again holding your baby — the difference is your baby's weight.</p>
-            <ol>
-              <li>Step on the scale alone, write down your weight.</li>
-              <li>Step on again holding your baby, write down that weight.</li>
-              <li>Subtract — that's your baby's weight in pounds.</li>
-            </ol>
-
-            <!-- Inline subtraction calculator -->
-            <div class="tare-calc" role="group" aria-label="Subtraction weight calculator">
-              <label>
-                <span>Your weight alone (lb)</span>
-                <input type="number" id="weight-alone" inputmode="decimal" step="0.1" min="0" placeholder="e.g. 150.4" autocomplete="off" />
-              </label>
-              <label>
-                <span>Weight holding baby (lb)</span>
-                <input type="number" id="weight-with-baby" inputmode="decimal" step="0.1" min="0" placeholder="e.g. 168.0" autocomplete="off" />
-              </label>
-              <div class="tare-calc__result" id="tare-result" aria-live="polite">
-                Enter both weights to see your baby's weight.
+          <div class="tare-alt-wrapper">
+            <button type="button" class="no-tare-btn" id="noTareBtn" aria-expanded="false" aria-controls="subtractionCalc">
+              No TARE / ZERO feature?
+            </button>
+            <div id="subtractionCalc" class="subtraction-calc-card" hidden>
+              <div class="subtraction-calc" role="group" aria-label="Subtraction weight calculator">
+                <div class="subtraction-calc__header">
+                  <span class="subtraction-calc__header-icon" aria-hidden="true">−</span>
+                  <span class="subtraction-calc__header-title">Subtraction Method</span>
+                </div>
+                <div class="subtraction-calc__screen" id="tare-result" aria-live="polite">
+                  <span class="subtraction-calc__screen-label">Baby's weight</span>
+                  <span class="subtraction-calc__screen-val subtraction-calc__screen-val--placeholder" id="tare-screen-val">— —</span>
+                </div>
+                <div class="subtraction-calc__keys">
+                  <label class="subtraction-calc__field">
+                    <span class="subtraction-calc__field-label">Your weight alone</span>
+                    <div class="subtraction-calc__field-row">
+                      <input type="number" id="weight-alone" inputmode="decimal" step="0.1" min="0" placeholder="0.0" autocomplete="off" />
+                      <span class="subtraction-calc__unit">lb</span>
+                    </div>
+                  </label>
+                  <div class="subtraction-calc__op" aria-hidden="true">−</div>
+                  <label class="subtraction-calc__field">
+                    <span class="subtraction-calc__field-label">Weight holding baby</span>
+                    <div class="subtraction-calc__field-row">
+                      <input type="number" id="weight-with-baby" inputmode="decimal" step="0.1" min="0" placeholder="0.0" autocomplete="off" />
+                      <span class="subtraction-calc__unit">lb</span>
+                    </div>
+                  </label>
+                  <div class="subtraction-calc__error" id="tare-error" aria-live="polite" hidden></div>
+                </div>
               </div>
             </div>
-          </details>
+          </div>
 
           <!-- Tips card -->
           <div class="tip-card">
@@ -286,28 +192,54 @@
 
   <script src="global.js" defer></script>
   <script>
+    // No-tare button expand/collapse
+    (function () {
+      var btn = document.getElementById('noTareBtn');
+      var card = document.getElementById('subtractionCalc');
+      if (!btn || !card) return;
+      btn.addEventListener('click', function () {
+        var expanded = btn.getAttribute('aria-expanded') === 'true';
+        btn.setAttribute('aria-expanded', String(!expanded));
+        card.hidden = expanded;
+        if (!expanded) {
+          var firstInput = card.querySelector('input');
+          if (firstInput) firstInput.focus();
+        }
+      });
+    })();
+
     // Subtraction calculator (live update)
     (function () {
       var alone = document.getElementById('weight-alone');
       var withBaby = document.getElementById('weight-with-baby');
-      var result = document.getElementById('tare-result');
-      if (!alone || !withBaby || !result) return;
+      var screenVal = document.getElementById('tare-screen-val');
+      var errorEl = document.getElementById('tare-error');
+      if (!alone || !withBaby || !screenVal) return;
 
       function update() {
         var a = parseFloat(alone.value);
         var b = parseFloat(withBaby.value);
-        if (isFinite(a) && isFinite(b)) {
+        var hasA = alone.value !== '' && isFinite(a);
+        var hasB = withBaby.value !== '' && isFinite(b);
+
+        if (hasA && hasB) {
           if (b > a) {
             var diff = (b - a).toFixed(1);
-            result.innerHTML = "Baby's weight: <strong>" + diff + " lb</strong>";
-            result.classList.add('has-result');
+            screenVal.textContent = diff + ' lb';
+            screenVal.classList.remove('subtraction-calc__screen-val--placeholder', 'subtraction-calc__screen-val--error');
+            screenVal.classList.add('subtraction-calc__screen-val--result');
+            if (errorEl) errorEl.hidden = true;
           } else {
-            result.textContent = "The 'with baby' weight should be greater than your weight alone.";
-            result.classList.remove('has-result');
+            screenVal.textContent = 'ERR';
+            screenVal.classList.remove('subtraction-calc__screen-val--placeholder', 'subtraction-calc__screen-val--result');
+            screenVal.classList.add('subtraction-calc__screen-val--error');
+            if (errorEl) { errorEl.textContent = '"With baby" weight must be greater than your weight alone.'; errorEl.hidden = false; }
           }
         } else {
-          result.textContent = "Enter both weights to see your baby's weight.";
-          result.classList.remove('has-result');
+          screenVal.textContent = '— —';
+          screenVal.classList.remove('subtraction-calc__screen-val--result', 'subtraction-calc__screen-val--error');
+          screenVal.classList.add('subtraction-calc__screen-val--placeholder');
+          if (errorEl) errorEl.hidden = true;
         }
       }
       alone.addEventListener('input', update);
