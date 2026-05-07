@@ -163,15 +163,16 @@ select[hidden] {
 header {
   position: relative;
   z-index: 1000;
-  width: 100%;
+  width: min(720px, 100%);
+  margin: 0 auto;
   padding: clamp(14px, 3vw, 26px) 0 clamp(6px, 2vw, 14px);
-  margin-bottom: 0;
+  display: flex;
+  justify-content: center;
 }
 
 .header-wordmark {
   display: block;
-  width: 100%;
-  max-width: 720px;
+  width: clamp(160px, 40%, 260px);
   height: auto;
 }
 
@@ -553,7 +554,7 @@ main {
 .disclaimer-close:hover { background: rgba(15, 44, 42, 0.06); }
 
 /* --- Header link wrapper --- */
-.header-link { display: block; width: 100%; line-height: 0; }
+.header-link { display: block; line-height: 0; }
 .header-link:focus-visible { outline: 3px solid var(--teal-400); outline-offset: 4px; border-radius: 8px; }
 
 /* Cappy Waitlist Pill - SMALLER & BOTTOM RIGHT */
