@@ -162,52 +162,46 @@ select[hidden] {
 
 header {
   position: relative;
-  top: 0;
   z-index: 1000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: clamp(12px, 3vw, 32px);
-  padding: clamp(14px, 3vw, 26px) clamp(18px, 5vw, 48px) clamp(6px, 2vw, 14px);
+  width: 100%;
+  padding: clamp(14px, 3vw, 26px) 0 clamp(6px, 2vw, 14px);
   margin-bottom: 0;
 }
 
 .header-wordmark {
   display: block;
-  width: min(390px, 60vw);
-  max-width: 100%;
+  width: 100%;
+  max-width: 100vw;
   height: auto;
-  margin: 0 auto;
 }
 
 .menu-btn {
   appearance: none;
   border: var(--card-border);
-  border-radius: 50%;
+  border-radius: 999px;
   background: var(--white);
   color: var(--ink-900);
   font-weight: 900;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  padding: 12px;
-  font-size: 0;
+  padding: 12px 20px;
+  font-size: 0.95rem;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 12px;
   cursor: pointer;
   box-shadow: var(--shadow-btn);
-  transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease, width 0.18s ease, padding 0.18s ease, border-radius 0.18s ease;
+  transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
   position: fixed;
   top: clamp(16px, 3vw, 32px);
-  right: clamp(18px, 5vw, 48px);
+  left: clamp(18px, 5vw, 48px);
   z-index: 1200;
-  width: 56px;
   height: 56px;
 }
 
-.menu-btn .label { display: none; }
-.menu-btn .hamburger { width: 24px; height: 16px; position: relative; }
+.menu-btn .label { display: inline; }
+.menu-btn .hamburger { width: 24px; height: 16px; position: relative; flex-shrink: 0; }
 .menu-btn .hamburger span { position: absolute; left: 0; right: 0; height: 3px; border-radius: 999px; background: var(--ink-900); transition: background 0.12s ease; }
 .menu-btn .hamburger span:nth-child(1) { top: 0; }
 .menu-btn .hamburger span:nth-child(2) { top: 6px; }
@@ -215,16 +209,22 @@ header {
 
 .menu-btn:hover, .menu-btn:focus-visible { background: #f0faf6; box-shadow: 0 5px 0 rgba(15, 44, 42, 0.35); outline: none; }
 .menu-btn:active { transform: translateY(2px); box-shadow: inset 0 4px 8px rgba(15, 44, 42, 0.25); }
-.menu-btn.is-expanded { width: auto; height: 56px; padding: 12px 20px; border-radius: 999px; font-size: 0.95rem; }
-.menu-btn.is-expanded .label { display: inline; }
 
-@media (max-width: 960px) {
-  header { padding-inline: clamp(16px, 5vw, 32px); }
-  .menu-btn { top: auto; bottom: clamp(20px, 6vw, 40px); right: auto; left: clamp(20px, 6vw, 40px); box-shadow: 0 8px 0 rgba(15, 44, 42, 0.35); }
-}
-
+/* Narrow screens: icon-only at bottom-left */
 @media (max-width: 640px) {
-  header { background: transparent !important; padding: clamp(10px, 3vw, 18px) clamp(16px, 6vw, 28px) clamp(4px, 2vw, 12px); }
+  header { background: transparent !important; padding: clamp(10px, 3vw, 18px) 0 clamp(4px, 2vw, 12px); }
+  .menu-btn {
+    top: auto;
+    left: clamp(20px, 6vw, 40px);
+    bottom: clamp(20px, 6vw, 40px);
+    width: 56px;
+    height: 56px;
+    padding: 12px;
+    border-radius: 50%;
+    font-size: 0;
+    box-shadow: 0 8px 0 rgba(15, 44, 42, 0.35);
+  }
+  .menu-btn .label { display: none; }
 }
 
 main {
@@ -553,7 +553,7 @@ main {
 .disclaimer-close:hover { background: rgba(15, 44, 42, 0.06); }
 
 /* --- Header link wrapper --- */
-.header-link { display: inline-block; line-height: 0; }
+.header-link { display: block; width: 100%; line-height: 0; }
 .header-link:focus-visible { outline: 3px solid var(--teal-400); outline-offset: 4px; border-radius: 8px; }
 
 /* Cappy Waitlist Pill - SMALLER & BOTTOM RIGHT */
@@ -2576,4 +2576,26 @@ html[data-theme="light"] .menu-theme-btn.is-active {
   background: var(--ink-900);
   border-color: var(--ink-900);
   color: #fff;
+}
+
+@layer components {
+  .svg-pomegranate-logo {
+    position: relative;
+  }
+
+  .svg-pomegranate-logo svg {
+    overflow: visible;
+  }
+
+  .svg-pomegranate-logo > div {
+    transform-origin: 0 90%;
+  }
+
+  .svg-pomegranate-logo > div:last-child {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+  }
 }
