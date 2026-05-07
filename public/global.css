@@ -277,6 +277,109 @@ main {
   color: var(--hero-sub-color);
 }
 
+/* --- Brand hero (home page wordmark) --- */
+.site-header--home {
+  min-height: 0;
+  padding: 0;
+}
+
+.brand-hero {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(18px, 4vw, 36px) 0 clamp(14px, 2.5vw, 24px);
+  margin: 0 auto;
+  animation: slam-in 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+}
+
+.brand-hero__link {
+  display: flex;
+  width: 75%;
+  max-width: 620px;
+  justify-content: center;
+  text-decoration: none;
+  border-radius: 12px;
+  transition: transform 0.25s ease;
+}
+
+.brand-hero__link:hover,
+.brand-hero__link:focus-visible {
+  transform: translateY(-2px);
+  outline: none;
+}
+
+.brand-hero__link:focus-visible {
+  outline: 3px solid var(--teal-400);
+  outline-offset: 6px;
+}
+
+.brand-hero__wordmark {
+  display: block;
+  width: 100%;
+  height: auto;
+  filter: drop-shadow(0 6px 22px rgba(13, 52, 82, 0.18));
+}
+
+@media (prefers-color-scheme: dark) {
+  .brand-hero__wordmark {
+    filter: drop-shadow(0 6px 24px rgba(0, 0, 0, 0.55));
+  }
+}
+
+html[data-theme="dark"] .brand-hero__wordmark {
+  filter: drop-shadow(0 6px 24px rgba(0, 0, 0, 0.55));
+}
+
+@media (max-width: 640px) {
+  .brand-hero {
+    padding: clamp(8px, 4vw, 18px) 0 clamp(8px, 3vw, 16px);
+  }
+  .brand-hero__link {
+    width: 82%;
+  }
+}
+
+@media (max-width: 380px) {
+  .brand-hero__link {
+    width: 88%;
+  }
+}
+
+/* --- Brand blurb (sidebar / under-calc on mobile) --- */
+.brand-blurb {
+  display: grid;
+  gap: 10px;
+  text-align: left;
+  background: linear-gradient(155deg, rgba(255, 255, 255, 0.96), rgba(232, 245, 240, 0.92));
+}
+
+.brand-blurb__eyebrow {
+  margin: 0;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--teal-500);
+}
+
+.brand-blurb__title {
+  margin: 0;
+  font-size: clamp(1.25rem, 0.6vw + 1.05rem, 1.55rem);
+  font-weight: 900;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+  color: var(--ink-900);
+}
+
+.brand-blurb__body {
+  margin: 0;
+  font-size: 0.98rem;
+  line-height: 1.55;
+  color: var(--ink-900);
+}
+
 /* --- Layout: single-column scrolling --- */
 .layout {
   width: min(720px, 100%);
@@ -304,6 +407,46 @@ main {
   display: flex;
   flex-direction: column;
   gap: 12px;
+}
+
+/* On desktop, expose a sidebar layout so the blurb + helper cards
+   live next to the calculator column. On mobile/tablet the same
+   sidebar collapses below the calculator. */
+
+@media (min-width: 1024px) {
+  .layout--grid {
+    width: min(1140px, 100%);
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(280px, 360px);
+    align-items: start;
+    gap: clamp(20px, 2.4vw, 32px);
+  }
+  .layout--secondary {
+    width: min(1140px, 100%);
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(280px, 360px);
+    align-items: start;
+    gap: clamp(20px, 2.4vw, 32px);
+  }
+  .layout--secondary > .card {
+    grid-column: 1;
+    max-width: 720px;
+  }
+  .calculator-column {
+    min-width: 0;
+    max-width: 720px;
+    width: 100%;
+    justify-self: start;
+  }
+  .info-column {
+    position: sticky;
+    top: clamp(20px, 3vw, 32px);
+    align-self: start;
+  }
+  .brand-hero__link {
+    width: 75%;
+    max-width: 560px;
+  }
 }
 
 .calculator-trust {
@@ -642,6 +785,25 @@ main {
   padding: 48px 24px;
   text-align: center;
   border-top: 1px solid var(--footer-border);
+}
+.cd-footer-logo-link {
+  display: inline-block;
+  margin: 0 auto 20px;
+  line-height: 0;
+  border-radius: 50%;
+  transition: transform 0.2s ease, filter 0.2s ease;
+}
+.cd-footer-logo-link:hover,
+.cd-footer-logo-link:focus-visible {
+  transform: translateY(-2px);
+  filter: drop-shadow(0 8px 18px rgba(77, 208, 225, 0.35));
+  outline: none;
+}
+.cd-footer-logo {
+  display: block;
+  width: clamp(96px, 12vw, 132px);
+  height: auto;
+  margin: 0 auto;
 }
 .cd-copy { font-weight: 700; margin-bottom: 24px; }
 .cd-legal { display: flex; justify-content: center; flex-wrap: wrap; gap: 16px; margin-bottom: 24px; }
