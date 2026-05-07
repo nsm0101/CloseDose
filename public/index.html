@@ -31,11 +31,8 @@
 <body>
   <a class="skip-link" href="#calculator-card">Skip to calculator</a>
 
-  <div class="wrap">
-    <header>
-      <a href="index.html" class="header-link" aria-label="CloseDose home">
-        <img src="images/Logomark-WC.png" alt="CloseDose" class="header-wordmark" />
-      </a>
+  <div class="wrap wrap--home">
+    <header class="site-header site-header--home">
       <button class="menu-btn" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="siteMenu" aria-label="Open menu">
         <span class="label">Menu</span>
         <span class="hamburger" aria-hidden="true"><span></span><span></span><span></span></span>
@@ -43,14 +40,22 @@
     </header>
 
     <main>
-      <section class="hero" aria-labelledby="hero-heading">
-        <p class="hero-eyebrow">Built by pediatric physicians · Free for families</p>
-        <h1 id="hero-heading" class="hero-title">Confident pediatric dosing in seconds.</h1>
-        <p class="hero-sub">Enter your child's age and weight to get accurate acetaminophen and ibuprofen dosing — no account, no math, no guesswork.</p>
-      </section>
-
       <div class="layout layout--grid">
         <div class="calculator-column">
+          <section class="brand-hero" aria-label="CloseDose">
+            <a href="index.html" class="brand-hero__link" aria-label="CloseDose home">
+              <img
+                src="images/CloseDose_ExtendedLogo.svg"
+                alt="CloseDose — pediatric dosing calculator"
+                class="brand-hero__wordmark"
+                width="1830"
+                height="750"
+                fetchpriority="high"
+              />
+            </a>
+            <h1 id="hero-heading" class="visually-hidden">CloseDose — confident pediatric dosing in seconds</h1>
+          </section>
+
           <div class="calculator-widget-host" id="calculator-card" data-calculator-root></div>
 
           <p class="calculator-trust">
@@ -60,6 +65,12 @@
         </div>
 
         <aside class="info-column" aria-label="How to use and safety reminders">
+          <section class="card brand-blurb" aria-labelledby="brand-blurb-heading">
+            <p class="brand-blurb__eyebrow">Built by pediatric physicians · Free for families</p>
+            <h2 id="brand-blurb-heading" class="brand-blurb__title">Confident pediatric dosing in seconds.</h2>
+            <p class="brand-blurb__body">Enter your child's age and weight to get accurate acetaminophen and ibuprofen dosing — no account, no math, no guesswork.</p>
+          </section>
+
           <a class="cross-link-card" href="weighing-guide.html" aria-label="Open the weighing guide for infants and young children">
             <span class="cross-link-card__emoji" aria-hidden="true">⚖️</span>
             <span class="cross-link-card__body">
@@ -152,6 +163,9 @@
   </div>
 
   <footer class="cd-footer" role="contentinfo">
+    <a href="index.html" class="cd-footer-logo-link" aria-label="CloseDose home">
+      <img src="images/LOGO-WC.png" alt="CloseDose" class="cd-footer-logo" width="800" height="800" loading="lazy" />
+    </a>
     <p class="cd-copy">2026 CloseDose. All rights reserved.</p>
     <nav class="cd-legal cd-legal--full" aria-label="Legal">
       <a href="/legal/terms">Terms</a>
