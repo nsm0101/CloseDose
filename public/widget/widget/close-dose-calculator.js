@@ -146,6 +146,28 @@
 
 
   const BASE_STYLES = `
+    .cdcalc-wrapper {
+      position: relative;
+      max-width: 720px;
+      margin: 0 auto;
+    }
+
+    .cdcalc-wrapper--has-logomark {
+      padding-top: 60px;
+    }
+
+    .cdcalc-logomark {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 120px;
+      height: 120px;
+      display: block;
+      pointer-events: none;
+      user-select: none;
+    }
+
     .cdcalc-card {
       font-family: "Nunito", system-ui, -apple-system, "Segoe UI", sans-serif;
       background: rgba(255, 255, 255, 0.92);
@@ -153,8 +175,8 @@
       border-radius: 26px;
       box-shadow: 0 6px 0 rgba(15, 44, 42, 0.18);
       padding: clamp(20px, 3vw, 32px);
-      max-width: 720px;
-      margin: 0 auto;
+      max-width: 100%;
+      margin: 0;
       color: #0f2c2a;
       --cdcalc-gold: #ffe8a8;
     }
@@ -798,7 +820,7 @@
     }
   }
 
-  function buildMarkup(strings, ids) {
+  function buildMarkup(strings, ids, logomarkSrc) {
     const { form, units } = strings;
     const fallbackAgeOptions = DEFAULT_STRINGS.form.ageOptions || {};
     const ageOptions = form.ageOptions || {};
@@ -915,7 +937,13 @@
       return label.accessible || label.primary;
     };
     const calculateStepLabel = form.calculateStep || '';
+    const wrapperClass = logomarkSrc ? 'cdcalc-wrapper cdcalc-wrapper--has-logomark' : 'cdcalc-wrapper';
+    const logomarkHtml = logomarkSrc
+      ? `<img class="cdcalc-logomark" src="${logomarkSrc}" alt="" aria-hidden="true">`
+      : '';
     return `
+      <div class="${wrapperClass}">
+        ${logomarkHtml}
       <div class="cdcalc-card" data-calculator-card aria-labelledby="${ids.title}" role="group">
         <div class="cdcalc-header">
           <h2 class="cdcalc-title" id="${ids.title}">${strings.title}</h2>
@@ -974,6 +1002,7 @@
           </div>
           <div class="cdcalc-results" data-results role="region" aria-live="polite" aria-label="${strings.accessibility.resultsRegion}"></div>
         </form>
+      </div>
       </div>
     `;
   }
@@ -1628,7 +1657,10 @@
       weight: `cdcalc-weight-${idSuffix}`,
     };
 
-    host.innerHTML = buildMarkup(strings, ids);
+    const logomarkSrc = Object.prototype.hasOwnProperty.call(options, 'logomarkSrc')
+      ? options.logomarkSrc
+      : '/images/Logomark-WC.png';
+    host.innerHTML = buildMarkup(strings, ids, logomarkSrc);
     const styleElement = injectStyles(host, options);
 
     const card = host.querySelector('[data-calculator-card]');
