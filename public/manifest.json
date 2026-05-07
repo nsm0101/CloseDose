@@ -10,17 +10,10 @@
   "background_color": "#ffffff",
   "icons": [
     {
-      "src": "images/logo-teal.png",
+      "src": "images/LOGO-WC.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
-    },
-    {
-      "src": "images/logo-dark.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any",
-      "media": "(prefers-color-scheme: dark)"
     }
   ]
 }
