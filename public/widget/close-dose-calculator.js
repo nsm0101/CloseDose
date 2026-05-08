@@ -161,8 +161,8 @@
       top: 0;
       left: 50%;
       transform: translateX(-50%);
-      width: 120px;
-      height: 120px;
+      width: 200px;
+      height: auto;
       display: block;
       pointer-events: none;
       user-select: none;
@@ -1659,7 +1659,7 @@
 
     const logomarkSrc = Object.prototype.hasOwnProperty.call(options, 'logomarkSrc')
       ? options.logomarkSrc
-      : '/images/Logomark-WC.png';
+      : '/images/logomark-WC.png';
     host.innerHTML = buildMarkup(strings, ids, logomarkSrc);
     const styleElement = injectStyles(host, options);
 

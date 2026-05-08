@@ -45,11 +45,23 @@ a:hover,a:focus{text-decoration:underline;}
   box-shadow:0 10px 30px rgba(18,57,52,0.18);
 }
 .legal-brand{
-  text-transform:uppercase;
-  letter-spacing:0.22em;
-  font-size:0.78rem;
-  font-weight:700;
-  opacity:0.9;
+  display:inline-block;
+}
+.legal-brand a{
+  display:inline-block;
+  border-radius:12px;
+  outline:none;
+}
+.legal-brand a:focus-visible{
+  outline:3px solid rgba(255,255,255,0.8);
+  outline-offset:6px;
+}
+.legal-brand img{
+  display:block;
+  width:clamp(160px,28vw,240px);
+  height:auto;
+  margin:0 auto;
+  filter:drop-shadow(0 6px 18px rgba(0,0,0,0.18));
 }
 .legal-title{
   margin:12px 0 6px;
