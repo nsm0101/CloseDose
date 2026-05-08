@@ -45,11 +45,11 @@
           <section class="brand-hero" aria-label="CloseDose">
             <a href="index.html" class="brand-hero__link" aria-label="CloseDose home">
               <img
-                src="images/CloseDose_ExtendedLogo.svg"
+                src="images/Logomark-WC.png"
                 alt="CloseDose — pediatric dosing calculator"
                 class="brand-hero__wordmark"
-                width="1830"
-                height="750"
+                width="3906"
+                height="3906"
                 fetchpriority="high"
               />
             </a>
@@ -196,7 +196,7 @@
     window.addEventListener('DOMContentLoaded', function () {
       var host = document.querySelector('[data-calculator-root]');
       if (host && window.CloseDoseCalculator) {
-        window.CloseDoseCalculator.mount(host, { id: 'main-calculator' });
+        window.CloseDoseCalculator.mount(host, { id: 'main-calculator', logomarkSrc: '' });
       }
     });
   </script>
