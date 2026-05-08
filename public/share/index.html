@@ -59,6 +59,28 @@
       gap: 16px;
     }
 
+    .share-brand {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 4px;
+    }
+
+    .share-brand a {
+      display: inline-block;
+      border-radius: 12px;
+    }
+
+    .share-brand a:focus-visible {
+      outline: 3px solid var(--color-text);
+      outline-offset: 4px;
+    }
+
+    .share-brand img {
+      display: block;
+      width: clamp(180px, 40%, 260px);
+      height: auto;
+    }
+
     h1, h2, h3, p { margin: 0; }
 
     .details-grid {
@@ -96,6 +118,11 @@
 </head>
 <body>
   <main class="card" aria-live="polite">
+    <div class="share-brand">
+      <a href="../index.html" aria-label="CloseDose home">
+        <img src="../images/logomark-WC.png" alt="CloseDose" />
+      </a>
+    </div>
     <h1 data-i18n="share.title">Shared dosing card</h1>
     <p class="status" id="share-status">Loading…</p>
     <div class="details-grid" id="share-details" hidden>
