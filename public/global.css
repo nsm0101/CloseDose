@@ -240,6 +240,10 @@ main {
   overflow-x: hidden;
 }
 
+.wrap--home main {
+  padding-top: clamp(2px, 0.8vw, 8px);
+}
+
 /* --- Hero --- */
 .hero {
   width: min(720px, 100%);
@@ -289,7 +293,7 @@ main {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: clamp(18px, 4vw, 36px) 0 clamp(14px, 2.5vw, 24px);
+  padding: clamp(6px, 1.5vw, 16px) 0 clamp(2px, 0.8vw, 8px);
   margin: 0 auto;
   animation: slam-in 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
 }
@@ -334,7 +338,7 @@ html[data-theme="dark"] .brand-hero__wordmark {
 
 @media (max-width: 640px) {
   .brand-hero {
-    padding: clamp(8px, 4vw, 18px) 0 clamp(8px, 3vw, 16px);
+    padding: clamp(2px, 1.5vw, 8px) 0 clamp(2px, 1vw, 6px);
   }
   .brand-hero__link {
     width: 82%;
@@ -406,7 +410,7 @@ html[data-theme="dark"] .brand-hero__wordmark {
 .calculator-column {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 6px;
 }
 
 /* On desktop, expose a sidebar layout so the blurb + helper cards
