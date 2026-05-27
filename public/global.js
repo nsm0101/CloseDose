@@ -97,6 +97,27 @@
       picker.querySelectorAll('.menu-theme-btn').forEach(function (btn) {
         btn.addEventListener('click', function () { applyTheme(btn.dataset.themeChoice); });
       });
+
+      // Subtle launcher for the Cappy Run easter egg (tap-friendly on mobile,
+      // since the Konami code isn't reachable from a touchscreen). The bar is
+      // appended last so it sits at the bottom of the menu panel.
+      const secretBar = document.createElement('button');
+      secretBar.type = 'button';
+      secretBar.className = 'menu-secret-bar';
+      secretBar.setAttribute('aria-label', 'Launch Cappy Run');
+      secretBar.addEventListener('click', function () {
+        window.dispatchEvent(new Event('cappyrun:launch'));
+        const menuOverlay = document.getElementById('siteMenu');
+        const menuBtn = document.querySelector('.menu-btn');
+        if (menuOverlay && menuOverlay.classList.contains('open')) {
+          menuOverlay.classList.remove('open');
+          setTimeout(function () {
+            if (!menuOverlay.classList.contains('open')) menuOverlay.hidden = true;
+          }, 250);
+          if (menuBtn) menuBtn.setAttribute('aria-expanded', 'false');
+        }
+      });
+      menuPanel.appendChild(secretBar);
     }
 
     updateThemeUI();
@@ -266,8 +287,9 @@
   // --- Cappy Run (Konami code easter egg) ---
   // Lazy-load the game module + styles on the first DOMContentLoaded so the
   // Konami code listener is wired up across the site without bloating any page.
+  let cappyRunLoadPromise = null;
   function loadCappyRun() {
-    if (document.getElementById('cappy-run-css')) return;
+    if (cappyRunLoadPromise) return cappyRunLoadPromise;
     const link = document.createElement('link');
     link.id = 'cappy-run-css';
     link.rel = 'stylesheet';
@@ -276,8 +298,21 @@
     const script = document.createElement('script');
     script.src = 'cappy-run.js';
     script.defer = true;
+    cappyRunLoadPromise = new Promise(function (resolve) {
+      script.addEventListener('load', resolve);
+      script.addEventListener('error', resolve);
+    });
     document.head.appendChild(script);
+    return cappyRunLoadPromise;
   }
+  // Bridge: if a launch event fires before cappy-run.js has registered its
+  // own listener, ensure the module is loaded and then re-dispatch.
+  window.addEventListener('cappyrun:launch', function () {
+    if (window.__cappyRunInstalled) return;
+    loadCappyRun().then(function () {
+      window.dispatchEvent(new Event('cappyrun:launch'));
+    });
+  });
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', loadCappyRun);
   } else {
