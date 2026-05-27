@@ -57,100 +57,114 @@
   window.addEventListener('cappyrun:launch', launchGame);
 
   // ----------------------------- Sprite data -----------------------------
-  // Pixel art encoded as strings. '#' = dark, 'o' = light/fill, '.' = transparent.
-  // Mirrors the chunky black-and-white look of the CloseDose capybara logo.
+  // Pixel art encoded as strings. For Cappy sprites the palette is:
+  //   '.' transparent · '#' outline · 'B' body brown · 'L' light tan
+  //   'D' dark shade · 'E' eye black · 'W' eye highlight · 'M' smile
+  // Obstacles still use '#'/'o' against the foreground colors.
+
+  const CAPPY_PALETTE_LIGHT = {
+    '#': '#2b1409',
+    'B': '#a06438',
+    'L': '#d29862',
+    'D': '#6b3a1c',
+    'E': '#0d0703',
+    'W': '#ffffff',
+    'M': '#3d1707',
+  };
+
+  const CAPPY_PALETTE_DARK = {
+    '#': '#1a0c05',
+    'B': '#a06438',
+    'L': '#d29862',
+    'D': '#6b3a1c',
+    'E': '#000000',
+    'W': '#ffffff',
+    'M': '#2a0f04',
+  };
 
   const CAPPY_RUN_A = [
-    '..............####......',
-    '............##oooo##....',
-    '...........#oooooooo#...',
-    '..........#oooooo#oo#...',
-    '..........#oooooooooo#..',
-    '...##########ooooooooo#.',
-    '..#ooooooooooooooooooo#.',
-    '.#ooooooooooooooooooo#..',
-    '.#oooooooooooooooooo#...',
-    '.#oooooooooooooooooo#...',
-    '..#oooooooooooooooo#....',
-    '..#oo##ooooo##oooooo#...',
-    '..#oo##ooooo##oooooo#...',
-    '..#ooooooooooooooooo#...',
-    '...####...####..####....',
-    '...####...####..####....',
-    '...####...####..####....',
+    '..........................',
+    '.................##.......',
+    '.................####.....',
+    '...............#######....',
+    '..............#BBBBBBB#...',
+    '.............#LBBBBBBBB#..',
+    '............#LLBBEEBBBB#..',
+    '...........#LLBBBEWBBBBM#.',
+    '...#########LBBBBBBBBBBM#.',
+    '..#BBBBBBBBBBBBBBBBBBBBM#.',
+    '.#BBBBBBBBBBBBBBBBBBBBB##.',
+    '.#BBLLBBBBBBBBBBBBBBBB#...',
+    '.#BLLBBBBBBBBBBBBBBBBB#...',
+    '..#BBBBBBBBBBBBBBBBBB#....',
+    '...####...####...####.....',
+    '....##.....##.....##......',
   ];
 
   const CAPPY_RUN_B = [
-    '..............####......',
-    '............##oooo##....',
-    '...........#oooooooo#...',
-    '..........#oooooo#oo#...',
-    '..........#oooooooooo#..',
-    '...##########ooooooooo#.',
-    '..#ooooooooooooooooooo#.',
-    '.#ooooooooooooooooooo#..',
-    '.#oooooooooooooooooo#...',
-    '.#oooooooooooooooooo#...',
-    '..#oooooooooooooooo#....',
-    '..#oo##ooooo##oooooo#...',
-    '..#oo##ooooo##oooooo#...',
-    '..#ooooooooooooooooo#...',
-    '....####.####...####....',
-    '....####.####...####....',
-    '.....##...##.....##.....',
+    '..........................',
+    '.................##.......',
+    '.................####.....',
+    '...............#######....',
+    '..............#BBBBBBB#...',
+    '.............#LBBBBBBBB#..',
+    '............#LLBBEEBBBB#..',
+    '...........#LLBBBEWBBBBM#.',
+    '...#########LBBBBBBBBBBM#.',
+    '..#BBBBBBBBBBBBBBBBBBBBM#.',
+    '.#BBBBBBBBBBBBBBBBBBBBB##.',
+    '.#BBLLBBBBBBBBBBBBBBBB#...',
+    '.#BLLBBBBBBBBBBBBBBBBB#...',
+    '..#BBBBBBBBBBBBBBBBBB#....',
+    '....####...####...####....',
+    '.....##.....##.....##.....',
   ];
 
-  // Mid-jump pose (legs tucked)
+  // Mid-jump pose — legs tucked, all four feet off the ground.
   const CAPPY_JUMP = [
-    '..............####......',
-    '............##oooo##....',
-    '...........#oooooooo#...',
-    '..........#oooooo#oo#...',
-    '..........#oooooooooo#..',
-    '...##########ooooooooo#.',
-    '..#ooooooooooooooooooo#.',
-    '.#ooooooooooooooooooo#..',
-    '.#oooooooooooooooooo#...',
-    '.#oooooooooooooooooo#...',
-    '..#oooooooooooooooo#....',
-    '..#oo##ooooo##oooooo#...',
-    '..#oo##ooooo##oooooo#...',
-    '..#ooooooooooooooooo#...',
-    '...#####....##....####..',
-    '........................',
-    '........................',
+    '..........................',
+    '.................##.......',
+    '.................####.....',
+    '...............#######....',
+    '..............#BBBBBBB#...',
+    '.............#LBBBBBBBB#..',
+    '............#LLBBEEBBBB#..',
+    '...........#LLBBBEWBBBBM#.',
+    '...#########LBBBBBBBBBBM#.',
+    '..#BBBBBBBBBBBBBBBBBBBBM#.',
+    '.#BBBBBBBBBBBBBBBBBBBBB##.',
+    '.#BBLLBBBBBBBBBBBBBBBB#...',
+    '.#BLLBBBBBBBBBBBBBBBBB#...',
+    '..#BBBBBBBBBBBBBBBBBB#....',
+    '....##.....##....##.......',
+    '..........................',
   ];
 
-  // Ducking pose (lower profile, longer body) — 12 rows tall so the feet
-  // sit on the ground line when rendered at GROUND_Y - 24.
+  // Ducking pose — body stretched forward and low (10 rows tall, 30 wide).
   const CAPPY_DUCK_A = [
-    '.....................####...',
-    '...................##oooo#..',
-    '..##############oooooooooo#.',
-    '.#ooooooooooooooooooooo#oo#.',
-    '#oooooooooooooooooooooooooo#',
-    '#oooooooooooooooooooooooooo#',
-    '#oo##oooooo##oooooo##oooooo#',
-    '#oo##oooooo##oooooo##oooooo#',
-    '#oooooooooooooooooooooooooo#',
-    '.####...####...####...####..',
-    '.####...####...####...####..',
-    '.####...####...####...####..',
+    '.........................###..',
+    '........................#####.',
+    '...####################BBBBBB#',
+    '..#BBBBBBBBBBBBBBBBBBBBLBEEBB#',
+    '.#BBBBBBBBBBBBBBBBBBBBBLBEWBBM',
+    '#LLBBBBBBBBBBBBBBBBBBBBBBBBBM#',
+    '#BBBBBBBBBBBBBBBBBBBBBBBBBBB#.',
+    '.#BBBBBBBBBBBBBBBBBBBBBBBBB#..',
+    '..####...####...####...####...',
+    '...##.....##.....##.....##....',
   ];
 
   const CAPPY_DUCK_B = [
-    '.....................####...',
-    '...................##oooo#..',
-    '..##############oooooooooo#.',
-    '.#ooooooooooooooooooooo#oo#.',
-    '#oooooooooooooooooooooooooo#',
-    '#oooooooooooooooooooooooooo#',
-    '#oo##oooooo##oooooo##oooooo#',
-    '#oo##oooooo##oooooo##oooooo#',
-    '#oooooooooooooooooooooooooo#',
-    '..####...####...####...####.',
-    '..####...####...####...####.',
-    '...##.....##.....##.....##..',
+    '.........................###..',
+    '........................#####.',
+    '...####################BBBBBB#',
+    '..#BBBBBBBBBBBBBBBBBBBBLBEEBB#',
+    '.#BBBBBBBBBBBBBBBBBBBBBLBEWBBM',
+    '#LLBBBBBBBBBBBBBBBBBBBBBBBBBM#',
+    '#BBBBBBBBBBBBBBBBBBBBBBBBBBB#.',
+    '.#BBBBBBBBBBBBBBBBBBBBBBBBB#..',
+    '...####...####...####...####..',
+    '....##.....##.....##.....##...',
   ];
 
   // Obstacles: pineapple-style plants (Brazilian/Amazonian flair to fit a capybara habitat)
@@ -341,7 +355,7 @@
   CappyRun.prototype._reset = function () {
     this.cappy = {
       x: 60,
-      y: this.GROUND_Y - 34, // sprite height ~34px at scale 2
+      y: this.GROUND_Y - 32, // 16-row sprite × 2 scale
       vy: 0,
       onGround: true,
       ducking: false,
@@ -421,7 +435,7 @@
 
     const duck = this.keys.duck && this.cappy.onGround;
     this.cappy.ducking = duck;
-    const cappyH = duck ? 24 : 34;
+    const cappyH = duck ? 20 : 32;
     const groundY = this.GROUND_Y - cappyH;
     if (this.cappy.y >= groundY) {
       this.cappy.y = groundY;
@@ -468,10 +482,14 @@
   };
 
   CappyRun.prototype._cappyBox = function () {
+    // Sprites are scale-2; the visible body sits inside a small margin so
+    // the collision box trims the transparent borders.
     if (this.cappy.ducking) {
-      return { x: this.cappy.x + 4, y: this.cappy.y + 4, w: 50, h: 18 };
+      // Duck sprite: 30×10 cells → 60×20 px. Body spans cols 0-29, rows 2-7.
+      return { x: this.cappy.x + 4, y: this.cappy.y + 6, w: 54, h: 12 };
     }
-    return { x: this.cappy.x + 6, y: this.cappy.y + 4, w: 38, h: 28 };
+    // Run sprite: 26×16 cells → 52×32 px. Body spans cols 2-23, rows 4-13.
+    return { x: this.cappy.x + 6, y: this.cappy.y + 10, w: 42, h: 20 };
   };
 
   CappyRun.prototype._spawnObstacle = function () {
@@ -576,7 +594,8 @@
     } else {
       cappySprite = (this.cappy.runFrame === 0) ? CAPPY_RUN_A : CAPPY_RUN_B;
     }
-    drawSprite(ctx, cappySprite, this.cappy.x, this.cappy.y, 2, fg, dark ? '#243029' : '#fdfdfd');
+    drawSprite(ctx, cappySprite, this.cappy.x, this.cappy.y, 2,
+      dark ? CAPPY_PALETTE_DARK : CAPPY_PALETTE_LIGHT);
 
     // HUD
     ctx.fillStyle = fg;
@@ -600,19 +619,25 @@
   };
 
   // ------------------------------ Helpers --------------------------------
-  function drawSprite(ctx, rows, x, y, scale, darkColor, lightColor) {
+  function drawSprite(ctx, rows, x, y, scale, darkOrPalette, lightColor) {
+    const palette = (typeof darkOrPalette === 'object' && darkOrPalette !== null) ? darkOrPalette : null;
+    const darkColor = palette ? null : darkOrPalette;
     for (let r = 0; r < rows.length; r++) {
       const row = rows[r];
       for (let c = 0; c < row.length; c++) {
-        const ch = row.charCodeAt(c);
-        // '#' = 35, 'o' = 111, '.' = 46
-        if (ch === 35) {
-          ctx.fillStyle = darkColor;
-          ctx.fillRect(x + c * scale, y + r * scale, scale, scale);
-        } else if (ch === 111 && lightColor) {
-          ctx.fillStyle = lightColor;
-          ctx.fillRect(x + c * scale, y + r * scale, scale, scale);
+        const ch = row.charAt(c);
+        if (ch === '.') continue;
+        let color = null;
+        if (palette) {
+          color = palette[ch];
+        } else if (ch === '#') {
+          color = darkColor;
+        } else if (ch === 'o') {
+          color = lightColor;
         }
+        if (!color) continue;
+        ctx.fillStyle = color;
+        ctx.fillRect(x + c * scale, y + r * scale, scale, scale);
       }
     }
   }
