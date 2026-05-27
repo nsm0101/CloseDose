@@ -262,4 +262,25 @@
       });
     });
   }
+
+  // --- Cappy Run (Konami code easter egg) ---
+  // Lazy-load the game module + styles on the first DOMContentLoaded so the
+  // Konami code listener is wired up across the site without bloating any page.
+  function loadCappyRun() {
+    if (document.getElementById('cappy-run-css')) return;
+    const link = document.createElement('link');
+    link.id = 'cappy-run-css';
+    link.rel = 'stylesheet';
+    link.href = 'cappy-run.css';
+    document.head.appendChild(link);
+    const script = document.createElement('script');
+    script.src = 'cappy-run.js';
+    script.defer = true;
+    document.head.appendChild(script);
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', loadCappyRun);
+  } else {
+    loadCappyRun();
+  }
 })();
