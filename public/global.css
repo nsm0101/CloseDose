@@ -828,8 +828,8 @@ html[data-theme="dark"] .brand-hero__wordmark {
 .menu-overlay { position: fixed; inset: 0; z-index: 2500; background: rgba(245, 249, 249, 0.98); backdrop-filter: blur(8px); display: grid; place-items: center; opacity: 0; pointer-events: none; transition: opacity 0.25s ease; }
 .menu-overlay.open { opacity: 1; pointer-events: auto; }
 .menu-panel { width: min(400px, 90%); text-align: center; }
-.menu-links { display: flex; flex-direction: column; gap: 24px; margin-bottom: 48px; }
-.menu-links a { font-size: 2rem; font-weight: 900; color: var(--ink-900); text-decoration: none; text-transform: uppercase; letter-spacing: 0.05em; transition: transform 0.2s ease, color 0.2s ease; }
+.menu-links { display: flex; flex-direction: column; gap: 14px; margin-bottom: 28px; }
+.menu-links a { font-size: 1.5rem; font-weight: 900; color: var(--ink-900); text-decoration: none; text-transform: uppercase; letter-spacing: 0.05em; transition: transform 0.2s ease, color 0.2s ease; }
 .menu-links a:hover { transform: scale(1.1); color: var(--teal-400); }
 .menu-links a[aria-current="page"] { color: var(--teal-400); pointer-events: none; }
 .close-menu { appearance: none; background: var(--white); border: var(--card-border); border-radius: 999px; padding: 12px 32px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; cursor: pointer; box-shadow: var(--shadow-btn); }
@@ -2766,3 +2766,62 @@ html[data-theme="light"] .menu-theme-btn.is-active {
     left: 0;
   }
 }
+
+
+/* =============================================
+   MENU SECRET BAR — Cappy Run launcher
+   A subtle thick line at the bottom of the menu panel that doubles as a
+   tap target to launch the Cappy Run easter egg on touch devices.
+   ============================================= */
+
+.menu-secret-bar {
+  appearance: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 60%;
+  max-width: 220px;
+  height: 32px;
+  margin: 18px auto 0;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+.menu-secret-bar::before {
+  content: '';
+  display: block;
+  width: 100%;
+  height: 6px;
+  border-radius: 999px;
+  background: rgba(15, 44, 42, 0.18);
+  transition: background 0.15s ease, transform 0.15s ease;
+}
+
+.menu-secret-bar:hover::before,
+.menu-secret-bar:focus-visible::before {
+  background: rgba(15, 44, 42, 0.32);
+  transform: scaleY(1.25);
+}
+
+.menu-secret-bar:active::before {
+  background: var(--teal-400, #24a687);
+  transform: scaleY(1.4);
+}
+
+.menu-secret-bar:focus-visible {
+  outline: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  .menu-secret-bar::before { background: rgba(255, 255, 255, 0.14); }
+  .menu-secret-bar:hover::before,
+  .menu-secret-bar:focus-visible::before { background: rgba(255, 255, 255, 0.28); }
+}
+
+html[data-theme="dark"] .menu-secret-bar::before { background: rgba(255, 255, 255, 0.14); }
+html[data-theme="dark"] .menu-secret-bar:hover::before,
+html[data-theme="dark"] .menu-secret-bar:focus-visible::before { background: rgba(255, 255, 255, 0.28); }

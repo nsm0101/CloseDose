@@ -52,6 +52,10 @@
     game.start();
   }
 
+  // Also allow other UI (e.g. the secret bar in the site menu) to launch
+  // the game without needing to dispatch the full Konami sequence.
+  window.addEventListener('cappyrun:launch', launchGame);
+
   // ----------------------------- Sprite data -----------------------------
   // Pixel art encoded as strings. '#' = dark, 'o' = light/fill, '.' = transparent.
   // Mirrors the chunky black-and-white look of the CloseDose capybara logo.
