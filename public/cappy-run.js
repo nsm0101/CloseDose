@@ -227,6 +227,239 @@
     '..##########..',
   ];
 
+  // -------------------- Per-stage obstacle sprites ----------------------
+  // Two-tone pixel art: '#' draws in the obstacle's primary color, 'o' in
+  // its secondary color. Each theme wires these up in its definition below.
+
+  // City: trash can (ground) + pigeon (flyer)
+  const TRASH_CAN = [
+    '..oooooo..',
+    '.oooooooo.',
+    '.#.#..#.#.',
+    '.#.#..#.#.',
+    '.#.#..#.#.',
+    '.#.#..#.#.',
+    '.#.#..#.#.',
+    '.#.#..#.#.',
+    '.oooooooo.',
+    '.########.',
+  ];
+  const PIGEON_A = [
+    '...##.....',
+    '..####.o..',
+    '.#######o.',
+    '.#######..',
+    '..#####...',
+    '...###....',
+  ];
+  const PIGEON_B = [
+    '...##.....',
+    '..####.o..',
+    '.#######o.',
+    '#######...',
+    '.####.....',
+    '..###.....',
+  ];
+
+  // Space: moon rocks (ground) + comet (flyer)
+  const MOON_ROCK = [
+    '...####...',
+    '..######o.',
+    '.#######o.',
+    '.########.',
+    '##########',
+    '.########.',
+  ];
+  const MOON_ROCK_BIG = [
+    '...######...',
+    '..########o.',
+    '.#########o.',
+    '.##########.',
+    '############',
+    '############',
+    '.##########.',
+    '..########..',
+  ];
+  const COMET_A = [
+    'o.o....##.',
+    '.ooo..####',
+    '..ooo.####',
+    '.ooo..####',
+    'o.o....##.',
+  ];
+  const COMET_B = [
+    'oo.....##.',
+    '.oo...####',
+    '..ooo.####',
+    '.oo...####',
+    'oo.....##.',
+  ];
+
+  // Wild West: cactus (tall) + tumbleweed (short, rolling) + vulture (flyer)
+  const CACTUS = [
+    '....##....',
+    '....##....',
+    '.#..##..#.',
+    '.#..##..#.',
+    '.#..##..#.',
+    '.##.##.##.',
+    '..#.##.#..',
+    '...####...',
+    '....##....',
+    '....##....',
+    '....##....',
+    '....##....',
+  ];
+  const TUMBLEWEED_A = [
+    '..#.#.#..',
+    '.#.###.#.',
+    '#.##o##.#',
+    '.###o###.',
+    '#.##o##.#',
+    '.#.###.#.',
+    '..#.#.#..',
+  ];
+  const TUMBLEWEED_B = [
+    '..#.#.#..',
+    '.#.#.#.#.',
+    '#.#o#o#.#',
+    '##.#o#.##',
+    '#.#o#o#.#',
+    '.#.#.#.#.',
+    '..#.#.#..',
+  ];
+  const VULTURE_A = [
+    '#...........#',
+    '##.........##',
+    '.###.....###.',
+    '..####o####..',
+    '....######...',
+    '.....####....',
+  ];
+  const VULTURE_B = [
+    '..##.....##..',
+    '.####...####.',
+    '..####o####..',
+    '...########..',
+    '....######...',
+    '.....##......',
+  ];
+
+  // Arctic: ice chunks (2 sizes) + arctic tern (flyer)
+  const ICE_SMALL = [
+    '...##...',
+    '..o##o..',
+    '.######.',
+    '########',
+    '.######.',
+  ];
+  const ICE_BIG = [
+    '....##....',
+    '...o##o...',
+    '..o####o..',
+    '.########.',
+    '##########',
+    '.########.',
+    '..######..',
+  ];
+  const ARCTIC_BIRD_A = [
+    '#.........#',
+    '.##.....##.',
+    '..###o###..',
+    '...#####...',
+    '....###....',
+  ];
+  const ARCTIC_BIRD_B = [
+    '...#####...',
+    '..###o###..',
+    '.##.....##.',
+    '#.........#',
+    '....#......',
+  ];
+
+  // Desert: sandstone (2 sizes); desert bird reuses the parrot shape.
+  const SANDSTONE_SMALL = [
+    '.######.',
+    '########',
+    '#oooooo#',
+    '########',
+    '#oooooo#',
+    '########',
+  ];
+  const SANDSTONE_BIG = [
+    '..########..',
+    '.##########.',
+    '#oooooooooo#',
+    '############',
+    '#oooooooooo#',
+    '############',
+    '#oooooooooo#',
+    '############',
+  ];
+
+  // Island: coconut (short) + rock (bigger) + seagull (flyer)
+  const COCONUT = [
+    '.####.',
+    '######',
+    '#o##o#',
+    '###o##',
+    '.####.',
+  ];
+  const ISLAND_ROCK = [
+    '..#####..',
+    '.#######.',
+    '#ooooooo#',
+    '#########',
+    '#ooooooo#',
+    '#########',
+  ];
+  const SEAGULL_A = [
+    '##.......##',
+    '.###...###.',
+    '...##o##...',
+    '....###....',
+  ];
+  const SEAGULL_B = [
+    '....###....',
+    '...##o##...',
+    '.###...###.',
+    '##.......##',
+  ];
+
+  // Outback: dry bush (short) + termite mound (tall) + magpie (flyer)
+  const OUTBACK_BUSH = [
+    '.#..#..#..',
+    '#.##.##.#.',
+    '.########.',
+    '##########',
+    '.########.',
+    '...####...',
+  ];
+  const TERMITE_MOUND = [
+    '...##...',
+    '..####..',
+    '..####..',
+    '.######.',
+    '.######.',
+    '########',
+    '########',
+    '########',
+  ];
+  const MAGPIE_A = [
+    '...##......',
+    '..####o....',
+    '.##oo####..',
+    '..######...',
+    '...####....',
+  ];
+  const MAGPIE_B = [
+    '...##......',
+    '..####o....',
+    '.##oo####..',
+    '###o###....',
+    '.####......',
+  ];
+
   function spriteSize(sprite) {
     return { w: sprite[0].length, h: sprite.length };
   }
@@ -325,6 +558,87 @@
     ctx.fillRect(x - 2, GY - 12, 7, 12);
   }
 
+  // ------------------------- Background cameos ---------------------------
+  // Occasional / rare flavor characters that scroll through the backdrop.
+  // They are purely decorative (no collision).
+  function camelFig(ctx, x, GY, c) {
+    ctx.fillStyle = c;
+    ctx.fillRect(x + 6, GY - 14, 3, 14);
+    ctx.fillRect(x + 12, GY - 14, 3, 14);
+    ctx.fillRect(x + 22, GY - 14, 3, 14);
+    ctx.fillRect(x + 28, GY - 14, 3, 14);
+    ctx.beginPath(); ctx.ellipse(x + 18, GY - 22, 16, 8, 0, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.arc(x + 13, GY - 28, 6, Math.PI, 0); ctx.fill();
+    ctx.beginPath(); ctx.arc(x + 24, GY - 28, 6, Math.PI, 0); ctx.fill();
+    ctx.fillRect(x + 30, GY - 34, 4, 14);
+    ctx.beginPath(); ctx.ellipse(x + 34, GY - 36, 5, 3, 0.3, 0, Math.PI * 2); ctx.fill();
+  }
+
+  function coveredWagon(ctx, x, GY, c, c2) {
+    ctx.fillStyle = c;
+    ctx.beginPath(); ctx.arc(x + 8, GY - 5, 6, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.arc(x + 34, GY - 5, 7, 0, Math.PI * 2); ctx.fill();
+    ctx.fillRect(x + 4, GY - 20, 36, 9);
+    ctx.fillStyle = c2;
+    ctx.beginPath();
+    ctx.moveTo(x + 4, GY - 19);
+    ctx.quadraticCurveTo(x + 22, GY - 42, x + 40, GY - 19);
+    ctx.closePath(); ctx.fill();
+  }
+
+  function airplaneFig(ctx, x, y, c) {
+    ctx.fillStyle = c;
+    ctx.beginPath(); ctx.ellipse(x + 18, y, 18, 5, 0, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x - 8, y - 8); ctx.lineTo(x + 4, y - 2); ctx.closePath(); ctx.fill();
+    ctx.beginPath(); ctx.moveTo(x + 18, y); ctx.lineTo(x + 12, y + 11); ctx.lineTo(x + 26, y + 2); ctx.closePath(); ctx.fill();
+    ctx.beginPath(); ctx.moveTo(x + 18, y); ctx.lineTo(x + 12, y - 11); ctx.lineTo(x + 26, y - 2); ctx.closePath(); ctx.fill();
+  }
+
+  function ufoFig(ctx, x, y) {
+    ctx.fillStyle = 'rgba(170,255,200,0.16)';
+    ctx.beginPath();
+    ctx.moveTo(x + 8, y + 4); ctx.lineTo(x + 28, y + 4);
+    ctx.lineTo(x + 34, y + 28); ctx.lineTo(x + 2, y + 28);
+    ctx.closePath(); ctx.fill();
+    ctx.fillStyle = '#9fe6ff';
+    ctx.beginPath(); ctx.arc(x + 18, y - 3, 8, Math.PI, 0); ctx.fill();
+    ctx.fillStyle = '#b0b6c4';
+    ctx.beginPath(); ctx.ellipse(x + 18, y, 22, 7, 0, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = '#ffd34d';
+    for (let i = -2; i <= 2; i++) circle(ctx, x + 18 + i * 8, y + 2, 1.6);
+  }
+
+  function dolphinFig(ctx, x, waterY, progress, c) {
+    const arc = Math.sin(Math.max(0, Math.min(1, progress)) * Math.PI);
+    const cy = waterY - arc * 50;
+    const tilt = (progress - 0.5) * 1.2;
+    ctx.save();
+    ctx.translate(x, cy);
+    ctx.rotate(tilt);
+    ctx.fillStyle = c;
+    ctx.beginPath(); ctx.ellipse(0, 0, 16, 6, 0, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.moveTo(13, -2); ctx.lineTo(24, -4); ctx.lineTo(13, 2); ctx.closePath(); ctx.fill();
+    ctx.beginPath(); ctx.moveTo(-2, -6); ctx.lineTo(3, -16); ctx.lineTo(7, -6); ctx.closePath(); ctx.fill();
+    ctx.beginPath(); ctx.moveTo(-14, 0); ctx.lineTo(-24, -6); ctx.lineTo(-20, 0); ctx.lineTo(-24, 6); ctx.closePath(); ctx.fill();
+    ctx.restore();
+  }
+
+  function sharkFinFig(ctx, x, waterY, c) {
+    ctx.fillStyle = c;
+    ctx.beginPath();
+    ctx.moveTo(x, waterY);
+    ctx.quadraticCurveTo(x + 7, waterY - 17, x + 17, waterY);
+    ctx.closePath(); ctx.fill();
+    ctx.strokeStyle = 'rgba(255,255,255,0.6)';
+    ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(x - 8, waterY + 2); ctx.lineTo(x + 24, waterY + 2); ctx.stroke();
+  }
+
+  function kangarooHop(ctx, x, GY, progress, c) {
+    const hop = Math.abs(Math.sin(progress * Math.PI * 6)) * 16;
+    kangaroo(ctx, x, GY - hop, c);
+  }
+
   const THEMES = [
     {
       name: 'Rainforest',
@@ -332,6 +646,13 @@
       groundFill: '#d7ecc9',
       ink: '#234b2c',
       detail: '#4f8a5f',
+      ground: [
+        { sprite: PLANT_SMALL, color: '#2e6b39' },
+        { sprite: PLANT_BIG, color: '#2e6b39' },
+      ],
+      flyer: { frames: [BIRD_A, BIRD_B], color: '#2e6b39' },
+      flyChance: 0.25,
+      cameos: [],
       drawBg: function (ctx, W, H, GY, scroll) {
         hillRange(ctx, W, GY, '#a9d9a0', scroll * 0.15, 34, 110);
         hillRange(ctx, W, GY, '#7fc081', scroll * 0.3, 22, 70);
@@ -351,6 +672,16 @@
       groundFill: '#e6c79a',
       ink: '#5a3210',
       detail: '#9c6a2e',
+      ground: [
+        { frames: [TUMBLEWEED_A, TUMBLEWEED_B], color: '#9c6a2e', color2: '#c89a5a' },
+        { sprite: CACTUS, color: '#3c7a3a', color2: '#2e5e2c' },
+      ],
+      flyer: { frames: [VULTURE_A, VULTURE_B], color: '#3a2a1a', color2: '#a33524' },
+      flyChance: 0.2,
+      cameos: [
+        { type: 'camel', chance: 0.5, parallax: 0.35, span: 60 },
+        { type: 'wagon', chance: 0.35, parallax: 0.45, span: 60 },
+      ],
       drawBg: function (ctx, W, H, GY, scroll) {
         bgSun(ctx, W - 120, 50, 30, '#ffce5c');
         repeatX(scroll * 0.2, 270, W, function (x) {
@@ -360,14 +691,6 @@
           ctx.lineTo(x + 120, GY - 72); ctx.lineTo(x + 138, GY);
           ctx.closePath(); ctx.fill();
         });
-        repeatX(scroll * 0.5, 200, W, function (x) {
-          ctx.fillStyle = '#3c7a3a';
-          ctx.fillRect(x + 20, GY - 50, 10, 50);
-          ctx.fillRect(x + 8, GY - 36, 12, 8);
-          ctx.fillRect(x + 8, GY - 44, 6, 16);
-          ctx.fillRect(x + 30, GY - 30, 12, 8);
-          ctx.fillRect(x + 36, GY - 40, 6, 16);
-        });
       },
     },
     {
@@ -376,21 +699,47 @@
       groundFill: '#9aa3ad',
       ink: '#222831',
       detail: '#5a6472',
+      ground: [
+        { sprite: TRASH_CAN, color: '#7a828c', color2: '#aab2bc' },
+      ],
+      flyer: { frames: [PIGEON_A, PIGEON_B], color: '#8a8f98', color2: '#d24b3a' },
+      flyChance: 0.28,
+      cameos: [
+        { type: 'airplane', chance: 0.6, parallax: 0.15, y: 36, span: 50 },
+      ],
       drawBg: function (ctx, W, H, GY, scroll) {
         const bands = ['#2b6cff', '#d32f2f', '#8e44ad', '#ff8c1a'];
-        repeatX(scroll * 0.2, 64, W, function (x, k) {
-          const h = 46 + (hash(k) % 78);
-          ctx.fillStyle = (k % 2 === 0) ? '#3c4654' : '#4a5563';
-          ctx.fillRect(x, GY - h, 56, h);
-          ctx.fillStyle = 'rgba(255,221,120,0.85)';
-          for (let wy = GY - h + 6; wy < GY - 8; wy += 14) {
-            for (let wx = x + 6; wx < x + 50; wx += 14) {
+        // Far skyline layer — small, light, for depth.
+        repeatX(scroll * 0.12, 46, W, function (x, k) {
+          const h = 28 + (hash(k * 3) % 44);
+          ctx.fillStyle = '#67738a';
+          ctx.fillRect(x, GY - h, 38, h);
+        });
+        // Mid layer with the TMNT brothers tucked small into the gaps.
+        repeatX(scroll * 0.22, 72, W, function (x, k) {
+          const h = 48 + (hash(k) % 64);
+          if (k % 6 === 0) {
+            tmntHead(ctx, x - 7, GY - 30, 5, bands[((k / 6) | 0) % 4]);
+          }
+          ctx.fillStyle = (k % 2 === 0) ? '#3c4654' : '#454f5e';
+          ctx.fillRect(x, GY - h, 60, h);
+          ctx.fillStyle = 'rgba(255,221,120,0.8)';
+          for (let wy = GY - h + 8; wy < GY - 10; wy += 14) {
+            for (let wx = x + 8; wx < x + 52; wx += 14) {
               if ((hash(k * 131 + wx * 7 + wy) & 3) !== 0) ctx.fillRect(wx, wy, 7, 8);
             }
           }
-          // TMNT cameo peeking over every 5th rooftop
-          if (k % 5 === 0) {
-            tmntHead(ctx, x + 28, GY - h - 2, 13, bands[((k / 5) | 0) % 4]);
+        });
+        // Near layer — tall, dark, draws IN FRONT so the turtles only peek.
+        repeatX(scroll * 0.36, 124, W, function (x, k) {
+          const h = 72 + (hash(k * 5) % 58);
+          ctx.fillStyle = '#2a313c';
+          ctx.fillRect(x, GY - h, 92, h);
+          ctx.fillStyle = 'rgba(255,221,120,0.65)';
+          for (let wy = GY - h + 10; wy < GY - 12; wy += 16) {
+            for (let wx = x + 12; wx < x + 80; wx += 18) {
+              if ((hash(k * 57 + wx + wy) & 3) !== 0) ctx.fillRect(wx, wy, 9, 10);
+            }
           }
         });
       },
@@ -401,6 +750,13 @@
       groundFill: '#eaf6ff',
       ink: '#2b4a63',
       detail: '#7fb0d6',
+      ground: [
+        { sprite: ICE_SMALL, color: '#4f9ec2', color2: '#dff4ff' },
+        { sprite: ICE_BIG, color: '#4f9ec2', color2: '#dff4ff' },
+      ],
+      flyer: { frames: [ARCTIC_BIRD_A, ARCTIC_BIRD_B], color: '#5d86a0', color2: '#22323d' },
+      flyChance: 0.12,
+      cameos: [],
       drawBg: function (ctx, W, H, GY, scroll) {
         ctx.lineWidth = 6;
         for (let a = 0; a < 3; a++) {
@@ -431,6 +787,15 @@
       groundFill: '#f0c98f',
       ink: '#7a3f12',
       detail: '#b9772e',
+      ground: [
+        { sprite: SANDSTONE_SMALL, color: '#b9772e', color2: '#e2b272' },
+        { sprite: SANDSTONE_BIG, color: '#b9772e', color2: '#e2b272' },
+      ],
+      flyer: { frames: [BIRD_A, BIRD_B], color: '#7a3f12' },
+      flyChance: 0.22,
+      cameos: [
+        { type: 'camel', chance: 0.5, parallax: 0.35, span: 60 },
+      ],
       drawBg: function (ctx, W, H, GY, scroll) {
         bgSun(ctx, 120, 48, 34, '#ffd27f');
         repeatX(scroll * 0.2, 250, W, function (x) {
@@ -452,6 +817,16 @@
       groundFill: '#f2e2b0',
       ink: '#1f6f78',
       detail: '#3fa9b5',
+      ground: [
+        { sprite: COCONUT, color: '#6b4a2a', color2: '#3a2a1a' },
+        { sprite: ISLAND_ROCK, color: '#8a8f98', color2: '#6a6f78' },
+      ],
+      flyer: { frames: [SEAGULL_A, SEAGULL_B], color: '#f0f4f8', color2: '#f5a623' },
+      flyChance: 0.24,
+      cameos: [
+        { type: 'dolphin', chance: 0.45, parallax: 0.5, span: 60 },
+        { type: 'shark', chance: 0.12, parallax: 0.5, span: 40 },
+      ],
       drawBg: function (ctx, W, H, GY, scroll) {
         bgSun(ctx, W - 110, 46, 28, '#fff2a8');
         ctx.fillStyle = 'rgba(64,170,200,0.5)';
@@ -476,6 +851,15 @@
       groundFill: '#d98a4e',
       ink: '#4a1d0a',
       detail: '#8a4a22',
+      ground: [
+        { sprite: OUTBACK_BUSH, color: '#6f6a2a', color2: '#928c3a' },
+        { sprite: TERMITE_MOUND, color: '#a5532a', color2: '#7a3d1e' },
+      ],
+      flyer: { frames: [MAGPIE_A, MAGPIE_B], color: '#1a1a1a', color2: '#ffffff' },
+      flyChance: 0.22,
+      cameos: [
+        { type: 'kangaroo', chance: 0.5, parallax: 0.4, span: 50 },
+      ],
       drawBg: function (ctx, W, H, GY, scroll) {
         bgSun(ctx, W - 120, 52, 30, '#ffb24d');
         repeatX(scroll * 0.2, 400, W, function (x) {
@@ -486,12 +870,14 @@
           ctx.quadraticCurveTo(x + 160, GY - 46, x + 200, GY);
           ctx.closePath(); ctx.fill();
         });
-        repeatX(scroll * 0.5, 340, W, function (x) {
-          kangaroo(ctx, x + 20, GY, '#5a2a14');
-        });
-        repeatX(scroll * 0.6, 130, W, function (x) {
-          ctx.fillStyle = '#7a5a2a';
-          ctx.beginPath(); ctx.arc(x + 10, GY - 4, 8, Math.PI, 0); ctx.fill();
+        // Spinifex / dry shrubs scattered across the midground.
+        repeatX(scroll * 0.5, 96, W, function (x, k) {
+          ctx.fillStyle = (k % 2 === 0) ? '#7a6a2a' : '#6b5a24';
+          ctx.beginPath(); ctx.arc(x + 12, GY - 4, 9, Math.PI, 0); ctx.fill();
+          ctx.fillRect(x + 4, GY - 6, 16, 6);
+          ctx.fillRect(x + 7, GY - 13, 2, 9);
+          ctx.fillRect(x + 12, GY - 14, 2, 10);
+          ctx.fillRect(x + 17, GY - 12, 2, 8);
         });
       },
     },
@@ -503,6 +889,15 @@
       ink: '#dfe6ff',
       detail: '#8f7fbf',
       clouds: false,
+      ground: [
+        { sprite: MOON_ROCK, color: '#8b8b9a', color2: '#5a5a6a' },
+        { sprite: MOON_ROCK_BIG, color: '#8b8b9a', color2: '#5a5a6a' },
+      ],
+      flyer: { frames: [COMET_A, COMET_B], color: '#dfe9ff', color2: '#ffd27f' },
+      flyChance: 0.24,
+      cameos: [
+        { type: 'ufo', chance: 0.12, parallax: 0.2, y: 46, span: 50 },
+      ],
       drawBg: function (ctx, W, H, GY, scroll) {
         starField(ctx, W, H, scroll);
         ctx.fillStyle = '#cfd6f5';
@@ -522,6 +917,20 @@
     },
   ];
 
+  // Render a background cameo entity for the current frame.
+  function drawCameo(ctx, cm, GROUND_Y) {
+    const progress = (cm.spawnX - cm.x) / cm.travel;
+    switch (cm.type) {
+      case 'airplane': airplaneFig(ctx, cm.x, cm.y, '#eef2f6'); break;
+      case 'ufo': ufoFig(ctx, cm.x, cm.y); break;
+      case 'camel': camelFig(ctx, cm.x, GROUND_Y, '#6b3f1c'); break;
+      case 'wagon': coveredWagon(ctx, cm.x, GROUND_Y, '#7a4a22', '#f0e6c8'); break;
+      case 'kangaroo': kangarooHop(ctx, cm.x, GROUND_Y, progress, '#5a2a14'); break;
+      case 'dolphin': dolphinFig(ctx, cm.x, GROUND_Y + 8, progress, '#5a7fa0'); break;
+      case 'shark': sharkFinFig(ctx, cm.x, GROUND_Y + 10, '#3a4654'); break;
+    }
+  }
+
   // -------------------------------- Game ---------------------------------
   function CappyRun() {
     this.active = false;
@@ -540,6 +949,8 @@
     this.cappy = null;
     this.obstacles = [];
     this.clouds = [];
+    this.cameos = [];
+    this.cameoTimer = 0;
     this.groundOffset = 0;
     this.speed = 0;
     this.baseSpeed = 240; // px/sec
@@ -642,17 +1053,13 @@
     downBtn.type = 'button';
     downBtn.className = 'cappy-touch-btn cappy-touch-btn--down';
     downBtn.setAttribute('aria-label', 'Duck');
-    downBtn.innerHTML =
-      '<span class="cappy-touch-glyph" aria-hidden="true">▼</span>' +
-      '<span class="cappy-touch-label" aria-hidden="true">DUCK</span>';
+    downBtn.innerHTML = '<span class="cappy-touch-glyph" aria-hidden="true">↓</span>';
 
     const upBtn = document.createElement('button');
     upBtn.type = 'button';
     upBtn.className = 'cappy-touch-btn cappy-touch-btn--up';
     upBtn.setAttribute('aria-label', 'Jump');
-    upBtn.innerHTML =
-      '<span class="cappy-touch-glyph" aria-hidden="true">▲</span>' +
-      '<span class="cappy-touch-label" aria-hidden="true">JUMP</span>';
+    upBtn.innerHTML = '<span class="cappy-touch-glyph" aria-hidden="true">↑</span>';
 
     // Visual press feedback: held while pressed, plays a release "pop".
     const press = (btn) => {
@@ -739,6 +1146,8 @@
     };
     this.obstacles = [];
     this.clouds = [];
+    this.cameos = [];
+    this.cameoTimer = 1.5;
     this.speed = this.baseSpeed;
     this.distance = 0;
     this.score = 0;
@@ -879,6 +1288,26 @@
     for (const c of this.clouds) c.x -= this.speed * 0.25 * dt;
     this.clouds = this.clouds.filter(c => c.x > -40);
 
+    // Background cameos (decorative, occasional / rare per theme).
+    this.cameoTimer -= dt;
+    if (this.cameoTimer <= 0) {
+      this.cameoTimer = 2.2 + Math.random() * 3.2;
+      const list = this.theme.cameos || [];
+      for (const c of list) {
+        if (Math.random() < c.chance) {
+          const span = c.span || 40;
+          const spawnX = this.W + span;
+          this.cameos.push({
+            type: c.type, x: spawnX, spawnX: spawnX, y: c.y || 0,
+            parallax: c.parallax, span: span, travel: this.W + span * 2 + 40,
+          });
+          break;
+        }
+      }
+    }
+    for (const cm of this.cameos) cm.x -= this.speed * cm.parallax * dt;
+    this.cameos = this.cameos.filter(cm => cm.x > -(cm.span + 40));
+
     // Collision check
     const cb = this._cappyBox();
     for (const ob of this.obstacles) {
@@ -901,34 +1330,34 @@
   };
 
   CappyRun.prototype._spawnObstacle = function () {
+    const t = this.theme;
     const r = Math.random();
-    if (this.distance > 800 && r < 0.25) {
-      // Flying bird at one of two heights.
+    if (this.distance > 800 && t.flyer && r < t.flyChance) {
+      // Flying obstacle at one of two heights.
+      const f = t.flyer;
+      const scale = f.scale || 2;
+      const sz = spriteSize(f.frames[0]);
+      const w = sz.w * scale;
+      const h = sz.h * scale;
       const high = Math.random() < 0.5;
-      const sprite = BIRD_A;
-      const sz = spriteSize(sprite);
-      const scale = 2;
-      const w = sz.w * scale;
-      const h = sz.h * scale;
-      const y = high ? this.GROUND_Y - 70 : this.GROUND_Y - 38;
+      const y = high ? this.GROUND_Y - 72 : this.GROUND_Y - 40;
       this.obstacles.push({
-        kind: 'bird', x: this.W + 10, y: y, w: w, h: h, scale: scale,
-      });
-    } else if (r < 0.55) {
-      const scale = 2;
-      const sz = spriteSize(PLANT_SMALL);
-      const w = sz.w * scale;
-      const h = sz.h * scale;
-      this.obstacles.push({
-        kind: 'plant-small', x: this.W + 10, y: this.GROUND_Y - h, w: w, h: h, scale: scale,
+        x: this.W + 10, y: y, w: w, h: h, scale: scale,
+        frames: f.frames, color: f.color, color2: f.color2,
       });
     } else {
-      const scale = 2;
-      const sz = spriteSize(PLANT_BIG);
+      // Ground obstacle picked from this stage's set.
+      const defs = t.ground;
+      const d = defs[Math.floor(Math.random() * defs.length)];
+      const scale = d.scale || 2;
+      const base = d.sprite || d.frames[0];
+      const sz = spriteSize(base);
       const w = sz.w * scale;
       const h = sz.h * scale;
       this.obstacles.push({
-        kind: 'plant-big', x: this.W + 10, y: this.GROUND_Y - h, w: w, h: h, scale: scale,
+        x: this.W + 10, y: this.GROUND_Y - h, w: w, h: h, scale: scale,
+        sprite: d.sprite || null, frames: d.frames || null,
+        color: d.color, color2: d.color2,
       });
     }
   };
@@ -1000,15 +1429,16 @@
       ctx.stroke();
     }
 
+    // Background cameos (behind the obstacles and Cappy).
+    for (const cm of this.cameos) drawCameo(ctx, cm, this.GROUND_Y);
+
     // Obstacles
     for (const ob of this.obstacles) {
-      let sprite;
-      if (ob.kind === 'plant-small') sprite = PLANT_SMALL;
-      else if (ob.kind === 'plant-big') sprite = PLANT_BIG;
-      else if (ob.kind === 'bird') {
-        sprite = (Math.floor(this.frameTick * 6) % 2 === 0) ? BIRD_A : BIRD_B;
+      let sprite = ob.sprite;
+      if (ob.frames) {
+        sprite = ob.frames[Math.floor(this.frameTick * 8) % ob.frames.length];
       }
-      drawSprite(ctx, sprite, ob.x, ob.y, ob.scale, fg, null);
+      drawSprite(ctx, sprite, ob.x, ob.y, ob.scale, ob.color || fg, ob.color2 || null);
     }
 
     // Cappy
