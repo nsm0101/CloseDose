@@ -332,6 +332,58 @@
     frame.appendChild(topbar);
     frame.appendChild(wrap);
     overlay.appendChild(frame);
+
+    // On-screen touch controls (mobile / portrait): ↑ jumps, ↓ ducks. Placed
+    // about a third of the way up the screen so thumbs can reach them while the
+    // game frame sits at the bottom. Hidden on non-touch devices via CSS.
+    const controls = document.createElement('div');
+    controls.className = 'cappy-run-touch';
+
+    const downBtn = document.createElement('button');
+    downBtn.type = 'button';
+    downBtn.className = 'cappy-touch-btn cappy-touch-btn--down';
+    downBtn.setAttribute('aria-label', 'Duck');
+    downBtn.innerHTML = '<span aria-hidden="true">↓</span>';
+
+    const upBtn = document.createElement('button');
+    upBtn.type = 'button';
+    upBtn.className = 'cappy-touch-btn cappy-touch-btn--up';
+    upBtn.setAttribute('aria-label', 'Jump');
+    upBtn.innerHTML = '<span aria-hidden="true">↑</span>';
+
+    upBtn.addEventListener('pointerdown', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      if (this.state === 'over') {
+        this._reset();
+        this.state = 'playing';
+      } else {
+        this._jump();
+        this.keys.jump = true;
+      }
+    });
+    const endJump = () => { this.keys.jump = false; };
+    upBtn.addEventListener('pointerup', endJump);
+    upBtn.addEventListener('pointercancel', endJump);
+    upBtn.addEventListener('pointerleave', endJump);
+
+    downBtn.addEventListener('pointerdown', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      this.keys.duck = true;
+      if (this.cappy && !this.cappy.onGround) {
+        this.cappy.vy = Math.max(this.cappy.vy, 900);
+      }
+    });
+    const endDuck = () => { this.keys.duck = false; };
+    downBtn.addEventListener('pointerup', endDuck);
+    downBtn.addEventListener('pointercancel', endDuck);
+    downBtn.addEventListener('pointerleave', endDuck);
+
+    controls.appendChild(downBtn);
+    controls.appendChild(upBtn);
+    overlay.appendChild(controls);
+
     document.body.appendChild(overlay);
 
     // Touch / click on canvas = jump (mobile-friendly).

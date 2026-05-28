@@ -404,7 +404,7 @@ html[data-theme="dark"] .brand-hero__wordmark {
 .info-column {
   display: flex;
   flex-direction: column;
-  gap: clamp(12px, 2vw, 16px);
+  gap: clamp(16px, 2.5vw, 24px);
 }
 
 .calculator-column {
@@ -627,8 +627,87 @@ html[data-theme="dark"] .brand-hero__wordmark {
 .donate-link--kofi { color: #29abe0 !important; }
 .donate-link--givebutter { color: #e05a47 !important; }
 
-/* --- Disclaimer Card --- */
-.card--disclaimer { color: var(--ink-900); }
+/* --- Disclaimer Card (collapsible pill) --- */
+.card--disclaimer {
+  color: var(--ink-900);
+  display: grid;
+  justify-items: center;
+  transition: background 0.4s ease, box-shadow 0.4s ease, border-color 0.4s ease,
+    padding 0.4s ease, backdrop-filter 0.4s ease;
+}
+
+/* Collapsed: strip the card chrome so only the pill shows. */
+.card--disclaimer:not(.is-expanded) {
+  background: transparent;
+  border-color: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
+  padding: 6px;
+}
+
+.card--disclaimer.is-expanded {
+  justify-items: stretch;
+}
+
+.disclaimer-pill {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 24px;
+  border-radius: 999px;
+  border: 1.5px solid rgba(139, 17, 17, 0.32);
+  background: rgba(139, 17, 17, 0.08);
+  color: #8b1111;
+  font-weight: 900;
+  font-size: 0.78rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+.disclaimer-pill::before {
+  content: "!";
+  display: inline-grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #8b1111;
+  color: #fff;
+  font-size: 0.7rem;
+  line-height: 1;
+}
+.disclaimer-pill:hover,
+.disclaimer-pill:focus-visible {
+  background: rgba(139, 17, 17, 0.14);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(139, 17, 17, 0.18);
+  outline: none;
+}
+.card--disclaimer.is-expanded .disclaimer-pill {
+  display: none;
+}
+
+/* Body wrapper expands smoothly via grid-template-rows. */
+.disclaimer-body {
+  display: grid;
+  grid-template-rows: 0fr;
+  width: 100%;
+  opacity: 0;
+  transition: grid-template-rows 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s ease;
+}
+.card--disclaimer.is-expanded .disclaimer-body {
+  grid-template-rows: 1fr;
+  opacity: 1;
+}
+.disclaimer-body__inner {
+  overflow: hidden;
+  min-height: 0;
+  display: grid;
+  gap: 14px;
+}
+
 .disclaimer-header {
   display: flex;
   align-items: center;
@@ -651,24 +730,7 @@ html[data-theme="dark"] .brand-hero__wordmark {
   font-weight: 900;
   flex: 1 1 auto;
 }
-.disclaimer-toggle {
-  appearance: none;
-  border: 1px solid rgba(15, 44, 42, 0.2);
-  background: rgba(255, 255, 255, 0.7);
-  color: var(--ink-900);
-  padding: 8px 16px;
-  border-radius: 999px;
-  font-weight: 800;
-  font-size: 0.85rem;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  cursor: pointer;
-  transition: background 0.15s ease, transform 0.15s ease;
-}
-.disclaimer-toggle:hover { background: #fff; transform: translateY(-1px); }
-.card--disclaimer.is-expanded .disclaimer-toggle { display: none; }
 .disclaimer-content {
-  margin-top: 16px;
   padding-top: 16px;
   border-top: 1px solid rgba(15, 44, 42, 0.12);
   display: grid;
@@ -699,6 +761,12 @@ html[data-theme="dark"] .brand-hero__wordmark {
   cursor: pointer;
 }
 .disclaimer-close:hover { background: rgba(15, 44, 42, 0.06); }
+
+@media (prefers-reduced-motion: reduce) {
+  .card--disclaimer,
+  .disclaimer-body,
+  .disclaimer-pill { transition: none; }
+}
 
 /* --- Header link wrapper --- */
 .header-link { display: block; line-height: 0; }
@@ -1848,8 +1916,8 @@ html[data-theme="dark"] .no-tare-btn { background: rgba(255, 200, 100, 0.07); }
   align-items: center;
   gap: 14px;
   padding: 14px 18px;
-  background: rgba(255, 255, 255, 0.82);
-  border: 1.5px solid rgba(36,166,135,0.42);
+  background: var(--card-bg);
+  border: var(--card-border);
   border-radius: 14px;
   color: var(--ink-900);
   text-decoration: none;
@@ -1858,27 +1926,10 @@ html[data-theme="dark"] .no-tare-btn { background: rgba(255, 200, 100, 0.07); }
   transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
 }
 
-@media (prefers-color-scheme: dark) {
-  .cross-link-card {
-    background: rgba(36,166,135,0.22);
-    border-color: rgba(36,166,135,0.45);
-  }
-}
-
-html[data-theme="dark"] .cross-link-card {
-  background: rgba(36,166,135,0.22);
-  border-color: rgba(36,166,135,0.45);
-}
-
-html[data-theme="light"] .cross-link-card {
-  background: rgba(255, 255, 255, 0.82);
-  border-color: rgba(36,166,135,0.42);
-}
-
 .cross-link-card:hover, .cross-link-card:focus-visible {
   transform: translateY(-1px);
-  background: rgba(255, 255, 255, 0.92);
-  box-shadow: 0 8px 24px rgba(36,166,135,0.22);
+  border-color: var(--teal-400);
+  box-shadow: var(--shadow-card);
   outline: none;
 }
 
@@ -2290,27 +2341,7 @@ html[data-theme="light"] .cross-link-card {
 }
 
 /* Secondary cross-link card (subtle teal tint) */
-.cross-link-card--secondary {
-  background: rgba(255, 255, 255, 0.76);
-  border-color: rgba(13,143,138,0.38);
-}
-
-@media (prefers-color-scheme: dark) {
-  .cross-link-card--secondary {
-    background: rgba(13,143,138,0.20);
-    border-color: rgba(13,143,138,0.4);
-  }
-}
-
-html[data-theme="dark"] .cross-link-card--secondary {
-  background: rgba(13,143,138,0.20);
-  border-color: rgba(13,143,138,0.4);
-}
-
-html[data-theme="light"] .cross-link-card--secondary {
-  background: rgba(255, 255, 255, 0.76);
-  border-color: rgba(13,143,138,0.38);
-}
+/* Secondary cross-link card shares the standard card background. */
 
 /* =============================================
    UX POLISH — "RUNNING ON FUMES" IMPROVEMENTS
