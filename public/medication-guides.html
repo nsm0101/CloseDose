@@ -472,12 +472,14 @@
 
         <!-- Disclaimer -->
         <section class="card card--disclaimer" id="disclaimer-card" aria-labelledby="disclaimer-heading" aria-expanded="false">
+          <button type="button" class="disclaimer-pill" aria-controls="disclaimer-panel" aria-expanded="false">Disclaimer</button>
+          <div class="disclaimer-body" id="disclaimer-panel">
+            <div class="disclaimer-body__inner">
           <div class="disclaimer-header">
             <span class="disclaimer-eyebrow">Disclaimer</span>
             <h2 id="disclaimer-heading">Medication Safety &amp; Usage</h2>
-            <button type="button" class="disclaimer-toggle" aria-controls="disclaimer-panel" aria-expanded="false">Read</button>
           </div>
-          <div class="disclaimer-content" id="disclaimer-panel" hidden>
+          <div class="disclaimer-content">
             <p><strong>This tool does not provide medical advice.</strong> The dosing information is for educational purposes only and should be verified with a healthcare provider or pharmacist before use.</p>
             <ul>
               <li>Always use the measuring device (oral syringe or dosing cup) that came with the medication — household spoons are not accurate.</li>
@@ -487,6 +489,8 @@
             </ul>
             <a class="disclaimer-link" href="/legal/disclaimer">Read the full disclaimer →</a>
             <button type="button" class="disclaimer-close" aria-label="Close disclaimer">Close</button>
+          </div>
+            </div>
           </div>
         </section>
 

@@ -208,10 +208,13 @@
   }
 
   // --- Disclaimer Expansion Logic ---
+  // The card sits at the very bottom as a collapsed "DISCLAIMER" pill and
+  // smoothly expands into the full card when the user reaches the page end
+  // (or taps the pill). A manual close keeps it collapsed until re-triggered.
   const disclaimerCard = document.querySelector('.card--disclaimer');
   if (disclaimerCard) {
-    const content = disclaimerCard.querySelector('.disclaimer-content');
-    const toggleBtn = disclaimerCard.querySelector('.disclaimer-toggle');
+    const panel = disclaimerCard.querySelector('.disclaimer-body');
+    const pill = disclaimerCard.querySelector('.disclaimer-pill');
     const closeBtn = disclaimerCard.querySelector('.disclaimer-close');
     const root = document.documentElement;
     let manualDismiss = false;
@@ -219,16 +222,18 @@
     const setExpanded = (expanded, manual = false) => {
       disclaimerCard.classList.toggle('is-expanded', expanded);
       disclaimerCard.setAttribute('aria-expanded', expanded);
-      if (content) content.hidden = !expanded;
-      if (toggleBtn) toggleBtn.setAttribute('aria-expanded', String(expanded));
+      if (panel) panel.inert = !expanded;
+      if (pill) pill.setAttribute('aria-expanded', String(expanded));
       if (expanded) {
         manualDismiss = false;
         if (closeBtn) closeBtn.focus({ preventScroll: true });
       } else if (manual) {
         manualDismiss = true;
-        if (toggleBtn) toggleBtn.focus({ preventScroll: true });
+        if (pill) pill.focus({ preventScroll: true });
       }
     };
+
+    if (panel) panel.inert = true;
 
     window.addEventListener('scroll', () => {
       const reachedEnd = window.innerHeight + window.scrollY >= root.scrollHeight - 20;
@@ -237,8 +242,8 @@
       }
     }, { passive: true });
 
-    if (toggleBtn) {
-      toggleBtn.addEventListener('click', (e) => {
+    if (pill) {
+      pill.addEventListener('click', (e) => {
         e.stopPropagation();
         setExpanded(true, true);
       });
@@ -250,6 +255,31 @@
         setExpanded(false, true);
       });
     }
+  }
+
+  // --- Sidebar alignment: start the info column at the calculator card ---
+  // On the desktop grid the helper cards should begin level with the top of
+  // the calculator card rather than the brand hero above it.
+  const infoColumn = document.querySelector('.info-column');
+  const brandHero = document.querySelector('.calculator-column .brand-hero');
+  if (infoColumn && brandHero) {
+    const desktop = window.matchMedia('(min-width: 1024px)');
+    const syncSidebar = () => {
+      if (desktop.matches) {
+        const colGap = parseFloat(getComputedStyle(brandHero.parentElement).rowGap) || 0;
+        infoColumn.style.marginTop = (brandHero.offsetHeight + colGap) + 'px';
+      } else {
+        infoColumn.style.marginTop = '';
+      }
+    };
+    syncSidebar();
+    window.addEventListener('resize', syncSidebar);
+    window.addEventListener('load', syncSidebar);
+    if (window.ResizeObserver) {
+      new ResizeObserver(syncSidebar).observe(brandHero);
+    }
+    const heroImg = brandHero.querySelector('img');
+    if (heroImg && !heroImg.complete) heroImg.addEventListener('load', syncSidebar);
   }
 
   // --- Card Intersection Observer for Animations ---

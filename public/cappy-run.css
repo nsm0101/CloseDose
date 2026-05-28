@@ -102,3 +102,53 @@
   #cappyRunOverlay .cappy-run-topbar { font-size: 11px; }
   #cappyRunOverlay .cappy-run-hint { display: none; }
 }
+
+/* On-screen touch controls — hidden by default, shown on touch devices in
+   portrait so the runner is playable without a keyboard. */
+#cappyRunOverlay .cappy-run-touch { display: none; }
+
+@media (pointer: coarse) and (orientation: portrait) {
+  #cappyRunOverlay .cappy-run-touch {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 33vh;
+    padding: 0 20px;
+    pointer-events: none;
+    z-index: 100001;
+  }
+
+  #cappyRunOverlay .cappy-touch-btn {
+    pointer-events: auto;
+    width: 78px;
+    height: 78px;
+    border-radius: 50%;
+    border: 2px solid rgba(47, 93, 58, 0.5);
+    background: rgba(255, 255, 255, 0.55);
+    color: #2f5d3a;
+    font-size: 36px;
+    font-weight: 700;
+    line-height: 1;
+    display: grid;
+    place-items: center;
+    backdrop-filter: blur(4px);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+    -webkit-tap-highlight-color: transparent;
+    touch-action: none;
+    user-select: none;
+  }
+
+  #cappyRunOverlay .cappy-touch-btn:active {
+    background: rgba(255, 255, 255, 0.85);
+    transform: scale(0.94);
+  }
+
+  [data-theme='dark'] #cappyRunOverlay .cappy-touch-btn {
+    background: rgba(20, 32, 26, 0.6);
+    border-color: rgba(111, 191, 133, 0.5);
+    color: #9adfb0;
+  }
+}
