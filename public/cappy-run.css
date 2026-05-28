@@ -53,6 +53,16 @@
   font-weight: 700;
 }
 
+#cappyRunOverlay .cappy-run-stage {
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  padding: 2px 8px;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  opacity: 0.9;
+}
+
 #cappyRunOverlay .cappy-run-hint {
   opacity: 0.75;
   font-size: 11px;
@@ -79,22 +89,30 @@
 #cappyRunOverlay .cappy-run-close {
   position: absolute;
   top: 6px;
-  right: 8px;
-  background: transparent;
-  border: 1px solid currentColor;
-  color: inherit;
-  width: 26px;
-  height: 26px;
+  left: 6px;
+  z-index: 3;
+  background: #e23b3b;
+  border: 2px solid #7d1212;
+  color: #fff;
+  width: 28px;
+  height: 28px;
   line-height: 1;
-  border-radius: 4px;
+  border-radius: 6px;
   cursor: pointer;
   font-family: inherit;
-  font-size: 14px;
-  opacity: 0.7;
+  font-size: 16px;
+  font-weight: 700;
+  box-shadow: 0 2px 0 #7d1212, 0 3px 6px rgba(0, 0, 0, 0.35);
+  transition: transform 80ms ease, box-shadow 80ms ease, background 80ms ease;
 }
 
 #cappyRunOverlay .cappy-run-close:hover {
-  opacity: 1;
+  background: #ff5252;
+}
+
+#cappyRunOverlay .cappy-run-close:active {
+  transform: translateY(2px);
+  box-shadow: 0 0 0 #7d1212, 0 1px 3px rgba(0, 0, 0, 0.35);
 }
 
 @media (max-width: 600px) {
@@ -103,52 +121,99 @@
   #cappyRunOverlay .cappy-run-hint { display: none; }
 }
 
-/* On-screen touch controls — hidden by default, shown on touch devices in
-   portrait so the runner is playable without a keyboard. */
+/* On-screen touch controls — hidden by default, shown on touch devices so
+   the runner is playable without a keyboard. The control deck sits BELOW the
+   game frame and is styled like chunky retro arcade buttons. */
 #cappyRunOverlay .cappy-run-touch { display: none; }
 
-@media (pointer: coarse) and (orientation: portrait) {
+@media (pointer: coarse) {
   #cappyRunOverlay .cappy-run-touch {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    position: fixed;
-    left: 0;
-    right: 0;
-    bottom: 33vh;
-    padding: 0 20px;
-    pointer-events: none;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 56px;
+    width: min(960px, 100vw);
+    box-sizing: border-box;
+    padding: 16px 24px calc(18px + env(safe-area-inset-bottom, 0px));
+    pointer-events: auto;
     z-index: 100001;
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
   }
 
   #cappyRunOverlay .cappy-touch-btn {
     pointer-events: auto;
-    width: 78px;
-    height: 78px;
+    position: relative;
+    width: 92px;
+    height: 92px;
     border-radius: 50%;
-    border: 2px solid rgba(47, 93, 58, 0.5);
-    background: rgba(255, 255, 255, 0.55);
-    color: #2f5d3a;
-    font-size: 36px;
-    font-weight: 700;
-    line-height: 1;
+    border: none;
     display: grid;
     place-items: center;
-    backdrop-filter: blur(4px);
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+    row-gap: 2px;
+    font-family: 'Courier New', Courier, monospace;
+    font-weight: 700;
+    color: #fff;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+    cursor: pointer;
     -webkit-tap-highlight-color: transparent;
-    touch-action: none;
+    -webkit-user-select: none;
     user-select: none;
+    -webkit-touch-callout: none;
+    touch-action: none;
+    transition: transform 90ms ease, box-shadow 90ms ease, filter 90ms ease;
+    will-change: transform;
   }
 
+  #cappyRunOverlay .cappy-touch-glyph { font-size: 32px; line-height: 1; }
+  #cappyRunOverlay .cappy-touch-label { font-size: 12px; letter-spacing: 0.14em; }
+
+  #cappyRunOverlay .cappy-touch-btn--up {
+    background: radial-gradient(circle at 32% 28%, #7cffb2 0%, #2ecc71 45%, #1b8f4d 100%);
+    box-shadow: 0 6px 0 #11623a, 0 10px 16px rgba(0, 0, 0, 0.4), inset 0 3px 6px rgba(255, 255, 255, 0.5);
+  }
+
+  #cappyRunOverlay .cappy-touch-btn--down {
+    background: radial-gradient(circle at 32% 28%, #ffd56b 0%, #f5a623 45%, #c87d0a 100%);
+    box-shadow: 0 6px 0 #8a5606, 0 10px 16px rgba(0, 0, 0, 0.4), inset 0 3px 6px rgba(255, 255, 255, 0.5);
+  }
+
+  /* Tapped / held: press into the deck. */
+  #cappyRunOverlay .cappy-touch-btn.is-pressed,
   #cappyRunOverlay .cappy-touch-btn:active {
-    background: rgba(255, 255, 255, 0.85);
-    transform: scale(0.94);
+    transform: translateY(5px) scale(0.96);
+    filter: brightness(1.12);
   }
 
-  [data-theme='dark'] #cappyRunOverlay .cappy-touch-btn {
-    background: rgba(20, 32, 26, 0.6);
-    border-color: rgba(111, 191, 133, 0.5);
-    color: #9adfb0;
+  #cappyRunOverlay .cappy-touch-btn--up.is-pressed,
+  #cappyRunOverlay .cappy-touch-btn--up:active {
+    box-shadow: 0 1px 0 #11623a, 0 3px 6px rgba(0, 0, 0, 0.4), inset 0 3px 8px rgba(0, 0, 0, 0.3);
   }
+
+  #cappyRunOverlay .cappy-touch-btn--down.is-pressed,
+  #cappyRunOverlay .cappy-touch-btn--down:active {
+    box-shadow: 0 1px 0 #8a5606, 0 3px 6px rgba(0, 0, 0, 0.4), inset 0 3px 8px rgba(0, 0, 0, 0.3);
+  }
+
+  /* Held: subtle glow pulse. */
+  #cappyRunOverlay .cappy-touch-btn.is-pressed {
+    animation: cappyHold 0.6s ease-in-out infinite alternate;
+  }
+
+  /* Released: spring back with a pop. */
+  #cappyRunOverlay .cappy-touch-btn.is-released {
+    animation: cappyPop 0.22s ease-out;
+  }
+}
+
+@keyframes cappyHold {
+  from { filter: brightness(1.1); }
+  to   { filter: brightness(1.3); }
+}
+
+@keyframes cappyPop {
+  0%   { transform: translateY(5px) scale(0.96); }
+  55%  { transform: translateY(-2px) scale(1.04); }
+  100% { transform: translateY(0) scale(1); }
 }

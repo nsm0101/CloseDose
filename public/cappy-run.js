@@ -231,6 +231,297 @@
     return { w: sprite[0].length, h: sprite.length };
   }
 
+  // ---------------------------- Stage scenery ----------------------------
+  // The game changes its backdrop every STAGE_POINTS points. Stage 0 is
+  // always the rainforest; later stages pick randomly from the rest.
+  const STAGE_POINTS = 5000;
+
+  function circle(ctx, x, y, r) {
+    ctx.beginPath();
+    ctx.arc(x, y, r, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  function bgSun(ctx, x, y, r, color) {
+    ctx.fillStyle = color;
+    circle(ctx, x, y, r);
+  }
+
+  // Repeat a draw callback across the canvas width with a parallax scroll.
+  // `k` is a stable per-element world index so deterministic randomness
+  // (heights, colors) doesn't flicker as the scene scrolls.
+  function repeatX(scroll, spacing, W, fn) {
+    const off = ((scroll % spacing) + spacing) % spacing;
+    let k = Math.floor(scroll / spacing);
+    for (let x = -off; x < W + spacing; x += spacing, k++) fn(x, k);
+  }
+
+  function hash(n) {
+    n = (n << 13) ^ n;
+    return ((n * (n * n * 15731 + 789221) + 1376312589) & 0x7fffffff);
+  }
+
+  // Soft rolling silhouette used for hills / dunes.
+  function hillRange(ctx, W, baseY, color, scroll, amp, step) {
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    ctx.moveTo(0, baseY);
+    const phase = scroll / step;
+    for (let x = 0; x <= W; x += step / 2) {
+      const y = baseY - amp * (0.5 + 0.5 * Math.sin((x / step) + phase));
+      ctx.lineTo(x, y);
+    }
+    ctx.lineTo(W, baseY);
+    ctx.closePath();
+    ctx.fill();
+  }
+
+  function starField(ctx, W, H, scroll) {
+    ctx.fillStyle = '#ffffff';
+    for (let i = 0; i < 70; i++) {
+      let x = ((i * 97) % (W + 40)) - ((scroll * 0.08) % (W + 40));
+      if (x < 0) x += W + 40;
+      const y = (i * 53) % (H - 70) + 6;
+      const s = (i % 4 === 0) ? 2 : 1;
+      ctx.globalAlpha = 0.45 + 0.55 * ((i % 5) / 5);
+      ctx.fillRect(x, y, s, s);
+    }
+    ctx.globalAlpha = 1;
+  }
+
+  // A peeking Teenage Mutant Ninja Turtle head — cameo for the city stage.
+  function tmntHead(ctx, x, y, s, band) {
+    ctx.fillStyle = '#4a8c3f'; // green head
+    ctx.beginPath();
+    ctx.arc(x, y, s, Math.PI, 0);
+    ctx.fill();
+    ctx.fillRect(x - s, y, s * 2, s * 0.55);
+    // bandana
+    ctx.fillStyle = band;
+    ctx.fillRect(x - s, y - s * 0.18, s * 2, s * 0.42);
+    // bandana tails
+    ctx.fillRect(x - s - s * 0.5, y - s * 0.1, s * 0.6, s * 0.22);
+    ctx.fillRect(x - s - s * 0.4, y + s * 0.12, s * 0.5, s * 0.2);
+    // eyes
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(x - s * 0.55, y - s * 0.08, s * 0.4, s * 0.3);
+    ctx.fillRect(x + s * 0.15, y - s * 0.08, s * 0.4, s * 0.3);
+    ctx.fillStyle = '#000000';
+    ctx.fillRect(x - s * 0.4, y + s * 0.02, s * 0.16, s * 0.16);
+    ctx.fillRect(x + s * 0.3, y + s * 0.02, s * 0.16, s * 0.16);
+  }
+
+  function kangaroo(ctx, x, GY, c) {
+    ctx.fillStyle = c;
+    ctx.beginPath(); ctx.ellipse(x, GY - 22, 12, 16, 0, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.ellipse(x + 10, GY - 40, 5, 8, 0.3, 0, Math.PI * 2); ctx.fill();
+    ctx.fillRect(x + 11, GY - 52, 2, 8);
+    ctx.beginPath();
+    ctx.moveTo(x - 8, GY - 14);
+    ctx.quadraticCurveTo(x - 26, GY - 6, x - 30, GY);
+    ctx.lineTo(x - 22, GY);
+    ctx.quadraticCurveTo(x - 12, GY - 8, x - 4, GY - 16);
+    ctx.closePath(); ctx.fill();
+    ctx.fillRect(x - 2, GY - 12, 7, 12);
+  }
+
+  const THEMES = [
+    {
+      name: 'Rainforest',
+      sky: ['#bfe6cf', '#eaf6ee'],
+      groundFill: '#d7ecc9',
+      ink: '#234b2c',
+      detail: '#4f8a5f',
+      drawBg: function (ctx, W, H, GY, scroll) {
+        hillRange(ctx, W, GY, '#a9d9a0', scroll * 0.15, 34, 110);
+        hillRange(ctx, W, GY, '#7fc081', scroll * 0.3, 22, 70);
+        repeatX(scroll * 0.5, 160, W, function (x) {
+          ctx.fillStyle = '#6b4a2a';
+          ctx.fillRect(x + 18, GY - 46, 6, 46);
+          ctx.fillStyle = '#3f7d46';
+          circle(ctx, x + 21, GY - 52, 18);
+          circle(ctx, x + 6, GY - 44, 13);
+          circle(ctx, x + 36, GY - 44, 13);
+        });
+      },
+    },
+    {
+      name: 'Wild West',
+      sky: ['#f6d29b', '#fbe9c6'],
+      groundFill: '#e6c79a',
+      ink: '#5a3210',
+      detail: '#9c6a2e',
+      drawBg: function (ctx, W, H, GY, scroll) {
+        bgSun(ctx, W - 120, 50, 30, '#ffce5c');
+        repeatX(scroll * 0.2, 270, W, function (x) {
+          ctx.fillStyle = '#c98a4e';
+          ctx.beginPath();
+          ctx.moveTo(x, GY); ctx.lineTo(x + 18, GY - 72);
+          ctx.lineTo(x + 120, GY - 72); ctx.lineTo(x + 138, GY);
+          ctx.closePath(); ctx.fill();
+        });
+        repeatX(scroll * 0.5, 200, W, function (x) {
+          ctx.fillStyle = '#3c7a3a';
+          ctx.fillRect(x + 20, GY - 50, 10, 50);
+          ctx.fillRect(x + 8, GY - 36, 12, 8);
+          ctx.fillRect(x + 8, GY - 44, 6, 16);
+          ctx.fillRect(x + 30, GY - 30, 12, 8);
+          ctx.fillRect(x + 36, GY - 40, 6, 16);
+        });
+      },
+    },
+    {
+      name: 'City',
+      sky: ['#9fb6d6', '#dfe8f2'],
+      groundFill: '#9aa3ad',
+      ink: '#222831',
+      detail: '#5a6472',
+      drawBg: function (ctx, W, H, GY, scroll) {
+        const bands = ['#2b6cff', '#d32f2f', '#8e44ad', '#ff8c1a'];
+        repeatX(scroll * 0.2, 64, W, function (x, k) {
+          const h = 46 + (hash(k) % 78);
+          ctx.fillStyle = (k % 2 === 0) ? '#3c4654' : '#4a5563';
+          ctx.fillRect(x, GY - h, 56, h);
+          ctx.fillStyle = 'rgba(255,221,120,0.85)';
+          for (let wy = GY - h + 6; wy < GY - 8; wy += 14) {
+            for (let wx = x + 6; wx < x + 50; wx += 14) {
+              if ((hash(k * 131 + wx * 7 + wy) & 3) !== 0) ctx.fillRect(wx, wy, 7, 8);
+            }
+          }
+          // TMNT cameo peeking over every 5th rooftop
+          if (k % 5 === 0) {
+            tmntHead(ctx, x + 28, GY - h - 2, 13, bands[((k / 5) | 0) % 4]);
+          }
+        });
+      },
+    },
+    {
+      name: 'Arctic',
+      sky: ['#bfe6f2', '#eaf7fb'],
+      groundFill: '#eaf6ff',
+      ink: '#2b4a63',
+      detail: '#7fb0d6',
+      drawBg: function (ctx, W, H, GY, scroll) {
+        ctx.lineWidth = 6;
+        for (let a = 0; a < 3; a++) {
+          ctx.strokeStyle = ['rgba(120,230,180,0.45)', 'rgba(150,200,255,0.4)', 'rgba(200,160,255,0.35)'][a];
+          ctx.beginPath();
+          for (let x = 0; x <= W; x += 20) {
+            ctx.lineTo(x, 28 + a * 14 + 10 * Math.sin(x / 60 + scroll / 220 + a));
+          }
+          ctx.stroke();
+        }
+        repeatX(scroll * 0.25, 230, W, function (x) {
+          ctx.fillStyle = '#cfeeff';
+          ctx.beginPath();
+          ctx.moveTo(x, GY); ctx.lineTo(x + 40, GY - 60);
+          ctx.lineTo(x + 80, GY); ctx.closePath(); ctx.fill();
+        });
+        repeatX(scroll * 0.5, 320, W, function (x) {
+          ctx.fillStyle = '#eef7ff';
+          ctx.beginPath(); ctx.arc(x + 30, GY, 26, Math.PI, 0); ctx.fill();
+          ctx.fillStyle = '#bcd6e6';
+          ctx.fillRect(x + 22, GY - 14, 16, 14);
+        });
+      },
+    },
+    {
+      name: 'Desert',
+      sky: ['#ffb877', '#ffe2b0'],
+      groundFill: '#f0c98f',
+      ink: '#7a3f12',
+      detail: '#b9772e',
+      drawBg: function (ctx, W, H, GY, scroll) {
+        bgSun(ctx, 120, 48, 34, '#ffd27f');
+        repeatX(scroll * 0.2, 250, W, function (x) {
+          ctx.fillStyle = '#caa15a';
+          ctx.beginPath();
+          ctx.moveTo(x, GY); ctx.lineTo(x + 60, GY - 86);
+          ctx.lineTo(x + 120, GY); ctx.closePath(); ctx.fill();
+          ctx.fillStyle = 'rgba(0,0,0,0.08)';
+          ctx.beginPath();
+          ctx.moveTo(x + 60, GY - 86); ctx.lineTo(x + 120, GY);
+          ctx.lineTo(x + 60, GY); ctx.closePath(); ctx.fill();
+        });
+        hillRange(ctx, W, GY, '#e7c08a', scroll * 0.4, 18, 80);
+      },
+    },
+    {
+      name: 'Island',
+      sky: ['#7fd0f0', '#cdeefb'],
+      groundFill: '#f2e2b0',
+      ink: '#1f6f78',
+      detail: '#3fa9b5',
+      drawBg: function (ctx, W, H, GY, scroll) {
+        bgSun(ctx, W - 110, 46, 28, '#fff2a8');
+        ctx.fillStyle = 'rgba(64,170,200,0.5)';
+        ctx.fillRect(0, GY - 26, W, 26);
+        repeatX(scroll * 0.45, 220, W, function (x) {
+          ctx.fillStyle = '#8a5a2b';
+          ctx.fillRect(x + 24, GY - 54, 6, 54);
+          ctx.fillStyle = '#2fa35a';
+          for (let a = -2; a <= 2; a++) {
+            ctx.beginPath();
+            ctx.moveTo(x + 27, GY - 54);
+            ctx.quadraticCurveTo(x + 27 + a * 16, GY - 72, x + 27 + a * 26, GY - 56);
+            ctx.lineTo(x + 27, GY - 54);
+            ctx.fill();
+          }
+        });
+      },
+    },
+    {
+      name: 'Outback',
+      sky: ['#f0935a', '#ffd9a8'],
+      groundFill: '#d98a4e',
+      ink: '#4a1d0a',
+      detail: '#8a4a22',
+      drawBg: function (ctx, W, H, GY, scroll) {
+        bgSun(ctx, W - 120, 52, 30, '#ffb24d');
+        repeatX(scroll * 0.2, 400, W, function (x) {
+          ctx.fillStyle = '#b5532a';
+          ctx.beginPath();
+          ctx.moveTo(x, GY);
+          ctx.quadraticCurveTo(x + 30, GY - 54, x + 90, GY - 50);
+          ctx.quadraticCurveTo(x + 160, GY - 46, x + 200, GY);
+          ctx.closePath(); ctx.fill();
+        });
+        repeatX(scroll * 0.5, 340, W, function (x) {
+          kangaroo(ctx, x + 20, GY, '#5a2a14');
+        });
+        repeatX(scroll * 0.6, 130, W, function (x) {
+          ctx.fillStyle = '#7a5a2a';
+          ctx.beginPath(); ctx.arc(x + 10, GY - 4, 8, Math.PI, 0); ctx.fill();
+        });
+      },
+    },
+    {
+      name: 'Space',
+      sky: ['#0b0b2a', '#241640'],
+      skyDark: ['#05050f', '#140d28'],
+      groundFill: '#3a2f4a',
+      ink: '#dfe6ff',
+      detail: '#8f7fbf',
+      clouds: false,
+      drawBg: function (ctx, W, H, GY, scroll) {
+        starField(ctx, W, H, scroll);
+        ctx.fillStyle = '#cfd6f5';
+        circle(ctx, 110, 52, 26);
+        ctx.fillStyle = 'rgba(120,120,160,0.4)';
+        circle(ctx, 102, 46, 5); circle(ctx, 120, 58, 4); circle(ctx, 114, 44, 3);
+        repeatX(scroll * 0.15, 380, W, function (x, k) {
+          ctx.fillStyle = (k % 2 === 0) ? '#5a7fd0' : '#c0673f';
+          circle(ctx, x + 40, 64, 18);
+          ctx.strokeStyle = 'rgba(255,255,255,0.5)';
+          ctx.lineWidth = 3;
+          ctx.beginPath();
+          ctx.ellipse(x + 40, 64, 32, 9, 0.4, 0, Math.PI * 2);
+          ctx.stroke();
+        });
+      },
+    },
+  ];
+
   // -------------------------------- Game ---------------------------------
   function CappyRun() {
     this.active = false;
@@ -259,6 +550,13 @@
     this.spawnTimer = 0;
     this.cloudTimer = 0;
     this.frameTick = 0;
+
+    this.stage = 0;
+    this.theme = THEMES[0];
+    this.bgScroll = 0;
+    this.stageBannerTimer = 0;
+    this.stageBannerName = '';
+    this.stageEl = null;
 
     this._onKeyDown = this._onKeyDown.bind(this);
     this._onKeyUp = this._onKeyUp.bind(this);
@@ -310,6 +608,7 @@
     topbar.className = 'cappy-run-topbar';
     topbar.innerHTML =
       '<span class="cappy-run-title">Cappy Run</span>' +
+      '<span class="cappy-run-stage">' + THEMES[0].name + '</span>' +
       '<span class="cappy-run-hint">Space / ↑ jump · ↓ duck · Esc to exit</span>';
 
     const wrap = document.createElement('div');
@@ -343,17 +642,39 @@
     downBtn.type = 'button';
     downBtn.className = 'cappy-touch-btn cappy-touch-btn--down';
     downBtn.setAttribute('aria-label', 'Duck');
-    downBtn.innerHTML = '<span aria-hidden="true">↓</span>';
+    downBtn.innerHTML =
+      '<span class="cappy-touch-glyph" aria-hidden="true">▼</span>' +
+      '<span class="cappy-touch-label" aria-hidden="true">DUCK</span>';
 
     const upBtn = document.createElement('button');
     upBtn.type = 'button';
     upBtn.className = 'cappy-touch-btn cappy-touch-btn--up';
     upBtn.setAttribute('aria-label', 'Jump');
-    upBtn.innerHTML = '<span aria-hidden="true">↑</span>';
+    upBtn.innerHTML =
+      '<span class="cappy-touch-glyph" aria-hidden="true">▲</span>' +
+      '<span class="cappy-touch-label" aria-hidden="true">JUMP</span>';
+
+    // Visual press feedback: held while pressed, plays a release "pop".
+    const press = (btn) => {
+      btn.classList.remove('is-released');
+      btn.classList.add('is-pressed');
+    };
+    const release = (btn) => {
+      if (btn.classList.contains('is-pressed')) {
+        btn.classList.remove('is-pressed');
+        btn.classList.add('is-released');
+      }
+    };
+    [upBtn, downBtn].forEach((b) => {
+      b.addEventListener('animationend', (e) => {
+        if (e.animationName === 'cappyPop') b.classList.remove('is-released');
+      });
+    });
 
     upBtn.addEventListener('pointerdown', (e) => {
       e.preventDefault();
       e.stopPropagation();
+      press(upBtn);
       if (this.state === 'over') {
         this._reset();
         this.state = 'playing';
@@ -362,7 +683,7 @@
         this.keys.jump = true;
       }
     });
-    const endJump = () => { this.keys.jump = false; };
+    const endJump = () => { this.keys.jump = false; release(upBtn); };
     upBtn.addEventListener('pointerup', endJump);
     upBtn.addEventListener('pointercancel', endJump);
     upBtn.addEventListener('pointerleave', endJump);
@@ -370,18 +691,20 @@
     downBtn.addEventListener('pointerdown', (e) => {
       e.preventDefault();
       e.stopPropagation();
+      press(downBtn);
       this.keys.duck = true;
       if (this.cappy && !this.cappy.onGround) {
         this.cappy.vy = Math.max(this.cappy.vy, 900);
       }
     });
-    const endDuck = () => { this.keys.duck = false; };
+    const endDuck = () => { this.keys.duck = false; release(downBtn); };
     downBtn.addEventListener('pointerup', endDuck);
     downBtn.addEventListener('pointercancel', endDuck);
     downBtn.addEventListener('pointerleave', endDuck);
 
-    controls.appendChild(downBtn);
+    // Buttons sit below the game frame.
     controls.appendChild(upBtn);
+    controls.appendChild(downBtn);
     overlay.appendChild(controls);
 
     document.body.appendChild(overlay);
@@ -399,6 +722,7 @@
 
     this.overlay = overlay;
     this.canvas = canvas;
+    this.stageEl = topbar.querySelector('.cappy-run-stage');
     this.ctx = canvas.getContext('2d');
     this.ctx.imageSmoothingEnabled = false;
     canvas.focus();
@@ -421,6 +745,32 @@
     this.spawnTimer = 0.6;
     this.cloudTimer = 0;
     this.frameTick = 0;
+    // Always start on the rainforest stage.
+    this.stage = 0;
+    this.theme = THEMES[0];
+    this.bgScroll = 0;
+    this.stageBannerTimer = 0;
+    this.stageBannerName = '';
+    if (this.stageEl) this.stageEl.textContent = THEMES[0].name;
+  };
+
+  CappyRun.prototype._advanceStage = function (stageIndex) {
+    this.stage = stageIndex;
+    let theme;
+    if (stageIndex === 0) {
+      theme = THEMES[0];
+    } else {
+      // Random pick from every theme except the rainforest; avoid repeating
+      // the theme we just showed.
+      const pool = THEMES.slice(1);
+      do {
+        theme = pool[Math.floor(Math.random() * pool.length)];
+      } while (pool.length > 1 && theme === this.theme);
+    }
+    this.theme = theme;
+    this.stageBannerName = theme.name;
+    this.stageBannerTimer = 2.5;
+    if (this.stageEl) this.stageEl.textContent = theme.name;
   };
 
   CappyRun.prototype._onKeyDown = function (e) {
@@ -479,6 +829,12 @@
     this.distance += this.speed * dt;
     this.score = Math.floor(this.distance / 5);
     this.speed = Math.min(this.maxSpeed, this.baseSpeed + this.distance * 0.04);
+    this.bgScroll += this.speed * dt;
+
+    // Swap the backdrop every STAGE_POINTS points.
+    const targetStage = Math.floor(this.score / STAGE_POINTS);
+    if (targetStage !== this.stage) this._advanceStage(targetStage);
+    if (this.stageBannerTimer > 0) this.stageBannerTimer -= dt;
 
     // Cappy physics
     const gravity = 1800;
@@ -592,15 +948,33 @@
   CappyRun.prototype._draw = function () {
     const ctx = this.ctx;
     const dark = document.documentElement.getAttribute('data-theme') === 'dark';
-    const fg = dark ? '#e6f0e8' : '#2a3b2f';
-    const fgLight = dark ? '#9adfb0' : '#5b8b66';
+    const t = this.theme || THEMES[0];
+    const fg = t.ink;
+    const fgLight = t.detail;
 
     ctx.clearRect(0, 0, this.W, this.H);
 
-    // Sky gradient hint via background — let the CSS handle it. Draw clouds.
-    for (const c of this.clouds) {
-      drawSprite(ctx, CLOUD, c.x, c.y, 2, fgLight, null);
+    // Stage sky gradient.
+    const skyColors = (dark && t.skyDark) ? t.skyDark : t.sky;
+    const sky = ctx.createLinearGradient(0, 0, 0, this.H);
+    sky.addColorStop(0, skyColors[0]);
+    sky.addColorStop(1, skyColors[1]);
+    ctx.fillStyle = sky;
+    ctx.fillRect(0, 0, this.W, this.H);
+
+    // Parallax scenery for the current stage.
+    t.drawBg(ctx, this.W, this.H, this.GROUND_Y, this.bgScroll, dark);
+
+    // Clouds (skipped for starfield stages).
+    if (t.clouds !== false) {
+      for (const c of this.clouds) {
+        drawSprite(ctx, CLOUD, c.x, c.y, 2, 'rgba(255,255,255,0.85)', null);
+      }
     }
+
+    // Ground fill band beneath the horizon.
+    ctx.fillStyle = t.groundFill;
+    ctx.fillRect(0, this.GROUND_Y + 1, this.W, this.H - this.GROUND_Y);
 
     // Ground line + dashed texture (river-bank suggestion)
     ctx.strokeStyle = fg;
@@ -657,6 +1031,19 @@
     const scText = pad(this.score, 5);
     ctx.fillText(hiText + '   ' + scText, this.W - 12, 22);
     ctx.textAlign = 'left';
+
+    // Stage-change banner (fades out over its lifetime).
+    if (this.stageBannerTimer > 0) {
+      ctx.save();
+      ctx.globalAlpha = Math.min(1, this.stageBannerTimer / 0.6);
+      ctx.fillStyle = fg;
+      ctx.textAlign = 'center';
+      ctx.font = '700 20px "Courier New", monospace';
+      ctx.fillText('STAGE ' + (this.stage + 1) + ' · ' + this.stageBannerName.toUpperCase(),
+        this.W / 2, 46);
+      ctx.restore();
+      ctx.textAlign = 'left';
+    }
 
     // Banners
     if (this.state === 'over') {
