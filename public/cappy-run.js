@@ -494,6 +494,15 @@
     return ((n * (n * n * 15731 + 789221) + 1376312589) & 0x7fffffff);
   }
 
+  function shuffle(arr) {
+    const a = arr.slice();
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      const tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+    }
+    return a;
+  }
+
   // Soft rolling silhouette used for hills / dunes.
   function hillRange(ctx, W, baseY, color, scroll, amp, step) {
     ctx.fillStyle = color;
@@ -642,6 +651,7 @@
   const THEMES = [
     {
       name: 'Rainforest',
+      climate: 'hot',
       sky: ['#bfe6cf', '#eaf6ee'],
       groundFill: '#d7ecc9',
       ink: '#234b2c',
@@ -668,6 +678,7 @@
     },
     {
       name: 'Wild West',
+      climate: 'hot',
       sky: ['#f6d29b', '#fbe9c6'],
       groundFill: '#e6c79a',
       ink: '#5a3210',
@@ -695,6 +706,7 @@
     },
     {
       name: 'City',
+      climate: 'city',
       sky: ['#9fb6d6', '#dfe8f2'],
       groundFill: '#9aa3ad',
       ink: '#222831',
@@ -746,6 +758,7 @@
     },
     {
       name: 'Arctic',
+      climate: 'cold',
       sky: ['#bfe6f2', '#eaf7fb'],
       groundFill: '#eaf6ff',
       ink: '#2b4a63',
@@ -783,6 +796,7 @@
     },
     {
       name: 'Desert',
+      climate: 'hot',
       sky: ['#ffb877', '#ffe2b0'],
       groundFill: '#f0c98f',
       ink: '#7a3f12',
@@ -813,6 +827,7 @@
     },
     {
       name: 'Island',
+      climate: 'hot',
       sky: ['#7fd0f0', '#cdeefb'],
       groundFill: '#f2e2b0',
       ink: '#1f6f78',
@@ -847,6 +862,7 @@
     },
     {
       name: 'Outback',
+      climate: 'hot',
       sky: ['#f0935a', '#ffd9a8'],
       groundFill: '#d98a4e',
       ink: '#4a1d0a',
@@ -883,11 +899,13 @@
     },
     {
       name: 'Space',
+      climate: 'space',
       sky: ['#0b0b2a', '#241640'],
       skyDark: ['#05050f', '#140d28'],
       groundFill: '#3a2f4a',
       ink: '#dfe6ff',
       detail: '#8f7fbf',
+      obOutline: 'rgba(255,255,255,0.6)',
       clouds: false,
       ground: [
         { sprite: MOON_ROCK, color: '#8b8b9a', color2: '#5a5a6a' },
@@ -945,12 +963,13 @@
     this.H = 200;
     this.GROUND_Y = 160;
 
-    this.state = 'ready'; // 'ready' | 'playing' | 'over'
+    this.state = 'ready'; // 'ready' | 'playing' | 'enter' | 'over'
     this.cappy = null;
     this.obstacles = [];
     this.clouds = [];
     this.cameos = [];
     this.cameoTimer = 0;
+    this.weatherParticles = [];
     this.groundOffset = 0;
     this.speed = 0;
     this.baseSpeed = 240; // px/sec
@@ -958,16 +977,24 @@
     this.distance = 0;
     this.score = 0;
     this.hi = parseInt(localStorage.getItem('cappyRun.hi') || '0', 10) || 0;
+    this.board = this._loadBoard();
     this.spawnTimer = 0;
     this.cloudTimer = 0;
     this.frameTick = 0;
 
     this.stage = 0;
     this.theme = THEMES[0];
+    this.themeQueue = [];
     this.bgScroll = 0;
     this.stageBannerTimer = 0;
     this.stageBannerName = '';
     this.stageEl = null;
+
+    // 10th-stage low-visibility weather
+    this.lowVis = false;
+    this.weather = null; // 'rain' | 'snow' | 'night'
+    this.lightningTimer = 0;
+    this.lightningFlash = 0; // >0 while a lightning flash brightens the scene
 
     this._onKeyDown = this._onKeyDown.bind(this);
     this._onKeyUp = this._onKeyUp.bind(this);
@@ -1017,10 +1044,32 @@
 
     const topbar = document.createElement('div');
     topbar.className = 'cappy-run-topbar';
-    topbar.innerHTML =
-      '<span class="cappy-run-title">Cappy Run</span>' +
-      '<span class="cappy-run-stage">' + THEMES[0].name + '</span>' +
-      '<span class="cappy-run-hint">Space / ↑ jump · ↓ duck · Esc to exit</span>';
+
+    // Close button sits immediately to the left of the "Cappy Run" title.
+    const closeBtn = document.createElement('button');
+    closeBtn.type = 'button';
+    closeBtn.className = 'cappy-run-close';
+    closeBtn.setAttribute('aria-label', 'Exit Cappy Run');
+    closeBtn.addEventListener('click', () => this.stop());
+
+    const left = document.createElement('span');
+    left.className = 'cappy-run-left';
+    const title = document.createElement('span');
+    title.className = 'cappy-run-title';
+    title.textContent = 'Cappy Run';
+    left.appendChild(closeBtn);
+    left.appendChild(title);
+
+    const stage = document.createElement('span');
+    stage.className = 'cappy-run-stage';
+    stage.textContent = THEMES[0].name;
+    const hint = document.createElement('span');
+    hint.className = 'cappy-run-hint';
+    hint.textContent = 'Space / ↑ jump · ↓ duck · Esc to exit';
+
+    topbar.appendChild(left);
+    topbar.appendChild(stage);
+    topbar.appendChild(hint);
 
     const wrap = document.createElement('div');
     wrap.className = 'cappy-run-canvas-wrap';
@@ -1030,15 +1079,13 @@
     canvas.height = this.H;
     canvas.tabIndex = 0;
 
-    const closeBtn = document.createElement('button');
-    closeBtn.type = 'button';
-    closeBtn.className = 'cappy-run-close';
-    closeBtn.setAttribute('aria-label', 'Exit Cappy Run');
-    closeBtn.textContent = '×';
-    closeBtn.addEventListener('click', () => this.stop());
+    // Game-over / high-score panel overlays the canvas.
+    const panel = document.createElement('div');
+    panel.className = 'cappy-run-panel';
+    panel.style.display = 'none';
 
     wrap.appendChild(canvas);
-    wrap.appendChild(closeBtn);
+    wrap.appendChild(panel);
     frame.appendChild(topbar);
     frame.appendChild(wrap);
     overlay.appendChild(frame);
@@ -1082,9 +1129,9 @@
       e.preventDefault();
       e.stopPropagation();
       press(upBtn);
+      if (this.state === 'enter') return;
       if (this.state === 'over') {
-        this._reset();
-        this.state = 'playing';
+        this._restart();
       } else {
         this._jump();
         this.keys.jump = true;
@@ -1119,17 +1166,26 @@
     // Touch / click on canvas = jump (mobile-friendly).
     canvas.addEventListener('pointerdown', (e) => {
       e.preventDefault();
+      if (this.state === 'enter') return;
       if (this.state === 'over') {
-        this._reset();
-        this.state = 'playing';
+        this._restart();
       } else {
         this._jump();
       }
     });
 
+    // Tapping the game-over panel (but not its inputs/buttons) restarts.
+    panel.addEventListener('pointerdown', (e) => {
+      if (this.state !== 'over') return;
+      if (e.target.closest('input, button')) return;
+      e.preventDefault();
+      this._restart();
+    });
+
     this.overlay = overlay;
     this.canvas = canvas;
-    this.stageEl = topbar.querySelector('.cappy-run-stage');
+    this.panel = panel;
+    this.stageEl = stage;
     this.ctx = canvas.getContext('2d');
     this.ctx.imageSmoothingEnabled = false;
     canvas.focus();
@@ -1148,18 +1204,24 @@
     this.clouds = [];
     this.cameos = [];
     this.cameoTimer = 1.5;
+    this.weatherParticles = [];
     this.speed = this.baseSpeed;
     this.distance = 0;
     this.score = 0;
     this.spawnTimer = 0.6;
     this.cloudTimer = 0;
     this.frameTick = 0;
-    // Always start on the rainforest stage.
+    // Always start on the rainforest stage; queue the rest with no repeats.
     this.stage = 0;
     this.theme = THEMES[0];
+    this.themeQueue = shuffle(THEMES.slice(1));
     this.bgScroll = 0;
     this.stageBannerTimer = 0;
     this.stageBannerName = '';
+    this.lowVis = false;
+    this.weather = null;
+    this.lightningTimer = 0;
+    this.lightningFlash = 0;
     if (this.stageEl) this.stageEl.textContent = THEMES[0].name;
   };
 
@@ -1169,17 +1231,30 @@
     if (stageIndex === 0) {
       theme = THEMES[0];
     } else {
-      // Random pick from every theme except the rainforest; avoid repeating
-      // the theme we just showed.
-      const pool = THEMES.slice(1);
-      do {
-        theme = pool[Math.floor(Math.random() * pool.length)];
-      } while (pool.length > 1 && theme === this.theme);
+      // Draw from a shuffled queue so no stage repeats until every theme has
+      // been played; refill (excluding the current theme) when it empties.
+      if (!this.themeQueue || this.themeQueue.length === 0) {
+        this.themeQueue = shuffle(THEMES.filter((t) => t !== this.theme));
+      }
+      theme = this.themeQueue.shift();
     }
     this.theme = theme;
     this.stageBannerName = theme.name;
     this.stageBannerTimer = 2.5;
     if (this.stageEl) this.stageEl.textContent = theme.name;
+
+    // From the 10th stage on, the weather closes in: rain in hot climates,
+    // snow in cold ones, night in the city / deep space. Lightning flashes
+    // briefly restore visibility to keep the player on edge.
+    this.lowVis = (stageIndex + 1) >= 10;
+    if (this.lowVis) {
+      this.weather = (theme.climate === 'cold') ? 'snow'
+        : (theme.climate === 'hot') ? 'rain'
+        : 'night';
+      this.lightningTimer = 2 + Math.random() * 4;
+    } else {
+      this.weather = null;
+    }
   };
 
   CappyRun.prototype._onKeyDown = function (e) {
@@ -1308,6 +1383,9 @@
     for (const cm of this.cameos) cm.x -= this.speed * cm.parallax * dt;
     this.cameos = this.cameos.filter(cm => cm.x > -(cm.span + 40));
 
+    // Low-visibility weather (10th stage onward).
+    if (this.lowVis) this._updateWeather(dt);
+
     // Collision check
     const cb = this._cappyBox();
     for (const ob of this.obstacles) {
@@ -1363,13 +1441,192 @@
   };
 
   CappyRun.prototype._gameOver = function () {
-    this.state = 'over';
     if (this.score > this.hi) {
       this.hi = this.score;
       try { localStorage.setItem('cappyRun.hi', String(this.hi)); } catch (_) {}
     }
     if (window.gtag) {
       try { window.gtag('event', 'cappy_run_over', { score: this.score }); } catch (_) {}
+    }
+    if (this._qualifies(this.score)) {
+      this.state = 'enter';
+      this._showEntry();
+    } else {
+      this.state = 'over';
+      this._showOverPanel();
+    }
+  };
+
+  CappyRun.prototype._restart = function () {
+    this._hidePanel();
+    this._reset();
+    this.state = 'playing';
+  };
+
+  // ----------------------------- Leaderboard -----------------------------
+  CappyRun.prototype._loadBoard = function () {
+    try {
+      const raw = localStorage.getItem('cappyRun.board');
+      const arr = raw ? JSON.parse(raw) : [];
+      if (Array.isArray(arr)) {
+        return arr
+          .filter((e) => e && typeof e.score === 'number')
+          .sort((a, b) => b.score - a.score)
+          .slice(0, 10);
+      }
+    } catch (_) {}
+    return [];
+  };
+
+  CappyRun.prototype._saveBoard = function () {
+    try {
+      localStorage.setItem('cappyRun.board', JSON.stringify(this.board.slice(0, 10)));
+    } catch (_) {}
+  };
+
+  CappyRun.prototype._qualifies = function (score) {
+    if (score <= 0) return false;
+    if (this.board.length < 10) return true;
+    return score > this.board[this.board.length - 1].score;
+  };
+
+  CappyRun.prototype._submitScore = function (name) {
+    name = String(name || '').toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 3) || 'CAP';
+    const entry = { name: name, score: this.score };
+    this.board.push(entry);
+    this.board.sort((a, b) => b.score - a.score);
+    this.board = this.board.slice(0, 10);
+    this._saveBoard();
+    return entry;
+  };
+
+  CappyRun.prototype._boardHTML = function (highlight) {
+    let rows = '';
+    for (let i = 0; i < 10; i++) {
+      const e = this.board[i];
+      const isHi = highlight && e === highlight;
+      const name = e ? e.name : '---';
+      const score = e ? pad(e.score, 5) : '-----';
+      rows += '<li' + (isHi ? ' class="is-you"' : '') + '>' +
+        '<span class="r">' + (i + 1) + '.</span>' +
+        '<span class="n">' + name + '</span>' +
+        '<span class="s">' + score + '</span></li>';
+    }
+    return '<ol class="cappy-board">' + rows + '</ol>';
+  };
+
+  CappyRun.prototype._hidePanel = function () {
+    if (this.panel) { this.panel.style.display = 'none'; this.panel.innerHTML = ''; }
+  };
+
+  CappyRun.prototype._showEntry = function () {
+    if (!this.panel) return;
+    this.panel.style.display = 'flex';
+    this.panel.innerHTML =
+      '<div class="cappy-panel-inner">' +
+        '<div class="cappy-panel-title">NEW HIGH SCORE!</div>' +
+        '<div class="cappy-panel-sub">Score ' + pad(this.score, 5) + ' — enter your initials</div>' +
+        '<div class="cappy-entry-row">' +
+          '<input class="cappy-initials" maxlength="3" autocomplete="off" ' +
+          'autocapitalize="characters" spellcheck="false" aria-label="Initials" placeholder="AAA">' +
+          '<button type="button" class="cappy-save">SAVE</button>' +
+        '</div>' +
+      '</div>';
+    const input = this.panel.querySelector('.cappy-initials');
+    const save = this.panel.querySelector('.cappy-save');
+    const commit = () => {
+      const entry = this._submitScore(input.value);
+      this.state = 'over';
+      this._showOverPanel(entry);
+    };
+    input.addEventListener('input', () => {
+      input.value = input.value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 3);
+    });
+    input.addEventListener('keydown', (e) => {
+      e.stopPropagation();
+      if (e.key === 'Enter') { e.preventDefault(); commit(); }
+    });
+    save.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); commit(); });
+    save.addEventListener('pointerdown', (e) => e.stopPropagation());
+    setTimeout(() => { try { input.focus(); } catch (_) {} }, 30);
+  };
+
+  CappyRun.prototype._showOverPanel = function (highlight) {
+    if (!this.panel) return;
+    this.panel.style.display = 'flex';
+    this.panel.innerHTML =
+      '<div class="cappy-panel-inner">' +
+        '<div class="cappy-panel-title">GAME OVER</div>' +
+        '<div class="cappy-panel-sub">Score ' + pad(this.score, 5) + ' · Best ' + pad(this.hi, 5) + '</div>' +
+        '<div class="cappy-board-title">ALL-TIME HIGH SCORES</div>' +
+        this._boardHTML(highlight) +
+        '<div class="cappy-panel-hint">Tap / Space to play again · Esc to exit</div>' +
+      '</div>';
+  };
+
+  // ------------------------------- Weather -------------------------------
+  CappyRun.prototype._newParticle = function () {
+    return {
+      x: Math.random() * (this.W + 120) - 20,
+      y: Math.random() * this.H,
+      s: 0.7 + Math.random() * 0.8,
+    };
+  };
+
+  CappyRun.prototype._updateWeather = function (dt) {
+    const isSnow = this.weather === 'snow';
+    const isRain = this.weather === 'rain';
+    if (isSnow || isRain) {
+      const target = isSnow ? 80 : 110;
+      while (this.weatherParticles.length < target) this.weatherParticles.push(this._newParticle());
+    } else {
+      this.weatherParticles.length = 0;
+    }
+    const vx = isRain ? (-this.speed * 0.4 - 260) : (-this.speed * 0.15 - 20);
+    const vy = isRain ? 760 : 80;
+    for (const p of this.weatherParticles) {
+      const sway = isSnow ? Math.sin((p.y + this.frameTick * 60) * 0.05) * 24 : 0;
+      p.x += (vx + sway) * dt;
+      p.y += vy * p.s * dt;
+      if (p.y > this.H + 4 || p.x < -12) {
+        p.x = Math.random() * (this.W + 120);
+        p.y = -6;
+        p.s = 0.7 + Math.random() * 0.8;
+      }
+    }
+    // Lightning: a flash that briefly clears the gloom (increased visibility).
+    if (this.lightningFlash > 0) this.lightningFlash -= dt;
+    this.lightningTimer -= dt;
+    if (this.lightningTimer <= 0) {
+      this.lightningFlash = 0.5;
+      this.lightningTimer = 4 + Math.random() * 6;
+    }
+  };
+
+  CappyRun.prototype._drawWeather = function (ctx) {
+    const flash = Math.max(0, this.lightningFlash) / 0.5; // 0..1
+    let darkness = (this.weather === 'snow') ? 0.4 : 0.6;
+    darkness *= (1 - 0.85 * flash); // lightning lifts the gloom
+    const tint = (this.weather === 'night') ? '8,10,26'
+      : (this.weather === 'rain') ? '18,24,40'
+      : '150,170,200';
+    ctx.fillStyle = 'rgba(' + tint + ',' + darkness.toFixed(3) + ')';
+    ctx.fillRect(0, 0, this.W, this.H);
+
+    if (this.weather === 'rain') {
+      ctx.strokeStyle = 'rgba(200,220,255,0.5)';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      for (const p of this.weatherParticles) { ctx.moveTo(p.x, p.y); ctx.lineTo(p.x - 6, p.y + 13); }
+      ctx.stroke();
+    } else if (this.weather === 'snow') {
+      ctx.fillStyle = 'rgba(255,255,255,0.92)';
+      for (const p of this.weatherParticles) { const sz = 2 * p.s; ctx.fillRect(p.x, p.y, sz, sz); }
+    }
+
+    if (flash > 0) {
+      ctx.fillStyle = 'rgba(255,255,255,' + (0.4 * flash).toFixed(3) + ')';
+      ctx.fillRect(0, 0, this.W, this.H);
     }
   };
 
@@ -1432,13 +1689,15 @@
     // Background cameos (behind the obstacles and Cappy).
     for (const cm of this.cameos) drawCameo(ctx, cm, this.GROUND_Y);
 
-    // Obstacles
+    // Obstacles — drawn with a contrasting outline so they stand out from
+    // whatever backdrop is behind them.
+    const outline = t.obOutline || 'rgba(0,0,0,0.5)';
     for (const ob of this.obstacles) {
       let sprite = ob.sprite;
       if (ob.frames) {
         sprite = ob.frames[Math.floor(this.frameTick * 8) % ob.frames.length];
       }
-      drawSprite(ctx, sprite, ob.x, ob.y, ob.scale, ob.color || fg, ob.color2 || null);
+      drawSpriteOutlined(ctx, sprite, ob.x, ob.y, ob.scale, ob.color || fg, ob.color2 || null, outline);
     }
 
     // Cappy
@@ -1452,6 +1711,9 @@
     }
     drawSprite(ctx, cappySprite, this.cappy.x, this.cappy.y, 2,
       dark ? CAPPY_PALETTE_DARK : CAPPY_PALETTE_LIGHT);
+
+    // Low-visibility weather overlay (drawn over the scene, under the HUD).
+    if (this.lowVis) this._drawWeather(ctx);
 
     // HUD
     ctx.fillStyle = fg;
@@ -1474,17 +1736,7 @@
       ctx.restore();
       ctx.textAlign = 'left';
     }
-
-    // Banners
-    if (this.state === 'over') {
-      ctx.fillStyle = fg;
-      ctx.font = '700 22px "Courier New", monospace';
-      ctx.textAlign = 'center';
-      ctx.fillText('G A M E   O V E R', this.W / 2, this.H / 2 - 6);
-      ctx.font = '14px "Courier New", monospace';
-      ctx.fillText('press space to restart · esc to exit', this.W / 2, this.H / 2 + 16);
-      ctx.textAlign = 'left';
-    }
+    // Game-over / high-score display is handled by the HTML panel overlay.
   };
 
   // ------------------------------ Helpers --------------------------------
@@ -1509,6 +1761,17 @@
         ctx.fillRect(x + c * scale, y + r * scale, scale, scale);
       }
     }
+  }
+
+  // Draw a sprite with a 1px halo so it reads against any backdrop.
+  function drawSpriteOutlined(ctx, rows, x, y, scale, color, color2, outline) {
+    if (outline) {
+      const offs = [[-1, 0], [1, 0], [0, -1], [0, 1]];
+      for (let i = 0; i < offs.length; i++) {
+        drawSprite(ctx, rows, x + offs[i][0], y + offs[i][1], scale, outline, outline);
+      }
+    }
+    drawSprite(ctx, rows, x, y, scale, color, color2 || color);
   }
 
   function boxesOverlap(a, b) {
