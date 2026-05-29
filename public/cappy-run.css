@@ -49,6 +49,12 @@
   color: #9adfb0;
 }
 
+#cappyRunOverlay .cappy-run-left {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
 #cappyRunOverlay .cappy-run-title {
   font-weight: 700;
 }
@@ -86,33 +92,28 @@
   outline: none;
 }
 
+/* Red X close button — sits immediately left of the "Cappy Run" title,
+   using the provided X artwork. */
 #cappyRunOverlay .cappy-run-close {
-  position: absolute;
-  top: 6px;
-  left: 6px;
-  z-index: 3;
-  background: #e23b3b;
-  border: 2px solid #7d1212;
-  color: #fff;
-  width: 28px;
-  height: 28px;
-  line-height: 1;
-  border-radius: 6px;
+  flex: 0 0 auto;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: none;
+  background: url('cappy-close.svg') center / 100% 100% no-repeat;
   cursor: pointer;
-  font-family: inherit;
-  font-size: 16px;
-  font-weight: 700;
-  box-shadow: 0 2px 0 #7d1212, 0 3px 6px rgba(0, 0, 0, 0.35);
-  transition: transform 80ms ease, box-shadow 80ms ease, background 80ms ease;
+  opacity: 0.9;
+  transition: transform 80ms ease, opacity 80ms ease, filter 80ms ease;
+  -webkit-tap-highlight-color: transparent;
 }
 
 #cappyRunOverlay .cappy-run-close:hover {
-  background: #ff5252;
+  opacity: 1;
+  filter: brightness(1.1);
 }
 
 #cappyRunOverlay .cappy-run-close:active {
-  transform: translateY(2px);
-  box-shadow: 0 0 0 #7d1212, 0 1px 3px rgba(0, 0, 0, 0.35);
+  transform: scale(0.88);
 }
 
 @media (max-width: 600px) {
@@ -166,34 +167,31 @@
     will-change: transform;
   }
 
-  #cappyRunOverlay .cappy-touch-glyph { font-size: 44px; line-height: 1; }
+  #cappyRunOverlay .cappy-touch-glyph {
+    font-size: 46px;
+    line-height: 1;
+    position: relative;
+    z-index: 1;
+    pointer-events: none;
+  }
 
+  /* The provided button artwork. */
   #cappyRunOverlay .cappy-touch-btn--up {
-    background: radial-gradient(circle at 32% 28%, #7cffb2 0%, #2ecc71 45%, #1b8f4d 100%);
-    box-shadow: 0 7px 0 #11623a, 0 11px 16px rgba(0, 0, 0, 0.4), inset 0 3px 6px rgba(255, 255, 255, 0.5);
+    background: url('cappy-btn-jump.svg') center / 100% 100% no-repeat;
+    filter: drop-shadow(0 7px 6px rgba(0, 0, 0, 0.4));
   }
 
   #cappyRunOverlay .cappy-touch-btn--down {
-    background: radial-gradient(circle at 32% 28%, #ffd56b 0%, #f5a623 45%, #c87d0a 100%);
-    box-shadow: 0 7px 0 #8a5606, 0 11px 16px rgba(0, 0, 0, 0.4), inset 0 3px 6px rgba(255, 255, 255, 0.5);
+    background: url('cappy-btn-duck.svg') center / 100% 100% no-repeat;
+    filter: drop-shadow(0 7px 6px rgba(0, 0, 0, 0.4));
   }
 
-  /* Held: the button stays pressed into the deck for the whole hold — the
-     raised "lip" collapses and an inner shadow makes it look depressed. */
+  /* Held: the button presses in and stays depressed for the whole hold —
+     it sinks down, shrinks slightly, and its shadow collapses. */
   #cappyRunOverlay .cappy-touch-btn.is-pressed,
   #cappyRunOverlay .cappy-touch-btn:active {
-    transform: translateY(7px) scale(0.97);
-    filter: brightness(1.06);
-  }
-
-  #cappyRunOverlay .cappy-touch-btn--up.is-pressed,
-  #cappyRunOverlay .cappy-touch-btn--up:active {
-    box-shadow: 0 0 0 #11623a, 0 2px 5px rgba(0, 0, 0, 0.4), inset 0 4px 10px rgba(0, 0, 0, 0.38);
-  }
-
-  #cappyRunOverlay .cappy-touch-btn--down.is-pressed,
-  #cappyRunOverlay .cappy-touch-btn--down:active {
-    box-shadow: 0 0 0 #8a5606, 0 2px 5px rgba(0, 0, 0, 0.4), inset 0 4px 10px rgba(0, 0, 0, 0.38);
+    transform: translateY(7px) scale(0.95);
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.45)) brightness(0.9);
   }
 
   /* Released: spring back up smoothly. */
@@ -203,7 +201,120 @@
 }
 
 @keyframes cappyPop {
-  0%   { transform: translateY(7px) scale(0.97); }
+  0%   { transform: translateY(7px) scale(0.95); }
   55%  { transform: translateY(-2px) scale(1.03); }
   100% { transform: translateY(0) scale(1); }
+}
+
+/* Game-over / high-score panel + initials entry. Overlays the canvas. */
+#cappyRunOverlay .cappy-run-panel {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(12, 18, 16, 0.84);
+  border-radius: 4px;
+  color: #eaf6ee;
+  font-family: 'Courier New', Courier, monospace;
+  text-align: center;
+  padding: 6px 10px;
+  box-sizing: border-box;
+  overflow: auto;
+}
+
+#cappyRunOverlay .cappy-panel-inner { width: 100%; max-width: 540px; }
+
+#cappyRunOverlay .cappy-panel-title {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: #ff6b6b;
+}
+
+#cappyRunOverlay .cappy-panel-sub {
+  font-size: 12px;
+  opacity: 0.92;
+  margin: 2px 0 8px;
+}
+
+#cappyRunOverlay .cappy-board-title {
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  opacity: 0.7;
+  margin-bottom: 4px;
+}
+
+#cappyRunOverlay .cappy-board {
+  list-style: none;
+  margin: 0 auto;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px 20px;
+  max-width: 460px;
+  font-size: 12px;
+}
+
+#cappyRunOverlay .cappy-board li {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 1px 6px;
+}
+
+#cappyRunOverlay .cappy-board li .r { opacity: 0.55; width: 22px; text-align: right; }
+#cappyRunOverlay .cappy-board li .n { flex: 1; text-align: left; letter-spacing: 0.12em; }
+#cappyRunOverlay .cappy-board li .s { font-weight: 700; }
+#cappyRunOverlay .cappy-board li.is-you { color: #ffd34d; }
+
+#cappyRunOverlay .cappy-panel-hint {
+  font-size: 11px;
+  opacity: 0.75;
+  margin-top: 8px;
+}
+
+#cappyRunOverlay .cappy-entry-row {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  align-items: center;
+  margin-top: 8px;
+}
+
+#cappyRunOverlay .cappy-initials {
+  width: 110px;
+  font-family: inherit;
+  font-size: 24px;
+  font-weight: 700;
+  text-align: center;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  padding: 6px 8px;
+  border-radius: 6px;
+  border: 2px solid #6fbf85;
+  background: #0e1a14;
+  color: #eaf6ee;
+}
+
+#cappyRunOverlay .cappy-save {
+  font-family: inherit;
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.1em;
+  padding: 9px 16px;
+  border-radius: 6px;
+  border: none;
+  background: #2ecc71;
+  color: #06351d;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+#cappyRunOverlay .cappy-save:active { transform: translateY(2px); }
+
+@media (max-width: 600px) {
+  #cappyRunOverlay .cappy-panel-title { font-size: 16px; }
+  #cappyRunOverlay .cappy-board { font-size: 11px; gap: 0 12px; }
 }
