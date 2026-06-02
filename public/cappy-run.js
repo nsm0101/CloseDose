@@ -231,7 +231,8 @@
       '⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠸⣿⡇⢸⣿⡇⠀⠀⠀⠀⠀⠀⠀',
       '⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⡇⠀⠿⠇⠀⠀⠀⠀⠀⠀⠀',
     ]),
-    // Peak / airborne (legs tucked, no feet)
+    // Peak / airborne (legs tucked up against belly — small foot stumps
+    // peek out so the silhouette still reads as a four-legged animal).
     peak: braille([
       '⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣤⣄⢘⣒⣀⣀⣀⣀⠀⠀⠀',
       '⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣽⣿⣛⠛⢛⣿⣿⡿⠟⠂⠀',
@@ -242,7 +243,7 @@
       '⠀⠀⠻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠟⠜⠀⠀⠀⠀⠀⠀⠀',
       '⠀⠀⠀⢿⣿⣿⣿⣿⠿⠿⣿⣿⡿⢿⣿⣿⠈⣿⣿⣿⣿⣿⡿⠀⠀⠀⠀⠀⠀⠀',
       '⠀⠀⣠⣿⣿⣿⡿⠁⠀⠀⠀⠀⠀⠀⠉⠉⠀⠹⣿⣿⡿⠋⠀⠀⠀⠀⠀⠀⠀⠀',
-      '⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀',
+      '⠀⠀⠀⠀⠛⠃⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠛⠃⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀',
       '⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀',
     ]),
     // Landing (leaning forward, legs reaching down)
@@ -1433,8 +1434,10 @@
     if (k === ' ' || k === 'ArrowUp' || k === 'Spacebar') {
       e.preventDefault();
       if (this.state === 'over') {
-        this._reset();
-        this.state = 'playing';
+        // Clear the leaderboard / game-over overlay so the next run is
+        // actually visible. Touch / pointer restarts already do this via
+        // _restart(); the keyboard path previously skipped _hidePanel().
+        this._restart();
         return;
       }
       if (this.state === 'ready') {
@@ -1869,13 +1872,21 @@
     // Background cameos (behind the obstacles and Cappy).
     for (const cm of this.cameos) drawCameo(ctx, cm, this.GROUND_Y);
 
-    // Obstacles — drawn with a contrasting outline so they stand out from
-    // whatever backdrop is behind them.
-    const outline = t.obOutline || 'rgba(0,0,0,0.5)';
+    // Obstacles — heavy outline + contact shadow so they read as obviously
+    // foreground hazards rather than background scenery.
+    const outline = t.obOutline || 'rgba(0,0,0,0.85)';
     for (const ob of this.obstacles) {
       let sprite = ob.sprite;
       if (ob.frames) {
         sprite = ob.frames[Math.floor(this.frameTick * 8) % ob.frames.length];
+      }
+      // Drop a soft ellipse shadow beneath ground obstacles to ground them.
+      const isFlyer = ob.y + ob.h < this.GROUND_Y - 4;
+      if (!isFlyer) {
+        ctx.fillStyle = 'rgba(0,0,0,0.28)';
+        ctx.beginPath();
+        ctx.ellipse(ob.x + ob.w / 2, this.GROUND_Y + 2, ob.w * 0.45, 3, 0, 0, Math.PI * 2);
+        ctx.fill();
       }
       drawSpriteOutlined(ctx, sprite, ob.x, ob.y, ob.scale, ob.color || fg, ob.color2 || null, outline);
     }
@@ -1890,8 +1901,14 @@
       drawSprite(ctx, CAPPY_GAMEOVER, this.cappy.x, this.GROUND_Y - gh, 1, shadowColor);
     } else {
       let cappySprite;
+      // Per-frame vertical offset. Subtle pixel bob on the run cycle sells
+      // the gait — body sinks on plant frames (1, 4) and lifts on the
+      // mid-air crossing frames (2, 5).
+      let yOffset = 0;
       if (this.cappy.ducking) {
         cappySprite = CAPPY_DUCK_FRAMES[this.cappy.duckFrame];
+        // Duck breath bob: tiny lift on the "stretch" / "arch" frames.
+        yOffset = (this.cappy.duckFrame === 1 || this.cappy.duckFrame === 3) ? -1 : 0;
       } else if (!this.cappy.onGround) {
         // Three-phase jump: takeoff → peak → landing, picked by vertical velocity.
         cappySprite = this.cappy.vy < -180
@@ -1903,8 +1920,10 @@
         cappySprite = CAPPY_IDLE_FRAMES[this.cappy.idleFrame];
       } else {
         cappySprite = CAPPY_RUN_FRAMES[this.cappy.runFrame];
+        const bobs = [0, 1, -1, 0, 1, -1];
+        yOffset = bobs[this.cappy.runFrame] || 0;
       }
-      drawSpriteOutlined(ctx, cappySprite, this.cappy.x, this.cappy.y, 1,
+      drawSpriteOutlined(ctx, cappySprite, this.cappy.x, this.cappy.y + yOffset, 1,
         bodyColor, bodyColor, outlineColor);
     }
 
@@ -1959,10 +1978,17 @@
     }
   }
 
-  // Draw a sprite with a 1px halo so it reads against any backdrop.
+  // Draw a sprite with a halo so it reads against any backdrop. Uses an
+  // 8-direction outline at the sprite's pixel scale, which fills in corners
+  // the 4-direction version left transparent and makes obstacles obviously
+  // separate from scenery.
   function drawSpriteOutlined(ctx, rows, x, y, scale, color, color2, outline) {
     if (outline) {
-      const offs = [[-1, 0], [1, 0], [0, -1], [0, 1]];
+      const s = scale || 1;
+      const offs = [
+        [-s, 0], [s, 0], [0, -s], [0, s],
+        [-s, -s], [s, -s], [-s, s], [s, s],
+      ];
       for (let i = 0; i < offs.length; i++) {
         drawSprite(ctx, rows, x + offs[i][0], y + offs[i][1], scale, outline, outline);
       }
