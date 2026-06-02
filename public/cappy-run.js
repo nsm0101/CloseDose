@@ -1505,7 +1505,7 @@
     for (let i = 0; i < 10; i++) {
       const e = this.board[i];
       const isHi = highlight && e === highlight;
-      const name = e ? e.name : '---';
+      const name = e ? escapeHTML(e.name) : '---';
       const score = e ? pad(e.score, 5) : '-----';
       rows += '<li' + (isHi ? ' class="is-you"' : '') + '>' +
         '<span class="r">' + (i + 1) + '.</span>' +
@@ -1782,5 +1782,15 @@
   function pad(n, len) {
     const s = String(Math.max(0, Math.floor(n)));
     return s.length >= len ? s : '0'.repeat(len - s.length) + s;
+  }
+
+  function escapeHTML(value) {
+    return String(value).replace(/[&<>"']/g, (ch) => ({
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#39;',
+    }[ch]));
   }
 })();
