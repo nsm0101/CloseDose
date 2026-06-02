@@ -57,115 +57,271 @@
   window.addEventListener('cappyrun:launch', launchGame);
 
   // ----------------------------- Sprite data -----------------------------
-  // Pixel art encoded as strings. For Cappy sprites the palette is:
-  //   '.' transparent · '#' outline · 'B' body brown · 'L' light tan
-  //   'D' dark shade · 'E' eye black · 'W' eye highlight · 'M' smile
-  // Obstacles still use '#'/'o' against the foreground colors.
+  // Cappy is drawn from Braille-encoded silhouettes (each Braille glyph
+  // packs 2×4 pixels), giving us much higher-detail frames without
+  // sacrificing the chunky pixel-art look. Obstacles still use the older
+  // '#'/'o' grid against the foreground colors.
 
-  const CAPPY_PALETTE_LIGHT = {
-    '#': '#2b1409',
-    'B': '#a06438',
-    'L': '#d29862',
-    'D': '#6b3a1c',
-    'E': '#0d0703',
-    'W': '#ffffff',
-    'M': '#3d1707',
+  // Decode a Braille string array into a pixel grid (rows of '#' / '.').
+  // Each character expands to 2 columns × 4 rows of dots, padded to the
+  // widest line so the resulting grid stays rectangular.
+  function braille(lines) {
+    const parsed = lines.map((line) => Array.from(line));
+    let cellW = 0;
+    for (const arr of parsed) if (arr.length > cellW) cellW = arr.length;
+    const pixels = [];
+    for (const arr of parsed) {
+      const rows = ['', '', '', ''];
+      for (let ci = 0; ci < cellW; ci++) {
+        const ch = arr[ci] || '⠀';
+        const cp = ch.codePointAt(0) - 0x2800;
+        const safe = (cp >= 0 && cp < 256) ? cp : 0;
+        const d = (b) => ((safe >> b) & 1) ? '#' : '.';
+        // Braille dot order: bits 0/1/2/6 are col 0 rows 0-3; 3/4/5/7 are col 1.
+        rows[0] += d(0) + d(3);
+        rows[1] += d(1) + d(4);
+        rows[2] += d(2) + d(5);
+        rows[3] += d(6) + d(7);
+      }
+      for (const r of rows) pixels.push(r);
+    }
+    return pixels;
+  }
+
+  // Two-color silhouette palette: body fill + darker outline. Keeps the
+  // retro feel while letting the more detailed frames read clearly.
+  const CAPPY_BODY_LIGHT = '#a06438';
+  const CAPPY_OUTLINE_LIGHT = '#2b1409';
+  const CAPPY_BODY_DARK = '#b87242';
+  const CAPPY_OUTLINE_DARK = '#1a0c05';
+  const CAPPY_SHADOW_LIGHT = 'rgba(20, 10, 4, 0.78)';
+  const CAPPY_SHADOW_DARK = 'rgba(0, 0, 0, 0.82)';
+
+  // Idle (breathing) — used during the brief "ready" pose before play.
+  const CAPPY_IDLE_FRAMES = [
+    braille([
+      '⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣤⣄⢘⣒⣀⣀⣀⣀⠀⠀⠀',
+      '⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣽⣿⣛⠛⢛⣿⣿⡿⠟⠂⠀',
+      '⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣀⣀⣀⡀⠀⣤⣾⣿⣿⣿⣿⣿⣿⣿⣷⣿⡆⠀',
+      '⠀⠀⠀⠀⠀⠀⣀⣤⣶⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠁⠀',
+      '⠀⠀⠀⢀⣴⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⠀⠀⠀⠀⠀⠀',
+      '⠀⠀⣠⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⠀⠀⠀⠀⠀⠀',
+      '⠀⠀⠻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠟⠜⠀⠀⠀⠀⠀⠀⠀',
+      '⠀⠀⠀⢿⣿⣿⣿⣿⠿⠿⣿⣿⡿⢿⣿⣿⠈⣿⣿⣿⡏⣠⡴⠀⠀⠀⠀⠀⠀⠀',
+      '⠀⠀⣠⣿⣿⣿⡿⢁⣴⣶⣄⠀⠀⠉⠉⠉⠀⢻⣿⡿⢰⣿⡇⠀⠀⠀⠀⠀⠀⠀',
+      '⠀⠀⢿⣿⠟⠋⠀⠈⠛⣿⣿⠀⠀⠀⠀⠀⠀⠸⣿⡇⢸⣿⡇⠀⠀⠀⠀⠀⠀⠀',
+      '⠀⠀⢸⣿⠀⠀⠀⠀⠀⠘⠿⠆⠀⠀⠀⠀⠀⠀⣿⡇⠀⠿⠇⠀⠀⠀⠀⠀⠀⠀',
+    ]),
+    braille([
+      '⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣤⣄⢘⣒⣀⣀⣀⣀⠀⠀⠀',
+      '⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣽⣿⣛⠛⢛⣿⣿⡿⠟⠂⠀',
+      '⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣀⣀⣀⡀⠀⣤⣾⣿⣿⣿⣿⣿⣿⣿⣷⣿⡆⠀',
+      '⠀⠀⠀⠀⠀⠀⣀⣤⣶⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠁⠀',
+      '⠀⠀⠀⢀⣴⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⠀⠀⠀⠀⠀⠀',
+      '⠀⠀⣠⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⠀⠀⠀⠀⠀⠀',
+      '⠀⠀⠻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠟⠜⠀⠀⠀⠀⠀⠀⠀',
+      '⠀⠀⠀⢿⣿⣿⣿⣿⠿⠿⣿⣿⡿⢿⣿⣿⠈⣿⣿⣿⡏⣠⡴⠀⠀⠀⠀⠀⠀⠀',
+      '⠀⠀⠀⣿⣿⣿⡿⢁⣴⣶⣄⠀⠀⠉⠉⠉⠀⢻⣿⡿⢰⣿⡇⠀⠀⠀⠀⠀⠀⠀',
+      '⠀⠀⣠⣿⠟⠋⠀⠈⠛⣿⣿⠀⠀⠀⠀⠀⠀⠸⣿⡇⢸⣿⡇⠀⠀⠀⠀⠀⠀⠀',
+      '⠀⠀⢿⣿⠀⠀⠀⠀⠀⠘⠿⠆⠀⠀⠀⠀⠀⠀⣿⡇⠀⠿⠇⠀⠀⠀⠀⠀⠀⠀',
+    ]),
+  ];
+
+  // Run cycle — six legged poses for a smoother stride.
+  const CAPPY_RUN_FRAMES = [
+    // Stride opening
+    braille([
+      '⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣤⣄⢘⣒⣀⣀⣀⣀⠀⠀⠀',
+      '⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣽⣿⣛⠛⢛⣿⣿⡿⠟⠂⠀',
+      '⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣀⣀⣀⡀⠀⣤⣾⣿⣿⣿⣿⣿⣿⣿⣷⣿⡆⠀',
+      '⠀⠀⠀⠀⠀⠀⣀⣤⣶⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠁⠀',
+      '⠀⠀⠀⢀⣴⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⠀⠀⠀⠀⠀⠀',
+      '⠀⠀⣠⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⠀⠀⠀⠀⠀⠀',
+      '⠀⠀⠻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠟⠜⠀⠀⠀⠀⠀⠀⠀',
+      '⠀⠀⠀⢿⣿⣿⣿⣿⠿⠿⣿⣿⡿⢿⣿⣿⠈⣿⣿⣿⡏⣠⡴⠀⠀⠀⠀⠀⠀⠀',
+      '⠀⠀⣠⣿⣿⣿⡿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢻⣿⡿⢰⣿⡇⠀⠀⠀⠀⠀⠀⠀',
+      '⠀⠀⢿⣿⠟⠋⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⣿⡇⢸⣿⡇⠀⠀⠀⠀⠀⠀⠀',
+      '⠀⠀⢸⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⡇⠀⠿⠇⠀⠀⠀⠀⠀⠀⠀',
+    ]),
+    // Front plant, back lift
+    braille([
+      '⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣤⣄⢘⣒⣀⣀⣀⣀⠀⠀⠀',
+      '⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣽⣿⣛⠛⢛⣿⣿⡿⠟⠂⠀',
+      '⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣀⣀⣀⡀⠀⣤⣾⣿⣿⣿⣿⣿⣿⣿⣷⣿⡆⠀',
+      '⠀⠀⠀⠀⠀⠀⣀⣤⣶⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠁⠀',
+      '⠀⠀⠀⢀⣴⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⠀⠀⠀⠀⠀⠀',
+      '⠀⠀⣠⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⠀⠀⠀⠀⠀⠀',
+      '⠀⠀⠻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠟⠜⠀⠀⠀⠀⠀⠀⠀',
+      '⠀⠀⠀⢿⣿⣿⣿⣿⠿⠿⣿⣿⡿⢿⣿⣿⠈⣿⣿⣿⡏⣠⡴⠀⠀⠀⠀⠀⠀⠀',
+      '⠀⠀⠀⠈⠻⣿⣿⣦⡀⠀⠀⠀⠀⠀⠀⠀⠀⢻⣿⡿⢰⣿⡇⠀⠀⠀⠀⠀⠀⠀',
+      '⠀⠀⠀⠀⠀⠈⠛⣿⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⡇⢸⣿⡇⠀⠀⠀⠀⠀⠀⠀',
+      '⠀⠀⠀⠀⠀⠀⠀⠘⠿⠆⠀⠀⠀⠀⠀⠀⠀⠀⣿⡇⠀⠿⠇⠀⠀⠀⠀⠀⠀⠀',
+    ]),
+    // Crossing
+    braille([
+      '⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣤⣄⢘⣒⣀⣀⣀⣀⠀⠀⠀',
+      '⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣽⣿⣛⠛⢛⣿⣿⡿⠟⠂⠀',
+      '⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣀⣀⣀⡀⠀⣤⣾⣿⣿⣿⣿⣿⣿⣿⣷⣿⡆⠀',
+      '⠀⠀⠀⠀⠀⠀⣀⣤⣶⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠁⠀',
+      '⠀⠀⠀⢀⣴⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⠀⠀⠀⠀⠀⠀',
+      '⠀⠀⣠⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⠀⠀⠀⠀⠀⠀',
+      '⠀⠀⠻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠟⠜⠀⠀⠀⠀⠀⠀⠀',
+      '⠀⠀⠀⢿⣿⣿⣿⣿⠿⠿⣿⣿⡿⢿⣿⣿⠈⣿⣿⣿⡏⣠⡴⠀⠀⠀⠀⠀⠀⠀',
+      '⠀⠀⠀⠀⠀⠀⢀⣴⣶⣄⠀⠀⠀⠀⠀⠀⠀⢻⣿⡿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀',
+      '⠀⠀⠀⠀⠀⠀⠈⠛⣿⣿⠀⠀⠀⠀⠀⠀⢀⣾⣿⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀',
+      '⠀⠀⠀⠀⠀⠀⠀⠀⠘⠿⠆⠀⠀⠀⠀⠀⠘⢿⡿⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀',
+    ]),
+    // Stride alternating
+    braille([
+      '⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣤⣄⢘⣒⣀⣀⣀⣀⠀⠀⠀',
+      '⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣽⣿⣛⠛⢛⣿⣿⡿⠟⠂⠀',
+      '⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣀⣀⣀⡀⠀⣤⣾⣿⣿⣿⣿⣿⣿⣿⣷⣿⡆⠀',
+      '⠀⠀⠀⠀⠀⠀⣀⣤⣶⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠁⠀',
+      '⠀⠀⠀⢀⣴⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⠀⠀⠀⠀⠀⠀',
+      '⠀⠀⣠⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⠀⠀⠀⠀⠀⠀',
+      '⠀⠀⠻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠟⠜⠀⠀⠀⠀⠀⠀⠀',
+      '⠀⠀⠀⢿⣿⣿⣿⣿⠿⠿⣿⣿⡿⢿⣿⣿⠈⣿⣿⣿⡏⣠⡴⠀⠀⠀⠀⠀⠀⠀',
+      '⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢁⣴⣶⣄⠀⠀⠀⢻⣿⡿⢰⣿⡇⠀⠀⠀⠀⠀⠀⠀',
+      '⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠛⣿⣿⠀⠀⢀⣾⡿⠁⢸⣿⡇⠀⠀⠀⠀⠀⠀⠀',
+      '⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⠿⠆⠀⠘⠿⠃⠀⠀⠿⠇⠀⠀⠀⠀⠀⠀⠀',
+    ]),
+    // Back plant, front lift
+    braille([
+      '⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣤⣄⢘⣒⣀⣀⣀⣀⠀⠀⠀',
+      '⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣽⣿⣛⠛⢛⣿⣿⡿⠟⠂⠀',
+      '⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣀⣀⣀⡀⠀⣤⣾⣿⣿⣿⣿⣿⣿⣿⣷⣿⡆⠀',
+      '⠀⠀⠀⠀⠀⠀⣀⣤⣶⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠁⠀',
+      '⠀⠀⠀⢀⣴⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⠀⠀⠀⠀⠀⠀',
+      '⠀⠀⣠⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⠀⠀⠀⠀⠀⠀',
+      '⠀⠀⠻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠟⠜⠀⠀⠀⠀⠀⠀⠀',
+      '⠀⠀⠀⢿⣿⣿⣿⣿⠿⠿⣿⣿⡿⢿⣿⣿⠈⣿⣿⣿⡏⣠⡴⠀⠀⠀⠀⠀⠀⠀',
+      '⠀⠀⣠⣿⣿⣿⡿⢁⣴⣶⣄⠀⠀⠀⠀⠀⠀⢻⣿⡿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀',
+      '⠀⠀⢿⣿⠟⠋⠀⠈⠛⣿⣿⠀⠀⠀⠀⠀⠀⢸⣿⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀',
+      '⠀⠀⢸⣿⠀⠀⠀⠀⠀⠘⠿⠆⠀⠀⠀⠀⠀⠘⠿⠃⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀',
+    ]),
+    // Crossing return
+    braille([
+      '⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣤⣄⢘⣒⣀⣀⣀⣀⠀⠀⠀',
+      '⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣽⣿⣛⠛⢛⣿⣿⡿⠟⠂⠀',
+      '⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣀⣀⣀⡀⠀⣤⣾⣿⣿⣿⣿⣿⣿⣿⣷⣿⡆⠀',
+      '⠀⠀⠀⠀⠀⠀⣀⣤⣶⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠁⠀',
+      '⠀⠀⠀⢀⣴⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⠀⠀⠀⠀⠀⠀',
+      '⠀⠀⣠⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⠀⠀⠀⠀⠀⠀',
+      '⠀⠀⠻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠟⠜⠀⠀⠀⠀⠀⠀⠀',
+      '⠀⠀⠀⢿⣿⣿⣿⣿⠿⠿⣿⣿⡿⢿⣿⣿⠈⣿⣿⣿⡏⣠⡴⠀⠀⠀⠀⠀⠀⠀',
+      '⠀⠀⠀⠀⠀⠀⠀⠀⢁⣴⣶⣄⠀⠀⠀⠀⠀⢻⣿⡿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀',
+      '⠀⠀⠀⠀⠀⠀⠀⠀⠈⠛⣿⣿⠀⠀⠀⠀⠀⢸⣿⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀',
+      '⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⠿⠆⠀⠀⠀⠀⠘⠿⠃⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀',
+    ]),
+  ];
+
+  // Jump — three phases driven by vertical velocity.
+  const CAPPY_JUMP_FRAMES = {
+    // Takeoff (legs pushing off, body lifted)
+    takeoff: braille([
+      '⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣤⣄⢘⣒⣀⣀⣀⣀⠀⠀',
+      '⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣽⣿⣛⠛⢛⣿⣿⡿⠟⠂',
+      '⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣀⣀⣀⡀⠀⣤⣾⣿⣿⣿⣿⣿⣿⣿⣷⣿⡆⠀',
+      '⠀⠀⠀⠀⠀⠀⠀⠀⣀⣤⣶⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠁',
+      '⠀⠀⠀⠀⢀⣴⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⠀⠀⠀⠀⠀⠀',
+      '⠀⠀⠀⣠⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⠀⠀⠀⠀⠀⠀',
+      '⠀⠀⠀⠻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠟⠜⠀⠀⠀⠀⠀⠀⠀',
+      '⠀⠀⠀⠀⢿⣿⣿⣿⣿⠿⠿⣿⣿⡿⢿⣿⣿⠈⣿⣿⣿⡏⣠⡴⠀⠀⠀⠀⠀⠀⠀',
+      '⠀⠀⠀⠀⠀⠉⠉⠉⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢻⣿⡿⢰⣿⡇⠀⠀⠀⠀⠀⠀⠀',
+      '⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠸⣿⡇⢸⣿⡇⠀⠀⠀⠀⠀⠀⠀',
+      '⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⡇⠀⠿⠇⠀⠀⠀⠀⠀⠀⠀',
+    ]),
+    // Peak / airborne (legs tucked, no feet)
+    peak: braille([
+      '⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣤⣄⢘⣒⣀⣀⣀⣀⠀⠀⠀',
+      '⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣽⣿⣛⠛⢛⣿⣿⡿⠟⠂⠀',
+      '⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣀⣀⣀⡀⠀⣤⣾⣿⣿⣿⣿⣿⣿⣿⣷⣿⡆⠀',
+      '⠀⠀⠀⠀⠀⠀⣀⣤⣶⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠁⠀',
+      '⠀⠀⠀⢀⣴⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⠀⠀⠀⠀⠀⠀',
+      '⠀⠀⣠⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⠀⠀⠀⠀⠀⠀',
+      '⠀⠀⠻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠟⠜⠀⠀⠀⠀⠀⠀⠀',
+      '⠀⠀⠀⢿⣿⣿⣿⣿⠿⠿⣿⣿⡿⢿⣿⣿⠈⣿⣿⣿⣿⣿⡿⠀⠀⠀⠀⠀⠀⠀',
+      '⠀⠀⣠⣿⣿⣿⡿⠁⠀⠀⠀⠀⠀⠀⠉⠉⠀⠹⣿⣿⡿⠋⠀⠀⠀⠀⠀⠀⠀⠀',
+      '⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀',
+      '⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀',
+    ]),
+    // Landing (leaning forward, legs reaching down)
+    landing: braille([
+      '⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣤⣄⢘⣒⣀⣀⣀⣀⠀⠀⠀⠀⠀',
+      '⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣽⣿⣛⠛⢛⣿⣿⡿⠟⠂⠀⠀⠀',
+      '⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣀⣀⣀⡀⠀⣤⣾⣿⣿⣿⣿⣿⣿⣿⣷⣿⡆⠀⠀⠀',
+      '⠀⠀⠀⠀⠀⣀⣤⣶⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠁⠀⠀',
+      '⠀⠀⢀⣴⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⠀⠀⠀⠀⠀⠀⠀',
+      '⠀⣠⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⠀⠀⠀⠀⠀⠀⠀',
+      '⠀⠻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠟⠜⠀⠀⠀⠀⠀⠀⠀⠀',
+      '⠀⠀⢿⣿⣿⣿⣿⠿⠿⣿⣿⡿⢿⣿⣿⠈⣿⣿⣿⡏⣠⡴⠀⠀⠀⠀⠀⠀⠀⠀',
+      '⠀⠀⣠⣿⣿⣿⡿⢁⣴⣶⣄⠀⠀⠉⠉⠉⠀⢻⣿⡿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀',
+      '⠀⠀⢿⣿⠟⠋⠀⠈⠛⣿⣿⠀⠀⠀⠀⠀⠀⠸⣿⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀',
+      '⠀⠀⢸⣿⠀⠀⠀⠀⠀⠘⠿⠆⠀⠀⠀⠀⠀⠀⣿⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀',
+    ]),
   };
 
-  const CAPPY_PALETTE_DARK = {
-    '#': '#1a0c05',
-    'B': '#a06438',
-    'L': '#d29862',
-    'D': '#6b3a1c',
-    'E': '#000000',
-    'W': '#ffffff',
-    'M': '#2a0f04',
-  };
-
-  const CAPPY_RUN_A = [
-    '..........................',
-    '.................##.......',
-    '.................####.....',
-    '...............#######....',
-    '..............#BBBBBBB#...',
-    '.............#LBBBBBBBB#..',
-    '............#LLBBEEBBBB#..',
-    '...........#LLBBBEWBBBBM#.',
-    '...#########LBBBBBBBBBBM#.',
-    '..#BBBBBBBBBBBBBBBBBBBBM#.',
-    '.#BBBBBBBBBBBBBBBBBBBBB##.',
-    '.#BBLLBBBBBBBBBBBBBBBB#...',
-    '.#BLLBBBBBBBBBBBBBBBBB#...',
-    '..#BBBBBBBBBBBBBBBBBB#....',
-    '...####...####...####.....',
-    '....##.....##.....##......',
+  // Duck — four phase cycle (compress → stretch → pull-back → arch).
+  const CAPPY_DUCK_FRAMES = [
+    // Compress down
+    braille([
+      '⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣤⣄⢘⣒⣀⣀⣀⣀⠀⠀⠀',
+      '⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣽⣿⣛⠛⢛⣿⣿⡿⠟⠂⠀',
+      '⠀⠀⠀⠀⠀⠀⣀⣤⣶⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠁⠀',
+      '⠀⠀⠀⢀⣴⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⠀⠀⠀⠀⠀⠀',
+      '⠀⠀⣠⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⠀⠀⠀⠀⠀⠀',
+      '⠀⠀⢿⣿⣿⣿⣿⠿⠿⣿⣿⡿⢿⣿⣿⠈⣿⣿⣿⡏⣠⡴⠀⠀⠀⠀⠀⠀⠀⠀',
+      '⠀⠀⣠⣿⣿⣿⡿⢁⣴⣶⣄⠀⠀⠉⠉⠉⠀⢻⣿⡿⢰⣿⡇⠀⠀⠀⠀⠀⠀⠀',
+      '⠀⠀⢿⣿⠟⠋⠀⠈⠛⣿⣿⠀⠀⠀⠀⠀⠀⠸⣿⡇⢸⣿⡇⠀⠀⠀⠀⠀⠀⠀',
+    ]),
+    // Stretch
+    braille([
+      '⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣤⣄⢘⣒⣀⣀⣀⣀⠀',
+      '⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣽⣿⣛⠛⢛⣿⣿⡿⠟',
+      '⠀⠀⠀⠀⠀⠀⠀⠀⣀⣤⣶⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿',
+      '⠀⠀⠀⢀⣴⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⠀⠀⠀⠀⠀⠀',
+      '⠀⠀⣠⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⠀⠀⠀⠀⠀⠀',
+      '⠀⠀⢿⣿⣿⣿⣿⠿⠿⣿⣿⡿⢿⣿⣿⠈⣿⣿⣿⡏⣠⡴⠀⠀⠀⠀⠀⠀⠀⠀',
+      '⠀⠀⠀⠀⠀⠀⠀⠀⢁⣴⣶⣄⠀⠀⠉⠉⠉⠀⢻⣿⡿⢰⣿⡇⠀⠀⠀⠀⠀⠀',
+      '⠀⠀⠀⠀⠀⠀⠀⠀⠈⠛⣿⣿⠀⠀⠀⠀⠀⠀⠸⣿⡇⢸⣿⡇⠀⠀⠀⠀⠀⠀',
+    ]),
+    // Pull back
+    braille([
+      '⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣤⣄⢘⣒⣀⣀⣀⣀⠀',
+      '⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣽⣿⣛⠛⢛⣿⣿⡿⠟',
+      '⠀⠀⠀⠀⠀⠀⠀⠀⣀⣤⣶⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿',
+      '⠀⠀⠀⢀⣴⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⠀⠀⠀⠀⠀⠀',
+      '⠀⠀⣠⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⠀⠀⠀⠀⠀⠀',
+      '⠀⠀⢿⣿⣿⣿⣿⠿⠿⣿⣿⡿⢿⣿⣿⠈⣿⣿⣿⡏⣠⡴⠀⠀⠀⠀⠀⠀⠀⠀',
+      '⠀⠀⣠⣿⣿⣿⡿⠀⠀⠀⠀⠀⠀⠀⠀⠉⠉⠉⠀⢻⣿⡿⢰⣿⡇⠀⠀⠀⠀⠀',
+      '⠀⠀⢿⣿⠟⠋⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠸⣿⡇⢸⣿⡇⠀⠀⠀⠀⠀',
+    ]),
+    // Arch back to base
+    braille([
+      '⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣤⣄⢘⣒⣀⣀⣀⣀⠀⠀⠀',
+      '⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣽⣿⣛⠛⢛⣿⣿⡿⠟⠂⠀',
+      '⠀⠀⠀⠀⠀⠀⣀⣤⣶⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠁⠀',
+      '⠀⠀⠀⢀⣴⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⠀⠀⠀⠀⠀⠀',
+      '⠀⠀⣠⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⠀⠀⠀⠀⠀⠀',
+      '⠀⠀⢿⣿⣿⣿⣿⠿⠿⣿⣿⡿⢿⣿⣿⠈⣿⣿⣿⡏⣠⡴⠀⠀⠀⠀⠀⠀⠀⠀',
+      '⠀⠀⣠⣿⣿⣿⡿⢁⣴⣶⣄⠀⠀⠀⠀⠀⠀⠀⠀⢻⣿⡿⢰⣿⡇⠀⠀⠀⠀⠀',
+      '⠀⠀⢿⣿⠟⠋⠀⠈⠛⣿⣿⠀⠀⠀⠀⠀⠀⠀⠀⠸⣿⡇⢸⣿⡇⠀⠀⠀⠀⠀',
+    ]),
   ];
 
-  const CAPPY_RUN_B = [
-    '..........................',
-    '.................##.......',
-    '.................####.....',
-    '...............#######....',
-    '..............#BBBBBBB#...',
-    '.............#LBBBBBBBB#..',
-    '............#LLBBEEBBBB#..',
-    '...........#LLBBBEWBBBBM#.',
-    '...#########LBBBBBBBBBBM#.',
-    '..#BBBBBBBBBBBBBBBBBBBBM#.',
-    '.#BBBBBBBBBBBBBBBBBBBBB##.',
-    '.#BBLLBBBBBBBBBBBBBBBB#...',
-    '.#BLLBBBBBBBBBBBBBBBBB#...',
-    '..#BBBBBBBBBBBBBBBBBB#....',
-    '....####...####...####....',
-    '.....##.....##.....##.....',
-  ];
-
-  // Mid-jump pose — legs tucked, all four feet off the ground.
-  const CAPPY_JUMP = [
-    '..........................',
-    '.................##.......',
-    '.................####.....',
-    '...............#######....',
-    '..............#BBBBBBB#...',
-    '.............#LBBBBBBBB#..',
-    '............#LLBBEEBBBB#..',
-    '...........#LLBBBEWBBBBM#.',
-    '...#########LBBBBBBBBBBM#.',
-    '..#BBBBBBBBBBBBBBBBBBBBM#.',
-    '.#BBBBBBBBBBBBBBBBBBBBB##.',
-    '.#BBLLBBBBBBBBBBBBBBBB#...',
-    '.#BLLBBBBBBBBBBBBBBBBB#...',
-    '..#BBBBBBBBBBBBBBBBBB#....',
-    '....##.....##....##.......',
-    '..........................',
-  ];
-
-  // Ducking pose — body stretched forward and low (10 rows tall, 30 wide).
-  const CAPPY_DUCK_A = [
-    '.........................###..',
-    '........................#####.',
-    '...####################BBBBBB#',
-    '..#BBBBBBBBBBBBBBBBBBBBLBEEBB#',
-    '.#BBBBBBBBBBBBBBBBBBBBBLBEWBBM',
-    '#LLBBBBBBBBBBBBBBBBBBBBBBBBBM#',
-    '#BBBBBBBBBBBBBBBBBBBBBBBBBBB#.',
-    '.#BBBBBBBBBBBBBBBBBBBBBBBBB#..',
-    '..####...####...####...####...',
-    '...##.....##.....##.....##....',
-  ];
-
-  const CAPPY_DUCK_B = [
-    '.........................###..',
-    '........................#####.',
-    '...####################BBBBBB#',
-    '..#BBBBBBBBBBBBBBBBBBBBLBEEBB#',
-    '.#BBBBBBBBBBBBBBBBBBBBBLBEWBBM',
-    '#LLBBBBBBBBBBBBBBBBBBBBBBBBBM#',
-    '#BBBBBBBBBBBBBBBBBBBBBBBBBBB#.',
-    '.#BBBBBBBBBBBBBBBBBBBBBBBBB#..',
-    '...####...####...####...####..',
-    '....##.....##.....##.....##...',
-  ];
+  // Game-over silhouette — drawn in dark shadow tones at death.
+  const CAPPY_GAMEOVER = braille([
+    '⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⠀⠀⠀⠀⠀',
+    '⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⠀⠀⠀⠀⠀',
+    '⠀⠀⢠⣶⣶⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⠀⠀⠀⠀⠀',
+    '⠀⠀⢸⣿⣿⣿⣦⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⠀⠀⠀⠀⠀',
+    '⠀⠀⠈⢿⣿⣿⣿⣿⣿⣶⣤⣤⣀⣀⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⠀⠀⠀⠀⠀',
+    '⠀⠀⠀⠀⠻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣶⣶⣶⣶⣶⣶⣶⣶⣶⣶⣿⣿⠀⠀⠀⠀⠀',
+    '⠀⠀⠀⠀⠀⠈⠻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠀⠀⠀⠀⠀',
+    '⠀⠀⠀⠀⠀⠀⠀⠈⠛⠿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣄⠀⠀⠀',
+    '⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠉⠛⠛⠛⠛⠿⠿⠿⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡄⠀',
+    '⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠉⠉⠉⠙⠛⠛⠛⠛⠁⠀',
+  ]);
 
   // Obstacles: pineapple-style plants (Brazilian/Amazonian flair to fit a capybara habitat)
   const PLANT_SMALL = [
@@ -1006,7 +1162,10 @@
     this.active = true;
     this._buildDOM();
     this._reset();
-    this.state = 'playing';
+    // Brief idle "ready" pose on first launch so the breathing animation
+    // gets a moment on screen before the run kicks in. Jump skips ahead.
+    this.state = 'ready';
+    this.readyTimer = 0.9;
     this.last = performance.now();
     document.addEventListener('keydown', this._onKeyDown, true);
     document.addEventListener('keyup', this._onKeyUp, true);
@@ -1132,6 +1291,8 @@
       if (this.state === 'enter') return;
       if (this.state === 'over') {
         this._restart();
+      } else if (this.state === 'ready') {
+        this.state = 'playing';
       } else {
         this._jump();
         this.keys.jump = true;
@@ -1169,6 +1330,8 @@
       if (this.state === 'enter') return;
       if (this.state === 'over') {
         this._restart();
+      } else if (this.state === 'ready') {
+        this.state = 'playing';
       } else {
         this._jump();
       }
@@ -1194,11 +1357,13 @@
   CappyRun.prototype._reset = function () {
     this.cappy = {
       x: 60,
-      y: this.GROUND_Y - 32, // 16-row sprite × 2 scale
+      y: this.GROUND_Y - 44, // 11 braille rows × 4 px per row
       vy: 0,
       onGround: true,
       ducking: false,
       runFrame: 0,
+      duckFrame: 0,
+      idleFrame: 0,
     };
     this.obstacles = [];
     this.clouds = [];
@@ -1272,6 +1437,11 @@
         this.state = 'playing';
         return;
       }
+      if (this.state === 'ready') {
+        // Skip the idle intro and start running immediately.
+        this.state = 'playing';
+        return;
+      }
       this._jump();
       this.keys.jump = true;
     } else if (k === 'ArrowDown') {
@@ -1302,7 +1472,14 @@
     if (!this.active) return;
     const dt = Math.min(0.05, (now - this.last) / 1000);
     this.last = now;
-    if (this.state === 'playing') this._update(dt);
+    if (this.state === 'ready') {
+      this.frameTick += dt;
+      this.cappy.idleFrame = Math.floor(this.frameTick * 2) % CAPPY_IDLE_FRAMES.length;
+      this.readyTimer -= dt;
+      if (this.readyTimer <= 0) this.state = 'playing';
+    } else if (this.state === 'playing') {
+      this._update(dt);
+    }
     this._draw();
     this.rafId = requestAnimationFrame(this._tick);
   };
@@ -1327,7 +1504,7 @@
 
     const duck = this.keys.duck && this.cappy.onGround;
     this.cappy.ducking = duck;
-    const cappyH = duck ? 20 : 32;
+    const cappyH = duck ? 32 : 44;
     const groundY = this.GROUND_Y - cappyH;
     if (this.cappy.y >= groundY) {
       this.cappy.y = groundY;
@@ -1335,10 +1512,13 @@
       this.cappy.onGround = true;
     }
 
-    // Running animation
+    // Running / ducking / idle animation cycles. 14 fps for the run stride
+    // keeps the six-frame loop legible without feeling stuttery.
     if (this.cappy.onGround) {
-      this.cappy.runFrame = Math.floor(this.frameTick * 10) % 2;
+      this.cappy.runFrame = Math.floor(this.frameTick * 14) % CAPPY_RUN_FRAMES.length;
+      this.cappy.duckFrame = Math.floor(this.frameTick * 10) % CAPPY_DUCK_FRAMES.length;
     }
+    this.cappy.idleFrame = Math.floor(this.frameTick * 2) % CAPPY_IDLE_FRAMES.length;
 
     // Ground scroll
     this.groundOffset = (this.groundOffset + this.speed * dt) % 24;
@@ -1397,14 +1577,14 @@
   };
 
   CappyRun.prototype._cappyBox = function () {
-    // Sprites are scale-2; the visible body sits inside a small margin so
-    // the collision box trims the transparent borders.
+    // Cappy is drawn from Braille-decoded silhouettes at scale 1. The
+    // collision box trims the transparent margin so contact feels fair.
     if (this.cappy.ducking) {
-      // Duck sprite: 30×10 cells → 60×20 px. Body spans cols 0-29, rows 2-7.
-      return { x: this.cappy.x + 4, y: this.cappy.y + 6, w: 54, h: 12 };
+      // Duck sprite: 60×32 px. Body spans roughly cols 4..58, rows 8..28.
+      return { x: this.cappy.x + 6, y: this.cappy.y + 10, w: 50, h: 18 };
     }
-    // Run sprite: 26×16 cells → 52×32 px. Body spans cols 2-23, rows 4-13.
-    return { x: this.cappy.x + 6, y: this.cappy.y + 10, w: 42, h: 20 };
+    // Run sprite: 60×44 px. Body spans roughly cols 6..54, rows 12..40.
+    return { x: this.cappy.x + 8, y: this.cappy.y + 14, w: 44, h: 24 };
   };
 
   CappyRun.prototype._spawnObstacle = function () {
@@ -1700,17 +1880,33 @@
       drawSpriteOutlined(ctx, sprite, ob.x, ob.y, ob.scale, ob.color || fg, ob.color2 || null, outline);
     }
 
-    // Cappy
-    let cappySprite;
-    if (this.cappy.ducking) {
-      cappySprite = (this.cappy.runFrame === 0) ? CAPPY_DUCK_A : CAPPY_DUCK_B;
-    } else if (!this.cappy.onGround) {
-      cappySprite = CAPPY_JUMP;
+    // Cappy — pick the right pose / frame for the current state.
+    const bodyColor = dark ? CAPPY_BODY_DARK : CAPPY_BODY_LIGHT;
+    const outlineColor = dark ? CAPPY_OUTLINE_DARK : CAPPY_OUTLINE_LIGHT;
+    const shadowColor = dark ? CAPPY_SHADOW_DARK : CAPPY_SHADOW_LIGHT;
+    if (this.state === 'over' || this.state === 'enter') {
+      // Display game over as a dark shadow resting on the ground.
+      const gh = CAPPY_GAMEOVER.length;
+      drawSprite(ctx, CAPPY_GAMEOVER, this.cappy.x, this.GROUND_Y - gh, 1, shadowColor);
     } else {
-      cappySprite = (this.cappy.runFrame === 0) ? CAPPY_RUN_A : CAPPY_RUN_B;
+      let cappySprite;
+      if (this.cappy.ducking) {
+        cappySprite = CAPPY_DUCK_FRAMES[this.cappy.duckFrame];
+      } else if (!this.cappy.onGround) {
+        // Three-phase jump: takeoff → peak → landing, picked by vertical velocity.
+        cappySprite = this.cappy.vy < -180
+          ? CAPPY_JUMP_FRAMES.takeoff
+          : this.cappy.vy > 220
+            ? CAPPY_JUMP_FRAMES.landing
+            : CAPPY_JUMP_FRAMES.peak;
+      } else if (this.state === 'ready') {
+        cappySprite = CAPPY_IDLE_FRAMES[this.cappy.idleFrame];
+      } else {
+        cappySprite = CAPPY_RUN_FRAMES[this.cappy.runFrame];
+      }
+      drawSpriteOutlined(ctx, cappySprite, this.cappy.x, this.cappy.y, 1,
+        bodyColor, bodyColor, outlineColor);
     }
-    drawSprite(ctx, cappySprite, this.cappy.x, this.cappy.y, 2,
-      dark ? CAPPY_PALETTE_DARK : CAPPY_PALETTE_LIGHT);
 
     // Low-visibility weather overlay (drawn over the scene, under the HUD).
     if (this.lowVis) this._drawWeather(ctx);
