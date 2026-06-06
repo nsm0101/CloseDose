@@ -384,6 +384,27 @@ html[data-theme="dark"] .brand-hero__wordmark {
   color: var(--ink-900);
 }
 
+.brand-blurb--donate {
+  appearance: none;
+  width: 100%;
+  font: inherit;
+  cursor: pointer;
+  text-align: left;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+.brand-blurb--donate:hover,
+.brand-blurb--donate:focus-visible {
+  transform: translateY(-1px);
+  border-color: var(--teal-400);
+  box-shadow: var(--shadow-card);
+  outline: none;
+}
+.brand-blurb--donate .brand-blurb__eyebrow,
+.brand-blurb--donate .brand-blurb__title,
+.brand-blurb--donate .brand-blurb__body {
+  display: block;
+}
+
 /* --- Layout: single-column scrolling --- */
 .layout {
   width: min(720px, 100%);
@@ -2434,8 +2455,6 @@ html[data-theme="dark"] .no-tare-btn { background: rgba(255, 200, 100, 0.07); }
   color: var(--ink-900);
 }
 
-/* Navigation: highlight dosing guide link color */
-.nav-dosing { color: var(--teal-500) !important; }
 
 /* =============================================
    HOVER GUARDS — prevent sticky hover on touch
