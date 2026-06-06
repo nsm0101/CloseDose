@@ -424,7 +424,7 @@ html[data-theme="dark"] .brand-hero__wordmark {
   cursor: pointer;
   overflow: hidden;
   border: 2px solid rgba(255, 255, 255, 0.78);
-  background: url("Donations/WC_bg.png") center / cover no-repeat;
+  background: url("Donations/WC_bg.webp") center / cover no-repeat;
   background-color: #f7f0e3;
   transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
 }
@@ -444,49 +444,41 @@ html[data-theme="dark"] .brand-hero__wordmark {
   pointer-events: none;
 }
 
-/* Dark scrims at top and bottom keep the white text legible over any
-   part of the watercolor wash or photo. */
-.support-care-card::before,
-.support-care-card::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 0;
-  height: 38%;
-  pointer-events: none;
-}
-.support-care-card::before {
-  top: 0;
-  background: linear-gradient(to bottom, rgba(15, 40, 38, 0.5), rgba(15, 40, 38, 0));
-}
-.support-care-card::after {
-  bottom: 0;
-  background: linear-gradient(to top, rgba(15, 40, 38, 0.55), rgba(15, 40, 38, 0));
-}
-
+/* White text reads directly over the watercolor thanks to a thick black
+   outline. paint-order keeps the stroke behind the white fill so the
+   letterforms stay crisp; layered shadows back up browsers that ignore
+   -webkit-text-stroke. */
 .support-care-card__title,
 .support-care-card__cta {
   position: relative;
   z-index: 1;
   color: #fff;
   margin: 0;
-  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.45);
+  paint-order: stroke fill;
 }
 .support-care-card__title {
-  font-size: clamp(1.35rem, 4.6vw, 2.1rem);
+  font-size: clamp(1.4rem, 4.8vw, 2.15rem);
   font-weight: 900;
   letter-spacing: 0.04em;
   line-height: 1.1;
   text-transform: uppercase;
+  -webkit-text-stroke: 3px #000;
+  text-shadow:
+    -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000,
+    0 3px 6px rgba(0, 0, 0, 0.45);
 }
 .support-care-card__cta {
-  font-size: clamp(0.98rem, 2.6vw, 1.25rem);
-  font-weight: 800;
+  font-size: clamp(1rem, 2.6vw, 1.3rem);
+  font-weight: 900;
   letter-spacing: 0.01em;
+  -webkit-text-stroke: 2px #000;
+  text-shadow:
+    -1.5px -1.5px 0 #000, 1.5px -1.5px 0 #000, -1.5px 1.5px 0 #000, 1.5px 1.5px 0 #000,
+    0 2px 5px rgba(0, 0, 0, 0.4);
 }
 .support-care-card__heart {
   color: #ff6b8a;
-  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.4);
+  -webkit-text-stroke: 2px #000;
 }
 
 .support-care-card:hover,
