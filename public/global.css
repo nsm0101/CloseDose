@@ -415,22 +415,33 @@ html[data-theme="dark"] .brand-hero__wordmark {
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
+  gap: clamp(8px, 1.6vw, 16px);
   width: 100%;
-  min-height: clamp(170px, 32vw, 280px);
-  padding: clamp(20px, 3.6vw, 34px) clamp(18px, 3vw, 30px);
+  min-height: clamp(220px, 42vw, 360px);
+  padding: clamp(18px, 3.4vw, 30px) clamp(18px, 3vw, 30px);
   font: inherit;
   text-align: center;
   cursor: pointer;
   overflow: hidden;
   border: 2px solid rgba(255, 255, 255, 0.78);
-  /* The user's playground photo (if added) renders on top of the watercolor
-     SVG fallback; a missing top layer falls through silently to the SVG. */
-  background:
-    url("images/Donations/playground.png") center / cover no-repeat,
-    url("images/Donations/support-watercolor.svg") center / cover no-repeat;
+  background: url("Donations/WC_bg.png") center / cover no-repeat;
   background-color: #f7f0e3;
   transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+/* Playground line-art (transparent PNG) sits on the watercolor wash,
+   centered between the title and call-to-action. */
+.support-care-card__art {
+  position: relative;
+  z-index: 1;
+  flex: 1 1 auto;
+  min-height: 0;
+  width: auto;
+  max-width: min(100%, 460px);
+  max-height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 10px rgba(15, 44, 42, 0.18));
+  pointer-events: none;
 }
 
 /* Dark scrims at top and bottom keep the white text legible over any
@@ -441,16 +452,16 @@ html[data-theme="dark"] .brand-hero__wordmark {
   position: absolute;
   left: 0;
   right: 0;
-  height: 48%;
+  height: 38%;
   pointer-events: none;
 }
 .support-care-card::before {
   top: 0;
-  background: linear-gradient(to bottom, rgba(15, 40, 38, 0.46), rgba(15, 40, 38, 0));
+  background: linear-gradient(to bottom, rgba(15, 40, 38, 0.5), rgba(15, 40, 38, 0));
 }
 .support-care-card::after {
   bottom: 0;
-  background: linear-gradient(to top, rgba(15, 40, 38, 0.5), rgba(15, 40, 38, 0));
+  background: linear-gradient(to top, rgba(15, 40, 38, 0.55), rgba(15, 40, 38, 0));
 }
 
 .support-care-card__title,
