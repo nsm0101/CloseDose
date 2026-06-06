@@ -405,6 +405,94 @@ html[data-theme="dark"] .brand-hero__wordmark {
   display: block;
 }
 
+/* --- Support Pediatric Care donate card (watercolor playground) --- */
+/* `.card.support-care-card` keeps higher specificity than the base `.card`
+   rule below so the watercolor background, border and padding win. */
+.card.support-care-card {
+  appearance: none;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  min-height: clamp(170px, 32vw, 280px);
+  padding: clamp(20px, 3.6vw, 34px) clamp(18px, 3vw, 30px);
+  font: inherit;
+  text-align: center;
+  cursor: pointer;
+  overflow: hidden;
+  border: 2px solid rgba(255, 255, 255, 0.78);
+  /* The user's playground photo (if added) renders on top of the watercolor
+     SVG fallback; a missing top layer falls through silently to the SVG. */
+  background:
+    url("images/Donations/playground.png") center / cover no-repeat,
+    url("images/Donations/support-watercolor.svg") center / cover no-repeat;
+  background-color: #f7f0e3;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+/* Dark scrims at top and bottom keep the white text legible over any
+   part of the watercolor wash or photo. */
+.support-care-card::before,
+.support-care-card::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 48%;
+  pointer-events: none;
+}
+.support-care-card::before {
+  top: 0;
+  background: linear-gradient(to bottom, rgba(15, 40, 38, 0.46), rgba(15, 40, 38, 0));
+}
+.support-care-card::after {
+  bottom: 0;
+  background: linear-gradient(to top, rgba(15, 40, 38, 0.5), rgba(15, 40, 38, 0));
+}
+
+.support-care-card__title,
+.support-care-card__cta {
+  position: relative;
+  z-index: 1;
+  color: #fff;
+  margin: 0;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.45);
+}
+.support-care-card__title {
+  font-size: clamp(1.35rem, 4.6vw, 2.1rem);
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  line-height: 1.1;
+  text-transform: uppercase;
+}
+.support-care-card__cta {
+  font-size: clamp(0.98rem, 2.6vw, 1.25rem);
+  font-weight: 800;
+  letter-spacing: 0.01em;
+}
+.support-care-card__heart {
+  color: #ff6b8a;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.4);
+}
+
+.support-care-card:hover,
+.support-care-card:focus-visible {
+  transform: translateY(-2px);
+  border-color: #fff;
+  box-shadow: 0 14px 30px rgba(15, 44, 42, 0.28);
+  outline: none;
+}
+.support-care-card:active {
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .support-care-card { transition: none; }
+}
+
 /* --- Layout: single-column scrolling --- */
 .layout {
   width: min(720px, 100%);
