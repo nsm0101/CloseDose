@@ -75,21 +75,25 @@
         'Maximum single dose for this age group is {{max}} mg of acetaminophen every 6 hours.',
       ibuprofenMax:
         'Maximum single dose for this age group is {{max}} mg of ibuprofen every 6 hours.',
+      ibuprofenStrengthInfo:
+        "<strong>Heads up:</strong> Children's (100 mg / 5 mL) and Infant's (50 mg / 1.25 mL) ibuprofen are <em>different</em> concentrations. Check the bottle before measuring.",
     },
     results: {
       patientWeightLabel: 'Patient weight',
       patientWeightValue: '{{kg}} kg ({{lbs}} lbs)',
       acetaminophenInfantTitle: 'Acetaminophen (160 mg / 5 mL)',
       acetaminophenInfantBody:
-        'Give <strong><em>{{ml}} mL</em></strong> (<em>{{mg}} mg</em>) every 4 hours as needed for fever/pain.',
+        'Give <span class="cdcalc-dose-ml">{{ml}} mL</span><span class="cdcalc-dose-mg">({{mg}} mg)</span> every 4 hours as needed for fever/pain.',
       acetaminophenOlderTitle: 'Acetaminophen (160 mg / 5 mL)',
       acetaminophenOlderBody:
-        'Give <strong><em>{{ml}} mL</em></strong> (<em>{{mg}} mg</em>) every 6 hours as needed for fever/pain.',
-      ibuprofenTitle: "Ibuprofen (oral)",
+        'Give <span class="cdcalc-dose-ml">{{ml}} mL</span><span class="cdcalc-dose-mg">({{mg}} mg)</span> every 6 hours as needed for fever/pain.',
+      ibuprofenTitle: 'Ibuprofen (oral)',
+      ibuprofenChildrenSummary: "Children's 100 mg / 5 mL (recommended)",
+      ibuprofenInfantSummary: "Infant's 50 mg / 1.25 mL (concentrated drops)",
       ibuprofenBody100:
-        "<strong>Children's 100 mg / 5 mL:</strong> Give <strong><em>{{ml}} mL</em></strong> (<em>{{mg}} mg</em>) every 6 hours as needed for fever/pain.",
+        'Give <span class="cdcalc-dose-ml">{{ml}} mL</span><span class="cdcalc-dose-mg">({{mg}} mg)</span> every 6 hours as needed for fever/pain.',
       ibuprofenBody50:
-        "<strong>Infant's 50 mg / 1.25 mL:</strong> Give <strong><em>{{ml}} mL</em></strong> (<em>{{mg}} mg</em>) every 6 hours as needed for fever/pain.",
+        'Give <span class="cdcalc-dose-ml">{{ml}} mL</span><span class="cdcalc-dose-mg">({{mg}} mg)</span> every 6 hours as needed for fever/pain.',
     },
     accessibility: {
       resultsRegion: 'Dosing results',
@@ -656,6 +660,95 @@
       font-size: 0.98rem;
     }
 
+    .cdcalc-dose-ml {
+      display: inline-block;
+      font-size: clamp(1.8rem, 5vw, 2.4rem);
+      font-weight: 900;
+      letter-spacing: 0.01em;
+      color: #0f2c2a;
+      background: var(--cdcalc-gold);
+      padding: 2px 12px;
+      border-radius: 12px;
+      margin: 0 6px 0 2px;
+      line-height: 1.15;
+      vertical-align: middle;
+    }
+
+    .cdcalc-dose-mg {
+      display: inline-block;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #124643;
+      margin-right: 6px;
+      vertical-align: middle;
+    }
+
+    .cdcalc-info-banner {
+      border-radius: 14px;
+      border: 2px solid #1d4ed8;
+      background: #e0ecff;
+      color: #0b2660;
+      padding: 12px 14px;
+      font-size: 0.92rem;
+      line-height: 1.45;
+    }
+
+    .cdcalc-info-banner em {
+      font-style: normal;
+      text-decoration: underline;
+      text-decoration-thickness: 2px;
+      text-underline-offset: 2px;
+    }
+
+    .cdcalc-accordion {
+      border-radius: 14px;
+      border: 2px solid #0f2c2a;
+      background: #ffffff;
+      overflow: hidden;
+    }
+
+    .cdcalc-accordion + .cdcalc-accordion {
+      margin-top: 4px;
+    }
+
+    .cdcalc-accordion > summary {
+      list-style: none;
+      cursor: pointer;
+      padding: 12px 14px;
+      font-weight: 800;
+      font-size: 0.95rem;
+      color: #0f2c2a;
+      background: #f1f8f6;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .cdcalc-accordion > summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .cdcalc-accordion > summary::after {
+      content: '▾';
+      font-size: 0.9rem;
+      transition: transform 0.2s ease;
+      color: #124643;
+    }
+
+    .cdcalc-accordion[open] > summary::after {
+      transform: rotate(180deg);
+    }
+
+    .cdcalc-accordion[open] > summary {
+      background: #e4f4f0;
+      border-bottom: 2px solid #0f2c2a;
+    }
+
+    .cdcalc-accordion-body {
+      padding: 14px;
+    }
+
     .cdcalc-warning {
       border-radius: 16px;
       border: 3px solid #124643;
@@ -782,8 +875,8 @@
   // Implementation summary:
   // - 0–2 months: emergency redirect, calculator inputs disabled.
   // - 2–6 months: acetaminophen at 12.5 mg/kg (max 160 mg) with ibuprofen suppressed.
-  // - 6 months–11 years: pediatric caps of 480 mg acetaminophen and 800 mg ibuprofen.
-  // - 12+ years: adult ceilings of 1000 mg acetaminophen and 800 mg ibuprofen.
+  // - 6 months–11 years: pediatric caps of 480 mg acetaminophen and 400 mg ibuprofen.
+  // - 12+ years: adult ceilings of 1000 mg acetaminophen and 600 mg ibuprofen.
   // This replaces the previous catch-all 6+ pathway while leaving room to refine
   // segmentation further if future clinical guidance differentiates additional cohorts.
   function resolveAgeGate(age) {
@@ -1340,20 +1433,13 @@
       const acetaCapped = acetaMg < acetaMgCalculated;
       const group = [];
       group.push(`
-        <article class="cdcalc-result-card cdcalc-result-card--with-guide">
+        <article class="cdcalc-result-card">
           <h3>${strings.results.acetaminophenInfantTitle}</h3>
           <p>${formatString(strings.results.acetaminophenInfantBody, {
             ml: acetaMl.toFixed(1),
             mg: acetaMg.toFixed(0),
           })}</p>
           <p>${formatString(strings.warnings.acetaminophenMax, { max: ACETA_MAX_MG_INFANT })}</p>
-          ${renderGuidePromo({
-            eyebrow: 'Parents',
-            body: 'Need product photos or extra dosing reminders? Open the acetaminophen medication guide for a closer look.',
-            href: '/medication-guides.html#acetaminophen',
-            label: 'View medication guide',
-            tone: 'acetaminophen',
-          })}
           ${
             acetaCapped
               ? renderWarning(strings, {
@@ -1377,7 +1463,7 @@
     } else if (gate === 'pediatric' || gate === 'adolescent') {
       const isPediatric = gate === 'pediatric';
       const ACETA_MAX_SINGLE_DOSE_MG = isPediatric ? 480 : 1000;
-      const IBU_MAX_SINGLE_DOSE_MG = isPediatric ? 600 : 800;
+      const IBU_MAX_SINGLE_DOSE_MG = isPediatric ? 400 : 600;
 
       const acetaMgCalculated = 15 * weightKg;
       const acetaMg = Math.min(acetaMgCalculated, ACETA_MAX_SINGLE_DOSE_MG);
@@ -1391,19 +1477,12 @@
       const ibuMl100 = (ibuMg / 100) * 5;
       const group = [];
       group.push(`
-        <article class="cdcalc-result-card cdcalc-result-card--with-guide">
+        <article class="cdcalc-result-card">
           <h3>${strings.results.acetaminophenOlderTitle}</h3>
           <p>${formatString(strings.results.acetaminophenOlderBody, {
             ml: acetaMl.toFixed(1),
             mg: acetaMg.toFixed(0),
           })}</p>
-          ${renderGuidePromo({
-            eyebrow: 'Parents',
-            body: 'Compare formulations and safety reminders in the acetaminophen medication guide.',
-            href: '/medication-guides.html#acetaminophen',
-            label: 'View medication guide',
-            tone: 'acetaminophen',
-          })}
           ${
             acetaCapped
               ? renderWarning(strings, {
@@ -1425,23 +1504,27 @@
       `);
 
       group.push(`
-        <article class="cdcalc-result-card cdcalc-result-card--with-guide">
+        <article class="cdcalc-result-card">
           <h3>${strings.results.ibuprofenTitle}</h3>
-          <p>${formatString(strings.results.ibuprofenBody100, {
-            ml: ibuMl100.toFixed(1),
-            mg: ibuMg.toFixed(0),
-          })}</p>
-          <p>${formatString(strings.results.ibuprofenBody50, {
-            ml: ibuMl50.toFixed(1),
-            mg: ibuMg.toFixed(0),
-          })}</p>
-          ${renderGuidePromo({
-            eyebrow: 'Parents',
-            body: 'Browse product photos and tips in the ibuprofen medication guide before you dose.',
-            href: '/medication-guides.html#ibuprofen-children',
-            label: 'View medication guide',
-            tone: 'ibuprofen',
-          })}
+          <div class="cdcalc-info-banner">${strings.warnings.ibuprofenStrengthInfo}</div>
+          <details class="cdcalc-accordion" open>
+            <summary>${strings.results.ibuprofenChildrenSummary}</summary>
+            <div class="cdcalc-accordion-body">
+              <p>${formatString(strings.results.ibuprofenBody100, {
+                ml: ibuMl100.toFixed(1),
+                mg: ibuMg.toFixed(0),
+              })}</p>
+            </div>
+          </details>
+          <details class="cdcalc-accordion">
+            <summary>${strings.results.ibuprofenInfantSummary}</summary>
+            <div class="cdcalc-accordion-body">
+              <p>${formatString(strings.results.ibuprofenBody50, {
+                ml: ibuMl50.toFixed(1),
+                mg: ibuMg.toFixed(0),
+              })}</p>
+            </div>
+          </details>
           ${
             ibuCapped
               ? renderWarning(strings, {
