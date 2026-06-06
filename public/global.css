@@ -405,6 +405,97 @@ html[data-theme="dark"] .brand-hero__wordmark {
   display: block;
 }
 
+/* --- Support Pediatric Care donate card (watercolor playground) --- */
+/* `.card.support-care-card` keeps higher specificity than the base `.card`
+   rule below so the watercolor background, border and padding win. */
+.card.support-care-card {
+  appearance: none;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  gap: clamp(8px, 1.6vw, 16px);
+  width: 100%;
+  min-height: clamp(220px, 42vw, 360px);
+  padding: clamp(18px, 3.4vw, 30px) clamp(18px, 3vw, 30px);
+  font: inherit;
+  text-align: center;
+  cursor: pointer;
+  overflow: hidden;
+  border: 2px solid rgba(255, 255, 255, 0.78);
+  background: url("Donations/WC_bg.webp") center / cover no-repeat;
+  background-color: #f7f0e3;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+/* Playground line-art (transparent PNG) sits on the watercolor wash,
+   centered between the title and call-to-action. */
+.support-care-card__art {
+  position: relative;
+  z-index: 1;
+  flex: 1 1 auto;
+  min-height: 0;
+  width: auto;
+  max-width: min(100%, 460px);
+  max-height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 10px rgba(15, 44, 42, 0.18));
+  pointer-events: none;
+}
+
+/* White text reads directly over the watercolor thanks to a thick black
+   outline. paint-order keeps the stroke behind the white fill so the
+   letterforms stay crisp; layered shadows back up browsers that ignore
+   -webkit-text-stroke. */
+.support-care-card__title,
+.support-care-card__cta {
+  position: relative;
+  z-index: 1;
+  color: #fff;
+  margin: 0;
+  paint-order: stroke fill;
+}
+.support-care-card__title {
+  font-size: clamp(1.4rem, 4.8vw, 2.15rem);
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  line-height: 1.1;
+  text-transform: uppercase;
+  -webkit-text-stroke: 3px #000;
+  text-shadow:
+    -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000,
+    0 3px 6px rgba(0, 0, 0, 0.45);
+}
+.support-care-card__cta {
+  font-size: clamp(1rem, 2.6vw, 1.3rem);
+  font-weight: 900;
+  letter-spacing: 0.01em;
+  -webkit-text-stroke: 2px #000;
+  text-shadow:
+    -1.5px -1.5px 0 #000, 1.5px -1.5px 0 #000, -1.5px 1.5px 0 #000, 1.5px 1.5px 0 #000,
+    0 2px 5px rgba(0, 0, 0, 0.4);
+}
+.support-care-card__heart {
+  color: #ff6b8a;
+  -webkit-text-stroke: 2px #000;
+}
+
+.support-care-card:hover,
+.support-care-card:focus-visible {
+  transform: translateY(-2px);
+  border-color: #fff;
+  box-shadow: 0 14px 30px rgba(15, 44, 42, 0.28);
+  outline: none;
+}
+.support-care-card:active {
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .support-care-card { transition: none; }
+}
+
 /* --- Layout: single-column scrolling --- */
 .layout {
   width: min(720px, 100%);
