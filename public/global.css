@@ -414,11 +414,10 @@ html[data-theme="dark"] .brand-hero__wordmark {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: space-between;
-  gap: clamp(8px, 1.6vw, 16px);
+  justify-content: center;
+  gap: clamp(10px, 2vw, 18px);
   width: 100%;
-  min-height: clamp(220px, 42vw, 360px);
-  padding: clamp(18px, 3.4vw, 30px) clamp(18px, 3vw, 30px);
+  padding: clamp(16px, 3vw, 28px);
   font: inherit;
   text-align: center;
   cursor: pointer;
@@ -429,16 +428,16 @@ html[data-theme="dark"] .brand-hero__wordmark {
   transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
 }
 
-/* Playground line-art (transparent PNG) sits on the watercolor wash,
-   centered between the title and call-to-action. */
+/* Playground line-art (transparent PNG) sits on the watercolor wash between
+   the title and call-to-action. It scales with the card width so the card
+   hugs its content instead of stretching to a fixed height. */
 .support-care-card__art {
   position: relative;
   z-index: 1;
-  flex: 1 1 auto;
-  min-height: 0;
-  width: auto;
-  max-width: min(100%, 460px);
-  max-height: 100%;
+  display: block;
+  width: 100%;
+  max-width: 560px;
+  height: auto;
   object-fit: contain;
   filter: drop-shadow(0 4px 10px rgba(15, 44, 42, 0.18));
   pointer-events: none;
