@@ -257,31 +257,6 @@
     }
   }
 
-  // --- Sidebar alignment: start the info column at the calculator card ---
-  // On the desktop grid the helper cards should begin level with the top of
-  // the calculator card rather than the brand hero above it.
-  const infoColumn = document.querySelector('.info-column');
-  const brandHero = document.querySelector('.calculator-column .brand-hero');
-  if (infoColumn && brandHero) {
-    const desktop = window.matchMedia('(min-width: 1024px)');
-    const syncSidebar = () => {
-      if (desktop.matches) {
-        const colGap = parseFloat(getComputedStyle(brandHero.parentElement).rowGap) || 0;
-        infoColumn.style.marginTop = (brandHero.offsetHeight + colGap) + 'px';
-      } else {
-        infoColumn.style.marginTop = '';
-      }
-    };
-    syncSidebar();
-    window.addEventListener('resize', syncSidebar);
-    window.addEventListener('load', syncSidebar);
-    if (window.ResizeObserver) {
-      new ResizeObserver(syncSidebar).observe(brandHero);
-    }
-    const heroImg = brandHero.querySelector('img');
-    if (heroImg && !heroImg.complete) heroImg.addEventListener('load', syncSidebar);
-  }
-
   // --- Card Intersection Observer for Animations ---
   const observerOptions = { threshold: 0.1 };
   const observer = new IntersectionObserver((entries) => {
