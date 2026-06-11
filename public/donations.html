@@ -19,6 +19,93 @@
   <meta property="og:url" content="https://closedose.com/donations.html" />
   <meta name="twitter:card" content="summary" />
   <script>(function(){var t=localStorage.getItem("cd-theme");if(t)document.documentElement.setAttribute("data-theme",t);})();</script>
+  <style>
+    /* ===== Support V4 — "Watercolor Flow" (scoped, card-free) ===== */
+    .sw{ width:100%; }
+    .sw [data-reveal]{ opacity:0; transform:translateY(20px); transition:opacity .8s ease, transform .8s ease; }
+    .sw [data-reveal].is-in{ opacity:1; transform:none; }
+    .sw .sw-band{ width:100vw; max-width:100vw; margin-inline:calc(50% - 50vw); padding:clamp(30px,4.5vw,56px) clamp(22px,5vw,48px); position:relative; }
+    .sw .sw-inner{ max-width:1080px; margin:0 auto; position:relative; z-index:2; }
+    .sw .sw-tight{ max-width:720px; }
+
+    .sw .sw-wash{ position:absolute; inset:0; z-index:0; overflow:hidden; pointer-events:none; }
+    .sw .sw-wash::before, .sw .sw-wash::after{ content:""; position:absolute; border-radius:50%; filter:blur(60px); opacity:.55; }
+    .sw .sw-wash--a::before{ width:46vw;height:46vw; background:radial-gradient(circle,#ffd9b0,transparent 70%); top:-12vw; right:-10vw; }
+    .sw .sw-wash--a::after{ width:42vw;height:42vw; background:radial-gradient(circle,#a8e6d4,transparent 70%); bottom:-14vw; left:-8vw; }
+    .sw .sw-wash--b::before{ width:44vw;height:44vw; background:radial-gradient(circle,#ffc9d6,transparent 70%); top:-10vw; left:-6vw; }
+    .sw .sw-wash--b::after{ width:40vw;height:40vw; background:radial-gradient(circle,#bdeede,transparent 70%); bottom:-12vw; right:-8vw; }
+
+    /* HERO */
+    .sw .sw-hero{ text-align:center; padding-top:clamp(44px,6vw,76px); padding-bottom:clamp(20px,3.5vw,40px); }
+    .sw .sw-hero .sw-wash{ background:url('Donations/WC_bg.webp') center/cover no-repeat; opacity:.5; -webkit-mask-image:radial-gradient(circle at 50% 35%, #000 35%, transparent 78%); mask-image:radial-gradient(circle at 50% 35%, #000 35%, transparent 78%); }
+    .sw .sw-eyebrow{ display:inline-flex; align-items:center; gap:8px; font-size:.78rem; font-weight:900; letter-spacing:.16em; text-transform:uppercase; color:var(--teal-600); margin-bottom:18px; }
+    .sw .sw-hero h1{ font-size:clamp(2.3rem,4.2vw+1rem,4.4rem); line-height:1.03; font-weight:900; letter-spacing:-.02em; color:var(--ink-900); margin:0 auto 16px; max-width:15ch; }
+    .sw .sw-hero h1 em{ font-style:normal; color:var(--teal-500); }
+    .sw .sw-hero .sub{ font-size:clamp(1.05rem,.6vw+1rem,1.28rem); line-height:1.55; color:var(--ink-700); max-width:48ch; margin:0 auto 8px; }
+    .sw .sw-piggy{ width:clamp(88px,12vw,140px); margin:clamp(18px,2.5vw,28px) auto 0; display:block; filter:drop-shadow(0 14px 24px rgba(13,52,82,.22)); animation:sw-float 5s ease-in-out infinite; }
+    @keyframes sw-float{ 0%,100%{ transform:translateY(0) rotate(-3deg);} 50%{ transform:translateY(-14px) rotate(3deg);} }
+
+    /* WAYS TO GIVE — large animated platform tiles */
+    .sw .sw-h2{ text-align:center; font-size:clamp(1.5rem,1.4vw+1rem,2.2rem); font-weight:900; color:var(--ink-900); margin:0 0 6px; }
+    .sw .sw-h2-sub{ text-align:center; color:var(--ink-700); font-size:1rem; margin:0 0 clamp(26px,4vw,44px); }
+    .sw .sw-give{ display:grid; grid-template-columns:1fr; gap:clamp(18px,2.6vw,28px); }
+    @media(min-width:760px){ .sw .sw-give{ grid-template-columns:1fr 1fr; } }
+    .sw .sw-pf{ position:relative; overflow:hidden; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; text-decoration:none; min-height:clamp(260px,30vw,320px); padding:clamp(30px,4vw,44px) clamp(20px,3vw,28px); border-radius:30px; background:transparent; transition:transform .24s cubic-bezier(.2,.8,.3,1.2), box-shadow .24s ease, background .24s ease; cursor:pointer; }
+    .sw .sw-pf::before{ content:""; position:absolute; inset:0; z-index:0; opacity:.0; background:radial-gradient(circle at 50% 18%, var(--c), transparent 72%); transition:opacity .3s ease; }
+    .sw .sw-pf > *{ position:relative; z-index:1; }
+    .sw .sw-pf:hover{ transform:translateY(-9px); background:rgba(255,255,255,.6); box-shadow:0 24px 48px rgba(13,52,82,.16); }
+    .sw .sw-pf:hover::before{ opacity:.95; }
+    .sw .sw-pf .badge{ width:clamp(96px,12vw,128px); height:clamp(96px,12vw,128px); border-radius:50%; display:flex; align-items:center; justify-content:center; box-shadow:0 14px 30px rgba(13,52,82,.18); transition:transform .3s cubic-bezier(.2,.8,.3,1.5); }
+    .sw .sw-pf .badge .em{ font-size:clamp(3rem,6vw,4rem); line-height:1; }
+    .sw .sw-pf .badge img{ width:62%; height:auto; }
+    .sw .sw-pf:hover .badge{ transform:translateY(-6px) scale(1.1) rotate(-8deg); }
+    .sw .sw-pf .name{ margin:22px 0 6px; font-size:clamp(1.5rem,2vw,1.9rem); font-weight:900; }
+    .sw .sw-pf .tag{ font-size:.98rem; color:var(--ink-700); max-width:24ch; }
+    .sw .sw-pf .go{ margin-top:20px; display:inline-flex; align-items:center; gap:8px; font-weight:900; padding:12px 26px; border-radius:999px; color:#fff; box-shadow:0 10px 22px rgba(13,52,82,.2); transition:transform .2s ease; }
+    .sw .sw-pf:hover .go{ transform:translateX(4px); }
+    /* Ko-fi */
+    .sw .sw-pf--kofi{ --c:#bfe7fb; }
+    .sw .sw-pf--kofi .badge{ background:linear-gradient(135deg,#e3f5fd,#cdeefb); }
+    .sw .sw-pf--kofi .name{ color:#1a7fb0; }
+    .sw .sw-pf--kofi .go{ background:#29abe0; }
+    /* Givebutter */
+    .sw .sw-pf--gb{ --c:#ffd3c6; }
+    .sw .sw-pf--gb .badge{ background:linear-gradient(135deg,#fbe4dd,#f7cfc2); }
+    .sw .sw-pf--gb .name{ color:#c4452f; }
+    .sw .sw-pf--gb .go{ background:#c4452f; }
+    /* style the Givebutter inner fallback anchor to fill the tile look */
+    .sw givebutter-widget{ display:flex; align-items:center; justify-content:center; height:100%; min-height:clamp(260px,30vw,320px); }
+    .sw givebutter-widget .sw-pf{ width:100%; height:100%; box-sizing:border-box; }
+    .sw .sw-pf:focus-visible{ outline:3px solid var(--teal-500); outline-offset:4px; border-radius:22px; }
+
+    /* IMPACT — 3 simple visual chips */
+    .sw .sw-impact{ display:grid; grid-template-columns:repeat(2,1fr); gap:clamp(24px,3vw,36px) clamp(14px,3vw,28px); max-width:760px; margin:0 auto; justify-items:center; }
+    @media(min-width:680px){ .sw .sw-impact{ grid-template-columns:repeat(4,1fr); } }
+    .sw .sw-chip{ text-align:center; width:100%; max-width:170px; }
+    .sw .sw-chip .big{ font-size:clamp(2rem,4vw,2.8rem); font-weight:900; color:var(--teal-500); line-height:1; }
+    .sw .sw-chip .em{ font-size:2.4rem; line-height:1; }
+    .sw .sw-chip span{ display:block; margin-top:10px; font-weight:800; color:var(--ink-900); font-size:.95rem; line-height:1.35; }
+
+    /* SPONSOR — quiet single line */
+    .sw .sw-sponsor{ text-align:center; font-size:1.05rem; line-height:1.6; color:var(--ink-700); max-width:60ch; margin:0 auto; }
+    .sw .sw-sponsor a{ color:var(--teal-600); font-weight:900; text-decoration:none; border-bottom:2px solid transparent; transition:border-color .16s ease; }
+    .sw .sw-sponsor a:hover{ border-color:var(--teal-500); }
+
+    /* DISCLAIMER — collapsed by default, plain (not a card) */
+    .sw .sw-disc{ width:min(640px,100%); margin:0 auto; text-align:center; }
+    .sw .sw-disc-sum{ list-style:none; cursor:pointer; display:inline-flex; align-items:center; gap:10px; justify-content:center; padding:11px 22px; border-radius:999px; font-weight:900; font-size:.9rem; color:#8b1111; background:rgba(253,236,236,.7); border:1px solid rgba(139,17,17,.2); transition:background .15s ease; }
+    .sw .sw-disc-sum::-webkit-details-marker{ display:none; }
+    .sw .sw-disc-sum:hover{ background:rgba(253,236,236,.95); }
+    .sw .sw-disc-ic{ width:20px;height:20px;border-radius:50%;background:#8b1111;color:#fff;display:flex;align-items:center;justify-content:center;font-size:.78rem; }
+    .sw .sw-disc-body{ text-align:left; max-width:600px; margin:16px auto 0; color:var(--ink-700); font-size:.9rem; line-height:1.6; }
+    .sw .sw-disc-body ul{ margin:10px 0; padding-left:18px; }
+    .sw .sw-disc-body a{ color:var(--teal-600); font-weight:800; text-decoration:none; }
+
+    @media (prefers-reduced-motion: reduce){
+      .sw [data-reveal]{ opacity:1 !important; transform:none !important; transition:none !important; }
+      .sw *{ animation:none !important; transition:none !important; }
+    }
+  </style>
 </head>
 <body>
   <div class="wrap">
@@ -34,85 +121,81 @@
     </header>
 
     <main>
-      <div class="layout layout--inline">
+      <div class="sw">
 
-        <!-- Intro -->
-        <section class="card intro-card" aria-labelledby="support-heading">
-          <h1 id="support-heading">Support CloseDose</h1>
-          <p>
-            CloseDose is a free dosing resource created by a Pediatric Emergency Medicine physician. When you donate, you help us update medication
-            guides, add new features families request, and keep the experience completely ad-free.
-          </p>
-          <p>
-            Choose the platform that works best for you — every gift directly fuels improvements that keep kids safe.
-          </p>
-        </section>
-
-        <!-- Donation platforms -->
-        <section class="donation-grid" id="support-options" aria-label="Donation platforms">
-
-          <a
-            class="donation-card donation-card--kofi"
-            href="https://ko-fi.com/drnsm"
-            target="_blank"
-            rel="noopener"
-            aria-label="Support CloseDose on Ko-fi"
-          >
-            <span class="donation-logo" aria-hidden="true">☕</span>
-            <p class="donation-card__name donation-card__name--kofi">Ko-fi</p>
-            <small>Buy Dr. Nick a coffee — quick one-tap support, no account required.</small>
-          </a>
-
-          <givebutter-widget id="gOeyDj">
-            <a class="donation-card donation-card--gb" aria-label="Donate through Givebutter">
-              <span class="donation-logo donation-logo--wide" aria-hidden="true">
-                <img src="images/GIVEBUTTER/givebutter-closedose.png" alt="" />
-              </span>
-              <p class="donation-card__name donation-card__name--gb">Givebutter</p>
-              <small>Credit/debit cards, PayPal, Venmo, CashApp, and Apple/Google Pay.</small>
-            </a>
-          </givebutter-widget>
-
-        </section>
-
-        <!-- Impact -->
-        <section class="card impact-card" aria-labelledby="impact-heading" style="display:block; padding: clamp(20px, 3vw, 30px);">
-          <h2 id="impact-heading" style="margin: 0 0 12px; font-size: clamp(1.15rem, 1vw + 1rem, 1.5rem); font-weight: 900;">How your donation helps</h2>
-          <ul style="margin: 8px 0 0; padding: 0; list-style: none; display: grid; gap: 10px;">
-            <li style="padding: 12px 16px; background: rgba(255,255,255,0.5); border: 1px solid rgba(15,44,42,0.08); border-radius: 10px; line-height: 1.5; font-size: 0.92rem;"><strong>Expand the medication database</strong> with new visuals, dosing checks, and store-brand product photos.</li>
-            <li style="padding: 12px 16px; background: rgba(255,255,255,0.5); border: 1px solid rgba(15,44,42,0.08); border-radius: 10px; line-height: 1.5; font-size: 0.92rem;"><strong>Stay ad-free.</strong> No banner ads, no sponsored content — ever.</li>
-            <li style="padding: 12px 16px; background: rgba(255,255,255,0.5); border: 1px solid rgba(15,44,42,0.08); border-radius: 10px; line-height: 1.5; font-size: 0.92rem;"><strong>Build new educational resources</strong> for caregivers — like our weighing guide and upcoming "when to seek care" decision tree.</li>
-            <li style="padding: 12px 16px; background: rgba(255,255,255,0.5); border: 1px solid rgba(15,44,42,0.08); border-radius: 10px; line-height: 1.5; font-size: 0.92rem;"><strong>Both donation platforms charge 0% in fees</strong> for CloseDose at this time — your gift goes directly to the project.</li>
-          </ul>
-        </section>
-
-        <!-- Sponsorship link -->
-        <section class="card cappy-info-card" aria-labelledby="sponsor-heading">
-          <h2 id="sponsor-heading">Interested in a larger sponsorship?</h2>
-          <p>If you represent a clinic, hospital, employer benefits team, or community organization that would like to support CloseDose at scale, we'd love to talk. Email <a href="mailto:hello@closedose.com?subject=CloseDose%20Sponsorship" style="color: var(--teal-500); font-weight: 700;">hello@closedose.com</a> to start the conversation.</p>
-        </section>
-
-        <!-- Disclaimer -->
-        <section class="card card--disclaimer" id="disclaimer-card" aria-labelledby="disclaimer-heading" aria-expanded="false">
-          <button type="button" class="disclaimer-pill" aria-controls="disclaimer-panel" aria-expanded="false">Disclaimer</button>
-          <div class="disclaimer-body" id="disclaimer-panel">
-            <div class="disclaimer-body__inner">
-          <div class="disclaimer-header">
-            <span class="disclaimer-eyebrow">Disclaimer</span>
-            <h2 id="disclaimer-heading">Medication Safety &amp; Usage</h2>
+        <!-- HERO -->
+        <section class="sw-band sw-hero" aria-labelledby="support-heading" data-reveal>
+          <div class="sw-wash" aria-hidden="true"></div>
+          <div class="sw-inner">
+            <span class="sw-eyebrow">💛 Powered by people like you</span>
+            <h1 id="support-heading">Keep CloseDose <em>free</em> for every family.</h1>
+            <p class="sub">No ads. No paywalls. Just safe dosing guidance — kept alive by caregivers and clinicians who chip in.</p>
+            <img class="sw-piggy" src="images/Pig/piggybank-color.svg" alt="" aria-hidden="true" />
           </div>
-          <div class="disclaimer-content">
-            <p><strong>This tool does not provide medical advice.</strong> The dosing information is for educational purposes only and should be verified with a healthcare provider.</p>
-            <ul>
-              <li>Always use the dosing device (syringe or cup) that came with the medication.</li>
-              <li>Confirm your child's weight if it has been more than 3 months.</li>
-              <li>Contact Poison Control (1-800-222-1222) if an overdose is suspected.</li>
-            </ul>
-            <a class="disclaimer-link" href="/legal/disclaimer">Read the full disclaimer →</a>
-            <button type="button" class="disclaimer-close" aria-label="Close disclaimer">Close</button>
-          </div>
+        </section>
+
+        <!-- WAYS TO GIVE -->
+        <section class="sw-band" id="support-options" aria-labelledby="give-heading" data-reveal>
+          <div class="sw-wash sw-wash--a" aria-hidden="true"></div>
+          <div class="sw-inner">
+            <h2 class="sw-h2" id="give-heading">Pick a way to give</h2>
+            <p class="sw-h2-sub">Both platforms pass 100% to CloseDose.</p>
+            <div class="sw-give">
+              <a class="sw-pf sw-pf--kofi" href="https://ko-fi.com/drnsm" target="_blank" rel="noopener" aria-label="Support CloseDose on Ko-fi">
+                <span class="badge" aria-hidden="true"><span class="em">☕</span></span>
+                <span class="name">Ko-fi</span>
+                <span class="tag">Buy Dr. Nick a coffee — one tap, no account needed.</span>
+                <span class="go" aria-hidden="true">Give on Ko-fi →</span>
+              </a>
+              <givebutter-widget id="gOeyDj">
+                <a class="sw-pf sw-pf--gb" aria-label="Donate through Givebutter">
+                  <span class="badge" aria-hidden="true"><img src="images/GIVEBUTTER/givebutter-closedose.png" alt="" /></span>
+                  <span class="name">Givebutter</span>
+                  <span class="tag">Cards, PayPal, Venmo, CashApp &amp; Apple/Google Pay.</span>
+                  <span class="go" aria-hidden="true">Donate →</span>
+                </a>
+              </givebutter-widget>
             </div>
           </div>
+        </section>
+
+        <!-- IMPACT chips -->
+        <section class="sw-band" aria-labelledby="impact-heading" data-reveal>
+          <div class="sw-inner">
+            <h2 class="sw-h2" id="impact-heading">Where it goes</h2>
+            <p class="sw-h2-sub">Every gift goes straight to the work.</p>
+            <div class="sw-impact">
+              <div class="sw-chip"><div class="big" data-count="0" data-suffix="%">0%</div><span>Platform fees</span></div>
+              <div class="sw-chip"><div class="em" aria-hidden="true">🚫</div><span>Ad-free, forever</span></div>
+              <div class="sw-chip"><div class="em" aria-hidden="true">💊</div><span>More medication guides</span></div>
+              <div class="sw-chip"><div class="em" aria-hidden="true">📚</div><span>New caregiver resources</span></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- SPONSOR -->
+        <section class="sw-band" aria-labelledby="sponsor-heading" data-reveal>
+          <div class="sw-wash sw-wash--b" aria-hidden="true"></div>
+          <div class="sw-inner sw-tight">
+            <h2 class="sw-h2" id="sponsor-heading">Sponsor at scale</h2>
+            <p class="sw-sponsor">Clinic, hospital, employer, or community organization? Email <a href="mailto:hello@closedose.com?subject=CloseDose%20Sponsorship">hello@closedose.com</a> and let's keep families safe together.</p>
+          </div>
+        </section>
+
+        <!-- Disclaimer (collapsed by default, plain) -->
+        <section class="sw-band" aria-label="Disclaimer">
+          <details class="sw-disc">
+            <summary class="sw-disc-sum"><span class="sw-disc-ic" aria-hidden="true">!</span> Disclaimer &amp; medication safety</summary>
+            <div class="sw-disc-body">
+              <p><strong>This tool does not provide medical advice.</strong> The dosing information is for educational purposes only and should be verified with a healthcare provider.</p>
+              <ul>
+                <li>Always use the dosing device (syringe or cup) that came with the medication.</li>
+                <li>Confirm your child's weight if it has been more than 3 months.</li>
+                <li>Contact Poison Control (1-800-222-1222) if an overdose is suspected.</li>
+              </ul>
+              <a href="/legal/disclaimer">Read the full disclaimer →</a>
+            </div>
+          </details>
         </section>
 
       </div>
@@ -138,7 +221,7 @@
         <a href="dosing-guide.html" class="nav-dosing">Dosing Guide</a>
         <a href="about.html" class="nav-about">About</a>
         <a href="donations.html" class="nav-support" aria-current="page">Support</a>
-        <a href="contact.html" class="nav-contact">Contact</a>
+        <a href="about.html#contact" class="nav-contact">Contact</a>
       </nav>
       <button class="close-menu" type="button">Close</button>
     </div>
@@ -146,5 +229,29 @@
 
   <script src="global.js" defer></script>
   <script async src="https://widgets.givebutter.com/latest.umd.cjs?acct=r8SGiZ0RhFRoIkXu&p=other"></script>
+  <script>
+    (function(){
+      var rm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      var root = document.querySelector('.sw');
+      var els = root ? root.querySelectorAll('[data-reveal]') : [];
+      function countUp(el){
+        var target = parseFloat(el.getAttribute('data-count')) || 0;
+        var suffix = el.getAttribute('data-suffix') || '';
+        if (rm || target === 0){ el.textContent = target + suffix; return; }
+        var start = performance.now(), dur = 1100;
+        function tick(now){ var p=Math.min((now-start)/dur,1); el.textContent=Math.round(target*(1-Math.pow(1-p,3)))+suffix; if(p<1) requestAnimationFrame(tick); }
+        requestAnimationFrame(tick);
+      }
+      if (rm || !('IntersectionObserver' in window)) {
+        els.forEach(function(e){ e.classList.add('is-in'); });
+        document.querySelectorAll('.sw [data-count]').forEach(countUp);
+        return;
+      }
+      var io = new IntersectionObserver(function(entries){
+        entries.forEach(function(en){ if(en.isIntersecting){ en.target.classList.add('is-in'); en.target.querySelectorAll && en.target.querySelectorAll('[data-count]').forEach(countUp); io.unobserve(en.target); } });
+      }, { threshold: 0.1 });
+      els.forEach(function(e){ io.observe(e); });
+    })();
+  </script>
 </body>
 </html>
