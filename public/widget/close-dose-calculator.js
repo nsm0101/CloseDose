@@ -4,7 +4,10 @@
   }
 
   const DEFAULT_STRINGS = {
-    title: 'Fever/Pain Medication Calculator',
+    title: 'Fever/Pain Medication Dosing',
+    header: {
+      eyebrow: 'Start here',
+    },
     form: {
       ageLabel: 'Step 1: Tap an age group',
       ageGroupAria: 'Select patient age',
@@ -186,10 +189,38 @@
     }
 
     .cdcalc-header {
+      margin: calc(-1 * clamp(20px, 3vw, 32px));
+      margin-bottom: 28px;
+      padding: clamp(18px, 3.2vw, 28px) clamp(20px, 3vw, 32px);
+      background: linear-gradient(135deg, #e9f6f2 0%, #cdeee6 100%);
+      border-bottom: 3px solid #0f2c2a;
+      border-radius: 23px 23px 0 0;
       display: flex;
-      justify-content: space-between;
+      flex-direction: column;
       align-items: center;
-      margin-bottom: 24px;
+      gap: 8px;
+      text-align: center;
+    }
+
+    .cdcalc-header-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin: 0;
+      padding: 4px 14px;
+      border-radius: 999px;
+      background: #0f2c2a;
+      color: #ffffff;
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+    }
+
+    .cdcalc-header-eyebrow::after {
+      content: '↓';
+      font-size: 0.9em;
+      line-height: 1;
     }
 
     .cdcalc-title {
@@ -218,6 +249,34 @@
       letter-spacing: 0.08em;
       text-transform: uppercase;
       margin: 0;
+    }
+
+    .cdcalc-group-title--step,
+    .cdcalc-step-callout--step {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .cdcalc-step-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex: none;
+      width: 30px;
+      height: 30px;
+      border-radius: 999px;
+      background: #24a687;
+      color: #ffffff;
+      border: 2px solid #0f2c2a;
+      box-shadow: 0 2px 0 rgba(15, 44, 42, 0.25);
+      font-size: 0.95rem;
+      font-weight: 900;
+      letter-spacing: 0;
+    }
+
+    .cdcalc-step-text {
+      display: inline-block;
     }
 
     .cdcalc-segmented {
@@ -376,6 +435,10 @@
       letter-spacing: 0.08em;
       text-transform: uppercase;
       color: #0f2c2a;
+    }
+
+    .cdcalc-step-callout--step {
+      justify-content: center;
     }
 
     .cdcalc-button {
@@ -1029,7 +1092,25 @@
       }
       return label.accessible || label.primary;
     };
+
+    const renderStepTitle = function (labelText) {
+      const raw = typeof labelText === 'string' ? labelText : '';
+      const match = /^\s*step\s*(\d+)\s*[:.\-]?\s*(.*)$/i.exec(raw);
+      if (match) {
+        const number = match[1];
+        const rest = match[2] || '';
+        return {
+          aria: raw,
+          html: `<span class="cdcalc-step-badge" aria-hidden="true">${escapeHtml(number)}</span><span class="cdcalc-step-text">${escapeHtml(rest)}</span>`,
+        };
+      }
+      return { aria: raw, html: escapeHtml(raw) };
+    };
+
+    const stepAge = renderStepTitle(form.ageLabel);
+    const stepWeight = renderStepTitle(form.weightLabel);
     const calculateStepLabel = form.calculateStep || '';
+    const stepCalculate = renderStepTitle(calculateStepLabel);
     const wrapperClass = logomarkSrc ? 'cdcalc-wrapper cdcalc-wrapper--has-logomark' : 'cdcalc-wrapper';
     const logomarkHtml = logomarkSrc
       ? `<img class="cdcalc-logomark" src="${logomarkSrc}" alt="" aria-hidden="true">`
@@ -1039,11 +1120,16 @@
         ${logomarkHtml}
       <div class="cdcalc-card" data-calculator-card aria-labelledby="${ids.title}" role="group">
         <div class="cdcalc-header">
+          ${
+            strings.header && strings.header.eyebrow
+              ? `<p class="cdcalc-header-eyebrow">${escapeHtml(strings.header.eyebrow)}</p>`
+              : ''
+          }
           <h2 class="cdcalc-title" id="${ids.title}">${strings.title}</h2>
         </div>
         <form class="cdcalc-form" data-calculator-form novalidate>
           <div class="cdcalc-group" aria-live="polite">
-            <div class="cdcalc-group-title">${form.ageLabel}</div>
+            <div class="cdcalc-group-title cdcalc-group-title--step" aria-label="${escapeHtml(stepAge.aria)}">${stepAge.html}</div>
             <div class="cdcalc-segmented">
               <div class="cdcalc-segmented-buttons" role="group" aria-label="${form.ageGroupAria}">
                 ${renderAgeButton('0-2', ageLabel0to2)}
@@ -1068,7 +1154,7 @@
           </div>
 
           <div class="cdcalc-group">
-            <div class="cdcalc-group-title">${form.weightLabel}</div>
+            <div class="cdcalc-group-title cdcalc-group-title--step" aria-label="${escapeHtml(stepWeight.aria)}">${stepWeight.html}</div>
             <div class="cdcalc-unit-row">
               <div class="cdcalc-weight-input">
                 <label for="${ids.weight}" class="cdcalc-visually-hidden">${form.weightInputLabel}</label>
@@ -1088,7 +1174,7 @@
           <div class="cdcalc-action">
             ${
               calculateStepLabel
-                ? `<p class="cdcalc-step-callout">${calculateStepLabel}</p>`
+                ? `<p class="cdcalc-step-callout cdcalc-step-callout--step" aria-label="${escapeHtml(stepCalculate.aria)}">${stepCalculate.html}</p>`
                 : ''
             }
             <button type="submit" class="cdcalc-button" data-submit>${form.calculate}</button>
