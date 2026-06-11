@@ -24,9 +24,9 @@
     .sw{ width:100%; }
     .sw [data-reveal]{ opacity:0; transform:translateY(20px); transition:opacity .8s ease, transform .8s ease; }
     .sw [data-reveal].is-in{ opacity:1; transform:none; }
-    .sw .sw-band{ width:100vw; max-width:100vw; margin-inline:calc(50% - 50vw); padding:clamp(40px,7vw,92px) clamp(20px,5vw,48px); position:relative; }
-    .sw .sw-inner{ max-width:1040px; margin:0 auto; position:relative; z-index:2; }
-    .sw .sw-tight{ max-width:760px; }
+    .sw .sw-band{ width:100vw; max-width:100vw; margin-inline:calc(50% - 50vw); padding:clamp(30px,4.5vw,56px) clamp(22px,5vw,48px); position:relative; }
+    .sw .sw-inner{ max-width:1080px; margin:0 auto; position:relative; z-index:2; }
+    .sw .sw-tight{ max-width:720px; }
 
     .sw .sw-wash{ position:absolute; inset:0; z-index:0; overflow:hidden; pointer-events:none; }
     .sw .sw-wash::before, .sw .sw-wash::after{ content:""; position:absolute; border-radius:50%; filter:blur(60px); opacity:.55; }
@@ -36,13 +36,13 @@
     .sw .sw-wash--b::after{ width:40vw;height:40vw; background:radial-gradient(circle,#bdeede,transparent 70%); bottom:-12vw; right:-8vw; }
 
     /* HERO */
-    .sw .sw-hero{ text-align:center; padding-top:clamp(28px,5vw,60px); }
+    .sw .sw-hero{ text-align:center; padding-top:clamp(44px,6vw,76px); padding-bottom:clamp(20px,3.5vw,40px); }
     .sw .sw-hero .sw-wash{ background:url('Donations/WC_bg.webp') center/cover no-repeat; opacity:.5; -webkit-mask-image:radial-gradient(circle at 50% 35%, #000 35%, transparent 78%); mask-image:radial-gradient(circle at 50% 35%, #000 35%, transparent 78%); }
     .sw .sw-eyebrow{ display:inline-flex; align-items:center; gap:8px; font-size:.78rem; font-weight:900; letter-spacing:.16em; text-transform:uppercase; color:var(--teal-600); margin-bottom:18px; }
     .sw .sw-hero h1{ font-size:clamp(2.3rem,4.2vw+1rem,4.4rem); line-height:1.03; font-weight:900; letter-spacing:-.02em; color:var(--ink-900); margin:0 auto 16px; max-width:15ch; }
     .sw .sw-hero h1 em{ font-style:normal; color:var(--teal-500); }
     .sw .sw-hero .sub{ font-size:clamp(1.05rem,.6vw+1rem,1.28rem); line-height:1.55; color:var(--ink-700); max-width:48ch; margin:0 auto 8px; }
-    .sw .sw-piggy{ width:clamp(96px,13vw,150px); margin:30px auto 0; display:block; filter:drop-shadow(0 14px 24px rgba(13,52,82,.22)); animation:sw-float 5s ease-in-out infinite; }
+    .sw .sw-piggy{ width:clamp(88px,12vw,140px); margin:clamp(18px,2.5vw,28px) auto 0; display:block; filter:drop-shadow(0 14px 24px rgba(13,52,82,.22)); animation:sw-float 5s ease-in-out infinite; }
     @keyframes sw-float{ 0%,100%{ transform:translateY(0) rotate(-3deg);} 50%{ transform:translateY(-14px) rotate(3deg);} }
 
     /* WAYS TO GIVE — large animated platform tiles */
@@ -50,7 +50,7 @@
     .sw .sw-h2-sub{ text-align:center; color:var(--ink-700); font-size:1rem; margin:0 0 clamp(26px,4vw,44px); }
     .sw .sw-give{ display:grid; grid-template-columns:1fr; gap:clamp(18px,2.6vw,28px); }
     @media(min-width:760px){ .sw .sw-give{ grid-template-columns:1fr 1fr; } }
-    .sw .sw-pf{ position:relative; overflow:hidden; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; text-decoration:none; min-height:300px; padding:40px 28px; border-radius:34px; background:rgba(255,255,255,.6); backdrop-filter:blur(6px); transition:transform .24s cubic-bezier(.2,.8,.3,1.2), box-shadow .24s ease, background .24s ease; cursor:pointer; }
+    .sw .sw-pf{ position:relative; overflow:hidden; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; text-decoration:none; min-height:clamp(270px,32vw,330px); padding:clamp(32px,4vw,46px) clamp(22px,3vw,30px); border-radius:34px; background:rgba(255,255,255,.6); backdrop-filter:blur(6px); transition:transform .24s cubic-bezier(.2,.8,.3,1.2), box-shadow .24s ease, background .24s ease; cursor:pointer; }
     .sw .sw-pf::before{ content:""; position:absolute; inset:0; z-index:0; opacity:.0; background:radial-gradient(circle at 50% 18%, var(--c), transparent 72%); transition:opacity .3s ease; }
     .sw .sw-pf > *{ position:relative; z-index:1; }
     .sw .sw-pf:hover{ transform:translateY(-10px); background:rgba(255,255,255,.85); box-shadow:0 30px 56px rgba(13,52,82,.22); }
@@ -74,12 +74,13 @@
     .sw .sw-pf--gb .name{ color:#c4452f; }
     .sw .sw-pf--gb .go{ background:#c4452f; }
     /* style the Givebutter inner fallback anchor to fill the tile look */
-    .sw givebutter-widget{ display:block; height:100%; }
-    .sw givebutter-widget .sw-pf{ height:100%; box-sizing:border-box; }
+    .sw givebutter-widget{ display:flex; height:100%; min-height:clamp(270px,32vw,330px); }
+    .sw givebutter-widget .sw-pf{ width:100%; height:100%; box-sizing:border-box; }
 
     /* IMPACT — 3 simple visual chips */
-    .sw .sw-impact{ display:flex; flex-wrap:wrap; justify-content:center; gap:clamp(18px,3vw,40px); }
-    .sw .sw-chip{ text-align:center; width:160px; }
+    .sw .sw-impact{ display:grid; grid-template-columns:repeat(2,1fr); gap:clamp(24px,3vw,36px) clamp(14px,3vw,28px); max-width:760px; margin:0 auto; justify-items:center; }
+    @media(min-width:680px){ .sw .sw-impact{ grid-template-columns:repeat(4,1fr); } }
+    .sw .sw-chip{ text-align:center; width:100%; max-width:170px; }
     .sw .sw-chip .big{ font-size:clamp(2rem,4vw,2.8rem); font-weight:900; color:var(--teal-500); line-height:1; }
     .sw .sw-chip .em{ font-size:2.4rem; line-height:1; }
     .sw .sw-chip span{ display:block; margin-top:10px; font-weight:800; color:var(--ink-900); font-size:.95rem; line-height:1.35; }
