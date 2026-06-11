@@ -178,7 +178,7 @@ header {
 
 .menu-btn {
   appearance: none;
-  border: var(--card-border);
+  border: 2px solid var(--ink-900);
   border-radius: 999px;
   background: var(--white);
   color: var(--ink-900);
@@ -199,6 +199,14 @@ header {
   left: clamp(18px, 5vw, 48px);
   z-index: 1200;
   height: 56px;
+}
+
+/* Desktop with sidebar: dock the menu pill to the top-right corner. */
+@media (min-width: 1024px) {
+  .menu-btn {
+    left: auto;
+    right: clamp(18px, 5vw, 48px);
+  }
 }
 
 .menu-btn .label { display: inline; }
@@ -293,7 +301,8 @@ main {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: clamp(6px, 1.5vw, 16px) 0 clamp(2px, 0.8vw, 8px);
+  text-align: center;
+  padding: clamp(10px, 2vw, 24px) 0 clamp(8px, 1.6vw, 18px);
   margin: 0 auto;
   animation: slam-in 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
 }
@@ -534,33 +543,39 @@ html[data-theme="dark"] .brand-hero__wordmark {
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(280px, 360px);
     align-items: start;
-    gap: clamp(20px, 2.4vw, 32px);
+    column-gap: clamp(20px, 2.4vw, 32px);
+    row-gap: clamp(12px, 1.6vw, 22px);
+  }
+  /* Brand wordmark spans the full grid so it stays centered on the page
+     rather than over the (left-aligned) calculator column. */
+  .brand-hero {
+    grid-column: 1 / -1;
   }
   .layout--secondary {
     width: min(1140px, 100%);
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(280px, 360px);
-    align-items: start;
-    gap: clamp(20px, 2.4vw, 32px);
+    display: block;
   }
+  /* Disclaimer card stretches the full width of the content area. */
   .layout--secondary > .card {
-    grid-column: 1;
-    max-width: 720px;
+    width: 100%;
+    max-width: none;
   }
   .calculator-column {
+    grid-column: 1;
     min-width: 0;
     max-width: 720px;
     width: 100%;
     justify-self: start;
   }
   .info-column {
+    grid-column: 2;
     position: sticky;
     top: clamp(20px, 3vw, 32px);
     align-self: start;
   }
   .brand-hero__link {
-    width: 75%;
-    max-width: 560px;
+    width: 60%;
+    max-width: 520px;
   }
 }
 
