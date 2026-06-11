@@ -676,12 +676,15 @@ html[data-theme="dark"] .brand-hero__wordmark {
 .donate-actions { display: grid; gap: 14px; }
 
 .donate-pill {
+  --donate-pill-h: 64px;
   appearance: none;
+  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: space-between;
   gap: 16px;
   width: 100%;
+  min-height: var(--donate-pill-h);
   padding: 14px 18px;
   border-radius: 999px;
   border: 2px solid var(--ink-900);
@@ -705,7 +708,24 @@ html[data-theme="dark"] .brand-hero__wordmark {
 .donate-pill-lines { display: grid; gap: 2px; }
 .donate-pill-line { font-size: 1.05rem; font-weight: 900; letter-spacing: 0.02em; text-transform: uppercase; }
 .donate-pill-sub { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; opacity: 0.75; }
-.donate-pill img { height: 38px; width: auto; flex-shrink: 0; }
+.donate-pill img {
+  /* Oversized piggy: 1.5x the height of the pill it sits on */
+  height: calc(var(--donate-pill-h) * 1.5);
+  width: auto;
+  flex-shrink: 0;
+  transform-origin: bottom center;
+  transition: transform 0.25s ease;
+}
+.donate-pill:hover img, .donate-pill:focus-visible img {
+  animation: piggy-bob 0.6s ease-in-out;
+}
+@keyframes piggy-bob {
+  0%   { transform: translateY(0) rotate(0deg); }
+  25%  { transform: translateY(-8px) rotate(-6deg); }
+  50%  { transform: translateY(0) rotate(0deg); }
+  75%  { transform: translateY(-4px) rotate(5deg); }
+  100% { transform: translateY(0) rotate(0deg); }
+}
 
 .donate-links {
   list-style: none;
@@ -2561,6 +2581,7 @@ html[data-theme="dark"] .no-tare-btn { background: rgba(255, 200, 100, 0.07); }
   .donation-card:hover { transform: none; box-shadow: var(--shadow-card); }
   .contact-card:hover { transform: none; background: rgba(255,255,255,0.65); box-shadow: none; }
   .donate-pill:hover { transform: none; box-shadow: 0 4px 0 rgba(15,44,42,0.25); }
+  .donate-pill:hover img, .donate-pill:focus-visible img { animation: none; }
 }
 
 /* =============================================
