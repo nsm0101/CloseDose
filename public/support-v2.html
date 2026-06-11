@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Support CloseDose — a free, ad-free pediatric medication calculator built by a Pediatric Emergency Medicine physician." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="icon" type="image/png" href="images/LOGO-WC.png">
+  <link rel="apple-touch-icon" href="images/LOGO-WC.png">
+  <link rel="stylesheet" href="global.css" />
+  <title>CloseDose – Support (V2 Playful)</title>
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="CloseDose" />
+  <meta property="og:title" content="CloseDose – Support our work" />
+  <meta property="og:description" content="CloseDose is free for families because of generous donors. Help keep pediatric dosing guidance ad-free and accessible to all." />
+  <meta property="og:image" content="https://closedose.com/images/favicon-192.png" />
+  <meta property="og:url" content="https://closedose.com/donations.html" />
+  <meta name="twitter:card" content="summary" />
+  <script>(function(){var t=localStorage.getItem("cd-theme");if(t)document.documentElement.setAttribute("data-theme",t);})();</script>
+  <style>
+    /* ===== Support V2 — "Warm & Playful" (scoped) ===== */
+    .sv2{ position:relative; }
+    .sv2 .sv2-wrap{ display:flex; flex-direction:column; gap:clamp(22px,4vw,40px); }
+    .sv2 [data-reveal]{ opacity:0; transform:translateY(20px) scale(.97); transition:opacity .6s cubic-bezier(.175,.885,.32,1.275), transform .6s cubic-bezier(.175,.885,.32,1.275); }
+    .sv2 [data-reveal].is-in{ opacity:1; transform:none; }
+    .sv2 .sv2-blob{ position:absolute; border-radius:50%; filter:blur(46px); z-index:0; pointer-events:none; opacity:.6; }
+    .sv2 .sv2-blob--a{ width:320px;height:320px; background:radial-gradient(circle,#ffd6a8,transparent 70%); top:-30px; right:-70px; }
+    .sv2 .sv2-blob--b{ width:300px;height:300px; background:radial-gradient(circle,#9be3cf,transparent 70%); top:480px; left:-80px; }
+    .sv2 .sv2-wrap > *{ position:relative; z-index:1; }
+
+    /* Hero */
+    .sv2 .sv2-hero{ position:relative; border-radius:28px; overflow:hidden; padding:clamp(28px,5vw,56px) clamp(22px,4vw,48px); background:#dff3ec url('Donations/WC_bg.webp') center/cover no-repeat; box-shadow:var(--shadow-card); }
+    .sv2 .sv2-hero::before{ content:""; position:absolute; inset:0; background:linear-gradient(160deg,rgba(255,255,255,.8),rgba(223,243,236,.72)); }
+    .sv2 .sv2-hero-inner{ position:relative; display:grid; grid-template-columns:1fr; gap:24px; align-items:center; }
+    @media(min-width:820px){ .sv2 .sv2-hero-inner{ grid-template-columns:1.3fr .7fr; } }
+    .sv2 .sv2-pill{ display:inline-flex; align-items:center; gap:7px; background:#fff; border:2px solid var(--ink-900); border-radius:999px; padding:7px 15px; font-weight:800; font-size:.8rem; color:var(--ink-900); box-shadow:0 4px 0 rgba(15,44,42,.18); margin-bottom:16px; }
+    .sv2 .sv2-hero h1{ font-size:clamp(2rem,2.6vw+1rem,3.2rem); line-height:1.06; font-weight:900; color:var(--ink-900); margin:0 0 14px; }
+    .sv2 .sv2-hero h1 .hl{ color:var(--teal-500); }
+    .sv2 .sv2-hero p{ font-size:clamp(1rem,.5vw+.9rem,1.14rem); line-height:1.6; color:var(--ink-700); margin:0 0 12px; max-width:50ch; }
+    .sv2 .sv2-hero-char{ text-align:center; }
+    .sv2 .sv2-hero-char img{ width:min(200px,60%); filter:drop-shadow(0 12px 22px rgba(13,52,82,.25)); animation:sv2-float 4s ease-in-out infinite; }
+    @keyframes sv2-float{ 0%,100%{ transform:translateY(0) rotate(-3deg);} 50%{ transform:translateY(-12px) rotate(3deg);} }
+
+    /* Stats */
+    .sv2 .sv2-stats{ display:grid; grid-template-columns:repeat(3,1fr); gap:14px; }
+    .sv2 .sv2-stat{ background:var(--card-bg); border:2px solid rgba(15,44,42,.1); border-radius:20px; padding:22px 14px; text-align:center; box-shadow:var(--shadow-card); }
+    .sv2 .sv2-stat .big{ font-size:clamp(1.7rem,3vw,2.4rem); font-weight:900; color:var(--teal-500); line-height:1; }
+    .sv2 .sv2-stat .lbl{ font-size:.82rem; font-weight:700; color:var(--ink-700); margin-top:6px; }
+
+    /* card */
+    .sv2 .sv2-card{ background:var(--card-bg); border:2px solid rgba(15,44,42,.08); border-radius:24px; padding:clamp(22px,3.5vw,34px); box-shadow:var(--shadow-card); }
+    .sv2 .sv2-card h2{ font-size:clamp(1.3rem,1vw+1rem,1.8rem); font-weight:900; color:var(--ink-900); margin:0 0 18px; }
+
+    /* Donation cards */
+    .sv2 .sv2-give{ display:grid; grid-template-columns:1fr; gap:18px; }
+    @media(min-width:680px){ .sv2 .sv2-give{ grid-template-columns:1fr 1fr; } }
+    .sv2 .sv2-donate{ display:block; text-decoration:none; border-radius:22px; padding:28px; border:2px solid var(--ink-900); box-shadow:0 6px 0 rgba(15,44,42,.18); transition:transform .16s ease, box-shadow .16s ease; }
+    .sv2 .sv2-donate:hover{ transform:translateY(-3px) rotate(-.6deg); box-shadow:0 10px 0 rgba(15,44,42,.18); }
+    .sv2 .sv2-donate--kofi{ background:linear-gradient(135deg,#d6f1ff,#b8e6fb); }
+    .sv2 .sv2-donate .lead{ display:flex; align-items:center; gap:12px; margin-bottom:10px; }
+    .sv2 .sv2-donate .logo{ font-size:1.9rem; width:50px; height:50px; display:flex; align-items:center; justify-content:center; border-radius:14px; background:#fff; box-shadow:0 4px 10px rgba(13,52,82,.12); }
+    .sv2 .sv2-donate .logo img{ max-width:42px; max-height:30px; }
+    .sv2 .sv2-donate .name{ font-size:1.3rem; font-weight:900; color:var(--ink-900); margin:0; }
+    .sv2 .sv2-donate small{ display:block; font-size:.92rem; line-height:1.5; color:#39505a; }
+    /* Givebutter inner anchor */
+    .sv2 givebutter-widget .donation-card{ display:block; text-decoration:none; border-radius:22px; padding:28px; height:100%; box-sizing:border-box; border:2px solid var(--ink-900); box-shadow:0 6px 0 rgba(15,44,42,.18); background:linear-gradient(135deg,#ffe0d6,#ffc9b8); cursor:pointer; transition:transform .16s ease, box-shadow .16s ease; }
+    .sv2 givebutter-widget .donation-card:hover{ transform:translateY(-3px) rotate(.6deg); box-shadow:0 10px 0 rgba(15,44,42,.18); }
+
+    /* Impact tiles */
+    .sv2 .sv2-impact{ display:grid; grid-template-columns:1fr; gap:14px; list-style:none; margin:0; padding:0; }
+    @media(min-width:680px){ .sv2 .sv2-impact{ grid-template-columns:1fr 1fr; } }
+    .sv2 .sv2-imp{ display:flex; gap:14px; align-items:flex-start; border-radius:18px; padding:18px 20px; border:2px solid rgba(15,44,42,.06); font-size:.94rem; line-height:1.5; color:var(--ink-700); }
+    .sv2 .sv2-imp:nth-child(odd){ background:#eafaf4; }
+    .sv2 .sv2-imp:nth-child(even){ background:#fff5e6; }
+    .sv2 .sv2-imp .badge{ flex:0 0 auto; width:30px; height:30px; border-radius:50%; background:var(--teal-400); color:#fff; font-weight:900; display:flex; align-items:center; justify-content:center; }
+
+    /* Sponsorship */
+    .sv2 .sv2-sponsor{ display:flex; flex-wrap:wrap; align-items:center; gap:18px; background:linear-gradient(135deg,#fff3cf,#ffe1a6); border:2px solid var(--ink-900); border-radius:24px; padding:24px 28px; box-shadow:0 8px 0 rgba(15,44,42,.18); }
+    .sv2 .sv2-sponsor .em{ font-size:2.4rem; }
+    .sv2 .sv2-sponsor h2{ margin:0 0 6px; font-size:1.2rem; font-weight:900; color:var(--ink-900); }
+    .sv2 .sv2-sponsor p{ margin:0; font-size:.95rem; line-height:1.5; color:#5a4a1e; max-width:54ch; }
+    .sv2 .sv2-sponsor a{ color:var(--ink-900); font-weight:900; }
+
+    @media (prefers-reduced-motion: reduce){
+      .sv2 [data-reveal]{ opacity:1 !important; transform:none !important; transition:none !important; }
+      .sv2 *{ animation:none !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+
+    <header>
+      <a href="index.html" class="header-link" aria-label="CloseDose home">
+        <img src="images/logomark-WC.png" alt="CloseDose" class="header-wordmark" />
+      </a>
+      <button class="menu-btn" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="siteMenu" aria-label="Open menu">
+        <span class="label">Menu</span>
+        <span class="hamburger" aria-hidden="true"><span></span><span></span><span></span></span>
+      </button>
+    </header>
+
+    <main>
+      <div class="layout layout--inline sv2">
+        <span class="sv2-blob sv2-blob--a" aria-hidden="true"></span>
+        <span class="sv2-blob sv2-blob--b" aria-hidden="true"></span>
+        <div class="sv2-wrap">
+
+          <!-- Hero -->
+          <section class="sv2-hero" aria-labelledby="support-heading" data-reveal>
+            <div class="sv2-hero-inner">
+              <div>
+                <span class="sv2-pill">💛 Powered by people like you</span>
+                <h1 id="support-heading">Help keep CloseDose <span class="hl">free &amp; ad-free</span>.</h1>
+                <p>CloseDose is a free dosing resource created by a Pediatric Emergency Medicine physician. When you donate, you help us update medication guides, add new features families request, and keep the experience completely ad-free.</p>
+                <p>Choose the platform that works best for you — every gift directly fuels improvements that keep kids safe.</p>
+              </div>
+              <div class="sv2-hero-char">
+                <img src="images/Pig/piggybank-color.svg" alt="A friendly piggy bank" />
+              </div>
+            </div>
+          </section>
+
+          <!-- Stats -->
+          <div class="sv2-stats" data-reveal>
+            <div class="sv2-stat"><div class="big" data-count="0" data-suffix="%">0%</div><div class="lbl">platform fees</div></div>
+            <div class="sv2-stat"><div class="big" data-count="0">0</div><div class="lbl">ads, ever</div></div>
+            <div class="sv2-stat"><div class="big" data-count="100" data-suffix="%">100%</div><div class="lbl">goes to the project</div></div>
+          </div>
+
+          <!-- Donation platforms -->
+          <section class="sv2-card" aria-labelledby="give-heading" data-reveal>
+            <h2 id="give-heading">Pick your way to give 🎁</h2>
+            <div class="sv2-give" id="support-options">
+              <a class="sv2-donate sv2-donate--kofi" href="https://ko-fi.com/drnsm" target="_blank" rel="noopener" aria-label="Support CloseDose on Ko-fi">
+                <span class="lead"><span class="logo" aria-hidden="true">☕</span><span class="name">Ko-fi</span></span>
+                <small>Buy Dr. Nick a coffee — quick one-tap support, no account required.</small>
+              </a>
+              <givebutter-widget id="gOeyDj">
+                <a class="donation-card donation-card--gb" aria-label="Donate through Givebutter">
+                  <span class="lead" style="display:flex;align-items:center;gap:12px;margin-bottom:10px;"><span class="logo" aria-hidden="true" style="width:50px;height:50px;display:flex;align-items:center;justify-content:center;border-radius:14px;background:#fff;box-shadow:0 4px 10px rgba(13,52,82,.12);"><img src="images/GIVEBUTTER/givebutter-closedose.png" alt="" style="max-width:42px;max-height:30px;" /></span><span class="name" style="font-size:1.3rem;font-weight:900;color:var(--ink-900);margin:0;">Givebutter</span></span>
+                  <small style="display:block;font-size:.92rem;line-height:1.5;color:#5a3b30;">Credit/debit cards, PayPal, Venmo, CashApp, and Apple/Google Pay.</small>
+                </a>
+              </givebutter-widget>
+            </div>
+          </section>
+
+          <!-- Impact -->
+          <section class="sv2-card" aria-labelledby="impact-heading" data-reveal>
+            <h2 id="impact-heading">How your donation helps</h2>
+            <ul class="sv2-impact">
+              <li class="sv2-imp"><span class="badge">✓</span><span><strong>Expand the medication database</strong> with new visuals, dosing checks, and store-brand product photos.</span></li>
+              <li class="sv2-imp"><span class="badge">✓</span><span><strong>Stay ad-free.</strong> No banner ads, no sponsored content — ever.</span></li>
+              <li class="sv2-imp"><span class="badge">✓</span><span><strong>Build new educational resources</strong> like our weighing guide and upcoming "when to seek care" decision tree.</span></li>
+              <li class="sv2-imp"><span class="badge">✓</span><span><strong>Both platforms charge 0% in fees</strong> for CloseDose at this time — your gift goes directly to the project.</span></li>
+            </ul>
+          </section>
+
+          <!-- Sponsorship -->
+          <section class="sv2-sponsor" aria-labelledby="sponsor-heading" data-reveal>
+            <span class="em" aria-hidden="true">🤝</span>
+            <div>
+              <h2 id="sponsor-heading">Interested in a larger sponsorship?</h2>
+              <p>Represent a clinic, hospital, employer benefits team, or community organization? We'd love to talk. Email <a href="mailto:hello@closedose.com?subject=CloseDose%20Sponsorship">hello@closedose.com</a> to start the conversation.</p>
+            </div>
+          </section>
+
+          <!-- Disclaimer -->
+          <section class="card card--disclaimer" id="disclaimer-card" aria-labelledby="disclaimer-heading" aria-expanded="false">
+            <button type="button" class="disclaimer-pill" aria-controls="disclaimer-panel" aria-expanded="false">Disclaimer</button>
+            <div class="disclaimer-body" id="disclaimer-panel">
+              <div class="disclaimer-body__inner">
+            <div class="disclaimer-header">
+              <span class="disclaimer-eyebrow">Disclaimer</span>
+              <h2 id="disclaimer-heading">Medication Safety &amp; Usage</h2>
+            </div>
+            <div class="disclaimer-content">
+              <p><strong>This tool does not provide medical advice.</strong> The dosing information is for educational purposes only and should be verified with a healthcare provider.</p>
+              <ul>
+                <li>Always use the dosing device (syringe or cup) that came with the medication.</li>
+                <li>Confirm your child's weight if it has been more than 3 months.</li>
+                <li>Contact Poison Control (1-800-222-1222) if an overdose is suspected.</li>
+              </ul>
+              <a class="disclaimer-link" href="/legal/disclaimer">Read the full disclaimer →</a>
+              <button type="button" class="disclaimer-close" aria-label="Close disclaimer">Close</button>
+            </div>
+              </div>
+            </div>
+          </section>
+
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <footer class="cd-footer" role="contentinfo">
+    <p class="cd-copy">2026 CloseDose. All rights reserved.</p>
+    <nav class="cd-legal cd-legal--full" aria-label="Legal">
+      <a href="/legal/terms">Terms</a>
+      <a href="/legal/privacy">Privacy</a>
+      <a href="/legal/disclaimer">Disclaimer</a>
+    </nav>
+    <p class="cd-note">For medical emergencies, call 911. For poisoning, call Poison Control at 1-800-222-1222.</p>
+  </footer>
+
+  <div class="menu-overlay" id="siteMenu" hidden>
+    <div class="menu-panel">
+      <nav class="menu-links">
+        <a href="index.html" class="nav-calc">Calculator</a>
+        <a href="medication-guides.html" class="nav-guides">Medication Guides</a>
+        <a href="weighing-guide.html" class="nav-weighing">Weighing Guide</a>
+        <a href="dosing-guide.html" class="nav-dosing">Dosing Guide</a>
+        <a href="about.html" class="nav-about">About</a>
+        <a href="donations.html" class="nav-support" aria-current="page">Support</a>
+        <a href="about.html#contact" class="nav-contact">Contact</a>
+      </nav>
+      <button class="close-menu" type="button">Close</button>
+    </div>
+  </div>
+
+  <script src="global.js" defer></script>
+  <script async src="https://widgets.givebutter.com/latest.umd.cjs?acct=r8SGiZ0RhFRoIkXu&p=other"></script>
+  <script>
+    (function(){
+      var rm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      var root = document.querySelector('.sv2');
+      var els = root ? root.querySelectorAll('[data-reveal]') : [];
+      function countUp(el){
+        var target = parseFloat(el.getAttribute('data-count')) || 0;
+        var suffix = el.getAttribute('data-suffix') || '';
+        if (rm || target === 0){ el.textContent = target + suffix; return; }
+        var start = performance.now(), dur = 1100;
+        function tick(now){
+          var p = Math.min((now-start)/dur, 1);
+          el.textContent = Math.round(target*(1-Math.pow(1-p,3))) + suffix;
+          if (p < 1) requestAnimationFrame(tick);
+        }
+        requestAnimationFrame(tick);
+      }
+      if (rm || !('IntersectionObserver' in window)) {
+        els.forEach(function(e){ e.classList.add('is-in'); });
+        document.querySelectorAll('.sv2 [data-count]').forEach(countUp);
+        return;
+      }
+      var io = new IntersectionObserver(function(entries){
+        entries.forEach(function(en){
+          if(en.isIntersecting){
+            en.target.classList.add('is-in');
+            en.target.querySelectorAll && en.target.querySelectorAll('[data-count]').forEach(countUp);
+            io.unobserve(en.target);
+          }
+        });
+      }, { threshold: 0.12 });
+      els.forEach(function(e){ io.observe(e); });
+    })();
+  </script>
+</body>
+</html>
