@@ -50,10 +50,10 @@
     .sw .sw-h2-sub{ text-align:center; color:var(--ink-700); font-size:1rem; margin:0 0 clamp(26px,4vw,44px); }
     .sw .sw-give{ display:grid; grid-template-columns:1fr; gap:clamp(18px,2.6vw,28px); }
     @media(min-width:760px){ .sw .sw-give{ grid-template-columns:1fr 1fr; } }
-    .sw .sw-pf{ position:relative; overflow:hidden; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; text-decoration:none; min-height:clamp(270px,32vw,330px); padding:clamp(32px,4vw,46px) clamp(22px,3vw,30px); border-radius:34px; background:rgba(255,255,255,.6); backdrop-filter:blur(6px); transition:transform .24s cubic-bezier(.2,.8,.3,1.2), box-shadow .24s ease, background .24s ease; cursor:pointer; }
+    .sw .sw-pf{ position:relative; overflow:hidden; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; text-decoration:none; min-height:clamp(260px,30vw,320px); padding:clamp(30px,4vw,44px) clamp(20px,3vw,28px); border-radius:30px; background:transparent; transition:transform .24s cubic-bezier(.2,.8,.3,1.2), box-shadow .24s ease, background .24s ease; cursor:pointer; }
     .sw .sw-pf::before{ content:""; position:absolute; inset:0; z-index:0; opacity:.0; background:radial-gradient(circle at 50% 18%, var(--c), transparent 72%); transition:opacity .3s ease; }
     .sw .sw-pf > *{ position:relative; z-index:1; }
-    .sw .sw-pf:hover{ transform:translateY(-10px); background:rgba(255,255,255,.85); box-shadow:0 30px 56px rgba(13,52,82,.22); }
+    .sw .sw-pf:hover{ transform:translateY(-9px); background:rgba(255,255,255,.6); box-shadow:0 24px 48px rgba(13,52,82,.16); }
     .sw .sw-pf:hover::before{ opacity:.95; }
     .sw .sw-pf .badge{ width:clamp(96px,12vw,128px); height:clamp(96px,12vw,128px); border-radius:50%; display:flex; align-items:center; justify-content:center; box-shadow:0 14px 30px rgba(13,52,82,.18); transition:transform .3s cubic-bezier(.2,.8,.3,1.5); }
     .sw .sw-pf .badge .em{ font-size:clamp(3rem,6vw,4rem); line-height:1; }
@@ -90,8 +90,15 @@
     .sw .sw-sponsor a{ color:var(--teal-600); font-weight:900; text-decoration:none; border-bottom:2px solid transparent; transition:border-color .16s ease; }
     .sw .sw-sponsor a:hover{ border-color:var(--teal-500); }
 
-    .sw .sw-disc-wrap{ display:flex; justify-content:center; }
-    .sw .card--disclaimer{ width:min(720px,100%); }
+    /* DISCLAIMER — collapsed by default, plain (not a card) */
+    .sw .sw-disc{ width:min(640px,100%); margin:0 auto; text-align:center; }
+    .sw .sw-disc-sum{ list-style:none; cursor:pointer; display:inline-flex; align-items:center; gap:10px; justify-content:center; padding:11px 22px; border-radius:999px; font-weight:900; font-size:.9rem; color:#8b1111; background:rgba(253,236,236,.7); border:1px solid rgba(139,17,17,.2); transition:background .15s ease; }
+    .sw .sw-disc-sum::-webkit-details-marker{ display:none; }
+    .sw .sw-disc-sum:hover{ background:rgba(253,236,236,.95); }
+    .sw .sw-disc-ic{ width:20px;height:20px;border-radius:50%;background:#8b1111;color:#fff;display:flex;align-items:center;justify-content:center;font-size:.78rem; }
+    .sw .sw-disc-body{ text-align:left; max-width:600px; margin:16px auto 0; color:var(--ink-700); font-size:.9rem; line-height:1.6; }
+    .sw .sw-disc-body ul{ margin:10px 0; padding-left:18px; }
+    .sw .sw-disc-body a{ color:var(--teal-600); font-weight:800; text-decoration:none; }
 
     @media (prefers-reduced-motion: reduce){
       .sw [data-reveal]{ opacity:1 !important; transform:none !important; transition:none !important; }
@@ -174,30 +181,21 @@
           </div>
         </section>
 
-        <!-- Disclaimer -->
-        <div class="sw-disc-wrap">
-          <section class="card card--disclaimer" id="disclaimer-card" aria-labelledby="disclaimer-heading" aria-expanded="false">
-            <button type="button" class="disclaimer-pill" aria-controls="disclaimer-panel" aria-expanded="false">Disclaimer</button>
-            <div class="disclaimer-body" id="disclaimer-panel">
-              <div class="disclaimer-body__inner">
-            <div class="disclaimer-header">
-              <span class="disclaimer-eyebrow">Disclaimer</span>
-              <h2 id="disclaimer-heading">Medication Safety &amp; Usage</h2>
-            </div>
-            <div class="disclaimer-content">
+        <!-- Disclaimer (collapsed by default, plain) -->
+        <section class="sw-band" aria-label="Disclaimer">
+          <details class="sw-disc">
+            <summary class="sw-disc-sum"><span class="sw-disc-ic" aria-hidden="true">!</span> Disclaimer &amp; medication safety</summary>
+            <div class="sw-disc-body">
               <p><strong>This tool does not provide medical advice.</strong> The dosing information is for educational purposes only and should be verified with a healthcare provider.</p>
               <ul>
                 <li>Always use the dosing device (syringe or cup) that came with the medication.</li>
                 <li>Confirm your child's weight if it has been more than 3 months.</li>
                 <li>Contact Poison Control (1-800-222-1222) if an overdose is suspected.</li>
               </ul>
-              <a class="disclaimer-link" href="/legal/disclaimer">Read the full disclaimer →</a>
-              <button type="button" class="disclaimer-close" aria-label="Close disclaimer">Close</button>
+              <a href="/legal/disclaimer">Read the full disclaimer →</a>
             </div>
-              </div>
-            </div>
-          </section>
-        </div>
+          </details>
+        </section>
 
       </div>
     </main>
