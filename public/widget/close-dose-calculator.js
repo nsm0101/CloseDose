@@ -5,9 +5,7 @@
 
   const DEFAULT_STRINGS = {
     title: 'Fever/Pain Medication Dosing',
-    header: {
-      eyebrow: 'Start here',
-    },
+    header: {},
     form: {
       ageLabel: 'Step 1: Tap an age group',
       ageGroupAria: 'Select patient age',
@@ -255,7 +253,7 @@
     .cdcalc-step-callout--step {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 14px;
     }
 
     .cdcalc-step-badge {
@@ -263,20 +261,21 @@
       align-items: center;
       justify-content: center;
       flex: none;
-      width: 30px;
-      height: 30px;
+      width: 44px;
+      height: 44px;
       border-radius: 999px;
       background: #24a687;
       color: #ffffff;
-      border: 2px solid #0f2c2a;
-      box-shadow: 0 2px 0 rgba(15, 44, 42, 0.25);
-      font-size: 0.95rem;
+      border: 3px solid #0f2c2a;
+      box-shadow: 0 3px 0 rgba(15, 44, 42, 0.25);
+      font-size: 1.35rem;
       font-weight: 900;
       letter-spacing: 0;
     }
 
     .cdcalc-step-text {
       display: inline-block;
+      font-size: 1.2rem;
     }
 
     .cdcalc-segmented {
@@ -438,7 +437,7 @@
     }
 
     .cdcalc-step-callout--step {
-      justify-content: center;
+      justify-content: flex-start;
     }
 
     .cdcalc-button {
