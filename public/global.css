@@ -163,17 +163,22 @@ select[hidden] {
 header {
   position: relative;
   z-index: 1000;
-  width: min(720px, 100%);
+  width: 100%;
   margin: 0 auto;
-  padding: clamp(14px, 3vw, 26px) 0 clamp(6px, 2vw, 14px);
+  padding: clamp(14px, 3vw, 26px) clamp(16px, 5vw, 48px) clamp(6px, 2vw, 14px);
   display: flex;
+  align-items: center;
   justify-content: center;
 }
 
+/* Keep the wordmark consistently centered and sized across every page. The
+   menu button is fixed-position (out of flow), so the wordmark is the only
+   in-flow child and stays optically centered in the viewport. */
 .header-wordmark {
   display: block;
-  width: clamp(160px, 40%, 260px);
+  width: clamp(170px, 42vw, 240px);
   height: auto;
+  margin-inline: auto;
 }
 
 .menu-btn {
@@ -1024,6 +1029,33 @@ html[data-theme="dark"] .brand-hero__wordmark {
   margin: 0 auto;
 }
 .cd-copy { font-weight: 700; margin-bottom: 24px; }
+/* Simple contact button in the footer (replaces the in-menu Contact link). */
+.cd-footer-contact {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin: 0 auto 24px;
+  padding: 11px 26px;
+  border-radius: 999px;
+  border: 2px solid var(--footer-link);
+  background: transparent;
+  color: var(--footer-link);
+  font-weight: 800;
+  font-size: 0.9rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: transform 0.15s ease, background 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
+}
+.cd-footer-contact:hover,
+.cd-footer-contact:focus-visible {
+  background: var(--footer-link);
+  color: var(--footer-bg);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px rgba(77, 208, 225, 0.28);
+  outline: none;
+}
 .cd-legal { display: flex; justify-content: center; flex-wrap: wrap; gap: 16px; margin-bottom: 24px; }
 .cd-legal a { color: var(--footer-link); text-decoration: none; font-size: 0.9rem; }
 .cd-legal a:hover { text-decoration: underline; }
@@ -2825,21 +2857,60 @@ html[data-theme="light"] .close-menu    { background: var(--white); color: var(-
    MENU THEME PICKER (System / Day / Night)
    ============================================= */
 
+/* Appearance settings sit in their own group, visually separated from the
+   in-line navigation choices by a full-width divider so the toggle never
+   gets mistaken for (or crowds) a menu link. */
 .menu-theme-picker {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 14px;
-  margin-bottom: 28px;
+  gap: 16px;
+  width: 100%;
+  max-width: 320px;
+  margin: 8px auto 24px;
+  padding-top: 26px;
+  border-top: 1px solid rgba(15, 44, 42, 0.16);
 }
 
 .menu-theme-label {
   margin: 0;
-  font-size: 0.68rem;
+  font-size: 0.72rem;
   font-weight: 900;
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--on-bg-muted);
+}
+
+@media (prefers-color-scheme: dark) {
+  .menu-theme-picker { border-top-color: rgba(255, 255, 255, 0.16); }
+}
+html[data-theme="dark"] .menu-theme-picker { border-top-color: rgba(255, 255, 255, 0.16); }
+html[data-theme="light"] .menu-theme-picker { border-top-color: rgba(15, 44, 42, 0.16); }
+
+/* Mobile: enlarge the toggle + system button so they're easy to tap without
+   crowding the navigation links above. */
+@media (max-width: 640px) {
+  .menu-theme-picker {
+    gap: 18px;
+    padding-top: 24px;
+    margin-bottom: 20px;
+  }
+  .theme-toggle-wrapper {
+    width: 184px;
+    height: 74px;
+  }
+  .toggle-knob {
+    width: 62px;
+    height: 62px;
+  }
+  /* 184 - 62 knob - 10 margin = 112px travel */
+  input:checked ~ .toggle-knob {
+    transform: translateX(112px);
+  }
+  .menu-theme-btn {
+    font-size: 0.82rem;
+    padding: 11px 24px;
+  }
 }
 
 /* System/auto button below the animated toggle */
