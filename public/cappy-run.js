@@ -1170,6 +1170,10 @@
     this.last = performance.now();
     document.addEventListener('keydown', this._onKeyDown, true);
     document.addEventListener('keyup', this._onKeyUp, true);
+    // Paint the opening (idle) frame synchronously so Cappy is on screen the
+    // instant the overlay appears, rather than waiting for the first
+    // animation-frame callback (which can be a beat late on first launch).
+    try { this._draw(); } catch (_) {}
     this.rafId = requestAnimationFrame(this._tick);
     // Track via GA if present.
     if (window.gtag) {
@@ -1233,11 +1237,23 @@
 
     const wrap = document.createElement('div');
     wrap.className = 'cappy-run-canvas-wrap';
+    // Inline fallback sizing so the canvas always has a real, non-zero
+    // rendered size even on the very first launch — before the async
+    // cappy-run.css has been applied. Without this, some engines compute a
+    // collapsed (0-height) canvas on the first layout pass, which paints the
+    // frame background but clips Cappy and the scenery until a second launch.
+    wrap.style.position = 'relative';
+    wrap.style.width = '100%';
+    wrap.style.aspectRatio = '4 / 1';
+    wrap.style.maxHeight = '220px';
 
     const canvas = document.createElement('canvas');
     canvas.width = this.W;
     canvas.height = this.H;
     canvas.tabIndex = 0;
+    canvas.style.display = 'block';
+    canvas.style.width = '100%';
+    canvas.style.height = '100%';
 
     // Game-over / high-score panel overlays the canvas.
     const panel = document.createElement('div');
@@ -1473,18 +1489,24 @@
 
   CappyRun.prototype._tick = function (now) {
     if (!this.active) return;
-    const dt = Math.min(0.05, (now - this.last) / 1000);
+    const dt = Math.min(0.05, Math.max(0, (now - this.last) / 1000));
     this.last = now;
-    if (this.state === 'ready') {
-      this.frameTick += dt;
-      this.cappy.idleFrame = Math.floor(this.frameTick * 2) % CAPPY_IDLE_FRAMES.length;
-      this.readyTimer -= dt;
-      if (this.readyTimer <= 0) this.state = 'playing';
-    } else if (this.state === 'playing') {
-      this._update(dt);
+    // Guard the per-frame work so a transient draw/update error can never
+    // permanently freeze the loop (leaving only the background on screen).
+    try {
+      if (this.state === 'ready') {
+        this.frameTick += dt;
+        this.cappy.idleFrame = Math.floor(this.frameTick * 2) % CAPPY_IDLE_FRAMES.length;
+        this.readyTimer -= dt;
+        if (this.readyTimer <= 0) this.state = 'playing';
+      } else if (this.state === 'playing') {
+        this._update(dt);
+      }
+      this._draw();
+    } catch (err) {
+      if (window.console && console.warn) console.warn('Cappy Run frame error', err);
     }
-    this._draw();
-    this.rafId = requestAnimationFrame(this._tick);
+    if (this.active) this.rafId = requestAnimationFrame(this._tick);
   };
 
   CappyRun.prototype._update = function (dt) {
