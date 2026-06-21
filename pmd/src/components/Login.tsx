@@ -102,7 +102,7 @@ export const Login: React.FC = () => {
       <div className="max-w-md w-full bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
         <div className="bg-blue-600 p-8 text-white text-center">
           <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg overflow-hidden border-4 border-blue-500">
-            <img src="/images/FlowMaster_v1.png" alt="Logo" className="w-full h-full object-cover" />
+            <img src={`${import.meta.env.BASE_URL}images/PREtendingMD_icon.png`} alt="Logo" className="w-full h-full object-cover" />
           </div>
           <h1 className="text-2xl font-black tracking-tight">PEM FlowMaster</h1>
         </div>

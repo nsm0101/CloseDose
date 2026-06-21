@@ -89,7 +89,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, activeTab, setActiveTa
       <header className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 sticky top-0 z-50 shadow-sm md:block transition-colors">
         <div className="max-w-7xl mx-auto px-4 h-12 md:h-14 flex items-center justify-between">
           <div className="flex items-center gap-2 cursor-pointer" onClick={() => setActiveTab('board')}>
-            <img src="/images/FlowMaster_v1.png" alt="Logo" className="w-7 h-7 md:w-9 md:h-9 object-contain" />
+            <img src={`${import.meta.env.BASE_URL}images/PREtendingMD_icon.png`} alt="Logo" className="w-7 h-7 md:w-9 md:h-9 object-contain" />
             <h1 className="text-sm md:text-base font-black text-gray-900 dark:text-white tracking-tight">PRE<span className="text-blue-600 dark:text-blue-400">tendingMD</span></h1>
           </div>
 
