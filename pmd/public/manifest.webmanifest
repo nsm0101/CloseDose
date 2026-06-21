@@ -1,0 +1,32 @@
+{
+  "name": "PREtendingMD — PEM FlowMaster",
+  "short_name": "PREtendingMD",
+  "description": "Real-time pediatric emergency medicine workflow board for attendings and fellows.",
+  "id": "/PMD/",
+  "start_url": "/PMD/",
+  "scope": "/PMD/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f9fafb",
+  "theme_color": "#0072CE",
+  "icons": [
+    {
+      "src": "/PMD/images/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/PMD/images/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/PMD/images/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

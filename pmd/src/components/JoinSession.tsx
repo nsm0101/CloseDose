@@ -5,8 +5,9 @@
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Plus, Users, ArrowRight, Loader2, AlertCircle } from 'lucide-react';
+import { ArrowRight, Loader2, AlertCircle } from 'lucide-react';
 import { Shift } from '../types';
+import { BRAND } from '../lib/brand';
 
 interface JoinSessionProps {
   onJoin: (sessionId: string) => Promise<boolean>;
@@ -49,8 +50,8 @@ export const JoinSession: React.FC<JoinSessionProps> = ({ onJoin, onCreate, shif
   return (
     <div className="max-w-md mx-auto py-12 px-4 space-y-8">
       <div className="text-center space-y-2">
-        <div className="w-20 h-20 bg-blue-600 rounded-[2.5rem] flex items-center justify-center text-white mx-auto shadow-2xl shadow-blue-200 dark:shadow-none mb-6">
-          <Users size={40} />
+        <div className="w-24 h-24 bg-blue-600 rounded-[2.5rem] flex items-center justify-center text-white mx-auto shadow-2xl shadow-blue-200 dark:shadow-none mb-6 p-3">
+          <img src={BRAND.mascot} alt="PREtendingMD bear mascot" className="w-full h-full object-contain" />
         </div>
         <h2 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight">Join a Session</h2>
         <p className="text-gray-500 dark:text-gray-400 font-medium">Enter a session ID to join your team</p>
