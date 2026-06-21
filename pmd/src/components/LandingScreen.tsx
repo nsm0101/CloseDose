@@ -5,10 +5,11 @@
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { User, ShieldCheck, ArrowRight, Loader2, Star, Stethoscope, Award } from 'lucide-react';
+import { User, ShieldCheck, ArrowRight, Loader2, Star, Award } from 'lucide-react';
 import { auth } from '../firebase';
 import { signInAnonymously } from 'firebase/auth';
 import { cn } from '../lib/utils';
+import { BRAND } from '../lib/brand';
 
 interface LandingScreenProps {
   onComplete: (firstName: string, lastName: string, role: 'attending' | 'fellow') => void;
@@ -60,15 +61,15 @@ export const LandingScreen: React.FC<LandingScreenProps> = ({ onComplete, loadin
         {/* Banner/Header */}
         <div className="bg-gradient-to-br from-blue-600 to-indigo-700 dark:from-blue-700 dark:to-indigo-900 p-8 text-white text-center relative overflow-hidden">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.15),transparent)] pointer-none" />
-          <motion.div 
+          <motion.div
             initial={{ scale: 0.8 }}
             animate={{ scale: 1 }}
             transition={{ type: "spring", stiffness: 200, damping: 15 }}
-            className="w-20 h-20 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center mx-auto mb-4 border border-white/20 shadow-lg"
+            className="w-24 h-24 bg-white/95 rounded-full flex items-center justify-center mx-auto mb-4 border border-white/40 shadow-lg p-2"
           >
-            <Stethoscope size={40} className="text-white animate-pulse" />
+            <img src={BRAND.mascot} alt="PREtendingMD bear mascot" className="w-full h-full object-contain drop-shadow-sm" />
           </motion.div>
-          
+
           <h1 className="text-2xl font-black tracking-tight uppercase">PREtendingMD</h1>
           <p className="text-xs text-blue-100/80 uppercase tracking-widest font-bold mt-1">Pediatric Emergency Medicine Co-Pilot</p>
         </div>

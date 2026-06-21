@@ -35,6 +35,7 @@ import { JoinSession } from './components/JoinSession';
 import { LandingScreen } from './components/LandingScreen';
 import { Plus, Loader2, AlertCircle } from 'lucide-react';
 import { updateProfile } from 'firebase/auth';
+import { BRAND } from './lib/brand';
 
 export default function App() {
   const [user, setUser] = useState<User | null>(null);
@@ -590,9 +591,13 @@ export default function App() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center gap-4">
-        <Loader2 size={48} className="text-blue-600 animate-spin" />
-        <p className="text-sm font-bold text-gray-400 uppercase tracking-widest">Initializing Workflow...</p>
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-950 flex flex-col items-center justify-center gap-5 transition-colors">
+        <img src={BRAND.mascot} alt="PREtendingMD bear mascot" className="w-24 h-24 object-contain animate-bounce drop-shadow-md" />
+        <img src={BRAND.wordmark} alt="PREtendingMD" className="h-7 w-auto" />
+        <div className="flex items-center gap-2 text-gray-400 dark:text-gray-500">
+          <Loader2 size={16} className="animate-spin" />
+          <p className="text-sm font-bold uppercase tracking-widest">Initializing Workflow...</p>
+        </div>
       </div>
     );
   }

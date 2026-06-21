@@ -10,6 +10,7 @@ import { cn } from '../lib/utils';
 import { TeamMember, Shift } from '../types';
 import { TeamSetup } from './TeamSetup';
 import { ShiftSelector } from './ShiftSelector';
+import { BRAND } from '../lib/brand';
 
 interface SettingsProps {
   onSeedData: () => void;
@@ -308,7 +309,9 @@ export const Settings: React.FC<SettingsProps> = ({
           </div>
         </div>
 
-        <div className="pt-8 border-t border-gray-100 dark:border-gray-800 text-center transition-colors">
+        <div className="pt-8 border-t border-gray-100 dark:border-gray-800 text-center transition-colors flex flex-col items-center gap-3">
+          <img src={BRAND.bearHead} alt="PREtendingMD bear mascot" className="w-12 h-12 object-contain opacity-90" />
+          <img src={BRAND.wordmark} alt="PREtendingMD" className="h-5 w-auto opacity-80" />
           <p className="text-[10px] text-gray-300 dark:text-gray-600 font-bold uppercase tracking-widest">
             PEM FlowMaster v1.0.0 • Built for Pediatric Emergency Departments
           </p>
