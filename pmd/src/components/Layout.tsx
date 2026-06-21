@@ -8,6 +8,7 @@ import { LogOut, User, LayoutDashboard, PhoneCall, Settings, Users, Clock, UserP
 import { cn, getTimerColor } from '../lib/utils';
 import { TeamMember, Role } from '../types';
 import { BRAND } from '../lib/brand';
+import { SyncStatus, SyncState } from './SyncStatus';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -17,11 +18,12 @@ interface LayoutProps {
   onLogout: () => void;
   onAddTeamMember?: (member: Partial<TeamMember>) => void;
   activeShiftId?: string | null;
+  syncState?: SyncState;
 }
 
 import { motion } from 'framer-motion';
 
-export const Layout: React.FC<LayoutProps> = ({ children, activeTab, setActiveTab, user, onLogout, onAddTeamMember, activeShiftId }) => {
+export const Layout: React.FC<LayoutProps> = ({ children, activeTab, setActiveTab, user, onLogout, onAddTeamMember, activeShiftId, syncState = 'connecting' }) => {
   const tabs = [
     { id: 'board', label: 'Board', icon: <LayoutDashboard size={20} /> },
     { id: 'handoff', label: 'Handoff', icon: <Users size={20} /> },
@@ -112,8 +114,10 @@ export const Layout: React.FC<LayoutProps> = ({ children, activeTab, setActiveTa
           </motion.div>
 
           <div className="flex items-center gap-2 md:gap-4">
+            {activeShiftId && <SyncStatus state={syncState} variant="full" className="hidden sm:inline-flex" />}
+
             {activeShiftId && (
-              <motion.button 
+              <motion.button
                 whileTap={{ scale: 0.9 }}
                 onClick={handleShare}
                 className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-full border border-blue-100 dark:border-blue-800 hover:bg-blue-100 transition-colors"

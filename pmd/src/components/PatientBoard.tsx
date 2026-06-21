@@ -6,6 +6,7 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { Patient, TeamMember } from '../types';
 import { PatientCard } from './PatientCard';
+import { SyncStatus, SyncState } from './SyncStatus';
 import { Search, Filter, SortAsc, SortDesc, User, Users, Clock, AlertCircle, Plus, LayoutGrid, List, ChevronDown, ChevronUp, X } from 'lucide-react';
 import { cn, getRoleColor } from '../lib/utils';
 import { DndContext, DragOverlay, useDraggable, useDroppable, DragEndEvent, TouchSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
@@ -22,6 +23,7 @@ interface PatientBoardProps {
   onAddTeamMember?: (member: Partial<TeamMember>) => void;
   compactMode?: boolean;
   twoColumnMode?: boolean;
+  syncState?: SyncState;
   darkMode?: boolean;
 }
 
@@ -84,6 +86,7 @@ export const PatientBoard: React.FC<PatientBoardProps> = ({
   onAddTeamMember,
   compactMode = false,
   twoColumnMode = false,
+  syncState = 'connecting',
   darkMode = false
 }) => {
   const [search, setSearch] = useState('');
@@ -112,8 +115,9 @@ export const PatientBoard: React.FC<PatientBoardProps> = ({
     // Search
     if (search) {
       const s = search.toLowerCase();
-      result = result.filter(p => 
-        p.initials.toLowerCase().includes(s) || 
+      result = result.filter(p =>
+        p.initials.toLowerCase().includes(s) ||
+        (p.firstName || '').toLowerCase().includes(s) ||
         p.room.toLowerCase().includes(s) ||
         p.chiefComplaint.toLowerCase().includes(s)
       );
@@ -490,10 +494,7 @@ export const PatientBoard: React.FC<PatientBoardProps> = ({
               </button>
             </div>
             
-            <div className="flex items-center gap-2">
-              <div className="h-1 w-1 rounded-full bg-green-500 animate-pulse" />
-              <span className="col-header opacity-40">Live Sync</span>
-            </div>
+            <SyncStatus state={syncState} variant="dot" />
           </div>
 
           <AnimatePresence>

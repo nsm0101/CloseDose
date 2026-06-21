@@ -180,8 +180,8 @@ export const LandingScreen: React.FC<LandingScreenProps> = ({ onComplete, loadin
 
         {/* Bottom PII Notice */}
         <div className="p-6 bg-slate-50/50 dark:bg-slate-900/50 border-t border-slate-100 dark:border-slate-800/55 text-center">
-          <div className="inline-flex items-center gap-1 text-slate-400 dark:text-slate-500 text-[9px] font-bold uppercase tracking-widest leading-none">
-            <ShieldCheck size={12} className="text-emerald-500" /> Secure HIPAA-Compliant Co-Pilot · No PHI
+          <div className="inline-flex items-center gap-1 text-slate-400 dark:text-slate-500 text-[9px] font-bold uppercase tracking-widest leading-none text-center">
+            <ShieldCheck size={12} className="text-emerald-500 shrink-0" /> Secure Co-Pilot · Limited identifiers only (first name + last initial)
           </div>
         </div>
       </motion.div>

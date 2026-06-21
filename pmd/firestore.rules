@@ -16,6 +16,8 @@ service cloud.firestore {
     // Collection: shifts/{shiftId}/patients
     // Fields:
     //   - initials: string (1-10)
+    //   - firstName: string (0-30, optional — limited identifier)
+    //   - lastInitial: string (0-1, optional — last initial only, never surname)
     //   - age: string (1-20)
     //   - room: string (1-20)
     //   - status: string (enum)
@@ -79,6 +81,8 @@ service cloud.firestore {
 
     function isValidPatient(data) {
       return data.initials is string && data.initials.size() >= 1 && data.initials.size() <= 10 &&
+             (!('firstName' in data) || (data.firstName is string && data.firstName.size() <= 30)) &&
+             (!('lastInitial' in data) || (data.lastInitial is string && data.lastInitial.size() <= 1)) &&
              data.age is string && data.age.size() >= 1 && data.age.size() <= 20 &&
              data.room is string && data.room.size() >= 1 && data.room.size() <= 20 &&
              data.status in ["New", "Staff", "Work-up", "ED Observation", "Likely Discharge", "Likely Admit", "Discharge", "Admit"] &&
