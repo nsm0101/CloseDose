@@ -5,7 +5,7 @@
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { User, ShieldCheck, ArrowRight, Loader2, Star, Award } from 'lucide-react';
+import { ShieldCheck, ArrowRight, Loader2, Star, Award, Plus, Sparkles } from 'lucide-react';
 import { auth } from '../firebase';
 import { signInAnonymously } from 'firebase/auth';
 import { cn } from '../lib/utils';
@@ -58,20 +58,40 @@ export const LandingScreen: React.FC<LandingScreenProps> = ({ onComplete, loadin
         transition={{ duration: 0.5, ease: 'easeOut' }}
         className="max-w-md w-full bg-white dark:bg-slate-900 rounded-[2.5rem] shadow-2xl border border-slate-100 dark:border-slate-800/85 overflow-hidden transition-colors"
       >
-        {/* Banner/Header */}
-        <div className="bg-gradient-to-br from-blue-600 to-indigo-700 dark:from-blue-700 dark:to-indigo-900 p-8 text-white text-center relative overflow-hidden">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.15),transparent)] pointer-none" />
-          <motion.div
-            initial={{ scale: 0.8 }}
-            animate={{ scale: 1 }}
-            transition={{ type: "spring", stiffness: 200, damping: 15 }}
-            className="w-24 h-24 bg-white/95 rounded-full flex items-center justify-center mx-auto mb-4 border border-white/40 shadow-lg p-2"
-          >
-            <img src={BRAND.mascot} alt="PREtendingMD bear mascot" className="w-full h-full object-contain drop-shadow-sm" />
-          </motion.div>
+        {/* Banner/Header — brand-forward hero: oversized sticker bear + rainbow wordmark */}
+        <div className="relative overflow-hidden px-8 pt-10 pb-9 text-center bg-gradient-to-b from-slate-50 via-white to-white dark:from-slate-800/40 dark:via-slate-900 dark:to-slate-900 transition-colors">
+          {/* Soft rainbow glow echoes the wordmark and spotlights the bear (replaces the old hard circle) */}
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute left-1/2 top-2 h-56 w-56 -translate-x-1/2 rounded-full blur-3xl opacity-40 dark:opacity-25 bg-[conic-gradient(from_135deg,#fca5a5,#fdba74,#fde047,#86efac,#7dd3fc,#c4b5fd,#fca5a5)]"
+          />
 
-          <h1 className="text-2xl font-black tracking-tight uppercase">PREtendingMD</h1>
-          <p className="text-xs text-blue-100/80 uppercase tracking-widest font-bold mt-1">Pediatric Emergency Medicine Co-Pilot</p>
+          {/* Playful medical + sparkle motifs add hand-drawn texture without competing with the logo */}
+          <Plus aria-hidden="true" strokeWidth={3} className="pointer-events-none absolute left-6 top-7 h-4 w-4 text-sky-300 dark:text-sky-700/70" />
+          <Sparkles aria-hidden="true" className="pointer-events-none absolute right-7 top-6 h-4 w-4 text-amber-300 dark:text-amber-500/60" />
+          <Plus aria-hidden="true" strokeWidth={3} className="pointer-events-none absolute bottom-8 right-9 h-3.5 w-3.5 text-rose-300 dark:text-rose-700/60" />
+          <Sparkles aria-hidden="true" className="pointer-events-none absolute bottom-9 left-9 h-3 w-3 text-violet-300 dark:text-violet-700/60" />
+
+          {/* Enlarged sticker bear — no circle, gentle hover to bring the mascot to life */}
+          <motion.img
+            src={BRAND.mascot}
+            alt="PREtendingMD bear mascot"
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1, y: [0, -7, 0] }}
+            transition={{
+              scale: { type: 'spring', stiffness: 200, damping: 15 },
+              opacity: { duration: 0.4 },
+              y: { duration: 4.5, repeat: Infinity, ease: 'easeInOut' },
+            }}
+            className="relative z-10 mx-auto mb-4 block h-40 w-40 object-contain drop-shadow-[0_14px_18px_rgba(15,23,42,0.20)] dark:drop-shadow-[0_16px_24px_rgba(0,0,0,0.55)]"
+          />
+
+          {/* Wordmark replaces the plain-text title */}
+          <h1 className="relative z-10">
+            <img src={BRAND.wordmark} alt="PREtendingMD" className="mx-auto block h-10 w-auto" />
+          </h1>
+
+          <p className="relative z-10 mt-3 text-[11px] font-bold uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">Pediatric Emergency Medicine Co-Pilot</p>
         </div>
 
         {/* Form Body */}
