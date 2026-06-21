@@ -1,0 +1,116 @@
+{
+  "entities": {
+    "Shift": {
+      "title": "Shift",
+      "description": "Represents a work shift in the ED.",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "startTime": { "type": "object", "format": "timestamp" },
+        "endTime": { "type": "object", "format": "timestamp" },
+        "isActive": { "type": "boolean" },
+        "createdBy": { "type": "string" }
+      },
+      "required": ["name", "startTime", "isActive", "createdBy"]
+    },
+    "Patient": {
+      "title": "Patient",
+      "description": "A patient currently in the ED for a specific shift.",
+      "type": "object",
+      "properties": {
+        "initials": { "type": "string" },
+        "age": { "type": "string" },
+        "sex": { "type": "string", "enum": ["M", "F", "Other"] },
+        "room": { "type": "string" },
+        "chiefComplaint": { "type": "string" },
+        "status": { "type": "string", "enum": ["New", "Staff", "Work-up", "ED Observation", "Likely Discharge", "Likely Admit", "Discharge", "Admit"] },
+        "seenState": { "type": "string", "enum": ["To Be Seen", "Seen by Fellow", "Seen by Attending"] },
+        "assignedTeam": { "type": "array", "items": { "type": "string" } },
+        "tasks": {
+          "type": "object",
+          "properties": {
+            "labs": { "type": "string", "enum": ["off", "ordered", "pending", "complete", "none"] },
+            "imaging": { "type": "string", "enum": ["off", "ordered", "pending", "complete", "none"] },
+            "meds": { "type": "string", "enum": ["off", "ordered", "pending", "complete", "none"] },
+            "consult": { "type": "string", "enum": ["off", "ordered", "pending", "complete", "none"] }
+          }
+        },
+        "workflowFlags": {
+          "type": "object",
+          "properties": {
+            "readyForAttending": { "type": "boolean" },
+            "familyUpdated": { "type": "boolean" },
+            "awaitingDispo": { "type": "boolean" },
+            "readyForDischargePaperwork": { "type": "boolean" },
+            "boarding": { "type": "boolean" }
+          }
+        },
+        "operationalNotes": { "type": "string" },
+        "lastAssessmentAt": { "type": "object", "format": "timestamp" },
+        "createdAt": { "type": "object", "format": "timestamp" },
+        "updatedAt": { "type": "object", "format": "timestamp" },
+        "isPinned": { "type": "boolean" },
+        "isCompleted": { "type": "boolean" }
+      },
+      "required": ["initials", "age", "room", "status", "seenState", "lastAssessmentAt", "createdAt", "updatedAt"]
+    },
+    "TeamMember": {
+      "title": "Team Member",
+      "description": "A staff member assigned to a shift.",
+      "type": "object",
+      "properties": {
+        "firstName": { "type": "string" },
+        "lastName": { "type": "string" },
+        "initials": { "type": "string" },
+        "role": { "type": "string", "enum": ["attending", "fellow", "resident", "student", "nurse", "other"] }
+      },
+      "required": ["firstName", "lastName", "initials", "role"]
+    },
+    "MedCommCall": {
+      "title": "MedComm Call",
+      "description": "An incoming patient call record.",
+      "type": "object",
+      "properties": {
+        "initials": { "type": "string" },
+        "age": { "type": "string" },
+        "sex": { "type": "string" },
+        "callTime": { "type": "object", "format": "timestamp" },
+        "status": { "type": "string", "enum": ["pending", "accepted", "arrived", "canceled"] }
+      },
+      "required": ["initials", "age", "sex", "callTime", "status"]
+    },
+    "User": {
+      "title": "User",
+      "description": "User profile in the system.",
+      "type": "object",
+      "properties": {
+        "email": { "type": "string" },
+        "role": { "type": "string", "enum": ["admin", "user"] },
+        "lastLogin": { "type": "object", "format": "timestamp" }
+      },
+      "required": ["email", "role", "lastLogin"]
+    }
+  },
+  "firestore": {
+    "/shifts": {
+      "schema": "Shift",
+      "description": "Root collection for shifts."
+    },
+    "/shifts/{shiftId}/patients": {
+      "schema": "Patient",
+      "description": "Patients within a shift."
+    },
+    "/shifts/{shiftId}/teamMembers": {
+      "schema": "TeamMember",
+      "description": "Team members assigned to a shift."
+    },
+    "/shifts/{shiftId}/medCommCalls": {
+      "schema": "MedCommCall",
+      "description": "Incoming calls for a shift."
+    },
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "User profiles database."
+    }
+  }
+}
