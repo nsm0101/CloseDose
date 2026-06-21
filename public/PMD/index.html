@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="PEM Flow" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="theme-color" content="#0072CE" />
+    <link rel="icon" type="image/png" href="/images/FlowMaster_v1.png" />
+    <link rel="apple-touch-icon" href="/images/FlowMaster_v1.png" />
+    <title>PEM FlowMaster</title>
+  </head>
+  <body>
+    <script>
+      if (localStorage.getItem('darkMode') === 'true') {
+        document.documentElement.classList.add('dark');
+      }
+    </script>
+    <div id="root">
+      <div id="splash" style="position: fixed; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #f9fafb; z-index: 9999; transition: opacity 0.5s ease-out;">
+        <img src="/images/FlowMaster_v1.png" style="width: 80px; height: 80px; margin-bottom: 20px; animation: pulse 2s infinite ease-in-out;" alt="Logo" />
+        <div style="font-family: system-ui, -apple-system, sans-serif; font-weight: 900; color: #003C71; font-size: 20px; letter-spacing: -0.025em;">
+          PEM <span style="color: #0072CE;">FlowMaster</span>
+        </div>
+        <style>
+          @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+          }
+          .dark #splash { background: #030712 !important; }
+          .dark #splash div { color: #ffffff !important; }
+        </style>
+      </div>
+    </div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
+

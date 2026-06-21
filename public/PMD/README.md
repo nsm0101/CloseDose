@@ -1,24 +1,20 @@
-# PMD (PretendingMD)
+<div align="center">
+<img width="1200" height="475" alt="GHBanner" src="https://ai.google.dev/static/site-assets/images/share-ais-513315318.png" />
+</div>
 
-This folder hosts the **PretendingMD** webapp, served at `https://closedose.com/PMD/`.
+# Run and deploy your AI Studio app
 
-The site is published from the repository's `public/` directory (which holds the
-`closedose.com` CNAME), so everything that should appear under `closedose.com/PMD`
-belongs in `public/PMD/`.
+This contains everything you need to run your app locally.
 
-## Status
+View your app in AI Studio: https://ai.studio/apps/2f1b1ed6-35b2-4162-bac6-1fbc2d599b35
 
-Placeholder scaffold. The actual PretendingMD application files are added from a
-local session (the source lives on the author's machine and is not reachable from
-the cloud build environment).
+## Run Locally
 
-## Sub-path hosting note
+**Prerequisites:**  Node.js
 
-Because the app is served from the `/PMD/` sub-path rather than the domain root,
-asset and link references must resolve correctly under `/PMD/`:
 
-- Prefer **relative** paths, **or** add `<base href="/PMD/">` to each HTML page's `<head>`.
-- Audit absolute references that start with `/` (in `src`, `href`, `fetch`, `import`,
-  and CSS `url()`) — they resolve against `closedose.com/` and will 404.
-- For build-based apps (Vite/React/Next/etc.), set the public/base path to `/PMD/`
-  and commit the **built output**, not the raw source.
+1. Install dependencies:
+   `npm install`
+2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
+3. Run the app:
+   `npm run dev`
