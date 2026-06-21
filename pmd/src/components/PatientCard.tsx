@@ -193,6 +193,14 @@ export const PatientCard: React.FC<PatientCardProps> = ({
     onUpdate(patient.id, { assignedTeam: next });
   };
 
+  // Keep the legacy `initials` field in sync with the named fields so search,
+  // handoff and older records all keep working. Never returns empty — the
+  // Firestore rules require initials.size() >= 1.
+  const deriveInitials = (first?: string, last?: string): string => {
+    const d = `${(first ?? '').trim().charAt(0)}${(last ?? '').trim().charAt(0)}`.toUpperCase();
+    return d || patient.initials || 'NEW';
+  };
+
   return (
     <motion.div 
       initial={{ opacity: 0, y: 10 }}
@@ -250,18 +258,37 @@ export const PatientCard: React.FC<PatientCardProps> = ({
               />
             </div>
 
-            {/* Initials and Demographics */}
+            {/* Patient name and Demographics */}
             <div>
-              <div className="flex items-center gap-2">
-                <input 
-                  value={patient.initials}
-                  onChange={(e) => onUpdate(patient.id, { initials: e.target.value.toUpperCase().slice(0, 4) })}
-                  className="w-20 font-black text-2xl tracking-tight text-slate-900 dark:text-white bg-transparent outline-none border-none p-0 focus:ring-0"
-                  placeholder="INITIALS"
-                  maxLength={4}
+              <span className="block text-[8px] font-black uppercase text-slate-400 dark:text-slate-500 mb-0.5">PATIENT (FIRST NAME + LAST INITIAL)</span>
+              <div className="flex items-baseline gap-1.5">
+                <input
+                  value={patient.firstName ?? ''}
+                  onChange={(e) => {
+                    const firstName = e.target.value.replace(/[^a-zA-Z'’\- ]/g, '');
+                    onUpdate(patient.id, { firstName, initials: deriveInitials(firstName, patient.lastInitial) });
+                  }}
+                  className="w-32 font-black text-2xl tracking-tight text-slate-900 dark:text-white bg-transparent outline-none border-none p-0 focus:ring-0 capitalize placeholder:text-slate-300 dark:placeholder:text-slate-600 placeholder:font-bold placeholder:text-xl"
+                  placeholder="First name"
+                  autoCapitalize="words"
+                  autoComplete="off"
+                  maxLength={20}
+                  aria-label="Patient first name"
                 />
+                <input
+                  value={patient.lastInitial ?? ''}
+                  onChange={(e) => {
+                    const lastInitial = e.target.value.replace(/[^a-zA-Z]/g, '').toUpperCase().slice(0, 1);
+                    onUpdate(patient.id, { lastInitial, initials: deriveInitials(patient.firstName, lastInitial) });
+                  }}
+                  className="w-9 font-black text-2xl tracking-tight text-slate-400 dark:text-slate-500 bg-transparent outline-none border-none p-0 focus:ring-0 text-center uppercase placeholder:text-slate-300 dark:placeholder:text-slate-600 placeholder:font-bold placeholder:text-xl"
+                  placeholder="L."
+                  maxLength={1}
+                  aria-label="Patient last initial"
+                />
+                {patient.lastInitial && <span className="text-2xl font-black text-slate-400 dark:text-slate-500 -ml-1.5">.</span>}
               </div>
-              
+
               <div className="flex items-center gap-1.5 mt-1">
                 {/* Age entry fields */}
                 <input 
@@ -508,7 +535,7 @@ export const PatientCard: React.FC<PatientCardProps> = ({
             <div>
               <span className="block text-[8px] font-black uppercase text-slate-400 dark:text-slate-500 tracking-widest leading-none mb-1">DISPO BARRIERS & RESOLUTIONS (TAP TO CYCLE)</span>
               <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 block mb-3">
-                Flag any outstanding tasks to address sebelum completing disposition choice.
+                Flag any outstanding tasks to address before completing the disposition.
               </span>
             </div>
 

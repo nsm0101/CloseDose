@@ -36,6 +36,7 @@ import { LandingScreen } from './components/LandingScreen';
 import { Plus, Loader2, AlertCircle } from 'lucide-react';
 import { updateProfile } from 'firebase/auth';
 import { BRAND } from './lib/brand';
+import { track, trackView } from './lib/analytics';
 
 export default function App() {
   const [user, setUser] = useState<User | null>(null);
@@ -65,11 +66,39 @@ export default function App() {
   const [editingMedCommCall, setEditingMedCommCall] = useState<MedCommCall | null>(null);
   const [isActionLoading, setIsActionLoading] = useState(false);
   const [compactMode, setCompactMode] = useState<boolean>(localStorage.getItem('compactMode') === 'true');
-  const [twoColumnMode, setTwoColumnMode] = useState<boolean>(localStorage.getItem('twoColumnMode') === 'true');
+  const [twoColumnMode, setTwoColumnMode] = useState<boolean>(() => {
+    const saved = localStorage.getItem('twoColumnMode');
+    if (saved !== null) return saved === 'true';
+    // First run: default to the multi-column "information hub" on desktop, and
+    // the single-column "quick reference" on phones — so it just works on the
+    // device you happen to open it on.
+    return typeof window !== 'undefined' && window.matchMedia('(min-width: 1024px)').matches;
+  });
   const [theme, setTheme] = useState<'light' | 'dark' | 'system'>(() => {
     return (localStorage.getItem('theme') as 'light' | 'dark' | 'system') || 'system';
   });
   const [undoAction, setUndoAction] = useState<{ id: string, previousData: Partial<Patient>, message: string, timeoutId?: NodeJS.Timeout } | null>(null);
+  // Real-time connection state surfaced to users so they can trust the board
+  // is live. Driven by Firestore snapshot metadata + the browser online state.
+  const [syncState, setSyncState] = useState<'connecting' | 'live' | 'offline'>('connecting');
+
+  // Track the browser's online/offline state.
+  useEffect(() => {
+    const goOffline = () => setSyncState('offline');
+    const goOnline = () => setSyncState(s => (s === 'offline' ? 'connecting' : s));
+    window.addEventListener('offline', goOffline);
+    window.addEventListener('online', goOnline);
+    if (typeof navigator !== 'undefined' && !navigator.onLine) setSyncState('offline');
+    return () => {
+      window.removeEventListener('offline', goOffline);
+      window.removeEventListener('online', goOnline);
+    };
+  }, []);
+
+  // Report which tab the user is viewing (best-effort analytics).
+  useEffect(() => {
+    trackView(activeTab);
+  }, [activeTab]);
 
   // Handle URL shiftId parameter
   useEffect(() => {
@@ -164,14 +193,16 @@ export default function App() {
   useEffect(() => {
     if (!user) return;
     const q = query(collection(db, 'shifts'), orderBy('startTime', 'desc'));
-    const unsubscribe = onSnapshot(q, (snapshot) => {
+    const unsubscribe = onSnapshot(q, { includeMetadataChanges: true }, (snapshot) => {
       const s = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Shift));
       setShifts(s);
       setActiveShiftId(current => {
         if (!current && s.length > 0) return s[0].id;
         return current;
       });
+      setSyncState(snapshot.metadata.fromCache ? (navigator.onLine ? 'connecting' : 'offline') : 'live');
     }, (error) => {
+      setSyncState(navigator.onLine ? 'connecting' : 'offline');
       handleFirestoreError(error, OperationType.LIST, 'shifts');
     });
     return () => unsubscribe();
@@ -188,9 +219,11 @@ export default function App() {
 
     localStorage.setItem('activeShiftId', activeShiftId);
 
-    const unsubPatients = onSnapshot(query(collection(db, `shifts/${activeShiftId}/patients`), orderBy('createdAt', 'desc')), (snapshot) => {
+    const unsubPatients = onSnapshot(query(collection(db, `shifts/${activeShiftId}/patients`), orderBy('createdAt', 'desc')), { includeMetadataChanges: true }, (snapshot) => {
       setPatients(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Patient)));
+      setSyncState(snapshot.metadata.fromCache ? (navigator.onLine ? 'connecting' : 'offline') : 'live');
     }, (error) => {
+      setSyncState(navigator.onLine ? 'connecting' : 'offline');
       handleFirestoreError(error, OperationType.LIST, `shifts/${activeShiftId}/patients`);
     });
 
@@ -226,6 +259,7 @@ export default function App() {
     localStorage.setItem('userLastName', lastName);
     localStorage.setItem('userRole', role);
     setUserProfile({ firstName, lastName, role });
+    track('onboard_complete', { role });
 
     if (auth.currentUser) {
       try {
@@ -268,6 +302,7 @@ export default function App() {
     try {
       const docRef = await addDoc(collection(db, 'shifts'), newShift);
       setActiveShiftId(docRef.id);
+      track('create_session');
     } catch (error) {
       handleFirestoreError(error, OperationType.CREATE, 'shifts');
     }
@@ -281,6 +316,7 @@ export default function App() {
       const shiftId = snapshot.docs[0].id;
       setActiveShiftId(shiftId);
       localStorage.setItem('activeShiftId', shiftId);
+      track('join_session');
       return true;
     }
     return false;
@@ -320,6 +356,8 @@ export default function App() {
     if (!activeShiftId) return;
     const newPatient: Partial<Patient> = {
       initials: 'NEW',
+      firstName: '',
+      lastInitial: '',
       age: '0',
       sex: 'M',
       room: '?',
@@ -352,6 +390,7 @@ export default function App() {
     };
     try {
       await addDoc(collection(db, `shifts/${activeShiftId}/patients`), newPatient);
+      track('add_patient');
     } catch (error) {
       handleFirestoreError(error, OperationType.CREATE, `shifts/${activeShiftId}/patients`);
     }
@@ -548,9 +587,9 @@ export default function App() {
 
       // Add Patients
       const patientsData = [
-        { initials: 'JD', age: '4', room: '12', status: 'Work-up', seenState: 'Seen by Fellow', tasks: { labs: 'pending', imaging: 'ordered', meds: 'off', consult: 'off', poIntake: 'off', painControl: 'off', ambulation: 'off', documents: 'off' } },
-        { initials: 'MK', age: '12', room: '05', status: 'New', seenState: 'To Be Seen', tasks: { labs: 'off', imaging: 'off', meds: 'off', consult: 'off', poIntake: 'off', painControl: 'off', ambulation: 'off', documents: 'off' } },
-        { initials: 'RL', age: '8', room: '18', status: 'Likely Discharge', seenState: 'Seen by Attending', tasks: { labs: 'complete', imaging: 'complete', meds: 'complete', consult: 'off', poIntake: 'complete', painControl: 'complete', ambulation: 'off', documents: 'off' } }
+        { initials: 'JD', firstName: 'Jordan', lastInitial: 'D', age: '4', room: '12', status: 'Work-up', seenState: 'Seen by Fellow', tasks: { labs: 'pending', imaging: 'ordered', meds: 'off', consult: 'off', poIntake: 'off', painControl: 'off', ambulation: 'off', documents: 'off' } },
+        { initials: 'MK', firstName: 'Mia', lastInitial: 'K', age: '12', room: '05', status: 'New', seenState: 'To Be Seen', tasks: { labs: 'off', imaging: 'off', meds: 'off', consult: 'off', poIntake: 'off', painControl: 'off', ambulation: 'off', documents: 'off' } },
+        { initials: 'RL', firstName: 'Riley', lastInitial: 'L', age: '8', room: '18', status: 'Likely Discharge', seenState: 'Seen by Attending', tasks: { labs: 'complete', imaging: 'complete', meds: 'complete', consult: 'off', poIntake: 'complete', painControl: 'complete', ambulation: 'off', documents: 'off' } }
       ];
 
       for (const p of patientsData) {
@@ -611,13 +650,14 @@ export default function App() {
   }
 
   return (
-    <Layout 
-      user={user} 
-      activeTab={activeTab} 
-      setActiveTab={setActiveTab} 
+    <Layout
+      user={user}
+      activeTab={activeTab}
+      setActiveTab={setActiveTab}
       onLogout={handleLogout}
       onAddTeamMember={addTeamMember}
       activeShiftId={activeShiftId}
+      syncState={syncState}
     >
       <div className="space-y-6">
         {/* Shift Selector visible if no shift active */}
@@ -641,8 +681,8 @@ export default function App() {
         ) : (
           <>
             {activeTab === 'board' && (
-              <PatientBoard 
-                patients={patients} 
+              <PatientBoard
+                patients={patients}
                 teamMembers={teamMembers}
                 onUpdatePatient={updatePatient}
                 onDeletePatient={deletePatient}
@@ -652,6 +692,7 @@ export default function App() {
                 onAddTeamMember={addTeamMember}
                 compactMode={compactMode}
                 twoColumnMode={twoColumnMode}
+                syncState={syncState}
                 darkMode={theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)}
               />
             )}
@@ -743,7 +784,11 @@ export default function App() {
                                 <div className="flex items-center gap-2">
                                   <span className="font-black text-lg text-gray-900 dark:text-white">{patient.room}</span>
                                   <span className="text-gray-400 dark:text-gray-600 font-bold">·</span>
-                                  <span className="font-bold text-gray-700 dark:text-gray-300">{patient.initials}</span>
+                                  <span className="font-bold text-gray-700 dark:text-gray-300">
+                                    {patient.firstName || patient.lastInitial
+                                      ? `${patient.firstName ?? ''}${patient.lastInitial ? ` ${patient.lastInitial}.` : ''}`.trim()
+                                      : patient.initials}
+                                  </span>
                                   <span className="text-gray-400 dark:text-gray-600 font-bold">·</span>
                                   <span className="text-sm text-gray-500 dark:text-gray-400">{patient.age}{patient.sex}</span>
                                 </div>

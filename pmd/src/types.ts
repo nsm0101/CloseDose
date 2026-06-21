@@ -34,7 +34,13 @@ export interface TeamMember {
 
 export interface Patient {
   id: string;
+  /** Derived/legacy short identifier (e.g. first + last initial). Kept for
+   *  search and back-compat with records created before named fields. */
   initials: string;
+  /** Patient first name (limited identifier for at-a-glance recognition). */
+  firstName?: string;
+  /** Patient last initial only — never the full surname. */
+  lastInitial?: string;
   age: string;
   sex: 'M' | 'F' | 'Other';
   room: string;

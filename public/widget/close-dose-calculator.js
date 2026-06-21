@@ -1448,6 +1448,26 @@
     }
   }
 
+  // Lightweight, fail-safe analytics. Reports how often the calculator is
+  // actually used (and for which age band / unit) to Google Analytics if a
+  // gtag/dataLayer is present on the host page. Never throws — analytics must
+  // never break dosing.
+  function trackCalculatorEvent(eventName, params) {
+    try {
+      if (typeof window === 'undefined') {
+        return;
+      }
+      var payload = Object.assign({event_category: 'calculator'}, params || {});
+      if (typeof window.gtag === 'function') {
+        window.gtag('event', eventName, payload);
+      } else if (window.dataLayer && typeof window.dataLayer.push === 'function') {
+        window.dataLayer.push(Object.assign({event: eventName}, payload));
+      }
+    } catch (err) {
+      /* swallow — analytics is best-effort only */
+    }
+  }
+
   function calculateDose(elements, strings, onResultsRendered) {
     if (
       !elements ||
@@ -1492,6 +1512,11 @@
     }
 
     if (gate === 'emergency') {
+      trackCalculatorEvent('calculate_dose', {
+        age_group: age,
+        weight_unit: weightUnit,
+        result_type: 'emergency',
+      });
       return;
     }
 
@@ -1650,6 +1675,12 @@
 
     elements.results.innerHTML = resultBlocks.join('');
     notifyResultsRendered();
+
+    trackCalculatorEvent('calculate_dose', {
+      age_group: age,
+      weight_unit: weightUnit,
+      result_type: gate,
+    });
   }
 
   function bindEvents(elements, strings, onResultsRendered) {
