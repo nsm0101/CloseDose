@@ -13,7 +13,80 @@ they see.** No manuals, no settings spelunking, no "did it save?"
 
 ---
 
-## 1. What changed in this pass
+## 0. Board-level department management (this pass)
+
+This pass turns the board from a list of cards you *open and edit* into a
+**department-management surface you can drive without opening anything** — and
+moves the single most-used action, *Add Patient*, to where the work is.
+
+### Collapsed card = a quick-selection control panel
+The collapsed patient card now carries a **quick-advance action bar** so a
+patient can be moved through their entire ED course straight from the board:
+
+- **Tappable care-phase stepper** — `Fellow → Staffed → Attending` as a
+  connected segmented control. Tap to mark/uncate each step; the segment fills
+  with that phase's accent color. Numbers + color carry the meaning on narrow
+  cards; the words appear as the card gets wider (container queries).
+- **Tappable disposition** — `Discharge · Admit · ED Obs`. Choosing one implies
+  the attending has seen the patient (one write); tapping the active one clears
+  it back to active work-up so a mis-tap is one tap to undo.
+- **Barriers + phase** moved into the card header so outstanding-work count and
+  the phase chip are always glanceable; the timer sits alongside.
+
+The result: an attending can round the whole department — advance phases, set
+dispo — by thumb, without ever expanding a card.
+
+### Expanded card = denser, progress-first
+The expanded card was tightened into a compact, at-a-glance progress display:
+outer padding and section rhythm reduced; the on-board timer + reset collapsed
+into the top action bar (no more oversized timer block); care-phase buttons made
+horizontal (~44px) instead of tall tiles; barrier tiles slimmed to a single
+line; the "Good to go" stamp condensed to a banner. Same controls, far less
+scrolling, reads as progress at a glance.
+
+### Add Patient lives on the board now
+Adding patients is the mainstay action in real time, so it moved **off the team
+toolbar** and onto the board itself, in two places:
+
+- A **primary "Add Patient" button** in the new command row (top of the board),
+  and as the empty-board call to action.
+- A **floating action button** (mobile) kept within thumb reach while scrolling,
+  since patients arrive continuously during a shift.
+
+After you add a patient, the board **auto-expands that card and focuses the name
+field** — so you just start typing. It only fires for *your* add, never when a
+teammate adds one to the shared session.
+
+### Department census strip
+A live **census strip** sits at the top of the board: total on-board count plus
+per-phase counts (`To Be Seen · Work-up · Staffed · Attending · Dispo · Ready`).
+Each chip is **tappable to filter** the board to that phase — the fastest way to
+answer "who still needs to be seen?" or "who's ready to leave?" The phase logic
+is now a single shared helper (`getPatientPhase` in `lib/utils.ts`) so the card
+and the census can never disagree.
+
+### Additional improvements recommended next
+Concrete follow-ups that would further improve flow/function, roughly by
+impact-to-effort:
+
+1. **Swipe gestures on the collapsed card** — swipe right = advance care phase,
+   swipe left = open disposition. The buttons stay for everyone else.
+2. **"Needs you" pinned strip** — auto-surface patients flagged ready-for-
+   attending but not yet staffed: the attending's literal to-do list.
+3. **Per-field "saved" pulse + "updated 4s ago by JC"** — `updatedAt` is already
+   stored; surfacing it removes the last "did it save?" doubt on a shared board.
+4. **Presence avatars** — show who else is viewing the session right now (reuses
+   the team list) to make "real-time" something you can see.
+5. **Long-stay / barrier escalation** — gentle color/sort escalation for >3h
+   boarders and patients whose barriers haven't moved in N minutes.
+6. **Copy sign-out** — one button to format the active list as text for the EHR
+   (the print handoff styling already exists).
+7. **Bulk rounding mode** — a keyboard-driven (j/k + number keys) sweep of the
+   census on the desktop hub.
+
+---
+
+## 1. What changed in an earlier pass
 
 ### Analytics — see your traffic and usage
 

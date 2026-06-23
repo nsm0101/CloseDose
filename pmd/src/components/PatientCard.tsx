@@ -3,9 +3,17 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Patient, TaskState, TeamMember } from '../types';
-import { cn, getTimerColor, getRoleColor } from '../lib/utils';
+import {
+  cn,
+  getTimerColor,
+  getRoleColor,
+  getPatientPhase,
+  getPatientFlags,
+  PHASE_TONES,
+  type PhaseTone,
+} from '../lib/utils';
 import {
   Clock,
   CheckCircle2,
@@ -38,52 +46,10 @@ import { motion, AnimatePresence } from 'framer-motion';
  * the status rail, the phase chip and the care-step dots, so the card
  * reads the same way whether it's a row on a phone or a tile in the
  * desktop hub. One dominant hue per state — no competing warm colors.
+ * The tone map + phase logic live in lib/utils so the board census and
+ * the card always agree on where a patient is in their ED course.
  * ------------------------------------------------------------------ */
-type PhaseTone = 'rose' | 'blue' | 'indigo' | 'violet' | 'emerald';
-
-interface ToneStyle {
-  /** Solid accent — the left status rail and filled care-step dots. */
-  bar: string;
-  /** Pill: background / text / border, light + dark. */
-  chip: string;
-  /** Accent text color. */
-  text: string;
-  /** Emphasis ring for the whole card. */
-  ring: string;
-}
-
-const TONES: Record<PhaseTone, ToneStyle> = {
-  rose: {
-    bar: 'bg-rose-500',
-    chip: 'bg-rose-100 text-rose-700 border-rose-200 dark:bg-rose-950/50 dark:text-rose-300 dark:border-rose-900/60',
-    text: 'text-rose-600 dark:text-rose-400',
-    ring: 'ring-rose-500/20 dark:ring-rose-400/20',
-  },
-  blue: {
-    bar: 'bg-blue-500',
-    chip: 'bg-blue-100 text-blue-700 border-blue-200 dark:bg-blue-950/50 dark:text-blue-300 dark:border-blue-900/60',
-    text: 'text-blue-600 dark:text-blue-400',
-    ring: 'ring-blue-500/20 dark:ring-blue-400/20',
-  },
-  indigo: {
-    bar: 'bg-indigo-500',
-    chip: 'bg-indigo-100 text-indigo-700 border-indigo-200 dark:bg-indigo-950/50 dark:text-indigo-300 dark:border-indigo-900/60',
-    text: 'text-indigo-600 dark:text-indigo-400',
-    ring: 'ring-indigo-500/20 dark:ring-indigo-400/20',
-  },
-  violet: {
-    bar: 'bg-violet-500',
-    chip: 'bg-violet-100 text-violet-700 border-violet-200 dark:bg-violet-950/50 dark:text-violet-300 dark:border-violet-900/60',
-    text: 'text-violet-600 dark:text-violet-400',
-    ring: 'ring-violet-500/20 dark:ring-violet-400/20',
-  },
-  emerald: {
-    bar: 'bg-emerald-500',
-    chip: 'bg-emerald-100 text-emerald-700 border-emerald-200 dark:bg-emerald-950/50 dark:text-emerald-300 dark:border-emerald-900/60',
-    text: 'text-emerald-600 dark:text-emerald-400',
-    ring: 'ring-emerald-500/25 dark:ring-emerald-400/25',
-  },
-};
+const TONES = PHASE_TONES;
 
 interface PatientCardProps {
   patient: Patient;
@@ -94,6 +60,11 @@ interface PatientCardProps {
   compactMode?: boolean;
   teamMembers?: TeamMember[];
   darkMode?: boolean;
+  /** When this matches the patient id, the card auto-expands and focuses
+   *  the name field — used right after the current user adds a patient. */
+  focusOnMount?: boolean;
+  /** Called once the card has consumed the focus request. */
+  onFocusConsumed?: () => void;
 }
 
 export const PatientCard: React.FC<PatientCardProps> = ({
@@ -105,16 +76,36 @@ export const PatientCard: React.FC<PatientCardProps> = ({
   compactMode = false,
   teamMembers = [],
   darkMode = false,
+  focusOnMount = false,
+  onFocusConsumed,
 }) => {
   const [expanded, setExpanded] = useState(!compactMode);
   const [showNotes, setShowNotes] = useState(false);
   const [elapsed, setElapsed] = useState<number>(0);
   const [showAssigneeDropdown, setShowAssigneeDropdown] = useState(false);
+  const firstNameRef = useRef<HTMLInputElement>(null);
+  const cardRef = useRef<HTMLDivElement>(null);
 
   // The board-level "Compact Mode" preference collapses every card to its
   // condensed summary; flipping it acts as expand-all / collapse-all while
   // each card can still be toggled individually.
   useEffect(() => { setExpanded(!compactMode); }, [compactMode]);
+
+  // Just added by *this* user: open the card and drop the cursor straight in
+  // the name field so they can start typing without hunting. Only fires for
+  // the local add — never when a teammate adds a patient to the shared board.
+  const hasAutoFocusedRef = useRef(false);
+  useEffect(() => {
+    if (!focusOnMount || hasAutoFocusedRef.current) return;
+    hasAutoFocusedRef.current = true;
+    setExpanded(true);
+    const t = setTimeout(() => {
+      cardRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      firstNameRef.current?.focus();
+      onFocusConsumed?.();
+    }, 120);
+    return () => clearTimeout(t);
+  }, [focusOnMount, onFocusConsumed]);
 
   // Sync elapsed timer
   useEffect(() => {
@@ -142,10 +133,8 @@ export const PatientCard: React.FC<PatientCardProps> = ({
 
   const LONG_STAY = 3 * 60 * 60; // 3h — surfaces a long-stay warning
 
-  // Convert workflowFlags or seenState safely
-  const seenByFellow = patient.workflowFlags?.readyForAttending || patient.seenState === 'Seen by Fellow' || patient.seenState === 'Seen by Attending';
-  const staffedToAttending = patient.workflowFlags?.awaitingDispo || patient.seenState === 'Seen by Attending';
-  const seenByAttending = patient.seenState === 'Seen by Attending';
+  // Convert workflowFlags or seenState safely (shared with the board census).
+  const { seenByFellow, staffedToAttending, seenByAttending } = getPatientFlags(patient);
 
   // Toggle Care Phases
   const handleToggleFellowSeen = (e: React.MouseEvent) => {
@@ -269,15 +258,7 @@ export const PatientCard: React.FC<PatientCardProps> = ({
   };
 
   // ---- Single source of truth: where the patient is in the ED course ----
-  const phase: { label: string; tone: PhaseTone } =
-    isGoodToGo ? { label: 'Ready to Go', tone: 'emerald' } :
-    patient.status === 'Discharge' ? { label: 'Discharge', tone: 'emerald' } :
-    patient.status === 'Admit' ? { label: 'Admit', tone: 'indigo' } :
-    patient.status === 'ED Observation' ? { label: 'ED Obs', tone: 'violet' } :
-    seenByAttending ? { label: 'Attending Seen', tone: 'violet' } :
-    staffedToAttending ? { label: 'Staffed', tone: 'indigo' } :
-    seenByFellow ? { label: 'Work-up', tone: 'blue' } :
-    { label: 'To Be Seen', tone: 'rose' };
+  const phase = getPatientPhase(patient);
   const tone = TONES[phase.tone];
 
   // Fellow → Staffed → Attending — meaningful to both roles at a glance, and
@@ -288,39 +269,89 @@ export const PatientCard: React.FC<PatientCardProps> = ({
     { key: 'A', n: 3, label: 'Attending', sub: 'Seen by Attending', tone: 'violet' as PhaseTone, done: seenByAttending, onClick: handleToggleAttendingSeen },
   ];
 
+  // Disposition options — shared by the compact quick-bar and the expanded
+  // decision row. Tapping the active one clears it back to active work-up.
+  const dispositions = [
+    { status: 'Discharge' as const, icon: <Home size={14} />, tone: 'emerald' as PhaseTone, label: 'Discharge', short: 'D/C' },
+    { status: 'Admit' as const, icon: <BedDouble size={14} />, tone: 'indigo' as PhaseTone, label: 'Admit', short: 'Admit' },
+    { status: 'ED Observation' as const, icon: <Eye size={14} />, tone: 'violet' as PhaseTone, label: 'ED Obs', short: 'Obs' },
+  ];
+
+  const setDisposition = (status: Patient['status'], e?: React.MouseEvent) => {
+    e?.stopPropagation();
+    if (navigator.vibrate) navigator.vibrate(8);
+    if (patient.status === status) {
+      // Toggle off — return to active work-up without losing who's seen them.
+      onUpdate(patient.id, { status: 'Work-up' });
+      return;
+    }
+    // Choosing a disposition implies the attending has seen the patient.
+    onUpdate(patient.id, seenByAttending ? { status } : { status, seenState: 'Seen by Attending' });
+  };
+
   const phaseChip = (
     <span className={cn("inline-flex items-center gap-1 px-2.5 py-1 rounded-full border text-[10px] font-black uppercase tracking-wide whitespace-nowrap", tone.chip)}>
-      {isGoodToGo && <Check size={11} />}
+      {phase.key === 'ready' && <Check size={11} />}
       {phase.label}
     </span>
   );
 
-  // Connected Fellow→Staffed→Attending tracker for the compact row.
-  const miniStepper = (
-    <div className="flex items-center" aria-label="Care progress: Fellow, Staffed, Attending">
+  // Tappable Fellow→Staffed→Attending segmented control for the compact row —
+  // advance a patient through their ED course without opening the card.
+  const quickStepper = (
+    <div className="flex items-center rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden shrink-0">
       {careSteps.map((s, i) => (
-        <React.Fragment key={s.key}>
-          {i > 0 && (
-            <span
-              className={cn(
-                "h-[3px] w-3.5 rounded-full transition-colors",
-                careSteps[i - 1].done ? TONES[careSteps[i - 1].tone].bar : "bg-slate-200 dark:bg-slate-700"
-              )}
-            />
+        <button
+          key={s.key}
+          onClick={(e) => { if (navigator.vibrate) navigator.vibrate(8); s.onClick(e); }}
+          aria-pressed={s.done}
+          aria-label={`${s.sub}${s.done ? ' — done, tap to undo' : ' — tap to mark done'}`}
+          title={s.sub}
+          className={cn(
+            "flex items-center gap-1 px-2 py-1.5 text-[10px] font-black uppercase tracking-wide transition-colors active:scale-95",
+            i > 0 && "border-l border-slate-200 dark:border-slate-700",
+            s.done
+              ? cn(TONES[s.tone].bar, "text-white")
+              : "bg-white dark:bg-slate-900 text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300"
           )}
-          <span
-            title={`${s.sub}${s.done ? ' ✓' : ' — pending'}`}
+        >
+          <span className={cn(
+            "w-3.5 h-3.5 rounded-full grid place-items-center text-[8px]",
+            s.done ? "bg-white/25" : "bg-slate-100 dark:bg-slate-800"
+          )}>
+            {s.done ? <Check size={10} /> : s.n}
+          </span>
+          <span className="hidden @[23rem]:inline">{s.label}</span>
+        </button>
+      ))}
+    </div>
+  );
+
+  // Tappable Discharge / Admit / Obs segmented control for the compact row.
+  const quickDispo = (
+    <div className="flex items-center rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden shrink-0">
+      {dispositions.map((d, i) => {
+        const active = patient.status === d.status;
+        return (
+          <button
+            key={d.status}
+            onClick={(e) => setDisposition(d.status, e)}
+            aria-pressed={active}
+            aria-label={`Disposition ${d.label}${active ? ' — selected, tap to clear' : ''}`}
+            title={d.label}
             className={cn(
-              "w-5 h-5 rounded-full grid place-items-center text-[9px] font-black border transition-colors",
-              s.done
-                ? cn(TONES[s.tone].bar, "text-white border-transparent")
-                : "bg-slate-100 text-slate-400 border-slate-200 dark:bg-slate-800 dark:text-slate-500 dark:border-slate-700"
+              "flex items-center gap-1 px-2 py-1.5 text-[10px] font-black uppercase tracking-wide transition-colors active:scale-95",
+              i > 0 && "border-l border-slate-200 dark:border-slate-700",
+              active
+                ? cn(TONES[d.tone].bar, "text-white")
+                : "bg-white dark:bg-slate-900 text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300"
             )}
           >
-            {s.done ? <Check size={11} /> : s.key}
-          </span>
-        </React.Fragment>
-      ))}
+            {d.icon}
+            <span className="hidden @[28rem]:inline">{d.short}</span>
+          </button>
+        );
+      })}
     </div>
   );
 
@@ -341,6 +372,7 @@ export const PatientCard: React.FC<PatientCardProps> = ({
 
   return (
     <motion.div
+      ref={cardRef}
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0 }}
@@ -361,64 +393,83 @@ export const PatientCard: React.FC<PatientCardProps> = ({
       <div className={cn("absolute left-0 top-0 bottom-0 w-1.5", tone.bar)} aria-hidden="true" />
 
       {/* ============================ COMPACT ROW ============================ */}
-      {/* Phone / collapsed quick-reference: room · who · progress · timer */}
+      {/* Collapsed quick-reference + quick-advance: a one-tap control panel so
+          the whole department can be moved through its course from the board. */}
       {!expanded && (
-        <div className="relative flex items-center gap-3 pl-4 pr-3 py-3">
-          {/* Room — large, tap to expand */}
-          <button
-            onClick={() => setExpanded(true)}
-            aria-label="Expand patient card"
-            className="shrink-0 w-14 h-14 rounded-2xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex flex-col items-center justify-center"
-          >
-            <span className="block text-[8px] font-black uppercase text-slate-400 dark:text-slate-500 leading-none">Room</span>
-            <span className="block font-black text-xl leading-tight text-slate-900 dark:text-white uppercase truncate max-w-[3rem]">{patient.room || '—'}</span>
-          </button>
+        <div className="relative">
+          {/* Header: room · who · phase · timer */}
+          <div className="flex items-center gap-3 pl-4 pr-3 pt-3 pb-2">
+            {/* Room — large, tap to expand */}
+            <button
+              onClick={() => setExpanded(true)}
+              aria-label="Expand patient card"
+              className="shrink-0 w-14 h-14 rounded-2xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex flex-col items-center justify-center"
+            >
+              <span className="block text-[8px] font-black uppercase text-slate-400 dark:text-slate-500 leading-none">Room</span>
+              <span className="block font-black text-xl leading-tight text-slate-900 dark:text-white uppercase truncate max-w-[3rem]">{patient.room || '—'}</span>
+            </button>
 
-          {/* Identity, complaint, care progress — tap to expand */}
-          <div onClick={() => setExpanded(true)} className="min-w-0 flex-1 cursor-pointer space-y-1">
-            <div className="flex items-baseline gap-2 min-w-0">
-              <span className="font-black text-base @sm:text-lg text-slate-900 dark:text-white truncate">
-                {patient.firstName || 'New patient'}{patient.lastInitial ? ` ${patient.lastInitial}.` : ''}
-              </span>
-              <span className="shrink-0 text-[11px] font-bold text-slate-400 dark:text-slate-500 uppercase">
-                {patient.age || '0'} · {patient.sex}
-              </span>
+            {/* Identity + complaint — tap to expand */}
+            <div onClick={() => setExpanded(true)} className="min-w-0 flex-1 cursor-pointer space-y-0.5">
+              <div className="flex items-baseline gap-2 min-w-0">
+                <span className="font-black text-base @sm:text-lg text-slate-900 dark:text-white truncate">
+                  {patient.firstName || 'New patient'}{patient.lastInitial ? ` ${patient.lastInitial}.` : ''}
+                </span>
+                <span className="shrink-0 text-[11px] font-bold text-slate-400 dark:text-slate-500 uppercase">
+                  {patient.age || '0'} · {patient.sex}
+                </span>
+              </div>
+              <p className="text-xs font-medium text-slate-500 dark:text-slate-400 truncate leading-tight">
+                {patient.chiefComplaint || 'No chief complaint logged yet'}
+              </p>
             </div>
-            <p className="text-xs font-medium text-slate-500 dark:text-slate-400 truncate leading-tight">
-              {patient.chiefComplaint || 'No chief complaint logged yet'}
-            </p>
-            <div className="flex items-center gap-2 pt-0.5">
-              {miniStepper}
-              {barrierPill}
+
+            {/* Phase, barriers, timer and controls */}
+            <div className="shrink-0 flex flex-col items-end gap-1.5">
+              <div className="flex items-center gap-1.5">
+                {barrierPill && (
+                  <button
+                    onClick={() => setExpanded(true)}
+                    className="active:scale-95 transition-transform"
+                    aria-label={activeBarriers.length > 0 ? `${activeBarriers.length} barriers flagged — tap to manage` : 'Barriers clear — tap to manage'}
+                  >
+                    {barrierPill}
+                  </button>
+                )}
+                {phaseChip}
+              </div>
+              <span className="inline-flex items-center gap-1 text-xs font-black tabular-nums" style={{ color: timerColor }}>
+                {elapsed >= LONG_STAY && <AlertTriangle size={12} />}
+                <Clock size={12} /> {formatTime(elapsed)}
+              </span>
+              <div className="flex items-center gap-1">
+                <button
+                  onClick={(e) => { e.stopPropagation(); onUpdate(patient.id, { isPinned: !patient.isPinned }); }}
+                  className={cn(
+                    "w-8 h-8 rounded-full grid place-items-center transition-all",
+                    patient.isPinned ? "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400" : "text-slate-300 hover:text-slate-500 dark:text-slate-600 dark:hover:text-slate-400"
+                  )}
+                  aria-label={patient.isPinned ? 'Unpin patient' : 'Pin patient'}
+                >
+                  <Pin size={13} className={cn(patient.isPinned && "fill-current")} />
+                </button>
+                <button
+                  onClick={() => setExpanded(true)}
+                  className="w-8 h-8 rounded-full grid place-items-center bg-slate-100 text-slate-400 hover:text-slate-600 dark:bg-slate-800 dark:text-slate-300 transition-colors"
+                  aria-label="Expand"
+                >
+                  <ChevronDown size={16} />
+                </button>
+              </div>
             </div>
           </div>
 
-          {/* Phase, timer and controls */}
-          <div className="shrink-0 flex flex-col items-end gap-1.5">
-            {phaseChip}
-            <span className="inline-flex items-center gap-1 text-xs font-black tabular-nums" style={{ color: timerColor }}>
-              {elapsed >= LONG_STAY && <AlertTriangle size={12} />}
-              <Clock size={12} /> {formatTime(elapsed)}
-            </span>
-            <div className="flex items-center gap-1">
-              <button
-                onClick={(e) => { e.stopPropagation(); onUpdate(patient.id, { isPinned: !patient.isPinned }); }}
-                className={cn(
-                  "w-8 h-8 rounded-full grid place-items-center transition-all",
-                  patient.isPinned ? "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400" : "text-slate-300 hover:text-slate-500 dark:text-slate-600 dark:hover:text-slate-400"
-                )}
-                aria-label={patient.isPinned ? 'Unpin patient' : 'Pin patient'}
-              >
-                <Pin size={13} className={cn(patient.isPinned && "fill-current")} />
-              </button>
-              <button
-                onClick={() => setExpanded(true)}
-                className="w-8 h-8 rounded-full grid place-items-center bg-slate-100 text-slate-400 hover:text-slate-600 dark:bg-slate-800 dark:text-slate-300 transition-colors"
-                aria-label="Expand"
-              >
-                <ChevronDown size={16} />
-              </button>
-            </div>
+          {/* Quick-advance action bar — tap to move the patient through their
+              ED course (care phase + disposition) without expanding. */}
+          <div className="flex flex-wrap items-center gap-1.5 pl-4 pr-3 pb-3 pt-0.5">
+            <span className="text-[8px] font-black uppercase tracking-widest text-slate-300 dark:text-slate-600 self-center mr-0.5">Advance</span>
+            {quickStepper}
+            {quickDispo}
           </div>
         </div>
       )}
@@ -434,79 +485,92 @@ export const PatientCard: React.FC<PatientCardProps> = ({
             className="overflow-hidden"
           >
             <div className="max-h-[80dvh] overflow-y-auto scroll-touch">
-              <div className="p-4 @md:p-6 space-y-5">
+              <div className="p-3 @md:p-4 space-y-3.5">
 
-                {/* Top bar: collapse · phase · pin */}
+                {/* Top bar: collapse · phase · timer · pin */}
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => setExpanded(false)}
-                    className="flex items-center gap-1 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700 rounded-xl text-[10px] font-black uppercase tracking-wider transition-all"
+                    className="flex items-center gap-1 px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700 rounded-lg text-[10px] font-black uppercase tracking-wider transition-all"
                   >
                     <ChevronUp size={14} /> Collapse
                   </button>
                   {phaseChip}
+                  <span className="inline-flex items-center gap-1 text-[11px] font-black tabular-nums" style={{ color: timerColor }} title="Time on board">
+                    {elapsed >= LONG_STAY && <AlertTriangle size={12} />}
+                    <Clock size={12} /> {formatTime(elapsed)}
+                  </span>
+                  <motion.button
+                    whileTap={{ scale: 0.9 }}
+                    onClick={() => onResetTimer(patient.id)}
+                    className="w-7 h-7 rounded-lg grid place-items-center bg-slate-100 hover:bg-blue-50 text-slate-400 hover:text-blue-600 dark:bg-slate-800 dark:hover:bg-slate-700 transition-colors"
+                    title="Reset on-board timer"
+                    aria-label="Reset on-board timer"
+                  >
+                    <RotateCcw size={13} />
+                  </motion.button>
                   <button
                     onClick={(e) => { e.stopPropagation(); onUpdate(patient.id, { isPinned: !patient.isPinned }); }}
                     className={cn(
-                      "ml-auto w-9 h-9 rounded-full grid place-items-center transition-all",
+                      "ml-auto w-8 h-8 rounded-full grid place-items-center transition-all",
                       patient.isPinned
                         ? "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400"
                         : "bg-slate-100 text-slate-300 hover:text-slate-500 dark:bg-slate-800 dark:text-slate-500"
                     )}
                     aria-label={patient.isPinned ? 'Unpin patient' : 'Pin patient'}
                   >
-                    <Pin size={15} className={cn(patient.isPinned && "fill-current")} />
+                    <Pin size={14} className={cn(patient.isPinned && "fill-current")} />
                   </button>
                 </div>
 
-                {/* Identity header: room · name/age/sex · on-board timer */}
-                <div className="flex flex-wrap items-start justify-between gap-3">
-                  <div className="flex items-center gap-3">
-                    {/* Room */}
-                    <div className="shrink-0 w-16 rounded-2xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-2 py-2 text-center">
-                      <span className="block text-[8px] font-black uppercase text-slate-400 dark:text-slate-500 leading-none mb-0.5">Room</span>
+                {/* Identity header: room · name/age/sex */}
+                <div className="flex items-center gap-2.5">
+                  {/* Room */}
+                  <div className="shrink-0 w-14 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-1.5 py-1.5 text-center">
+                    <span className="block text-[8px] font-black uppercase text-slate-400 dark:text-slate-500 leading-none mb-0.5">Room</span>
+                    <input
+                      value={patient.room}
+                      onChange={(e) => onUpdate(patient.id, { room: e.target.value })}
+                      className="w-full text-center font-black text-lg text-slate-900 dark:text-white bg-transparent outline-none border-none p-0 leading-none uppercase placeholder:text-slate-300 dark:placeholder:text-slate-600"
+                      placeholder="?"
+                      maxLength={4}
+                      aria-label="Room"
+                    />
+                  </div>
+
+                  {/* Name + demographics */}
+                  <div className="min-w-0">
+                    <span className="block text-[8px] font-black uppercase text-slate-400 dark:text-slate-500 mb-0.5">Patient · name + initial</span>
+                    <div className="flex items-baseline gap-1.5">
                       <input
-                        value={patient.room}
-                        onChange={(e) => onUpdate(patient.id, { room: e.target.value })}
-                        className="w-full text-center font-black text-xl text-slate-900 dark:text-white bg-transparent outline-none border-none p-0 leading-none uppercase placeholder:text-slate-300 dark:placeholder:text-slate-600"
-                        placeholder="?"
-                        maxLength={4}
-                        aria-label="Room"
+                        ref={firstNameRef}
+                        value={patient.firstName ?? ''}
+                        onChange={(e) => {
+                          const firstName = e.target.value.replace(/[^a-zA-Z'’\- ]/g, '');
+                          onUpdate(patient.id, { firstName, initials: deriveInitials(firstName, patient.lastInitial) });
+                        }}
+                        className="w-28 @sm:w-32 font-black text-xl tracking-tight text-slate-900 dark:text-white bg-transparent outline-none border-none p-0 focus:ring-0 capitalize placeholder:text-slate-300 dark:placeholder:text-slate-600 placeholder:font-bold placeholder:text-lg"
+                        placeholder="First name"
+                        autoCapitalize="words"
+                        autoComplete="off"
+                        maxLength={20}
+                        aria-label="Patient first name"
                       />
+                      <input
+                        value={patient.lastInitial ?? ''}
+                        onChange={(e) => {
+                          const lastInitial = e.target.value.replace(/[^a-zA-Z]/g, '').toUpperCase().slice(0, 1);
+                          onUpdate(patient.id, { lastInitial, initials: deriveInitials(patient.firstName, lastInitial) });
+                        }}
+                        className="w-7 font-black text-xl tracking-tight text-slate-400 dark:text-slate-500 bg-transparent outline-none border-none p-0 focus:ring-0 text-center uppercase placeholder:text-slate-300 dark:placeholder:text-slate-600 placeholder:font-bold placeholder:text-lg"
+                        placeholder="L."
+                        maxLength={1}
+                        aria-label="Patient last initial"
+                      />
+                      {patient.lastInitial && <span className="text-xl font-black text-slate-400 dark:text-slate-500 -ml-1.5">.</span>}
                     </div>
 
-                    {/* Name + demographics */}
-                    <div>
-                      <span className="block text-[8px] font-black uppercase text-slate-400 dark:text-slate-500 mb-0.5">Patient · first name + last initial</span>
-                      <div className="flex items-baseline gap-1.5">
-                        <input
-                          value={patient.firstName ?? ''}
-                          onChange={(e) => {
-                            const firstName = e.target.value.replace(/[^a-zA-Z'’\- ]/g, '');
-                            onUpdate(patient.id, { firstName, initials: deriveInitials(firstName, patient.lastInitial) });
-                          }}
-                          className="w-28 @sm:w-32 font-black text-2xl tracking-tight text-slate-900 dark:text-white bg-transparent outline-none border-none p-0 focus:ring-0 capitalize placeholder:text-slate-300 dark:placeholder:text-slate-600 placeholder:font-bold placeholder:text-xl"
-                          placeholder="First name"
-                          autoCapitalize="words"
-                          autoComplete="off"
-                          maxLength={20}
-                          aria-label="Patient first name"
-                        />
-                        <input
-                          value={patient.lastInitial ?? ''}
-                          onChange={(e) => {
-                            const lastInitial = e.target.value.replace(/[^a-zA-Z]/g, '').toUpperCase().slice(0, 1);
-                            onUpdate(patient.id, { lastInitial, initials: deriveInitials(patient.firstName, lastInitial) });
-                          }}
-                          className="w-8 font-black text-2xl tracking-tight text-slate-400 dark:text-slate-500 bg-transparent outline-none border-none p-0 focus:ring-0 text-center uppercase placeholder:text-slate-300 dark:placeholder:text-slate-600 placeholder:font-bold placeholder:text-xl"
-                          placeholder="L."
-                          maxLength={1}
-                          aria-label="Patient last initial"
-                        />
-                        {patient.lastInitial && <span className="text-2xl font-black text-slate-400 dark:text-slate-500 -ml-1.5">.</span>}
-                      </div>
-
-                      <div className="flex items-center gap-1.5 mt-1">
+                    <div className="flex items-center gap-1.5 mt-0.5">
                         <input
                           value={patient.age.replace(/[^0-9]/g, '')}
                           onChange={(e) => {
@@ -549,30 +613,6 @@ export const PatientCard: React.FC<PatientCardProps> = ({
                         </select>
                       </div>
                     </div>
-                  </div>
-
-                  {/* On-board timer + reset */}
-                  <div className="flex items-center gap-2">
-                    <div className="rounded-2xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 flex items-center gap-2.5">
-                      <Clock size={16} style={{ color: timerColor }} />
-                      <div className="text-right leading-none">
-                        <span className="block text-[8px] font-black uppercase text-slate-400 dark:text-slate-500 mb-1">On board</span>
-                        <span className="text-sm font-black tabular-nums tracking-wide" style={{ color: timerColor }}>
-                          {formatTime(elapsed)}
-                        </span>
-                      </div>
-                      {elapsed >= LONG_STAY && <AlertTriangle size={15} className="text-rose-500" aria-label="Long stay" />}
-                    </div>
-                    <motion.button
-                      whileTap={{ scale: 0.9 }}
-                      onClick={() => onResetTimer(patient.id)}
-                      className="p-2.5 bg-slate-100 hover:bg-blue-50 text-slate-400 hover:text-blue-600 dark:bg-slate-800 dark:hover:bg-slate-700 rounded-2xl border border-slate-200 dark:border-slate-700 transition-colors"
-                      title="Reset timer"
-                      aria-label="Reset on-board timer"
-                    >
-                      <RotateCcw size={16} />
-                    </motion.button>
-                  </div>
                 </div>
 
                 {/* Chief complaint */}
@@ -582,64 +622,55 @@ export const PatientCard: React.FC<PatientCardProps> = ({
                     rows={2}
                     value={patient.chiefComplaint}
                     onChange={(e) => onUpdate(patient.id, { chiefComplaint: e.target.value })}
-                    className="w-full text-sm font-semibold text-slate-700 dark:text-slate-200 bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-2xl p-3 focus:bg-white dark:focus:bg-slate-800 resize-none outline-none leading-snug focus:ring-2 focus:ring-blue-500 transition-colors"
+                    className="w-full text-sm font-semibold text-slate-700 dark:text-slate-200 bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-xl p-2.5 focus:bg-white dark:focus:bg-slate-800 resize-none outline-none leading-snug focus:ring-2 focus:ring-blue-500 transition-colors"
                     placeholder="Describe clinical presentation details…"
                   />
                 </div>
 
-                {/* Care phase — big tappable Fellow → Staffed → Attending */}
+                {/* Care phase — tappable Fellow → Staffed → Attending (compact) */}
                 <div>
-                  <span className={cn(sectionLabel, "block mb-2")}>Care phase · tap to update</span>
-                  <div className="grid grid-cols-3 gap-2 @sm:gap-3">
+                  <span className={cn(sectionLabel, "block mb-1.5")}>Care phase · tap to update</span>
+                  <div className="grid grid-cols-3 gap-2">
                     {careSteps.map((s) => (
                       <button
                         key={s.key}
                         onClick={s.onClick}
                         className={cn(
-                          "rounded-2xl border-2 p-3 flex flex-col items-center justify-center gap-1.5 min-h-[78px] transition-all duration-200 relative outline-none",
+                          "rounded-xl border-2 px-2 py-2 flex items-center justify-center gap-1.5 min-h-[44px] transition-all duration-200 outline-none active:scale-95",
                           s.done
-                            ? cn(TONES[s.tone].bar, "border-transparent text-white shadow-md")
+                            ? cn(TONES[s.tone].bar, "border-transparent text-white shadow-sm")
                             : "border-slate-200 bg-slate-50 text-slate-400 dark:border-slate-800 dark:bg-slate-900 hover:border-slate-300 dark:hover:border-slate-700"
                         )}
                         aria-pressed={s.done}
                       >
                         <span
                           className={cn(
-                            "w-7 h-7 rounded-full grid place-items-center text-xs font-black shrink-0",
+                            "w-5 h-5 rounded-full grid place-items-center text-[10px] font-black shrink-0",
                             s.done ? "bg-white/25 text-white" : "bg-white dark:bg-slate-800 text-slate-400 border border-slate-200 dark:border-slate-700"
                           )}
                         >
-                          {s.done ? <Check size={15} /> : s.n}
+                          {s.done ? <Check size={12} /> : s.n}
                         </span>
-                        <span className="text-[11px] font-black uppercase tracking-wide leading-none text-center">{s.label}</span>
-                        <span className="text-[8px] font-bold uppercase tracking-wider opacity-80 leading-none">{s.done ? 'Done' : 'Tap'}</span>
+                        <span className="text-[11px] font-black uppercase tracking-wide leading-none">{s.label}</span>
                       </button>
                     ))}
                   </div>
                 </div>
 
                 {/* Disposition + barriers */}
-                <div className="bg-slate-50 dark:bg-slate-900/60 rounded-3xl p-4 @md:p-5 border border-slate-100 dark:border-slate-800/70 space-y-4">
+                <div className="bg-slate-50 dark:bg-slate-900/60 rounded-2xl p-3 border border-slate-100 dark:border-slate-800/70 space-y-3">
                   {/* Attending disposition decision */}
-                  <div className="flex flex-col @sm:flex-row @sm:items-center justify-between gap-3 pb-3 border-b border-slate-200/70 dark:border-slate-800">
+                  <div className="flex flex-col @sm:flex-row @sm:items-center justify-between gap-2 pb-2.5 border-b border-slate-200/70 dark:border-slate-800">
                     <span className={sectionLabel}>Disposition decision</span>
-                    <div className="flex flex-wrap items-center gap-2">
-                      {([
-                        { status: 'Discharge', icon: <Home size={14} />, tone: 'emerald' as PhaseTone, label: 'Discharge' },
-                        { status: 'Admit', icon: <BedDouble size={14} />, tone: 'indigo' as PhaseTone, label: 'Admit' },
-                        { status: 'ED Observation', icon: <Eye size={14} />, tone: 'violet' as PhaseTone, label: 'ED Obs' },
-                      ] as const).map(({ status, icon, tone: t, label }) => {
+                    <div className="flex flex-wrap items-center gap-1.5">
+                      {dispositions.map(({ status, icon, tone: t, label }) => {
                         const isActive = patient.status === status;
                         return (
                           <button
                             key={status}
-                            onClick={() => {
-                              // Choosing a disposition implies the attending has
-                              // seen the patient — set both in one write.
-                              onUpdate(patient.id, seenByAttending ? { status } : { status, seenState: 'Seen by Attending' });
-                            }}
+                            onClick={(e) => setDisposition(status, e)}
                             className={cn(
-                              "inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-black uppercase tracking-wide border-2 transition-all",
+                              "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-black uppercase tracking-wide border-2 transition-all active:scale-95",
                               isActive
                                 ? cn(TONES[t].bar, "border-transparent text-white shadow")
                                 : "bg-white dark:bg-slate-800 text-slate-500 dark:text-slate-400 border-slate-200 hover:border-slate-300 dark:border-slate-700"
@@ -655,7 +686,7 @@ export const PatientCard: React.FC<PatientCardProps> = ({
 
                   {/* Barriers */}
                   <div>
-                    <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center justify-between mb-2">
                       <span className={sectionLabel}>Dispo barriers · tap to cycle</span>
                       {activeBarriers.length > 0 ? (
                         <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-black bg-amber-100 text-amber-700 border border-amber-200 dark:bg-amber-950/40 dark:text-amber-300 dark:border-amber-900/60">
@@ -670,7 +701,7 @@ export const PatientCard: React.FC<PatientCardProps> = ({
                       )}
                     </div>
 
-                    <div className="grid grid-cols-2 @md:grid-cols-4 gap-2.5">
+                    <div className="grid grid-cols-2 @sm:grid-cols-3 @md:grid-cols-4 gap-2">
                       {barriers.map((barrier) => {
                         const state = patient.tasks[barrier.key] || 'off';
                         const flagged = state === 'pending' || state === 'ordered';
@@ -679,29 +710,25 @@ export const PatientCard: React.FC<PatientCardProps> = ({
                             key={barrier.key}
                             onClick={(e) => handleToggleBarrier(barrier.key, e)}
                             className={cn(
-                              "p-2.5 rounded-2xl border-2 flex items-center gap-2 text-left transition-all duration-200 relative min-h-[58px]",
+                              "p-2 rounded-xl border-2 flex items-center gap-1.5 text-left transition-all duration-200 relative min-h-[44px] active:scale-95",
                               state === 'off' && "border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900 text-slate-400 dark:text-slate-500",
                               flagged && "border-amber-400 bg-amber-50 text-amber-800 dark:bg-amber-950/30 dark:text-amber-300 dark:border-amber-700/70",
                               state === 'complete' && "border-emerald-400 bg-emerald-50 text-emerald-800 dark:bg-emerald-950/30 dark:text-emerald-300 dark:border-emerald-700/70"
                             )}
                             aria-label={`${barrier.label}: ${state === 'off' ? 'not required' : state === 'complete' ? 'completed' : 'flagged'}`}
+                            title={state === 'off' ? 'Not required' : state === 'complete' ? 'Completed' : 'Flagged'}
                           >
                             <div className={cn(
-                              "p-1.5 rounded-lg shrink-0",
+                              "p-1 rounded-md shrink-0",
                               state === 'off' && "bg-slate-100 text-slate-400 dark:bg-slate-800",
                               flagged && "bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300",
                               state === 'complete' && "bg-emerald-100 text-emerald-600 dark:bg-emerald-900/40 dark:text-emerald-300"
                             )}>
                               {barrier.icon}
                             </div>
-                            <div className="min-w-0 flex-1 leading-tight">
-                              <span className="block text-[10px] font-black truncate uppercase tracking-tight">{barrier.label}</span>
-                              <span className="text-[8px] font-bold uppercase tracking-wide opacity-80 block mt-0.5">
-                                {state === 'off' ? 'Not required' : state === 'complete' ? 'Completed' : 'Flagged'}
-                              </span>
-                            </div>
-                            {flagged && <AlertCircle size={13} className="shrink-0 text-amber-500" />}
-                            {state === 'complete' && <CheckCircle2 size={13} className="shrink-0 text-emerald-500" />}
+                            <span className="min-w-0 flex-1 block text-[10px] font-black truncate uppercase tracking-tight leading-tight">{barrier.label}</span>
+                            {flagged && <AlertCircle size={12} className="shrink-0 text-amber-500" />}
+                            {state === 'complete' && <CheckCircle2 size={12} className="shrink-0 text-emerald-500" />}
                           </button>
                         );
                       })}
@@ -716,19 +743,19 @@ export const PatientCard: React.FC<PatientCardProps> = ({
                       initial={{ scale: 0.9, opacity: 0 }}
                       animate={{ scale: 1, opacity: 1 }}
                       exit={{ scale: 0.9, opacity: 0 }}
-                      className="border-2 border-dashed border-emerald-500 rounded-3xl p-5 text-center bg-emerald-500/10 flex flex-col items-center justify-center gap-1"
+                      className="border-2 border-dashed border-emerald-500 rounded-2xl px-4 py-2.5 text-center bg-emerald-500/10 flex items-center justify-center gap-2"
                     >
-                      <Check className="text-emerald-500" size={32} />
-                      <span className="text-emerald-600 dark:text-emerald-400 text-xl font-black uppercase tracking-tight">Good to go!</span>
-                      <span className="text-[10px] text-emerald-600/80 dark:text-emerald-400/80 uppercase tracking-widest font-extrabold">
-                        Staffed &amp; cleared of all barriers
+                      <Check className="text-emerald-500 shrink-0" size={20} />
+                      <span className="text-emerald-600 dark:text-emerald-400 text-base font-black uppercase tracking-tight">Good to go!</span>
+                      <span className="text-[9px] text-emerald-600/80 dark:text-emerald-400/80 uppercase tracking-widest font-extrabold hidden @sm:inline">
+                        Staffed &amp; cleared
                       </span>
                     </motion.div>
                   )}
                 </AnimatePresence>
 
                 {/* Assigned provider */}
-                <div className="relative flex flex-wrap items-center justify-between gap-3 border-t border-slate-100 dark:border-slate-800/80 pt-4">
+                <div className="relative flex flex-wrap items-center justify-between gap-2 border-t border-slate-100 dark:border-slate-800/80 pt-3">
                   <div className="flex items-center gap-2 min-w-0">
                     <Users size={16} className="text-slate-400 dark:text-slate-500 shrink-0" />
                     <span className={sectionLabel}>Provider:</span>
@@ -798,7 +825,7 @@ export const PatientCard: React.FC<PatientCardProps> = ({
                 </div>
 
                 {/* Plan & notes toggle */}
-                <div className="flex items-center justify-between border-t border-slate-100 dark:border-slate-800/80 pt-4">
+                <div className="flex items-center justify-between border-t border-slate-100 dark:border-slate-800/80 pt-3">
                   <div className="flex items-center gap-2 min-w-0">
                     <span className={sectionLabel}>Plan &amp; notes</span>
                     {patient.operationalNotes && !showNotes && (

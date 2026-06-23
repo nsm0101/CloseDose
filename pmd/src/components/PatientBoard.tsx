@@ -7,8 +7,8 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { Patient, TeamMember } from '../types';
 import { PatientCard } from './PatientCard';
 import { SyncStatus, SyncState } from './SyncStatus';
-import { Search, Filter, SortAsc, SortDesc, User, Users, Clock, AlertCircle, Plus, LayoutGrid, List, ChevronDown, ChevronUp, X } from 'lucide-react';
-import { cn, getRoleColor } from '../lib/utils';
+import { Search, Filter, SortAsc, SortDesc, Users, Plus, X } from 'lucide-react';
+import { cn, getRoleColor, getPatientPhase, PHASE_TONES, type EdPhaseKey } from '../lib/utils';
 import { DndContext, DragOverlay, useDraggable, useDroppable, DragEndEvent, TouchSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -25,6 +25,9 @@ interface PatientBoardProps {
   twoColumnMode?: boolean;
   syncState?: SyncState;
   darkMode?: boolean;
+  /** Patient the current user just added — its card auto-focuses the name. */
+  focusPatientId?: string | null;
+  onFocusConsumed?: () => void;
 }
 
 const DraggableTeamMember = ({ member, onFilter }: { member: TeamMember, onFilter?: (id: string) => void }) => {
@@ -87,7 +90,9 @@ export const PatientBoard: React.FC<PatientBoardProps> = ({
   compactMode = false,
   twoColumnMode = false,
   syncState = 'connecting',
-  darkMode = false
+  darkMode = false,
+  focusPatientId = null,
+  onFocusConsumed,
 }) => {
   const [search, setSearch] = useState('');
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -97,6 +102,7 @@ export const PatientBoard: React.FC<PatientBoardProps> = ({
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
   const [filterProvider, setFilterProvider] = useState<string>('all');
   const [filterStatus, setFilterStatus] = useState<string>('all');
+  const [filterPhase, setFilterPhase] = useState<EdPhaseKey | 'all'>('all');
   const [isQuickAddOpen, setIsQuickAddOpen] = useState(false);
   const [quickAddData, setQuickAddData] = useState({ firstName: '', lastName: '', initials: '', role: 'resident' as any });
 
@@ -131,6 +137,11 @@ export const PatientBoard: React.FC<PatientBoardProps> = ({
     // Filter Status
     if (filterStatus !== 'all') {
       result = result.filter(p => p.status === filterStatus);
+    }
+
+    // Filter ED phase — the department census strip taps into this.
+    if (filterPhase !== 'all') {
+      result = result.filter(p => getPatientPhase(p).key === filterPhase);
     }
 
     // Sort
@@ -180,7 +191,41 @@ export const PatientBoard: React.FC<PatientBoardProps> = ({
     });
 
     return result;
-  }, [patients, search, sortBy, sortOrder, filterProvider, filterStatus]);
+  }, [patients, search, sortBy, sortOrder, filterProvider, filterStatus, filterPhase]);
+
+  // Department census — live counts per ED-course phase, grouped into the
+  // buckets that matter on rounds. Drives the tappable overview strip.
+  const census = useMemo(() => {
+    const counts: Record<string, number> = {};
+    patients.forEach(p => {
+      const key = getPatientPhase(p).key;
+      counts[key] = (counts[key] || 0) + 1;
+    });
+    const dispoCount = (counts.discharge || 0) + (counts.admit || 0) + (counts.obs || 0);
+    return [
+      { key: 'toBeSeen' as const, label: 'To Be Seen', tone: 'rose' as const, count: counts.toBeSeen || 0 },
+      { key: 'workup' as const, label: 'Work-up', tone: 'blue' as const, count: counts.workup || 0 },
+      { key: 'staffed' as const, label: 'Staffed', tone: 'indigo' as const, count: counts.staffed || 0 },
+      { key: 'attending' as const, label: 'Attending', tone: 'violet' as const, count: counts.attending || 0 },
+      { key: 'dispo' as const, label: 'Dispo', tone: 'indigo' as const, count: dispoCount },
+      { key: 'ready' as const, label: 'Ready', tone: 'emerald' as const, count: counts.ready || 0 },
+    ];
+  }, [patients]);
+
+  // The "Dispo" census chip rolls up three terminal phases.
+  const phaseFilterKeys = (key: string): EdPhaseKey[] =>
+    key === 'dispo' ? ['discharge', 'admit', 'obs'] : [key as EdPhaseKey];
+
+  const isPhaseChipActive = (key: string) =>
+    key === 'dispo'
+      ? (['discharge', 'admit', 'obs'] as EdPhaseKey[]).includes(filterPhase as EdPhaseKey)
+      : filterPhase === key;
+
+  const togglePhaseFilter = (key: string) => {
+    if (navigator.vibrate) navigator.vibrate(5);
+    const keys = phaseFilterKeys(key);
+    setFilterPhase(prev => (keys.includes(prev as EdPhaseKey) ? 'all' : keys[0]));
+  };
 
   const groupedPatients = useMemo(() => {
     if (filterProvider === 'all') return { all: filteredAndSortedPatients };
@@ -391,15 +436,48 @@ export const PatientBoard: React.FC<PatientBoardProps> = ({
               <span className="text-[10px] text-gray-400 dark:text-gray-600 font-medium italic whitespace-nowrap">No team members active</span>
             )}
           </div>
+        </div>
 
-          <div className="w-px h-8 bg-gray-200 dark:bg-gray-800 shrink-0 transition-colors" />
+        {/* Department census + Add Patient — the board's command row.
+            Census counts are live and tappable: each filters the board to that
+            ED-course phase so the whole department can be triaged at a glance.
+            Add Patient now lives here (not the team bar) as the mainstay action. */}
+        <div className="flex items-center gap-2">
+          <div className="flex-1 flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5 -my-0.5">
+            <span className="shrink-0 inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-gray-100 dark:bg-slate-900 border border-gray-200/60 dark:border-gray-800">
+              <span className="text-[9px] font-black uppercase tracking-widest text-gray-400 dark:text-gray-500">Census</span>
+              <span className="text-sm font-black tabular-nums text-gray-900 dark:text-white leading-none">{patients.length}</span>
+            </span>
+            {census.map(c => {
+              const active = isPhaseChipActive(c.key);
+              const t = PHASE_TONES[c.tone];
+              return (
+                <button
+                  key={c.key}
+                  onClick={() => togglePhaseFilter(c.key)}
+                  aria-pressed={active}
+                  title={`${c.count} ${c.label}${active ? ' — tap to clear filter' : ' — tap to filter'}`}
+                  className={cn(
+                    "shrink-0 inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border text-[10px] font-black uppercase tracking-wide transition-all active:scale-95",
+                    active
+                      ? cn(t.chip, "ring-2", t.ring)
+                      : "bg-white dark:bg-slate-900 border-gray-200 dark:border-gray-800 text-gray-500 dark:text-gray-400 hover:border-gray-300 dark:hover:border-gray-700"
+                  )}
+                >
+                  <span className={cn("w-1.5 h-1.5 rounded-full", t.dot)} />
+                  {c.label}
+                  <span className="tabular-nums opacity-90">{c.count}</span>
+                </button>
+              );
+            })}
+          </div>
 
-          <button 
+          <button
             onClick={onAddPatient}
-            className="flex flex-col items-center justify-center min-w-[44px] h-10 text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-xl transition-all shrink-0"
+            className="shrink-0 inline-flex items-center gap-1.5 pl-3 pr-3.5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-black uppercase tracking-wide text-[11px] shadow-md shadow-blue-200/70 dark:shadow-none active:scale-95 transition-all"
+            title="Add a new patient to the board"
           >
-            <Plus size={18} />
-            <span className="text-[7px] font-black uppercase tracking-tighter">Add Patient</span>
+            <Plus size={16} /> Add Patient
           </button>
         </div>
 
@@ -578,9 +656,9 @@ export const PatientBoard: React.FC<PatientBoardProps> = ({
             twoColumnMode ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4" : "grid-cols-1"
           )}>
             {filteredAndSortedPatients.map(patient => (
-              <PatientCard 
-                key={patient.id} 
-                patient={patient} 
+              <PatientCard
+                key={patient.id}
+                patient={patient}
                 onUpdate={onUpdatePatient}
                 onDelete={onDeletePatient}
                 onComplete={onCompletePatient}
@@ -588,23 +666,42 @@ export const PatientBoard: React.FC<PatientBoardProps> = ({
                 compactMode={compactMode}
                 teamMembers={teamMembers}
                 darkMode={darkMode}
+                focusOnMount={patient.id === focusPatientId}
+                onFocusConsumed={onFocusConsumed}
               />
             ))}
             {filteredAndSortedPatients.length === 0 && (
-              <div className="py-20 flex flex-col items-center justify-center gap-4 text-gray-400 dark:text-gray-500 border-2 border-dashed border-gray-200 dark:border-gray-800 rounded-3xl bg-gray-50/50 dark:bg-gray-900/50 transition-colors">
+              <div className="py-16 flex flex-col items-center justify-center gap-4 text-gray-400 dark:text-gray-500 border-2 border-dashed border-gray-200 dark:border-gray-800 rounded-3xl bg-gray-50/50 dark:bg-gray-900/50 transition-colors">
                 <div className="w-16 h-16 rounded-full bg-white dark:bg-gray-800 flex items-center justify-center shadow-sm border border-gray-100 dark:border-gray-700">
                   <Search size={24} className="opacity-20" />
                 </div>
-                <div className="text-center space-y-1">
-                  <p className="font-serif italic text-lg">No patients found</p>
-                  <p className="text-[10px] uppercase tracking-widest opacity-60">Try adjusting your filters or search terms</p>
-                </div>
-                <button 
-                  onClick={() => { setSearch(''); setFilterProvider('all'); setFilterStatus('all'); }}
-                  className="px-4 py-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-full text-[10px] font-black uppercase tracking-widest hover:bg-gray-50 dark:hover:bg-gray-700 transition-all shadow-sm active:scale-95"
-                >
-                  Clear All Filters
-                </button>
+                {patients.length === 0 ? (
+                  <>
+                    <div className="text-center space-y-1">
+                      <p className="font-serif italic text-lg">No patients on the board yet</p>
+                      <p className="text-[10px] uppercase tracking-widest opacity-60">Add your first patient to start tracking</p>
+                    </div>
+                    <button
+                      onClick={onAddPatient}
+                      className="inline-flex items-center gap-1.5 px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-full text-[11px] font-black uppercase tracking-widest shadow-md shadow-blue-200/70 dark:shadow-none active:scale-95 transition-all"
+                    >
+                      <Plus size={16} /> Add Patient
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <div className="text-center space-y-1">
+                      <p className="font-serif italic text-lg">No patients found</p>
+                      <p className="text-[10px] uppercase tracking-widest opacity-60">Try adjusting your filters or search terms</p>
+                    </div>
+                    <button
+                      onClick={() => { setSearch(''); setFilterProvider('all'); setFilterStatus('all'); setFilterPhase('all'); }}
+                      className="px-4 py-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-full text-[10px] font-black uppercase tracking-widest hover:bg-gray-50 dark:hover:bg-gray-700 transition-all shadow-sm active:scale-95"
+                    >
+                      Clear All Filters
+                    </button>
+                  </>
+                )}
               </div>
             )}
           </div>
@@ -660,9 +757,9 @@ export const PatientBoard: React.FC<PatientBoardProps> = ({
                       twoColumnMode ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4" : "grid-cols-1"
                     )}>
                       {groupPatients.map(patient => (
-                        <PatientCard 
-                          key={patient.id} 
-                          patient={patient} 
+                        <PatientCard
+                          key={patient.id}
+                          patient={patient}
                           onUpdate={onUpdatePatient}
                           onDelete={onDeletePatient}
                           onComplete={onCompletePatient}
@@ -670,6 +767,8 @@ export const PatientBoard: React.FC<PatientBoardProps> = ({
                           compactMode={compactMode}
                           teamMembers={teamMembers}
                           darkMode={darkMode}
+                          focusOnMount={patient.id === focusPatientId}
+                          onFocusConsumed={onFocusConsumed}
                         />
                       ))}
                       {groupPatients.length === 0 && (
@@ -685,6 +784,21 @@ export const PatientBoard: React.FC<PatientBoardProps> = ({
           </div>
         )}
       </div>
+
+      {/* Floating Add Patient — mobile only. Patients are added constantly in
+          real time, so keep the action within thumb reach while scrolling.
+          The inline command-row button covers desktop. */}
+      <motion.button
+        whileTap={{ scale: 0.9 }}
+        onClick={onAddPatient}
+        className="md:hidden fixed right-4 z-40 flex items-center justify-center w-14 h-14 rounded-full bg-blue-600 text-white shadow-xl shadow-blue-500/30 active:bg-blue-700"
+        style={{ bottom: 'calc(4.75rem + env(safe-area-inset-bottom))' }}
+        aria-label="Add patient"
+        title="Add patient"
+      >
+        <Plus size={26} />
+      </motion.button>
+
       <DragOverlay dropAnimation={null}>
         {activeMember ? (
           <div className={cn(

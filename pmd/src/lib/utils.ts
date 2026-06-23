@@ -5,9 +5,116 @@
 
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import { Patient } from '../types';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
+}
+
+/* ------------------------------------------------------------------ *
+ * ED-course phase — a single source of truth shared by the patient
+ * card (rail / chips / steppers) and the board (department census).
+ * Color = information: one dominant accent tone per clinical phase.
+ * ------------------------------------------------------------------ */
+export type PhaseTone = 'rose' | 'blue' | 'indigo' | 'violet' | 'emerald';
+
+export interface ToneStyle {
+  /** Solid accent — the left status rail and filled care-step dots. */
+  bar: string;
+  /** Pill: background / text / border, light + dark. */
+  chip: string;
+  /** Accent text color. */
+  text: string;
+  /** Emphasis ring for the whole card. */
+  ring: string;
+  /** Soft dot for the census strip. */
+  dot: string;
+}
+
+export const PHASE_TONES: Record<PhaseTone, ToneStyle> = {
+  rose: {
+    bar: 'bg-rose-500',
+    chip: 'bg-rose-100 text-rose-700 border-rose-200 dark:bg-rose-950/50 dark:text-rose-300 dark:border-rose-900/60',
+    text: 'text-rose-600 dark:text-rose-400',
+    ring: 'ring-rose-500/20 dark:ring-rose-400/20',
+    dot: 'bg-rose-500',
+  },
+  blue: {
+    bar: 'bg-blue-500',
+    chip: 'bg-blue-100 text-blue-700 border-blue-200 dark:bg-blue-950/50 dark:text-blue-300 dark:border-blue-900/60',
+    text: 'text-blue-600 dark:text-blue-400',
+    ring: 'ring-blue-500/20 dark:ring-blue-400/20',
+    dot: 'bg-blue-500',
+  },
+  indigo: {
+    bar: 'bg-indigo-500',
+    chip: 'bg-indigo-100 text-indigo-700 border-indigo-200 dark:bg-indigo-950/50 dark:text-indigo-300 dark:border-indigo-900/60',
+    text: 'text-indigo-600 dark:text-indigo-400',
+    ring: 'ring-indigo-500/20 dark:ring-indigo-400/20',
+    dot: 'bg-indigo-500',
+  },
+  violet: {
+    bar: 'bg-violet-500',
+    chip: 'bg-violet-100 text-violet-700 border-violet-200 dark:bg-violet-950/50 dark:text-violet-300 dark:border-violet-900/60',
+    text: 'text-violet-600 dark:text-violet-400',
+    ring: 'ring-violet-500/20 dark:ring-violet-400/20',
+    dot: 'bg-violet-500',
+  },
+  emerald: {
+    bar: 'bg-emerald-500',
+    chip: 'bg-emerald-100 text-emerald-700 border-emerald-200 dark:bg-emerald-950/50 dark:text-emerald-300 dark:border-emerald-900/60',
+    text: 'text-emerald-600 dark:text-emerald-400',
+    ring: 'ring-emerald-500/25 dark:ring-emerald-400/25',
+    dot: 'bg-emerald-500',
+  },
+};
+
+/** The eight clinical dispo-barrier task keys. */
+export const BARRIER_KEYS: (keyof Patient['tasks'])[] = [
+  'labs', 'imaging', 'meds', 'consult', 'poIntake', 'painControl', 'ambulation', 'documents',
+];
+
+/** Derive the three care-phase booleans from the (legacy + flag) fields. */
+export function getPatientFlags(p: Patient) {
+  const seenByFellow = p.workflowFlags?.readyForAttending || p.seenState === 'Seen by Fellow' || p.seenState === 'Seen by Attending';
+  const staffedToAttending = p.workflowFlags?.awaitingDispo || p.seenState === 'Seen by Attending';
+  const seenByAttending = p.seenState === 'Seen by Attending';
+  return { seenByFellow, staffedToAttending, seenByAttending };
+}
+
+/** Count of barriers that are flagged but not yet completed. */
+export function getActiveBarrierCount(p: Patient): number {
+  return BARRIER_KEYS.filter(k => {
+    const v = p.tasks?.[k] || 'off';
+    return v === 'pending' || v === 'ordered';
+  }).length;
+}
+
+export type EdPhaseKey =
+  | 'toBeSeen' | 'workup' | 'staffed' | 'attending'
+  | 'obs' | 'admit' | 'discharge' | 'ready';
+
+export interface EdPhase {
+  key: EdPhaseKey;
+  label: string;
+  tone: PhaseTone;
+}
+
+/** Where the patient is in the ED course — the one place this is decided. */
+export function getPatientPhase(p: Patient): EdPhase {
+  const { seenByFellow, staffedToAttending, seenByAttending } = getPatientFlags(p);
+  const isDispositioned = ['Discharge', 'Admit', 'ED Observation'].includes(p.status);
+  const isBarrierFree = getActiveBarrierCount(p) === 0;
+  const isGoodToGo = isDispositioned && seenByAttending && isBarrierFree;
+
+  if (isGoodToGo) return { key: 'ready', label: 'Ready to Go', tone: 'emerald' };
+  if (p.status === 'Discharge') return { key: 'discharge', label: 'Discharge', tone: 'emerald' };
+  if (p.status === 'Admit') return { key: 'admit', label: 'Admit', tone: 'indigo' };
+  if (p.status === 'ED Observation') return { key: 'obs', label: 'ED Obs', tone: 'violet' };
+  if (seenByAttending) return { key: 'attending', label: 'Attending Seen', tone: 'violet' };
+  if (staffedToAttending) return { key: 'staffed', label: 'Staffed', tone: 'indigo' };
+  if (seenByFellow) return { key: 'workup', label: 'Work-up', tone: 'blue' };
+  return { key: 'toBeSeen', label: 'To Be Seen', tone: 'rose' };
 }
 
 export function getStatusColor(status: string) {

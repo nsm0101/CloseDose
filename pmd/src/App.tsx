@@ -78,6 +78,8 @@ export default function App() {
     return (localStorage.getItem('theme') as 'light' | 'dark' | 'system') || 'system';
   });
   const [undoAction, setUndoAction] = useState<{ id: string, previousData: Partial<Patient>, message: string, timeoutId?: NodeJS.Timeout } | null>(null);
+  // Patient the current user just added — the board auto-focuses its name field.
+  const [lastAddedId, setLastAddedId] = useState<string | null>(null);
   // Real-time connection state surfaced to users so they can trust the board
   // is live. Driven by Firestore snapshot metadata + the browser online state.
   const [syncState, setSyncState] = useState<'connecting' | 'live' | 'offline'>('connecting');
@@ -389,7 +391,8 @@ export default function App() {
       updatedAt: Timestamp.now()
     };
     try {
-      await addDoc(collection(db, `shifts/${activeShiftId}/patients`), newPatient);
+      const ref = await addDoc(collection(db, `shifts/${activeShiftId}/patients`), newPatient);
+      setLastAddedId(ref.id);
       track('add_patient');
     } catch (error) {
       handleFirestoreError(error, OperationType.CREATE, `shifts/${activeShiftId}/patients`);
@@ -694,6 +697,8 @@ export default function App() {
                 twoColumnMode={twoColumnMode}
                 syncState={syncState}
                 darkMode={theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)}
+                focusPatientId={lastAddedId}
+                onFocusConsumed={() => setLastAddedId(null)}
               />
             )}
 
