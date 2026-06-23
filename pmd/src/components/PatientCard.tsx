@@ -52,9 +52,15 @@ export const PatientCard: React.FC<PatientCardProps> = ({
   teamMembers = [],
   darkMode = false
 }) => {
-  const [isExpanded, setIsExpanded] = useState(false);
+  const [expanded, setExpanded] = useState(!compactMode);
+  const [showNotes, setShowNotes] = useState(false);
   const [elapsed, setElapsed] = useState<number>(0);
   const [showAssigneeDropdown, setShowAssigneeDropdown] = useState(false);
+
+  // The board-level "Compact Mode" preference collapses every card to its
+  // condensed summary; flipping it acts as expand-all / collapse-all while
+  // each card can still be toggled individually.
+  useEffect(() => { setExpanded(!compactMode); }, [compactMode]);
 
   // Sync elapsed timer
   useEffect(() => {
@@ -201,8 +207,75 @@ export const PatientCard: React.FC<PatientCardProps> = ({
     return d || patient.initials || 'NEW';
   };
 
+  // ---- At-a-glance ED course phase (shared language for fellow + attending) ----
+  type PhaseTone = 'rose' | 'blue' | 'indigo' | 'violet' | 'emerald';
+  const chipTone: Record<PhaseTone, string> = {
+    rose: 'bg-rose-100 text-rose-700 border-rose-200 dark:bg-rose-950/40 dark:text-rose-300 dark:border-rose-900/50',
+    blue: 'bg-blue-100 text-blue-700 border-blue-200 dark:bg-blue-950/40 dark:text-blue-300 dark:border-blue-900/50',
+    indigo: 'bg-indigo-100 text-indigo-700 border-indigo-200 dark:bg-indigo-950/40 dark:text-indigo-300 dark:border-indigo-900/50',
+    violet: 'bg-violet-100 text-violet-700 border-violet-200 dark:bg-violet-950/40 dark:text-violet-300 dark:border-violet-900/50',
+    emerald: 'bg-emerald-100 text-emerald-700 border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-900/50',
+  };
+  const pillTone: Record<'blue' | 'indigo' | 'violet', string> = {
+    blue: 'bg-blue-500 text-white border-blue-500',
+    indigo: 'bg-indigo-500 text-white border-indigo-500',
+    violet: 'bg-violet-500 text-white border-violet-500',
+  };
+
+  // Single source of truth for the patient's place in the ED course.
+  const phase: { label: string; tone: PhaseTone } =
+    isGoodToGo ? { label: 'Ready to Go', tone: 'emerald' } :
+    patient.status === 'Discharge' ? { label: 'Discharge', tone: 'emerald' } :
+    patient.status === 'Admit' ? { label: 'Admit', tone: 'indigo' } :
+    patient.status === 'ED Observation' ? { label: 'ED Obs', tone: 'violet' } :
+    seenByAttending ? { label: 'Attending Seen', tone: 'violet' } :
+    staffedToAttending ? { label: 'Staffed', tone: 'indigo' } :
+    seenByFellow ? { label: 'Work-up', tone: 'blue' } :
+    { label: 'To Be Seen', tone: 'rose' };
+
+  // Fellow → Staffed → Attending progress, meaningful to both roles at a glance.
+  const phaseSteps = [
+    { key: 'F', done: seenByFellow, tone: 'blue' as const, title: 'Seen by Fellow' },
+    { key: 'S', done: staffedToAttending, tone: 'indigo' as const, title: 'Staffed to Attending' },
+    { key: 'A', done: seenByAttending, tone: 'violet' as const, title: 'Seen by Attending' },
+  ];
+
+  const phaseChip = (
+    <span className={cn("inline-flex items-center gap-1 px-2.5 py-1 rounded-full border text-[10px] font-black uppercase tracking-wide whitespace-nowrap", chipTone[phase.tone])}>
+      {isGoodToGo && <Check size={11} />}
+      {phase.label}
+    </span>
+  );
+
+  const phasePills = (
+    <div className="flex items-center gap-1" aria-label="Care phase: Fellow, Staffed, Attending">
+      {phaseSteps.map((s) => (
+        <span
+          key={s.key}
+          title={`${s.title}${s.done ? ' ✓' : ' — pending'}`}
+          className={cn(
+            "w-5 h-5 rounded-full grid place-items-center text-[9px] font-black border transition-colors",
+            s.done ? pillTone[s.tone] : "bg-slate-100 text-slate-400 border-slate-200 dark:bg-slate-800 dark:text-slate-500 dark:border-slate-700"
+          )}
+        >
+          {s.key}
+        </span>
+      ))}
+    </div>
+  );
+
+  const barrierBadge = activeBarriers.length > 0 ? (
+    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-black bg-amber-100 text-amber-700 border border-amber-200 dark:bg-amber-950/30 dark:text-amber-300 dark:border-amber-900/50">
+      <AlertCircle size={11} /> {activeBarriers.length} flagged
+    </span>
+  ) : completedBarriers.length > 0 ? (
+    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-100 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/30 dark:text-emerald-300 dark:border-emerald-900/50">
+      <CheckCircle2 size={11} /> Clear
+    </span>
+  ) : null;
+
   return (
-    <motion.div 
+    <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0 }}
@@ -227,7 +300,8 @@ export const PatientCard: React.FC<PatientCardProps> = ({
         !patient.status && "bg-slate-300"
       )} />
 
-      {/* Floating Pin */}
+      {/* Floating Pin — expanded card only (the compact row has its own) */}
+      {expanded && (
       <button 
         onClick={(e) => { e.stopPropagation(); onUpdate(patient.id, { isPinned: !patient.isPinned }); }}
         className={cn(
@@ -239,9 +313,92 @@ export const PatientCard: React.FC<PatientCardProps> = ({
       >
         <Pin size={14} className={cn(patient.isPinned && "fill-current")} />
       </button>
+      )}
 
-      {/* Main Face Panel */}
-      <div className="p-6 md:p-8 space-y-6">
+      {/* Compact summary row — condensed view with at-a-glance ED course phase */}
+      {!expanded && (
+        <div className="relative flex items-stretch gap-3 p-3 sm:p-4">
+          {/* Room — tap to expand */}
+          <button
+            onClick={() => setExpanded(true)}
+            aria-label="Expand patient card"
+            className="shrink-0 min-w-[58px] bg-slate-50 dark:bg-slate-800/60 rounded-2xl px-3 py-2 border border-slate-100 dark:border-slate-700 text-center flex flex-col justify-center shadow-inner"
+          >
+            <span className="block text-[7px] font-black uppercase text-slate-400 dark:text-slate-500">Room</span>
+            <span className="block font-black text-lg leading-none text-slate-900 dark:text-white uppercase truncate">{patient.room || '—'}</span>
+          </button>
+
+          {/* Identity, complaint and care-phase tracker — tap to expand */}
+          <div onClick={() => setExpanded(true)} className="min-w-0 flex-1 cursor-pointer flex flex-col justify-center gap-1">
+            <div className="flex items-baseline gap-1.5 min-w-0">
+              <span className="font-black text-base text-slate-900 dark:text-white truncate">
+                {patient.firstName || 'New patient'}{patient.lastInitial ? ` ${patient.lastInitial}.` : ''}
+              </span>
+              <span className="shrink-0 text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase">
+                {patient.age || '0'} · {patient.sex}
+              </span>
+            </div>
+            <p className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 truncate leading-tight">
+              {patient.chiefComplaint || 'No chief complaint logged yet'}
+            </p>
+            <div className="flex items-center gap-1.5 flex-wrap mt-0.5">
+              {phasePills}
+              {barrierBadge}
+            </div>
+          </div>
+
+          {/* Phase chip, on-board timer and controls */}
+          <div className="shrink-0 flex flex-col items-end justify-between gap-1.5 py-0.5">
+            {phaseChip}
+            <div className="flex items-center gap-1">
+              <span className="inline-flex items-center gap-1 text-[10px] font-black tabular-nums mr-0.5" style={{ color: getTimerColor(elapsed) }}>
+                <Clock size={11} /> {formatTime(elapsed)}
+              </span>
+              <button
+                onClick={(e) => { e.stopPropagation(); onUpdate(patient.id, { isPinned: !patient.isPinned }); }}
+                className={cn(
+                  "w-7 h-7 rounded-full grid place-items-center transition-all",
+                  patient.isPinned ? "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400" : "text-slate-300 hover:text-slate-500 dark:text-slate-600 dark:hover:text-slate-400"
+                )}
+                aria-label={patient.isPinned ? 'Unpin patient' : 'Pin patient'}
+              >
+                <Pin size={12} className={cn(patient.isPinned && "fill-current")} />
+              </button>
+              <button
+                onClick={() => setExpanded(true)}
+                className="w-7 h-7 rounded-full grid place-items-center bg-slate-50 text-slate-400 hover:text-slate-600 dark:bg-slate-800 dark:text-slate-300 transition-colors"
+                aria-label="Expand"
+              >
+                <ChevronDown size={16} />
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Expanded management view — capped to ~one mobile screen; scrolls internally */}
+      <AnimatePresence initial={false}>
+        {expanded && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.25, ease: 'easeOut' }}
+            className="overflow-hidden"
+          >
+            <div className="max-h-[78dvh] overflow-y-auto scroll-touch">
+              {/* Main Face Panel */}
+              <div className="p-6 md:p-8 space-y-6">
+                {/* Collapse handle + phase context */}
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => setExpanded(false)}
+                    className="flex items-center gap-1 px-3 py-1.5 bg-slate-50 hover:bg-slate-100 text-slate-500 hover:text-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700 rounded-xl text-[10px] font-black uppercase tracking-wider transition-all"
+                  >
+                    <ChevronUp size={14} /> Collapse
+                  </button>
+                  {phaseChip}
+                </div>
         
         {/* Core demographic metadata */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -616,11 +773,11 @@ export const PatientCard: React.FC<PatientCardProps> = ({
 
           <div className="flex items-center gap-2">
             <button
-              onClick={() => setIsExpanded(!isExpanded)}
+              onClick={() => setShowNotes(!showNotes)}
               className="flex items-center gap-1 px-3 py-1.5 bg-slate-50 hover:bg-slate-100 text-slate-400 hover:text-slate-600 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700 rounded-xl text-[10px] font-black uppercase transition-all"
             >
               Clinical Notes
-              {isExpanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+              {showNotes ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
             </button>
 
             <button
@@ -637,8 +794,8 @@ export const PatientCard: React.FC<PatientCardProps> = ({
 
         {/* Expanded Management Area */}
         <AnimatePresence>
-          {isExpanded && (
-            <motion.div 
+          {showNotes && (
+            <motion.div
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: 'auto', opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
@@ -688,7 +845,11 @@ export const PatientCard: React.FC<PatientCardProps> = ({
             </motion.div>
           )}
         </AnimatePresence>
-      </div>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 };
