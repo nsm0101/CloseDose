@@ -250,6 +250,8 @@
               aria-selected="true"
               aria-controls="ibu-children"
               data-conc-target="ibu-children"
+              data-track="concentration_view"
+              data-track-conc="ibu-children"
               type="button"
             >
               Children's
@@ -261,6 +263,8 @@
               aria-selected="false"
               aria-controls="ibu-infant"
               data-conc-target="ibu-infant"
+              data-track="concentration_view"
+              data-track-conc="ibu-infant"
               type="button"
             >
               Infant Drops
@@ -595,6 +599,7 @@
 
       function openShop(query) {
         if (!query) return;
+        if (window.cdTrack) window.cdTrack('shop_product_open', { product: query });
         subEl.textContent = query;
         listEl.innerHTML = '';
         retailers.forEach(function (r) {
@@ -616,7 +621,9 @@
       }
 
       toggle.addEventListener('click', function () {
-        setMode(!document.body.classList.contains('shopping-mode'));
+        var on = !document.body.classList.contains('shopping-mode');
+        setMode(on);
+        if (window.cdTrack) window.cdTrack('shopping_mode_toggle', { state: on ? 'on' : 'off' });
       });
 
       document.addEventListener('click', function (e) {

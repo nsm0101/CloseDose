@@ -1688,6 +1688,20 @@
       return () => {};
     }
 
+    // Fire once, on the first interaction with the calculator. Paired with the
+    // existing 'calculate_dose' event this reveals the start->complete funnel:
+    // of the people who touch the calculator, how many finish calculating a dose.
+    let hasEngaged = false;
+    const markEngaged = (method) => {
+      if (hasEngaged) {
+        return;
+      }
+      hasEngaged = true;
+      trackCalculatorEvent('calculator_engaged', { method: method });
+    };
+    const onEngageClick = () => markEngaged('control');
+    const onEngageInput = () => markEngaged('weight');
+
     const shouldAnimateSubmit = () => {
       if (
         !elements ||
@@ -1824,6 +1838,8 @@
     };
 
     elements.form.addEventListener('submit', onSubmit);
+    elements.form.addEventListener('click', onEngageClick);
+    elements.form.addEventListener('input', onEngageInput);
 
     updateForm(elements, strings);
     refreshGuidanceAnimations();
@@ -1841,6 +1857,8 @@
       elements.ageSelect.removeEventListener('change', onAgeSelectChange);
       elements.unitSelect.removeEventListener('change', onUnitSelectChange);
       elements.form.removeEventListener('submit', onSubmit);
+      elements.form.removeEventListener('click', onEngageClick);
+      elements.form.removeEventListener('input', onEngageInput);
       elements.weightInput.removeEventListener('input', onWeightInput);
       elements.weightInput.removeEventListener('change', onWeightInput);
       elements.weightInput.removeEventListener('focus', onWeightFocusChange);
