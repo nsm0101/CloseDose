@@ -382,6 +382,7 @@ export const PatientCard: React.FC<PatientCardProps> = ({
         // component adapts whether it's full-width on a phone or a narrow tile
         // in the desktop grid hub.
         "@container relative rounded-3xl border bg-white dark:bg-slate-900 shadow-sm overflow-hidden transition-all duration-300",
+        patient.isCompleted && "opacity-60",
         isGoodToGo
           ? cn("border-emerald-300 dark:border-emerald-800/70 ring-2", tone.ring)
           : patient.isPinned
@@ -842,6 +843,21 @@ export const PatientCard: React.FC<PatientCardProps> = ({
                     >
                       {showNotes ? 'Hide' : 'Notes'}
                       {showNotes ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+                    </button>
+
+                    {/* Sign-out / complete — drives the board's isCompleted sort. */}
+                    <button
+                      onClick={() => onComplete(patient.id)}
+                      aria-pressed={!!patient.isCompleted}
+                      title={patient.isCompleted ? 'Reopen patient' : 'Mark signed out / complete'}
+                      className={cn(
+                        "flex items-center gap-1 px-3 py-1.5 rounded-xl text-[10px] font-black uppercase transition-all",
+                        patient.isCompleted
+                          ? "bg-emerald-100 text-emerald-700 hover:bg-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-400"
+                          : "bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700"
+                      )}
+                    >
+                      {patient.isCompleted ? <><RotateCcw size={13} /> Reopen</> : <><Check size={14} /> Sign out</>}
                     </button>
 
                     <button
