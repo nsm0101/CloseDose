@@ -20,7 +20,14 @@
       window.dataLayer = window.dataLayer || [];
       function gtag() { dataLayer.push(arguments); }
       gtag('js', new Date());
-      gtag('config', 'G-WYY1QFRPYP');
+      // Disable Google Signals so GA4 never beacons to analytics.google.com
+      // (the cross-site advertising endpoint that ad/privacy blockers refuse,
+      // showing as "analytics.google.com refused to connect"). All hits stay
+      // on www.google-analytics.com. Mirrors /analytics.js used site-wide.
+      gtag('config', 'G-WYY1QFRPYP', {
+        allow_google_signals: false,
+        allow_ad_personalization_signals: false,
+      });
     </script>
   </head>
   <body>
