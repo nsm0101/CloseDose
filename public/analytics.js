@@ -29,7 +29,17 @@
   window.gtag = gtag;
 
   gtag('js', new Date());
-  gtag('config', GA_MEASUREMENT_ID);
+  // Disable Google Signals (and ad-personalization signals). Without this,
+  // GA4 fires a cross-site beacon to https://analytics.google.com/g/collect,
+  // which ad/tracker blockers and browser privacy modes routinely refuse —
+  // surfacing as "analytics.google.com refused to connect". Turning Signals
+  // off keeps every hit on www.google-analytics.com, removes that error, and
+  // keeps usage data out of Google's advertising graph — the right default
+  // for a medication app. Standard page_view / event tracking is unaffected.
+  gtag('config', GA_MEASUREMENT_ID, {
+    allow_google_signals: false,
+    allow_ad_personalization_signals: false,
+  });
 
   // Pull in the gtag.js library asynchronously so it never blocks rendering.
   // Queued commands above are replayed once it loads.
