@@ -1,0 +1,83 @@
+<!-- @dsCard group="PREtendingMD" name="Components" subtitle="Care-phase toggles · status badges · dispo barriers · buttons" viewport="1120x640" -->
+<!doctype html>
+<html><head><meta charset="utf-8"><title>PREtendingMD — Components</title>
+<link rel="stylesheet" href="_base.css">
+<style>
+  .card-frame { padding: 0; }
+  .band { padding: 26px 30px; font-family: var(--pmd-font-ui); }
+  .band.pmd { background: var(--pmd-bg); color: var(--pmd-ink); }
+  .band + .band { border-top: 1px solid var(--pmd-line); }
+  .mode { font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--pmd-ink-3); margin-bottom: 16px; }
+  .grid { display: grid; grid-template-columns: 1.1fr 1fr; gap: 26px; }
+  .lab { font-size: 10px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: var(--pmd-ink-3); margin: 0 0 9px; }
+  .row { display: flex; flex-wrap: wrap; gap: 8px; }
+
+  .phase { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; }
+  .pbtn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; height: 42px; border-radius: var(--pmd-r-btn); border: 1px solid var(--pmd-line); background: var(--pmd-surface-2); font-size: 12px; font-weight: 800; color: var(--pmd-ink-2); }
+  .pbtn .n { width: 18px; height: 18px; border-radius: 50%; display: grid; place-items: center; font-size: 10px; background: var(--pmd-surface-3); border: 1px solid var(--pmd-line); color: var(--pmd-ink-3); }
+  .pbtn.on { color: #fff; border-color: transparent; box-shadow: var(--pmd-shadow-1); }
+  .pbtn.on.fellow { background: var(--pmd-fellow-grad); }
+  .pbtn.on.staffed { background: var(--pmd-staffed-grad); }
+  .pbtn.on.attending { background: var(--pmd-attending-grad); }
+
+  .badge { display: inline-flex; align-items: center; height: 28px; padding: 0 12px; border-radius: 999px; font-size: 11px; font-weight: 800; }
+  .barr { display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 12px; border-radius: var(--pmd-r-field); background: var(--pmd-surface-2); border: 1px solid var(--pmd-line); font-size: 12px; font-weight: 700; color: var(--pmd-ink-2); }
+  .barr.open { background: var(--pmd-flag-soft); border-color: var(--pmd-flag-line); color: var(--pmd-flag-ink); }
+  .barr.clear { background: var(--pmd-ready-soft); border-color: var(--pmd-ready-line); color: var(--pmd-ready-ink); }
+  .bi { width: 8px; height: 8px; border-radius: 50%; background: currentColor; opacity: .85; }
+
+  .btn { display: inline-flex; align-items: center; justify-content: center; height: 42px; padding: 0 18px; border-radius: var(--pmd-r-btn); font-size: 13px; font-weight: 700; border: 1px solid transparent; }
+  .btn.primary { color: #fff; background: var(--pmd-fellow-grad); box-shadow: var(--pmd-shadow-1); }
+  .btn.ghost { background: var(--pmd-surface); border-color: var(--pmd-line); color: var(--pmd-ink-2); }
+  .btn.gtg { color: var(--pmd-ready-ink); background: var(--pmd-ready-soft); border: 1.5px dashed var(--pmd-ready-line); font-family: var(--pmd-font-clinical); font-weight: 800; }
+  .col { display: flex; flex-direction: column; gap: 16px; }
+</style></head>
+<body>
+<div class="card-frame">
+  <div class="band pmd" data-pmd-theme="dark" id="dark"></div>
+  <div class="band pmd" data-pmd-theme="light" id="light"></div>
+</div>
+<script>
+const badges = [['To be seen','tobeseen'],['Attending seen','attending'],['Admit','staffed'],['Dispo','dispo'],['Ready','ready']];
+function content(mode){
+  return `<div class="mode">${mode}</div>
+  <div class="grid">
+    <div class="col">
+      <div><p class="lab">Care phase · active = signature gradient</p>
+        <div class="phase">
+          <div class="pbtn on fellow">✓ Fellow</div>
+          <div class="pbtn on staffed">✓ Staffed</div>
+          <div class="pbtn on attending">✓ Attending</div>
+        </div>
+        <div class="phase" style="margin-top:8px">
+          <div class="pbtn"><span class="n">1</span> Fellow</div>
+          <div class="pbtn"><span class="n">2</span> Staffed</div>
+          <div class="pbtn"><span class="n">3</span> Attending</div>
+        </div>
+      </div>
+      <div><p class="lab">Dispo barriers · default / flagged / clear</p>
+        <div class="row">
+          <span class="barr"><span class="bi"></span> Labs / blood</span>
+          <span class="barr open"><span class="bi"></span> Medications</span>
+          <span class="barr clear"><span class="bi"></span> X-ray / scan</span>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div><p class="lab">Status badges</p>
+        <div class="row">${badges.map(([t,k])=>`<span class="badge" style="background:var(--pmd-${k}-soft);color:var(--pmd-${k}-ink);border:1px solid var(--pmd-${k}-line)">${t}</span>`).join('')}</div>
+      </div>
+      <div><p class="lab">Buttons</p>
+        <div class="row">
+          <span class="btn primary">+ Add patient</span>
+          <span class="btn ghost">Discharge</span>
+          <span class="btn gtg">✓ Good to go!</span>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+document.getElementById('dark').innerHTML = content('Dark');
+document.getElementById('light').innerHTML = content('Light');
+</script>
+</body></html>

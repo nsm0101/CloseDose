@@ -1,0 +1,355 @@
+/* =========================================================================
+   CloseDose — Colors & Type tokens
+   Light + dark mode, full ramps, semantic vars, type scale.
+   ========================================================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:opsz,wght@6..12,400;6..12,500;6..12,600;6..12,700;6..12,800&family=Inter:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap');
+
+/* PREtendingMD sub-brand tokens (namespaced --pmd-*, scoped to .pmd) */
+@import url('./pretendingmd.css');
+
+:root {
+  /* ---------- Brand: Teal ramp ---------- */
+  --teal-50:  #E8F6F2;
+  --teal-100: #C9EBE1;
+  --teal-200: #9FDDCC;
+  --teal-300: #6FCBB4;
+  --teal-400: #3FB89C;
+  --teal-500: #18A78D;   /* PRIMARY brand — sampled from app icon */
+  --teal-600: #128873;
+  --teal-700: #0E6D5C;
+  --teal-800: #0B5346;
+  --teal-900: #083E34;
+  --teal-950: #052822;
+
+  /* ---------- Mint / Seafoam (soft surfaces) ---------- */
+  --mint-50:  #F1F9F6;
+  --mint-100: #E8F5F1;
+  --mint-200: #D6EFE8;
+  --mint-300: #BFE4D8;
+  --mint-400: #9ED3C2;
+
+  /* ---------- Sage (success) ---------- */
+  --sage-100: #DDF1E6;
+  --sage-300: #8DD2AE;
+  --sage-500: #4FB088;
+  --sage-600: #2E9E6E;
+  --sage-700: #237A56;
+
+  /* ---------- Amber (warn) ---------- */
+  --amber-100: #FCEBD2;
+  --amber-300: #F2C173;
+  --amber-500: #E89B2D;
+  --amber-600: #D97A0E;
+  --amber-700: #B05E08;
+
+  /* ---------- Coral (error, soft) ---------- */
+  --coral-100: #FBE3E1;
+  --coral-300: #F2A8A2;
+  --coral-500: #E36B62;
+  --coral-600: #D84A4A;
+  --coral-700: #B43838;
+
+  /* ---------- Neutral ramp (slates with faint teal undertone) ---------- */
+  --slate-0:   #FFFFFF;
+  --slate-25:  #FBFAF7;        /* near-white, warm */
+  --slate-50:  #F7F5F0;
+  --slate-100: #EFEBE2;
+  --slate-200: #DDD8CC;
+  --slate-300: #BDB8AC;
+  --slate-400: #8F8B82;
+  --slate-500: #6A6760;
+  --slate-600: #4A4844;
+  --slate-700: #322F2C;
+  --slate-800: #1F1D1B;
+  --slate-900: #131211;
+
+  /* Cool-warm cream surface (marketing) */
+  --cream:     #FBF8F2;
+  --cream-2:   #F4EFE5;
+
+  /* ---------- Semantic colors — LIGHT (defaults) ---------- */
+  --bg:           var(--cream);
+  --bg-muted:     var(--cream-2);
+  --bg-card:      var(--slate-0);
+  --bg-inset:     var(--slate-50);
+  --bg-tint:      var(--mint-100);
+  --bg-tint-2:    var(--mint-200);
+
+  --fg:           var(--slate-800);     /* primary ink */
+  --fg-1:         var(--slate-800);
+  --fg-2:         var(--slate-600);     /* secondary */
+  --fg-3:         var(--slate-500);     /* tertiary / captions */
+  --fg-muted:     var(--slate-400);
+  --fg-on-brand:  #FFFFFF;
+
+  --border:       rgba(11, 30, 29, 0.08);
+  --border-strong: rgba(11, 30, 29, 0.14);
+  --hairline:     rgba(11, 30, 29, 0.06);
+
+  --brand:        var(--teal-500);   /* #18A78D — official */
+  --brand-hover:  var(--teal-600);
+  --brand-press:  var(--teal-700);
+  --brand-tint:   var(--teal-50);
+  --link:         var(--teal-600);
+
+  --accent:       var(--mint-200);
+  --success:      var(--sage-600);
+  --warn:         var(--amber-600);
+  --error:        var(--coral-600);
+
+  --focus:        var(--teal-500);
+  --focus-halo:   rgba(24, 167, 141, 0.22);
+
+  /* ---------- Shadow system ---------- */
+  --shadow-1: 0 1px 2px rgba(11, 30, 29, 0.04), 0 4px 12px -6px rgba(11, 30, 29, 0.08);
+  --shadow-2: 0 1px 2px rgba(11, 30, 29, 0.05), 0 8px 24px -8px rgba(11, 30, 29, 0.12);
+  --shadow-3: 0 2px 4px rgba(11, 30, 29, 0.06), 0 16px 40px -12px rgba(11, 30, 29, 0.16);
+  --shadow-inset: inset 0 1px 0 rgba(255, 255, 255, 0.5);
+
+  /* ---------- Spacing (4pt grid) ---------- */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-20: 80px;
+  --space-24: 96px;
+
+  /* ---------- Radii ---------- */
+  --radius-1: 4px;
+  --radius-2: 8px;
+  --radius-3: 12px;
+  --radius-4: 16px;
+  --radius-5: 24px;
+  --radius-pill: 999px;
+
+  /* ---------- Motion ---------- */
+  --motion-fast: 200ms; /* @kind other */
+  --motion-base: 320ms; /* @kind other */
+  --motion-slow: 480ms; /* @kind other */
+  --ease-out-soft: cubic-bezier(0.2, 0, 0, 1); /* @kind other */
+  --ease-in-out-soft: cubic-bezier(0.4, 0, 0.2, 1); /* @kind other */
+
+  /* ---------- Type — families ---------- */
+  --font-display: 'Nunito Sans', ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-sans:    'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono:    'DM Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+
+  /* ---------- Type — scale (px-based, friendly for product) ---------- */
+  --fs-12: 12px;
+  --fs-14: 14px;
+  --fs-15: 15px;
+  --fs-16: 16px;
+  --fs-18: 18px;
+  --fs-20: 20px;
+  --fs-24: 24px;
+  --fs-28: 28px;
+  --fs-32: 32px;
+  --fs-40: 40px;
+  --fs-48: 48px;
+  --fs-64: 64px;
+  --fs-80: 80px;
+
+  /* ---------- Type — semantic (use these in components) ---------- */
+  --display-1-size: 80px; /* @kind font */
+  --display-1-lh: 0.95; /* @kind font */
+  --display-1-tracking: -0.03em; /* @kind font */
+  --display-1-weight: 600; /* @kind font */
+  --display-2-size: 64px; /* @kind font */
+  --display-2-lh: 1.0; /* @kind font */
+  --display-2-tracking: -0.025em; /* @kind font */
+  --display-2-weight: 600; /* @kind font */
+  --h1-size: 48px; /* @kind font */
+  --h1-lh: 1.05; /* @kind font */
+  --h1-tracking: -0.02em; /* @kind font */
+  --h1-weight: 600; /* @kind font */
+  --h2-size: 32px; /* @kind font */
+  --h2-lh: 1.15; /* @kind font */
+  --h2-tracking: -0.015em; /* @kind font */
+  --h2-weight: 600; /* @kind font */
+  --h3-size: 24px; /* @kind font */
+  --h3-lh: 1.2; /* @kind font */
+  --h3-tracking: -0.01em; /* @kind font */
+  --h3-weight: 600; /* @kind font */
+  --h4-size: 20px; /* @kind font */
+  --h4-lh: 1.3; /* @kind font */
+  --h4-tracking: -0.005em; /* @kind font */
+  --h4-weight: 600; /* @kind font */
+  --body-lg-size: 18px; /* @kind font */
+  --body-lg-lh: 1.55; /* @kind font */
+  --body-lg-weight: 400; /* @kind font */
+  --body-size: 16px; /* @kind font */
+  --body-lh: 1.6; /* @kind font */
+  --body-weight: 400; /* @kind font */
+  --body-sm-size: 14px; /* @kind font */
+  --body-sm-lh: 1.55; /* @kind font */
+  --body-sm-weight: 400; /* @kind font */
+  --caption-size: 12px; /* @kind font */
+  --caption-lh: 1.4; /* @kind font */
+  --caption-weight: 500; /* @kind font */
+  --eyebrow-size: 12px; /* @kind font */
+  --eyebrow-lh: 1.2; /* @kind font */
+  --eyebrow-tracking: 0.08em; /* @kind font */
+  --eyebrow-weight: 600; /* @kind font */
+  --dose-numeral-size: 96px; /* @kind font */
+  --dose-numeral-lh: 1; /* @kind font */
+  --dose-numeral-weight: 500; /* @kind font */
+}
+
+/* =========================================================================
+   Dark mode — warm-dark, never pure black
+   ========================================================================= */
+:root.dark, [data-theme='dark'] {
+  --bg:           #0B1717;
+  --bg-muted:     #0F1C1B;
+  --bg-card:      #13201F;
+  --bg-inset:     #1A2A29;
+  --bg-tint:      #14302C;
+  --bg-tint-2:    #1B3F39;
+
+  --fg:           #ECECE6;
+  --fg-1:         #ECECE6;
+  --fg-2:         #B5B7B0;
+  --fg-3:         #8A8C85;
+  --fg-muted:     #5E605A;
+  --fg-on-brand:  #FFFFFF;
+
+  --border:       rgba(255, 255, 255, 0.08);
+  --border-strong: rgba(255, 255, 255, 0.16);
+  --hairline:     rgba(255, 255, 255, 0.05);
+
+  --brand:        var(--teal-400);
+  --brand-hover:  var(--teal-300);
+  --brand-press:  var(--teal-200);
+  --brand-tint:   rgba(54, 169, 154, 0.16);
+  --link:         var(--teal-300);
+
+  --accent:       rgba(159, 217, 205, 0.18);
+  --success:      var(--sage-500);
+  --warn:         var(--amber-500);
+  --error:        var(--coral-500);
+
+  --focus:        var(--teal-300);
+  --focus-halo:   rgba(111, 195, 179, 0.25);
+
+  --shadow-1: 0 1px 2px rgba(0,0,0,0.3), 0 4px 12px -6px rgba(0,0,0,0.4);
+  --shadow-2: 0 1px 0 rgba(255,255,255,0.04) inset, 0 12px 32px -12px rgba(0,0,0,0.55);
+  --shadow-3: 0 1px 0 rgba(255,255,255,0.05) inset, 0 24px 48px -16px rgba(0,0,0,0.7);
+  --shadow-inset: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+/* =========================================================================
+   Element semantics — use these as your default ground rules
+   ========================================================================= */
+html, body {
+  font-family: var(--font-sans);
+  font-size: var(--body-size);
+  line-height: var(--body-lh);
+  color: var(--fg);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+h1, .h1 {
+  font-family: var(--font-display);
+  font-size: var(--h1-size);
+  line-height: var(--h1-lh);
+  letter-spacing: var(--h1-tracking);
+  font-weight: 800;
+  margin: 0;
+  text-wrap: balance;
+}
+h2, .h2 {
+  font-family: var(--font-display);
+  font-size: var(--h2-size);
+  line-height: var(--h2-lh);
+  letter-spacing: var(--h2-tracking);
+  font-weight: 800;
+  margin: 0;
+  text-wrap: balance;
+}
+h3, .h3 {
+  font-family: var(--font-display);
+  font-size: var(--h3-size);
+  line-height: var(--h3-lh);
+  letter-spacing: var(--h3-tracking);
+  font-weight: var(--h3-weight);
+  margin: 0;
+}
+h4, .h4 {
+  font-family: var(--font-sans);
+  font-size: var(--h4-size);
+  line-height: var(--h4-lh);
+  letter-spacing: var(--h4-tracking);
+  font-weight: var(--h4-weight);
+  margin: 0;
+}
+.display-1 {
+  font-family: var(--font-display);
+  font-size: var(--display-1-size);
+  line-height: var(--display-1-lh);
+  letter-spacing: var(--display-1-tracking);
+  font-weight: 800;
+}
+.display-2 {
+  font-family: var(--font-display);
+  font-size: var(--display-2-size);
+  line-height: var(--display-2-lh);
+  letter-spacing: var(--display-2-tracking);
+  font-weight: 800;
+}
+p, .body {
+  font-size: var(--body-size);
+  line-height: var(--body-lh);
+  margin: 0;
+  text-wrap: pretty;
+}
+.body-lg { font-size: var(--body-lg-size); line-height: var(--body-lg-lh); }
+.body-sm { font-size: var(--body-sm-size); line-height: var(--body-sm-lh); }
+.caption { font-size: var(--caption-size); line-height: var(--caption-lh); font-weight: var(--caption-weight); color: var(--fg-3); }
+.eyebrow {
+  font-size: var(--eyebrow-size);
+  line-height: var(--eyebrow-lh);
+  letter-spacing: var(--eyebrow-tracking);
+  font-weight: var(--eyebrow-weight);
+  text-transform: uppercase;
+  color: var(--brand);
+}
+.dose-numeral {
+  font-family: var(--font-display);
+  font-size: var(--dose-numeral-size);
+  line-height: var(--dose-numeral-lh);
+  font-weight: 700;
+  font-feature-settings: "tnum" 1;
+  letter-spacing: -0.025em;
+}
+code, .mono {
+  font-family: var(--font-mono);
+  font-size: 0.92em;
+  font-feature-settings: "tnum" 1, "zero" 1;
+}
+
+a {
+  color: var(--link);
+  text-decoration: none;
+  transition: color var(--motion-fast) var(--ease-out-soft);
+}
+a:hover {
+  color: var(--brand-hover);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px var(--focus-halo);
+  border-radius: 4px;
+}

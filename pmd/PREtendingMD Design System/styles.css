@@ -1,0 +1,7 @@
+/* =========================================================================
+   CloseDose Design System — root entry point.
+   Consumers link THIS one file. It pulls in the full token closure:
+     • colors_and_type.css — CloseDose tokens (light + dark) + type scale
+       └─ @imports pretendingmd.css — the PREtendingMD sub-brand (--pmd-*)
+   ========================================================================= */
+@import url('./colors_and_type.css');

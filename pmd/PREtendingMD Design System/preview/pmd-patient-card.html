@@ -1,0 +1,73 @@
+<!-- @dsCard group="PREtendingMD" name="Patient Card" subtitle="The core clinical object — clean in dark & light" viewport="900x680" -->
+<!doctype html>
+<html><head><meta charset="utf-8"><title>PREtendingMD — Patient Card</title>
+<link rel="stylesheet" href="_base.css">
+<style>
+  .card-frame { padding: 0; }
+  .wrap { display: grid; grid-template-columns: 1fr 1fr; min-height: 680px; font-family: var(--pmd-font-ui); }
+  .stage { padding: 30px 26px; display: grid; place-items: start center; }
+  .stage.pmd { background: var(--pmd-bg); color: var(--pmd-ink); }
+  .stage + .stage { border-left: 1px solid var(--pmd-line); }
+  .modetag { grid-column: 1/-1; }
+
+  .pc { width: 320px; position: relative; border-radius: var(--pmd-r-card); background: var(--pmd-surface); border: 1px solid var(--pmd-line); box-shadow: var(--pmd-shadow-card); overflow: hidden; }
+  .pc::before { content:""; position:absolute; left:0; top:0; bottom:0; width:5px; background: var(--pmd-attending); }
+  .pad { padding: 15px 16px 16px 18px; }
+  .hd { display:flex; align-items:center; gap:7px; margin-bottom:14px; }
+  .col { display:inline-flex; align-items:center; gap:5px; height:28px; padding:0 10px; border-radius:999px; background:var(--pmd-surface-2); border:1px solid var(--pmd-line); font-size:10.5px; font-weight:700; letter-spacing:.04em; color:var(--pmd-ink-3); }
+  .bdg { display:inline-flex; align-items:center; height:28px; padding:0 12px; border-radius:999px; font-size:10.5px; font-weight:800; background:var(--pmd-attending-soft); color:var(--pmd-attending-ink); border:1px solid var(--pmd-attending-line); }
+  .tm { margin-left:auto; font-family:var(--pmd-font-mono); font-size:11.5px; color:var(--pmd-urgent); }
+  .id { display:flex; align-items:center; gap:11px; margin-bottom:14px; }
+  .room { width:50px; height:50px; border-radius:12px; background:var(--pmd-surface-2); border:1px solid var(--pmd-line); display:flex; flex-direction:column; align-items:center; justify-content:center; }
+  .room .a { font-size:8px; font-weight:800; letter-spacing:.1em; color:var(--pmd-ink-faint); }
+  .room .b { font-family:var(--pmd-font-clinical); font-weight:800; font-size:18px; color:var(--pmd-ink); }
+  .field { flex:1; min-width:0; display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
+  .nmi { flex:1 1 110px; min-width:0; height:42px; padding:0 11px; border-radius:12px; background:var(--pmd-surface-2); border:1px solid var(--pmd-line); font-family:var(--pmd-font-clinical); font-weight:800; font-size:16px; color:var(--pmd-ink); }
+  .mp { display:inline-flex; align-items:center; gap:3px; height:31px; padding:0 10px; border-radius:999px; background:var(--pmd-surface-2); border:1px solid var(--pmd-line); font-size:11.5px; font-weight:800; }
+  .mp.age { font-family:var(--pmd-font-clinical); color:var(--pmd-ink); }
+  .mp.fem { color:var(--pmd-female); }
+  .lab { font-size:9.5px; font-weight:800; letter-spacing:.1em; text-transform:uppercase; color:var(--pmd-ink-3); margin:0 0 8px; }
+  .cc { background:var(--pmd-surface-2); border:1px solid var(--pmd-line-soft); border-radius:12px; padding:11px 12px; font-size:12.5px; line-height:1.5; color:var(--pmd-ink); }
+  .blk { margin-top:14px; }
+  .ph { display:grid; grid-template-columns:repeat(3,1fr); gap:7px; }
+  .pb { display:inline-flex; align-items:center; justify-content:center; gap:5px; height:40px; border-radius:11px; font-size:11.5px; font-weight:800; color:#fff; border:1px solid transparent; }
+  .pb.f { background:var(--pmd-fellow-grad); } .pb.s { background:var(--pmd-staffed-grad); } .pb.a { background:var(--pmd-attending-grad); }
+  .dg { display:grid; grid-template-columns:1fr 1fr; gap:7px; }
+  .db { height:38px; border-radius:11px; display:flex; align-items:center; justify-content:center; gap:6px; font-size:11.5px; font-weight:700; background:var(--pmd-surface-2); border:1px solid var(--pmd-line); color:var(--pmd-ink-2); }
+  .db.sel { background:var(--pmd-staffed-grad); color:#fff; border-color:transparent; }
+  .db.ed { grid-column:1/-1; }
+  .bg2 { display:grid; grid-template-columns:1fr 1fr; gap:7px; }
+  .br { display:inline-flex; align-items:center; gap:7px; height:40px; padding:0 11px; border-radius:12px; background:var(--pmd-surface-2); border:1px solid var(--pmd-line); font-size:11.5px; font-weight:700; color:var(--pmd-ink-2); }
+  .br.open { background:var(--pmd-flag-soft); border-color:var(--pmd-flag-line); color:var(--pmd-flag-ink); }
+  .br.clear { background:var(--pmd-ready-soft); border-color:var(--pmd-ready-line); color:var(--pmd-ready-ink); }
+  .bd { width:7px; height:7px; border-radius:50%; background:currentColor; opacity:.8; }
+  .flagchip { margin-left:auto; display:inline-flex; align-items:center; height:24px; padding:0 10px; border-radius:999px; font-size:10.5px; font-weight:800; background:var(--pmd-flag-soft); color:var(--pmd-flag-ink); border:1px solid var(--pmd-flag-line); }
+  .barr-h { display:flex; align-items:center; gap:8px; margin-bottom:9px; }
+</style></head>
+<body>
+<div class="card-frame"><div class="wrap">
+  <div class="stage pmd" data-pmd-theme="dark">__CARD__</div>
+  <div class="stage pmd" data-pmd-theme="light">__CARD__</div>
+</div></div>
+<script>
+const card = `<article class="pc"><div class="pad">
+  <div class="hd"><span class="col">⌄ Collapse</span><span class="bdg">Attending seen</span><span class="tm">⚠ 126h 04m</span></div>
+  <div class="id">
+    <div class="room"><span class="a">ROOM</span><span class="b">A2</span></div>
+    <div class="field">
+      <input class="nmi" value="Dalerine M." aria-label="Patient name">
+      <span class="mp age">12 y/o ⌄</span><span class="mp fem">FEMALE ⌄</span>
+    </div>
+  </div>
+  <p class="lab">Chief complaint &amp; presentation</p>
+  <div class="cc">abd pain &amp; NBNB diarrhea x2 days with associated fever 103.1. Diffuse lower abdominal pain…</div>
+  <div class="blk"><p class="lab">Care phase · tap to update</p>
+    <div class="ph"><span class="pb f">✓ Fellow</span><span class="pb s">✓ Staffed</span><span class="pb a">✓ Attending</span></div></div>
+  <div class="blk"><p class="lab">Disposition decision</p>
+    <div class="dg"><span class="db">⌂ Discharge</span><span class="db sel">▭ Admit</span><span class="db ed">◎ ED obs</span></div></div>
+  <div class="blk"><div class="barr-h"><p class="lab" style="margin:0">Dispo barriers</p><span class="flagchip">⚠ 2 flagged</span></div>
+    <div class="bg2"><span class="br open"><span class="bd"></span> Labs / blood</span><span class="br clear"><span class="bd"></span> X-ray / scan</span><span class="br open"><span class="bd"></span> Medications</span><span class="br"><span class="bd"></span> Consult</span></div></div>
+</div></article>`;
+document.querySelectorAll('.stage').forEach(s=>s.innerHTML = s.innerHTML.replace('__CARD__', card));
+</script>
+</body></html>

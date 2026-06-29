@@ -1,0 +1,39 @@
+<!doctype html>
+<!-- @dsCard group="Components" name="Components — Badges & Pills" subtitle="Status, outline, eyebrow" viewport="700x220" -->
+<html><head><meta charset="utf-8"><title>Badges</title>
+<link rel="stylesheet" href="_base.css">
+<style>
+.card-frame { background: var(--bg); }
+h4 { font-family: var(--font-display); font-size: 18px; margin: 0 0 14px; color: var(--fg); font-weight: 600; }
+.row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 14px; }
+.label { font-family: var(--font-mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--fg-3); width: 90px; }
+.badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 999px; font-family: var(--font-sans); font-size: 12px; font-weight: 600; }
+.b-brand { background: #C9EBE1; color: #083E34; }
+.b-success { background: #DDF1E6; color: #237A56; }
+.b-warn { background: #FCEBD2; color: #B05E08; }
+.b-error { background: #FBE3E1; color: #B43838; }
+.b-neutral { background: #EFEBE2; color: #322F2C; }
+.b-outline { background: transparent; border: 1px solid rgba(11,30,29,0.14); color: var(--fg-2); }
+.eyebrow-tag { font-family: var(--font-sans); font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #0E6D5C; }
+.dot { width: 6px; height: 6px; border-radius: 999px; background: currentColor; }
+</style></head>
+<body><div class="card-frame">
+<h4>Badges & pills</h4>
+<div class="row"><div class="label">Status</div>
+  <span class="badge b-brand"><span class="dot"></span>Active</span>
+  <span class="badge b-success"><span class="dot"></span>Safe</span>
+  <span class="badge b-warn"><span class="dot"></span>Check</span>
+  <span class="badge b-error"><span class="dot"></span>Blocked</span>
+  <span class="badge b-neutral">Draft</span>
+</div>
+<div class="row"><div class="label">Outline</div>
+  <span class="badge b-outline">2 yr</span>
+  <span class="badge b-outline">28 lb</span>
+  <span class="badge b-outline">12.7 kg</span>
+</div>
+<div class="row"><div class="label">Eyebrow</div>
+  <span class="eyebrow-tag">Safety</span>
+  <span class="eyebrow-tag">New</span>
+  <span class="eyebrow-tag">Acetaminophen</span>
+</div>
+</div></body></html>

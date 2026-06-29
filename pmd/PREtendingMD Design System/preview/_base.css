@@ -1,0 +1,47 @@
+/* Preview card base — used by all cards in /preview */
+@import url('../colors_and_type.css');
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--fg);
+}
+.card-frame {
+  padding: 24px;
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 100%;
+}
+.row { display: flex; gap: 12px; align-items: center; }
+.col { display: flex; flex-direction: column; gap: 12px; }
+.grid { display: grid; gap: 12px; }
+.swatch {
+  border-radius: 12px;
+  height: 64px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-start;
+  padding: 8px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: rgba(255,255,255,0.95);
+  box-shadow: var(--shadow-1);
+  border: 1px solid var(--hairline);
+}
+.swatch.light { color: var(--slate-700); }
+.label {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  color: var(--fg-3);
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+.tag {
+  font-family: var(--font-sans);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--fg-3);
+}

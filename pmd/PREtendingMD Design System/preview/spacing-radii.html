@@ -1,0 +1,24 @@
+<!doctype html>
+<!-- @dsCard group="Spacing" name="Spacing — Radii" subtitle="6 corner-radius tokens" viewport="700x220" -->
+<html><head><meta charset="utf-8"><title>Radii</title>
+<link rel="stylesheet" href="_base.css">
+<style>
+.card-frame { background: var(--bg); }
+h4 { font-family: var(--font-display); font-size: 18px; margin: 0 0 14px; color: var(--fg); font-weight: 600; }
+.row { display: grid; grid-template-columns: repeat(6, 1fr); gap: 14px; }
+.tile { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.box { width: 86px; height: 86px; background: var(--teal-100); border: 1px solid var(--teal-200); }
+.token { font-family: var(--font-mono); font-size: 10px; color: var(--fg-2); }
+.use { font-family: var(--font-sans); font-size: 11px; color: var(--fg-3); text-align: center; }
+</style></head>
+<body><div class="card-frame">
+<h4>Corner radii</h4>
+<div class="row">
+  <div class="tile"><div class="box" style="border-radius:4px"></div><div class="token">--radius-1 · 4</div><div class="use">chips</div></div>
+  <div class="tile"><div class="box" style="border-radius:8px"></div><div class="token">--radius-2 · 8</div><div class="use">inputs</div></div>
+  <div class="tile"><div class="box" style="border-radius:12px"></div><div class="token">--radius-3 · 12</div><div class="use">buttons</div></div>
+  <div class="tile"><div class="box" style="border-radius:16px"></div><div class="token">--radius-4 · 16</div><div class="use">cards</div></div>
+  <div class="tile"><div class="box" style="border-radius:24px"></div><div class="token">--radius-5 · 24</div><div class="use">hero/modal</div></div>
+  <div class="tile"><div class="box" style="border-radius:999px"></div><div class="token">--radius-pill</div><div class="use">pills</div></div>
+</div>
+</div></body></html>

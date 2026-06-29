@@ -1,0 +1,46 @@
+<!doctype html>
+<!-- @dsCard group="Components" name="Components — Inputs" subtitle="Default, focus, error" viewport="700x280" -->
+<html><head><meta charset="utf-8"><title>Inputs</title>
+<link rel="stylesheet" href="_base.css">
+<style>
+.card-frame { background: var(--bg); }
+h4 { font-family: var(--font-display); font-size: 18px; margin: 0 0 14px; color: var(--fg); font-weight: 600; }
+.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+.field { display: flex; flex-direction: column; gap: 6px; }
+.label { font-family: var(--font-sans); font-weight: 600; font-size: 13px; color: var(--fg); }
+.help { font-family: var(--font-sans); font-size: 12px; color: var(--fg-3); }
+.input {
+  font-family: var(--font-sans); font-size: 16px; padding: 12px 14px;
+  background: white; border: 1px solid rgba(11,30,29,0.14); border-radius: 10px;
+  color: var(--fg); outline: none; display: flex; align-items: center; gap: 10px;
+}
+.input:focus-within { border-color: #1A9789; box-shadow: 0 0 0 4px rgba(26,151,137,0.18); }
+.input.error { border-color: #D84A4A; box-shadow: 0 0 0 4px rgba(216,74,74,0.15); }
+.input input { border: none; outline: none; flex: 1; font: inherit; background: transparent; color: inherit; min-width: 0; }
+.unit { font-family: var(--font-mono); color: var(--fg-3); font-size: 14px; }
+.err-help { color: #B43838; font-size: 12px; }
+</style></head>
+<body><div class="card-frame">
+<h4>Inputs</h4>
+<div class="grid">
+  <div class="field">
+    <label class="label">Child's weight</label>
+    <div class="input"><input value="42" inputmode="decimal"><span class="unit">lb</span></div>
+    <div class="help">We use this to calculate a safe dose.</div>
+  </div>
+  <div class="field">
+    <label class="label">Age</label>
+    <div class="input"><input value="6 years"></div>
+    <div class="help">Used to confirm the medication is approved.</div>
+  </div>
+  <div class="field">
+    <label class="label">Medication</label>
+    <div class="input"><input placeholder="Search medications…"></div>
+  </div>
+  <div class="field">
+    <label class="label">Weight</label>
+    <div class="input error"><input value="3000" inputmode="decimal"><span class="unit">lb</span></div>
+    <div class="err-help">That weight looks off — can you check?</div>
+  </div>
+</div>
+</div></body></html>

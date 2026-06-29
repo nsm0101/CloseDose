@@ -1,0 +1,32 @@
+<!doctype html>
+<!-- @dsCard group="Colors" name="Colors — Teal Ramp" subtitle="Brand ramp anchored on #18A78D (from icon)" viewport="700x200" -->
+<html><head><meta charset="utf-8"><title>Brand Teal</title>
+<link rel="stylesheet" href="_base.css">
+<style>
+.card-frame { background: var(--bg); }
+.ramp { display: grid; grid-template-columns: repeat(11, 1fr); gap: 6px; }
+.swatch-tall { height: 92px; border-radius: 10px; padding: 6px 8px; display: flex; flex-direction: column; justify-content: space-between; font-family: var(--font-mono); font-size: 10px; }
+.swatch-tall .num { color: rgba(255,255,255,0.95); font-weight: 600; }
+.swatch-tall.light .num { color: var(--slate-700); }
+.swatch-tall .hex { color: rgba(255,255,255,0.7); }
+.swatch-tall.light .hex { color: var(--slate-500); }
+.star { position: absolute; top: 4px; right: 6px; font-size: 10px; color: #fff; }
+.swatch-tall { position: relative; }
+h4 { font-family: var(--font-display); font-size: 18px; margin: 0 0 14px; color: var(--fg); font-weight: 600; }
+.note { margin-top: 10px; font-size: 12px; color: var(--fg-3); }
+.note b { color: #18A78D; }
+</style></head>
+<body><div class="card-frame">
+<h4>Teal — primary brand ramp</h4>
+<div class="ramp" id="ramp"></div>
+<div class="note">Teal 500 (<b>#18A78D</b>) is the official action color, sampled from the app icon. Teal 600 hover, Teal 700 press. Teal 50/100 for tints.</div>
+<script>
+const teals = [
+  ['50','#E8F6F2',1],['100','#C9EBE1',1],['200','#9FDDCC',1],['300','#6FCBB4',1],
+  ['400','#3FB89C',0],['500','#18A78D',0,true],['600','#128873',0],['700','#0E6D5C',0],
+  ['800','#0B5346',0],['900','#083E34',0],['950','#052822',0]
+];
+document.getElementById('ramp').innerHTML = teals.map(([n,h,l,star])=>
+  `<div class="swatch-tall ${l?'light':''}" style="background:${h}">${star?'<div class="star">★</div>':''}<div class="num">${n}</div><div class="hex">${h}</div></div>`).join('');
+</script>
+</div></body></html>

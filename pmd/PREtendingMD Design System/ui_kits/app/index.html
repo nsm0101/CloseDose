@@ -1,0 +1,105 @@
+<!doctype html>
+<!-- @dsCard group="UI Kit — App" name="UI Kit — App" subtitle="Mobile dose-lookup app, light & dark" viewport="900x900" -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CloseDose · App UI Kit</title>
+<link rel="stylesheet" href="../../colors_and_type.css">
+<link rel="stylesheet" href="styles.css">
+<style>
+  body { background: #F4EFE5; min-height: 100vh; margin: 0; }
+  .stage {
+    display: flex; gap: 28px; flex-wrap: wrap;
+    justify-content: center; align-items: flex-start;
+    padding: 32px 24px;
+  }
+  .stage[data-theme="dark"] { background: #0B1717; }
+  .frame-wrap { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+  .frame-label { font-family: 'Inter', sans-serif; font-size: 12px; color: var(--fg-3); font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; }
+  .body-bg-light { background: #F4EFE5; }
+  .body-bg-dark { background: #0B1717; }
+</style>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+</head>
+<body class="body-bg-light" id="body">
+<div id="root"></div>
+
+<script type="text/babel" src="ios-frame.jsx"></script>
+<script type="text/babel" src="Icon.jsx"></script>
+<script type="text/babel" src="Screens.jsx"></script>
+
+<script type="text/babel">
+const { useState: useStateApp } = React;
+
+const KIDS = [
+  { id:'maya', name:'Maya', age:6, weight:48, color:'#0E8C8C' },
+  { id:'theo', name:'Theo', age:2, weight:28, color:'#D97A0E' },
+  { id:'lila', name:'Lila', age:9, weight:62, color:'#2E9E6E' },
+];
+
+function PhonePreview({ theme, initialScreen }) {
+  const [tab, setTab] = useStateApp('home');
+  const [screen, setScreen] = useStateApp(initialScreen || 'home');
+  const [activeKid, setActiveKid] = useStateApp('maya');
+  const [pickedMed, setPickedMed] = useStateApp(null);
+  const kid = KIDS.find(k=>k.id===activeKid);
+
+  const toggleTheme = () => {
+    // Flip on the parent app via prop swap — handled at App level
+    window.dispatchEvent(new CustomEvent('cd-toggle-theme'));
+  };
+
+  let body;
+  if (screen === 'dose' && pickedMed) {
+    body = <DoseScreen med={pickedMed} kid={kid} onBack={()=>setScreen('home')} theme={theme} toggleTheme={toggleTheme}/>;
+  } else {
+    body = <HomeScreen
+      onPickMed={(m)=>{setPickedMed(m); setScreen('dose');}}
+      kids={KIDS} activeKid={activeKid} setActiveKid={setActiveKid}
+      theme={theme} toggleTheme={toggleTheme}/>;
+  }
+
+  return (
+    <IOSDevice dark={theme==='dark'}>
+      <div className="cd-app" data-theme={theme} style={{height:'100%', overflow:'hidden', display:'flex', flexDirection:'column'}}>
+        <div style={{flex:1, overflowY:'auto', WebkitOverflowScrolling:'touch'}}>
+          {body}
+        </div>
+        <TabBar tab={tab} setTab={setTab} theme={theme}/>
+      </div>
+    </IOSDevice>
+  );
+}
+
+function App() {
+  const [theme, setTheme] = useStateApp('light');
+  React.useEffect(()=>{
+    const handler = () => setTheme(t => t==='dark'?'light':'dark');
+    window.addEventListener('cd-toggle-theme', handler);
+    return ()=>window.removeEventListener('cd-toggle-theme', handler);
+  },[]);
+  React.useEffect(()=>{
+    document.getElementById('body').className = theme==='dark'?'body-bg-dark':'body-bg-light';
+  },[theme]);
+
+  return (
+    <div className="stage" data-theme={theme}>
+      <div className="frame-wrap">
+        <PhonePreview theme={theme} initialScreen="home"/>
+        <div className="frame-label" style={{color: theme==='dark'?'#8A8C85':'var(--fg-3)'}}>Home · {theme}</div>
+      </div>
+      <div className="frame-wrap">
+        <PhonePreview theme={theme} initialScreen="dose"/>
+        <div className="frame-label" style={{color: theme==='dark'?'#8A8C85':'var(--fg-3)'}}>Dose result · {theme}</div>
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body>
+</html>

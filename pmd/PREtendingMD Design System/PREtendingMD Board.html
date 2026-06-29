@@ -1,0 +1,540 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PREtendingMD — Board</title>
+<link rel="stylesheet" href="colors_and_type.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body { background: var(--pmd-bg); transition: background var(--pmd-base) var(--pmd-ease); }
+
+  /* ===== Preview chrome (the design-system toggle bar — not part of the app) ===== */
+  .dsbar {
+    position: fixed; z-index: 60; bottom: 18px; left: 50%; transform: translateX(-50%);
+    display: flex; align-items: center; gap: 8px;
+    padding: 7px 8px 7px 14px; border-radius: var(--pmd-r-pill);
+    background: var(--pmd-surface); border: 1px solid var(--pmd-line);
+    box-shadow: var(--pmd-shadow-3); font-family: var(--pmd-font-ui);
+  }
+  .dsbar .lbl { font-size: 11px; font-weight: 600; letter-spacing: .04em; color: var(--pmd-ink-3); text-transform: uppercase; }
+  .seg { display: flex; gap: 2px; padding: 3px; border-radius: var(--pmd-r-pill); background: var(--pmd-surface-2); }
+  .seg button {
+    border: 0; cursor: pointer; font-family: inherit; font-size: 12px; font-weight: 600;
+    padding: 6px 13px; border-radius: var(--pmd-r-pill); color: var(--pmd-ink-2); background: transparent;
+    transition: all var(--pmd-fast) var(--pmd-ease);
+  }
+  .seg button[aria-pressed="true"] { background: var(--pmd-surface); color: var(--pmd-ink); box-shadow: var(--pmd-shadow-1); }
+
+  /* ===== App shell ===== */
+  .app { min-height: 100vh; font-family: var(--pmd-font-ui); color: var(--pmd-ink); }
+  .view { display: none; }
+  .view.active { display: block; }
+  .pmd-switching, .pmd-switching * { transition: none !important; }
+
+  /* ---------- top bar ---------- */
+  .topbar {
+    position: sticky; top: 0; z-index: 40;
+    display: grid; grid-template-columns: 1fr auto 1fr; align-items: center;
+    gap: 16px; padding: 14px 28px;
+    background: var(--pmd-header); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--pmd-line);
+  }
+  .brand-lockup { display: flex; align-items: center; gap: 11px; }
+  .brand-lockup .brand-teddy { height: 46px; width: auto; object-fit: contain; filter: drop-shadow(0 3px 6px rgba(0,0,0,.26)); }
+  .brand-lockup .brand-img { height: 23px; width: auto; object-fit: contain; }
+  .brand-word { font-family: var(--pmd-font-brand); font-weight: 800; font-size: 21px; letter-spacing: -.02em; line-height: 1; }
+  .brand-word .pre { color: var(--pmd-ink); }
+  .brand-word .tend { color: var(--pmd-ink-2); }
+  .brand-word .md { background: var(--pmd-fellow-grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+
+  .rtl {
+    justify-self: center; display: inline-flex; align-items: center; gap: 10px;
+    padding: 8px 18px; border-radius: var(--pmd-r-pill);
+    background: var(--pmd-surface); border: 1px solid var(--pmd-line); box-shadow: var(--pmd-shadow-1);
+  }
+  .rtl .k { font-size: 11px; font-weight: 700; letter-spacing: .12em; color: var(--pmd-ink-3); }
+  .rtl .v { font-family: var(--pmd-font-mono); font-weight: 500; font-size: 16px; color: var(--pmd-ready-ink); font-feature-settings: "tnum" 1; }
+
+  .top-right { justify-self: end; display: flex; align-items: center; gap: 10px; }
+  .chip {
+    display: inline-flex; align-items: center; gap: 8px; height: 38px; padding: 0 15px; white-space: nowrap;
+    border-radius: var(--pmd-r-pill); background: var(--pmd-surface); border: 1px solid var(--pmd-line);
+    font-size: 12.5px; font-weight: 600; color: var(--pmd-ink-2); cursor: pointer;
+    transition: all var(--pmd-fast) var(--pmd-ease);
+  }
+  .chip:hover { border-color: var(--pmd-line-strong); }
+  .chip svg { width: 15px; height: 15px; }
+  .chip.live { color: var(--pmd-ready-ink); }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--pmd-ready); box-shadow: 0 0 0 4px var(--pmd-ready-soft); }
+  .icon-btn { display: grid; place-items: center; width: 38px; height: 38px; border-radius: 50%; background: var(--pmd-surface); border: 1px solid var(--pmd-line); cursor: pointer; color: var(--pmd-ink-2); }
+  .icon-btn svg { width: 16px; height: 16px; }
+
+  .canvas { max-width: 2200px; margin: 0 auto; padding: 20px 28px 60px; }
+
+  /* ---------- team row ---------- */
+  .teamrow { display: flex; align-items: center; gap: 14px; padding: 6px 2px 18px; }
+  .teamrow .tlabel { display: inline-flex; align-items: center; gap: 7px; font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--pmd-ink-3); }
+  .teamrow .tlabel svg { width: 15px; height: 15px; }
+  .avatars { display: flex; align-items: center; gap: 8px; }
+  .av { width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; font-weight: 800; font-size: 13px; color: #fff; font-family: var(--pmd-font-clinical); border: 2px solid var(--pmd-surface); box-shadow: var(--pmd-shadow-1); }
+  .av.add { background: transparent; border: 1.5px dashed var(--pmd-line-strong); color: var(--pmd-ink-3); }
+
+  /* ---------- census filter ---------- */
+  .censusrow { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding-bottom: 18px; }
+  .census-pill, .filter-pill {
+    display: inline-flex; align-items: center; gap: 9px; height: 40px; padding: 0 16px; white-space: nowrap;
+    border-radius: var(--pmd-r-pill); background: var(--pmd-surface-2); border: 1px solid var(--pmd-line);
+    font-size: 12.5px; font-weight: 600; color: var(--pmd-ink-2); cursor: pointer;
+    transition: all var(--pmd-fast) var(--pmd-ease);
+  }
+  .census-pill { background: var(--pmd-surface); }
+  .filter-pill:hover { border-color: var(--pmd-line-strong); }
+  .census-pill .num, .filter-pill .num { font-family: var(--pmd-font-clinical); font-weight: 800; color: var(--pmd-ink); }
+  .filter-pill .pdot { width: 9px; height: 9px; border-radius: 50%; }
+  .spacer { flex: 1 1 auto; }
+  .btn-primary {
+    display: inline-flex; align-items: center; gap: 8px; height: 44px; padding: 0 20px; border: 0; cursor: pointer; white-space: nowrap;
+    border-radius: var(--pmd-r-btn); font-family: var(--pmd-font-ui); font-size: 13.5px; font-weight: 700; color: #fff;
+    background: var(--pmd-fellow-grad); box-shadow: var(--pmd-shadow-2), 0 8px 22px -10px var(--pmd-fellow);
+    transition: transform var(--pmd-fast) var(--pmd-ease);
+  }
+  .btn-primary:active { transform: scale(.98); }
+  .btn-primary svg { width: 16px; height: 16px; }
+
+  /* ---------- tabs ---------- */
+  .tabs { display: inline-flex; gap: 4px; padding: 5px; border-radius: var(--pmd-r-field); background: var(--pmd-surface-2); border: 1px solid var(--pmd-line); margin-bottom: 16px; }
+  .tab { display: inline-flex; align-items: center; gap: 8px; padding: 9px 18px; border-radius: 9px; border: 0; cursor: pointer; white-space: nowrap; font-family: var(--pmd-font-ui); font-size: 12.5px; font-weight: 700; letter-spacing: .03em; color: var(--pmd-ink-3); background: transparent; }
+  .tab svg { width: 15px; height: 15px; }
+  .tab.active { background: var(--pmd-surface); color: var(--pmd-fellow-ink); box-shadow: var(--pmd-shadow-1); }
+
+  .toolrow { display: flex; align-items: center; gap: 22px; padding: 0 2px 16px; }
+  .toolrow .tl { font-size: 12px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--pmd-ink-3); cursor: pointer; }
+  .toolrow .live { margin-left: auto; display: inline-flex; align-items: center; gap: 8px; font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--pmd-ready-ink); }
+
+  /* ---------- board grid ---------- */
+  .board { display: grid; grid-template-columns: repeat(4, minmax(280px, 1fr)); gap: 18px; align-items: start; }
+  @media (max-width: 1760px){ .board { grid-template-columns: repeat(3, 1fr); } }
+  @media (max-width: 1280px){ .board { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 820px){ .board { grid-template-columns: 1fr; } }
+
+  .pcard {
+    position: relative; border-radius: var(--pmd-r-card); background: var(--pmd-surface);
+    border: 1px solid var(--pmd-line); box-shadow: var(--pmd-shadow-card); overflow: hidden;
+  }
+  .pcard::before { content:""; position: absolute; left: 0; top: 0; bottom: 0; width: 5px; background: var(--accent); }
+  .pcard .pad { padding: 16px 18px 18px 20px; }
+
+  .pc-head { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; }
+  .collapse { display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 11px; border-radius: var(--pmd-r-pill); background: var(--pmd-surface-2); border: 1px solid var(--pmd-line); font-size: 11px; font-weight: 700; letter-spacing: .05em; color: var(--pmd-ink-3); cursor: pointer; }
+  .collapse svg { width: 13px; height: 13px; }
+  .status-badge { display: inline-flex; align-items: center; height: 30px; padding: 0 13px; border-radius: var(--pmd-r-pill); font-size: 11px; font-weight: 800; letter-spacing: .04em; }
+  .pc-timer { margin-left: auto; display: inline-flex; align-items: center; gap: 6px; font-family: var(--pmd-font-mono); font-size: 12px; font-weight: 500; }
+  .pc-timer.fresh { color: var(--pmd-ready-ink); }
+  .pc-timer.over { color: var(--pmd-urgent); }
+  .pc-timer svg { width: 13px; height: 13px; }
+  .mini { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 8px; background: var(--pmd-surface-2); border: 1px solid var(--pmd-line); color: var(--pmd-ink-faint); }
+  .mini svg { width: 13px; height: 13px; }
+
+  /* identity */
+  .ident { display: flex; align-items: flex-start; gap: 13px; margin-bottom: 16px; }
+  .room { flex: 0 0 auto; width: 56px; height: 56px; border-radius: var(--pmd-r-field); background: var(--pmd-surface-2); border: 1px solid var(--pmd-line); display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  .room .rl { font-size: 8.5px; font-weight: 800; letter-spacing: .1em; color: var(--pmd-ink-faint); }
+  .room .rv { font-family: var(--pmd-font-clinical); font-weight: 800; font-size: 20px; color: var(--pmd-ink); line-height: 1; margin-top: 2px; }
+  .idfield { flex: 1 1 auto; min-width: 0; display: flex; align-items: center; gap: 7px; flex-wrap: wrap; }
+  .nm-input {
+    flex: 1 1 128px; min-width: 0; height: 46px; padding: 0 13px;
+    border-radius: var(--pmd-r-field); background: var(--pmd-surface-2); border: 1px solid var(--pmd-line);
+    font-family: var(--pmd-font-clinical); font-weight: 800; font-size: 18px; letter-spacing: -.01em; color: var(--pmd-ink);
+    transition: all var(--pmd-fast) var(--pmd-ease);
+  }
+  .nm-input::placeholder { color: var(--pmd-ink-faint); font-weight: 700; }
+  .nm-input:focus { outline: none; border-color: var(--pmd-fellow-line); box-shadow: 0 0 0 3px var(--pmd-fellow-soft); }
+  .meta-pill {
+    flex: 0 0 auto; display: inline-flex; align-items: center; gap: 4px; height: 34px; padding: 0 11px;
+    border-radius: var(--pmd-r-pill); background: var(--pmd-surface-2); border: 1px solid var(--pmd-line);
+    font-family: var(--pmd-font-ui); font-size: 12.5px; font-weight: 700; color: var(--pmd-ink-2); cursor: pointer;
+    white-space: nowrap; transition: all var(--pmd-fast) var(--pmd-ease);
+  }
+  .meta-pill:hover { border-color: var(--pmd-line-strong); }
+  .meta-pill svg { width: 13px; height: 13px; }
+  .meta-pill.age { font-family: var(--pmd-font-clinical); font-weight: 800; color: var(--pmd-ink); }
+  .meta-pill.sex { font-weight: 800; letter-spacing: .03em; }
+  .meta-pill.sex.male { color: var(--pmd-male); }
+  .meta-pill.sex.female { color: var(--pmd-female); }
+
+  .sec-label { font-size: 10px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: var(--pmd-ink-3); margin: 0 0 9px; }
+  .sec-label .hint { color: var(--pmd-ink-faint); font-weight: 600; }
+
+  .cc { background: var(--pmd-surface-2); border: 1px solid var(--pmd-line-soft); border-radius: var(--pmd-r-field); padding: 12px 14px; font-size: 13.5px; line-height: 1.5; color: var(--pmd-ink); min-height: 58px; }
+  .cc.placeholder { color: var(--pmd-ink-faint); }
+
+  .block { margin-top: 16px; }
+
+  /* care phase segmented */
+  .phase { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .phase button {
+    display: inline-flex; align-items: center; justify-content: center; gap: 7px; height: 46px; border-radius: var(--pmd-r-btn);
+    border: 1px solid var(--pmd-line); background: var(--pmd-surface-2); cursor: pointer;
+    font-family: var(--pmd-font-ui); font-size: 12.5px; font-weight: 800; letter-spacing: .02em; color: var(--pmd-ink-2);
+    transition: all var(--pmd-fast) var(--pmd-ease);
+  }
+  .phase button .nbox { width: 19px; height: 19px; border-radius: 50%; display: grid; place-items: center; font-size: 11px; font-weight: 800; background: var(--pmd-surface-3); border: 1px solid var(--pmd-line); color: var(--pmd-ink-3); }
+  .phase button .ck { width: 17px; height: 17px; display: none; }
+  .phase button.on { color: #fff; border-color: transparent; box-shadow: var(--pmd-shadow-1); }
+  .phase button.on .nbox { display: none; }
+  .phase button.on .ck { display: block; }
+  .phase button.on.fellow    { background: var(--pmd-fellow-grad);    box-shadow: 0 6px 18px -8px var(--pmd-fellow); }
+  .phase button.on.staffed   { background: var(--pmd-staffed-grad);   box-shadow: 0 6px 18px -8px var(--pmd-staffed); }
+  .phase button.on.attending { background: var(--pmd-attending-grad); box-shadow: 0 6px 18px -8px var(--pmd-attending); }
+
+  /* disposition */
+  .dispo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .dispo-grid .ed { grid-column: 1 / -1; }
+  .dbtn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 42px; border-radius: var(--pmd-r-btn); border: 1px solid var(--pmd-line); background: var(--pmd-surface-2); cursor: pointer; font-family: var(--pmd-font-ui); font-size: 12.5px; font-weight: 700; color: var(--pmd-ink-2); transition: all var(--pmd-fast) var(--pmd-ease); }
+  .dbtn svg { width: 15px; height: 15px; }
+  .dbtn:hover { border-color: var(--pmd-line-strong); }
+  .dbtn.sel-admit { background: var(--pmd-admit-grad); color: #fff; border-color: transparent; box-shadow: 0 6px 16px -8px var(--pmd-staffed); }
+  .dbtn.sel-discharge { background: var(--pmd-ready-grad); color: var(--pmd-ready-on); border-color: transparent; box-shadow: 0 6px 16px -8px var(--pmd-ready); }
+
+  /* barriers */
+  .barr-head { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; flex-wrap: wrap; }
+  .barr-head .sec-label { margin: 0; }
+  .barr-flag { margin-left: auto; display: inline-flex; align-items: center; gap: 6px; height: 26px; padding: 0 11px; border-radius: var(--pmd-r-pill); font-size: 11px; font-weight: 800; }
+  .barr-flag.open { background: var(--pmd-flag-soft); color: var(--pmd-flag-ink); border: 1px solid var(--pmd-flag-line); }
+  .barr-flag.clear { background: var(--pmd-ready-soft); color: var(--pmd-ready-ink); border: 1px solid var(--pmd-ready-line); }
+  .barr-flag svg { width: 12px; height: 12px; }
+  .barr-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .barr {
+    display: inline-flex; align-items: center; gap: 9px; height: 44px; padding: 0 12px; border-radius: var(--pmd-r-field);
+    background: var(--pmd-surface-2); border: 1px solid var(--pmd-line); cursor: pointer; min-width: 0;
+    font-size: 12px; font-weight: 700; color: var(--pmd-ink-2); transition: all var(--pmd-fast) var(--pmd-ease);
+  }
+  .barr .bi { flex: 0 0 auto; display: grid; place-items: center; width: 26px; height: 26px; border-radius: 8px; background: var(--pmd-surface-3); color: var(--pmd-ink-3); }
+  .barr .bi svg { width: 14px; height: 14px; }
+  .barr .bt { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .barr .st { margin-left: auto; flex: 0 0 auto; width: 16px; height: 16px; }
+  .barr.open { background: var(--pmd-flag-soft); border-color: var(--pmd-flag-line); color: var(--pmd-flag-ink); }
+  .barr.open .bi { background: color-mix(in oklab, var(--pmd-flag) 24%, transparent); color: var(--pmd-flag-ink); }
+  .barr.clear { background: var(--pmd-ready-soft); border-color: var(--pmd-ready-line); color: var(--pmd-ready-ink); }
+  .barr.clear .bi { background: color-mix(in oklab, var(--pmd-ready) 24%, transparent); color: var(--pmd-ready-ink); }
+
+  .none-flagged { margin-left: auto; display: inline-flex; align-items: center; height: 26px; padding: 0 11px; border-radius: var(--pmd-r-pill); background: var(--pmd-surface-2); border: 1px solid var(--pmd-line); font-size: 11px; font-weight: 800; letter-spacing: .02em; color: var(--pmd-ink-faint); }
+
+  .gtg {
+    display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; height: 54px; margin-top: 16px;
+    border-radius: var(--pmd-r-btn); border: 1.5px dashed var(--pmd-ready-line); background: var(--pmd-ready-soft);
+    font-family: var(--pmd-font-clinical); font-size: 15px; font-weight: 800; letter-spacing: .03em; color: var(--pmd-ready-ink);
+    cursor: pointer; transition: all var(--pmd-fast) var(--pmd-ease);
+  }
+  .gtg svg { width: 18px; height: 18px; }
+  .gtg:hover { background: color-mix(in oklab, var(--pmd-ready) 26%, transparent); }
+
+  /* ====================== WELCOME (playful shell) ====================== */
+  .welcome { position: relative; min-height: 100vh; display: grid; place-items: center; overflow: hidden; padding: 40px 24px; }
+  .welcome .ground { position: absolute; inset: 0; background:
+      radial-gradient(120% 90% at 50% -10%, var(--pmd-sky), transparent 60%),
+      linear-gradient(180deg, var(--pmd-cream), var(--pmd-bg)); }
+  .stars { position: absolute; inset: 0; pointer-events: none; }
+  .stars span { position: absolute; color: var(--pmd-workup-soft); font-size: 26px; opacity: .8; }
+  .wcard {
+    position: relative; z-index: 2; width: min(560px, 100%); text-align: center;
+    background: var(--pmd-surface); border: 1px solid var(--pmd-line); border-radius: var(--pmd-r-hero);
+    box-shadow: var(--pmd-shadow-3); padding: 48px 44px 36px;
+  }
+  .wcard .teddy { width: 168px; height: 168px; object-fit: contain; margin: -110px auto 6px; display: block; filter: drop-shadow(0 12px 22px rgba(20,40,68,.22)); }
+  .wcard .crayon { width: min(360px, 80%); margin: 6px auto 0; display: block; }
+  .wcard .tagline { font-family: var(--pmd-font-chalk); font-size: 27px; color: var(--pmd-ink-2); margin: 14px 0 4px; }
+  .wcard .lede { font-size: 15px; line-height: 1.6; color: var(--pmd-ink-2); margin: 14px auto 24px; max-width: 40ch; }
+  .wcard .wbtn { display: inline-flex; align-items: center; gap: 9px; height: 52px; padding: 0 28px; border: 0; border-radius: var(--pmd-r-pill); cursor: pointer; font-family: var(--pmd-font-ui); font-size: 15px; font-weight: 800; color: #fff; background: var(--pmd-fellow-grad); box-shadow: 0 10px 26px -10px var(--pmd-fellow); transition: transform var(--pmd-fast) var(--pmd-ease); }
+  .wcard .wbtn:active { transform: scale(.98); }
+  .wcard .wbtn svg { width: 18px; height: 18px; }
+  .crayon-rule { display: flex; gap: 5px; justify-content: center; margin: 26px 0 18px; }
+  .crayon-rule i { width: 26px; height: 6px; border-radius: 3px; display: block; }
+  .family { display: inline-flex; align-items: center; gap: 8px; font-size: 12.5px; color: var(--pmd-ink-3); }
+  .family b { color: var(--pmd-family-ink); font-weight: 700; }
+  .family .seed { width: 9px; height: 9px; border-radius: 50%; background: var(--pmd-family); }
+</style>
+</head>
+<body>
+<div class="app pmd" id="app" data-pmd-theme="dark">
+
+  <!-- design-system preview toolbar -->
+  <div class="dsbar">
+    <span class="lbl">PREtendingMD</span>
+    <div class="seg" id="viewseg">
+      <button data-view="board" aria-pressed="true">Board</button>
+      <button data-view="welcome" aria-pressed="false">Welcome</button>
+    </div>
+    <div class="seg" id="themeseg">
+      <button data-theme="dark" aria-pressed="true">Dark</button>
+      <button data-theme="light" aria-pressed="false">Light</button>
+    </div>
+  </div>
+
+  <!-- ============ BOARD VIEW ============ -->
+  <div class="view active" id="view-board">
+    <header class="topbar">
+      <div class="brand-lockup">
+        <img class="brand-teddy" src="assets/pretendingmd/sticker-head.png" alt="">
+        <img class="brand-img" src="assets/pretendingmd/wordmark-tight.png" alt="PREtendingMD">
+      </div>
+      <div class="rtl"><span class="k">RTL</span><span class="v" id="rtlclock">00:04:25</span></div>
+      <div class="top-right">
+        <button class="chip live"><span class="dot"></span> Live · synced</button>
+        <button class="chip" data-ic="share">Share</button>
+        <button class="chip" data-ic="user">Nick Mancini</button>
+      </div>
+    </header>
+
+    <div class="canvas">
+      <div class="teamrow">
+        <span class="tlabel" data-ic="users">Team</span>
+        <div class="avatars" id="avatars"></div>
+      </div>
+
+      <div class="censusrow">
+        <span class="census-pill">Census <span class="num">5</span></span>
+        <span class="filter-pill"><span class="pdot" style="background:var(--pmd-tobeseen)"></span> To be seen <span class="num">1</span></span>
+        <span class="filter-pill"><span class="pdot" style="background:var(--pmd-workup)"></span> Work-up <span class="num">0</span></span>
+        <span class="filter-pill"><span class="pdot" style="background:var(--pmd-staffed)"></span> Staffed <span class="num">0</span></span>
+        <span class="filter-pill"><span class="pdot" style="background:var(--pmd-attending)"></span> Attending <span class="num">1</span></span>
+        <span class="filter-pill"><span class="pdot" style="background:var(--pmd-dispo)"></span> Dispo <span class="num">1</span></span>
+        <span class="filter-pill"><span class="pdot" style="background:var(--pmd-ready)"></span> Ready <span class="num">2</span></span>
+        <span class="spacer"></span>
+        <button class="btn-primary" data-ic="plus">Add patient</button>
+      </div>
+
+      <div class="tabs">
+        <button class="tab active" data-ic="timer">Next up queue</button>
+        <button class="tab" data-ic="layout">Room order</button>
+      </div>
+
+      <div class="toolrow">
+        <span class="tl">Search</span><span class="tl">Filter</span><span class="tl">Sort</span>
+        <span class="live"><span class="dot"></span> Live</span>
+      </div>
+
+      <div class="board" id="board"></div>
+    </div>
+  </div>
+
+  <!-- ============ WELCOME VIEW ============ -->
+  <div class="view" id="view-welcome">
+    <section class="welcome">
+      <div class="ground"></div>
+      <div class="stars" id="stars"></div>
+      <div class="wcard">
+        <img class="teddy" src="assets/pretendingmd/teddy-full-tight.png" alt="">
+        <img class="crayon" src="assets/pretendingmd/wordmark-crayon.png" alt="PREtendingMD">
+        <p class="tagline">play pretend. practice for real.</p>
+        <p class="lede">The pediatric ED board for fellows learning to run the room — track every kid from <em>to be seen</em> to <em>good to go</em>.</p>
+        <button class="wbtn" data-ic="arrow">Open today's board</button>
+        <div class="crayon-rule">
+          <i style="background:var(--crayon-red)"></i><i style="background:var(--crayon-orange)"></i><i style="background:var(--crayon-yellow)"></i><i style="background:var(--crayon-green)"></i><i style="background:var(--crayon-teal)"></i><i style="background:var(--crayon-blue)"></i><i style="background:var(--crayon-violet)"></i>
+        </div>
+        <span class="family"><span class="seed"></span> part of the <b>CloseDose</b> family</span>
+      </div>
+    </section>
+  </div>
+
+</div>
+
+<script>
+/* ---------- minimal Lucide-style icon set ---------- */
+const I = {
+  users:'<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',
+  share:'<circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/>',
+  user:'<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>',
+  plus:'<path d="M12 5v14M5 12h14"/>',
+  timer:'<circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2.5M9 2h6"/>',
+  layout:'<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/>',
+  chev:'<path d="m6 9 6 6 6-6"/>',
+  clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+  refresh:'<path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/>',
+  pin:'<path d="M12 17v5"/><path d="M9 10.8a2 2 0 0 1-1.1 1.8l-1.8.9A2 2 0 0 0 5 15.2V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.8a2 2 0 0 0-1.1-1.8l-1.8-.9A2 2 0 0 1 15 10.8V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z"/>',
+  check:'<path d="M20 6 9 17l-5-5"/>',
+  alert:'<path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/>',
+  home:'<path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/>',
+  bed:'<path d="M2 4v16M2 8h18a2 2 0 0 1 2 2v10M2 17h20M6 8v9"/>',
+  eye:'<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/>',
+  labs:'<path d="M5 3h14M6 3v15a3 3 0 0 0 3 3h6a3 3 0 0 0 3-3V3M6 13h12"/>',
+  image:'<rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.1-3.1a2 2 0 0 0-2.8 0L6 21"/>',
+  pill:'<path d="M10.5 20.5 21 10a3.5 3.5 0 0 0-5-5L5.5 15.5a3.5 3.5 0 0 0 5 5Z"/><path d="m8.5 8.5 7 7"/>',
+  steth:'<path d="M4 3v6a5 5 0 0 0 10 0V3"/><path d="M4 3H2m2 0h2m6 0h2m-2 0h2"/><path d="M9 14v2a5 5 0 0 0 10 0v-1"/><circle cx="20" cy="13" r="2"/>',
+  droplet:'<path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5S12.5 5 12 2.5C11.5 5 10 7.4 8 9.5 6 11.1 5 13 5 15a7 7 0 0 0 7 7z"/>',
+  heart:'<path d="M19 14c1.5-1.5 3-3.2 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.8 0-3 .5-4.5 2-1.5-1.5-2.7-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4 3 5.5l7 7z"/>',
+  walk:'<circle cx="13" cy="4" r="1.6"/><path d="m9 21 2.5-6.5L9.5 12 8 8l5 1.5 3 1"/><path d="M11 14l-1.5 3"/>',
+  file:'<path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7z"/><path d="M14 2v5h5M8 13h8M8 17h6"/>',
+  arrow:'<path d="M5 12h14M13 6l6 6-6 6"/>'
+};
+function svg(name, w){ return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">${I[name]||''}</svg>`; }
+document.querySelectorAll('[data-ic]').forEach(el=>{ el.insertAdjacentHTML('afterbegin', svg(el.dataset.ic)); });
+
+/* ---------- team avatars ---------- */
+const team = [
+  {i:'MS', c:'var(--pmd-ready)'}, {i:'SA', c:'var(--pmd-ready)'}, {i:'GC', c:'var(--pmd-urgent)'},
+  {i:'BC', c:'var(--pmd-ready)'}, {i:'NM', c:'var(--pmd-fellow)'}, {i:'NM', c:'var(--pmd-workup)'}
+];
+document.getElementById('avatars').innerHTML =
+  team.map(a=>`<div class="av" style="background:${a.c}">${a.i}</div>`).join('') +
+  `<div class="av add">${svg('plus')}</div>`;
+
+/* ---------- barrier catalog ---------- */
+const BIcon = { 'Labs / blood':'labs', 'X-ray / scan':'image', 'Medications':'pill', 'Consult':'steth', 'PO fluids':'droplet', 'Pain control':'heart', 'Ambulation':'walk', 'Chart docs':'file' };
+
+/* ---------- patient data (faithful to the live board) ---------- */
+const patients = [
+  {
+    accent:'var(--pmd-tobeseen)', status:{t:'To be seen', kind:'tobeseen'},
+    timer:{t:'4:01', cls:'fresh', ic:'clock'},
+    room:'?', name:{first:'First name', initial:'L.', ph:true}, age:'0 y/o', sex:'male',
+    cc:{text:'New patient', ph:true},
+    phase:{fellow:false, staffed:false, attending:false},
+    dispo:null,
+    barriers:{}, flagged:0, showNone:true, ready:false
+  },
+  {
+    accent:'var(--pmd-attending)', status:{t:'Attending seen', kind:'attending'},
+    timer:{t:'126h 04m', cls:'over', ic:'alert'},
+    room:'A2', name:{first:'Dalerine', initial:'M.'}, age:'12 y/o', sex:'female',
+    cc:{text:'abd pain & NBNB diarrhea x2 days with associated fever 103.1. Diffuse lower abdominal pain without rebound…'},
+    phase:{fellow:true, staffed:true, attending:true},
+    dispo:null,
+    barriers:{'Labs / blood':'open','Medications':'open','Consult':'open'}, flagged:3, ready:false
+  },
+  {
+    accent:'var(--pmd-staffed)', status:{t:'Admit', kind:'staffed'},
+    timer:{t:'126h 02m', cls:'over', ic:'alert'},
+    room:'A4', name:{first:'Edwin', initial:'M.'}, age:'7 m/o', sex:'male',
+    cc:{text:'7 m.o. IUTD male with no reported PMHx who presents for neck swelling. Arrives afebrile, HDS, in…'},
+    phase:{fellow:true, staffed:true, attending:true},
+    dispo:'admit',
+    barriers:{'Labs / blood':'clear','X-ray / scan':'clear','Consult':'open'}, flagged:1, ready:false
+  },
+  {
+    accent:'var(--pmd-ready)', status:{t:'Ready', kind:'ready'},
+    timer:{t:'0:38', cls:'fresh', ic:'clock'},
+    room:'B1', name:{first:'Aria', initial:'K.'}, age:'4 y/o', sex:'female',
+    cc:{text:'Resolved croup, tolerated PO, sats stable on room air. Stable for discharge home with the admitting team starting at 1040.'},
+    phase:{fellow:true, staffed:true, attending:true},
+    dispo:'admit',
+    barriers:{'Labs / blood':'clear','X-ray / scan':'clear','Medications':'clear','Consult':'clear','PO fluids':'clear','Pain control':'clear'}, flagged:0, allClear:true, ready:true
+  }
+];
+
+const BADGE_STYLE = k => `background:var(--pmd-${k}-soft);color:var(--pmd-${k}-ink);border:1px solid var(--pmd-${k}-line)`;
+const ALLB = ['Labs / blood','X-ray / scan','Medications','Consult','PO fluids','Pain control','Ambulation','Chart docs'];
+
+function phaseBtn(label, n, key, on){
+  return `<button class="${key} ${on?'on':''}">
+    <span class="nbox">${n}</span>${svg('check')&&`<span class="ck">${svg('check')}</span>`} ${label}
+  </button>`;
+}
+function barrier(label, state){
+  const cls = state==='open'?'open':state==='clear'?'clear':'';
+  const st = state==='open'? `<span class="st" style="color:var(--pmd-flag-ink)">${svg('alert')}</span>`
+           : state==='clear'? `<span class="st" style="color:var(--pmd-ready-ink)">${svg('check')}</span>` : '';
+  return `<button class="barr ${cls}"><span class="bi">${svg(BIcon[label])}</span><span class="bt">${label}</span>${st}</button>`;
+}
+
+function card(p){
+  const nameVal = p.name.ph ? '' : `${p.name.first} ${p.name.initial}`;
+  const namePh = p.name.ph ? 'Patient name' : '';
+  const dispoSel = s => p.dispo===s ? `sel-${s}` : '';
+  const barrHead = p.showNone
+    ? `<span class="none-flagged">None flagged</span>`
+    : p.allClear
+      ? `<span class="barr-flag clear">${svg('check')} All clear</span>`
+      : `<span class="barr-flag open">${svg('alert')} ${p.flagged} flagged</span>`;
+  const barriers = ALLB.map(b => barrier(b, p.barriers[b])).join('');
+
+  return `<article class="pcard" style="--accent:${p.accent}">
+    <div class="pad">
+      <div class="pc-head">
+        <button class="collapse">${svg('chev')} Collapse</button>
+        <span class="status-badge" style="${BADGE_STYLE(p.status.kind)}">${p.status.t}</span>
+        <span class="pc-timer ${p.timer.cls}">${svg(p.timer.ic)} ${p.timer.t}</span>
+      </div>
+
+      <div class="ident">
+        <div class="room"><span class="rl">ROOM</span><span class="rv">${p.room}</span></div>
+        <div class="idfield">
+          <input class="nm-input" type="text" value="${nameVal}" placeholder="${namePh}" aria-label="Patient name">
+          <button class="meta-pill age">${p.age} ${svg('chev')}</button>
+          <button class="meta-pill sex ${p.sex}">${p.sex.toUpperCase()} ${svg('chev')}</button>
+        </div>
+      </div>
+
+      <div class="sec-label">Chief complaint &amp; presentation</div>
+      <div class="cc ${p.cc.ph?'placeholder':''}">${p.cc.text}</div>
+
+      <div class="block">
+        <div class="sec-label">Care phase <span class="hint">· tap to update</span></div>
+        <div class="phase">
+          ${phaseBtn('Fellow',1,'fellow',p.phase.fellow)}
+          ${phaseBtn('Staffed',2,'staffed',p.phase.staffed)}
+          ${phaseBtn('Attending',3,'attending',p.phase.attending)}
+        </div>
+      </div>
+
+      <div class="block">
+        <div class="sec-label">Disposition decision</div>
+        <div class="dispo-grid">
+          <button class="dbtn ${dispoSel('discharge')}" data-ic="home">Discharge</button>
+          <button class="dbtn ${dispoSel('admit')}" data-ic="bed">Admit</button>
+          <button class="dbtn ed" data-ic="eye">ED obs</button>
+        </div>
+      </div>
+
+      <div class="block">
+        <div class="barr-head">
+          <div class="sec-label">Dispo barriers <span class="hint">· tap to cycle</span></div>
+          ${barrHead}
+        </div>
+        <div class="barr-grid">${barriers}</div>
+      </div>
+
+      ${p.ready ? `<button class="gtg">${svg('check')} Good to go!</button>` : ''}
+    </div>
+  </article>`;
+}
+
+const board = document.getElementById('board');
+board.innerHTML = patients.map(card).join('');
+board.querySelectorAll('[data-ic]').forEach(el=>{ el.insertAdjacentHTML('afterbegin', svg(el.dataset.ic)); });
+
+/* welcome stars */
+const stars = document.getElementById('stars');
+const SP = [[8,18],[20,62],[14,84],[40,10],[62,8],[83,22],[90,60],[78,82],[50,90],[30,40]];
+stars.innerHTML = SP.map(([x,y],i)=>`<span style="left:${x}%;top:${y}%;font-size:${16+(i%3)*8}px">★</span>`).join('');
+
+/* ---------- toggles ---------- */
+const app = document.getElementById('app');
+function press(seg, attr, val){ seg.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed', String(b.dataset[attr]===val))); }
+document.getElementById('themeseg').addEventListener('click', e=>{
+  const b=e.target.closest('button'); if(!b)return;
+  app.classList.add('pmd-switching');
+  app.setAttribute('data-pmd-theme', b.dataset.theme); press(e.currentTarget,'theme',b.dataset.theme);
+  localStorage.setItem('pmd-theme', b.dataset.theme);
+  requestAnimationFrame(()=>requestAnimationFrame(()=>app.classList.remove('pmd-switching')));
+});
+document.getElementById('viewseg').addEventListener('click', e=>{
+  const b=e.target.closest('button'); if(!b)return;
+  const v=b.dataset.view; press(e.currentTarget,'view',v);
+  document.getElementById('view-board').classList.toggle('active', v==='board');
+  document.getElementById('view-welcome').classList.toggle('active', v==='welcome');
+  localStorage.setItem('pmd-view', v);
+});
+document.querySelector('.wcard .wbtn').addEventListener('click', ()=>{ document.querySelector('#viewseg [data-view="board"]').click(); });
+
+/* restore */
+(function(){
+  const t=localStorage.getItem('pmd-theme'); if(t){ app.setAttribute('data-pmd-theme',t); press(document.getElementById('themeseg'),'theme',t); }
+  const v=localStorage.getItem('pmd-view'); if(v){ document.querySelector(`#viewseg [data-view="${v}"]`)?.click(); }
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,168 @@
+<!doctype html>
+<!-- @dsCard group="Components" name="Components — Cards" subtitle="Profile card with photo upload (drag/drop + click + persist)" viewport="700x220" -->
+<html><head><meta charset="utf-8"><title>Cards</title>
+<link rel="stylesheet" href="_base.css">
+<style>
+.card-frame { background: var(--bg); }
+h4 { font-family: var(--font-display); font-size: 18px; margin: 0 0 14px; color: var(--fg); font-weight: 600; }
+.grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+.card {
+  background: white; border-radius: 16px; border: 1px solid rgba(11,30,29,0.08);
+  padding: 20px; box-shadow: 0 1px 2px rgba(11,30,29,0.04), 0 8px 24px -8px rgba(11,30,29,0.10);
+  display: flex; flex-direction: column; gap: 10px;
+}
+.eyebrow { font-family: var(--font-sans); font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #18A78D; }
+.title { font-family: var(--font-display); font-size: 20px; font-weight: 600; color: var(--fg); letter-spacing: -0.01em; line-height: 1.2; }
+.body { font-family: var(--font-sans); font-size: 14px; color: var(--fg-2); line-height: 1.5; }
+.dose { font-family: var(--font-display); font-size: 56px; font-weight: 500; line-height: 1; color: var(--fg); letter-spacing: -0.02em; font-feature-settings: "tnum" 1; }
+.unit { font-family: var(--font-mono); font-size: 16px; color: var(--fg-2); margin-left: 6px; letter-spacing: 0.04em; }
+.tint { background: #E8F6F2; border-color: rgba(24,167,141,0.18); }
+.pill { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 999px; background: #C9EBE1; color: #083E34; font-size: 11px; font-weight: 600; align-self: flex-start; }
+
+/* Profile card */
+.profile {
+  flex-direction: row;
+  align-items: center;
+  gap: 16px;
+  padding: 18px;
+}
+.avatar {
+  position: relative;
+  width: 72px; height: 72px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: #E8F6F2;
+  border: 1.5px dashed rgba(24,167,141,0.45);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  overflow: hidden;
+  transition: border-color .18s ease, background .18s ease, transform .18s ease;
+}
+.avatar:hover { border-color: #18A78D; background: #DCF1EA; }
+.avatar.has-photo { border-style: solid; border-color: rgba(11,30,29,0.10); background: white; }
+.avatar.dragover { border-color: #18A78D; background: #C9EBE1; transform: scale(1.02); }
+.avatar img {
+  width: 100%; height: 100%; object-fit: cover;
+}
+.avatar .placeholder {
+  display: flex; flex-direction: column; align-items: center; gap: 3px;
+  color: #18A78D;
+  pointer-events: none;
+}
+.avatar .placeholder svg { display: block; }
+.avatar .placeholder .label {
+  font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.avatar.has-photo .placeholder { display: none; }
+.avatar input[type=file] { display: none; }
+
+/* Hover overlay when photo present */
+.avatar.has-photo::after {
+  content: "Change";
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.06em;
+  text-transform: uppercase; color: white;
+  background: rgba(11,30,29,0.55);
+  opacity: 0; transition: opacity .18s ease;
+}
+.avatar.has-photo:hover::after { opacity: 1; }
+
+.profile-meta { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.profile-meta .name {
+  font-family: var(--font-display); font-size: 20px; font-weight: 700;
+  color: var(--fg); letter-spacing: -0.01em; line-height: 1.15;
+}
+.profile-meta .stats {
+  font-family: var(--font-mono); font-size: 11px; color: var(--fg-3);
+  letter-spacing: 0.04em;
+}
+.profile-meta .last {
+  font-family: var(--font-sans); font-size: 13px; color: var(--fg-2);
+  margin-top: 4px; line-height: 1.4;
+}
+</style></head>
+<body><div class="card-frame">
+<h4>Cards — the central motif</h4>
+<div class="grid">
+  <div class="card">
+    <div class="eyebrow">Acetaminophen</div>
+    <div class="title">Children's Tylenol</div>
+    <div class="body">For fever and pain. Ages 2–11, weight-based.</div>
+  </div>
+  <div class="card tint">
+    <div class="eyebrow">Your dose</div>
+    <div class="dose">5<span class="unit">mL</span></div>
+    <div class="body">Every 4 hours, max 5 doses in 24 hours.</div>
+  </div>
+  <div class="card profile" id="profile-card">
+    <label class="avatar" id="avatar" for="avatar-input" tabindex="0" aria-label="Upload photo">
+      <img id="avatar-img" alt="" hidden>
+      <div class="placeholder">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 5v14"/>
+          <path d="M5 12h14"/>
+        </svg>
+        <div class="label">Photo</div>
+      </div>
+      <input type="file" id="avatar-input" accept="image/*">
+    </label>
+    <div class="profile-meta">
+      <div class="name">Maya</div>
+      <div class="stats">2Y · 28 LB</div>
+      <div class="last">Last dose: Tylenol, 2:14 AM</div>
+    </div>
+  </div>
+</div>
+</div>
+<script>
+(() => {
+  const STORAGE_KEY = 'closedose:profile:maya:photo';
+  const avatar = document.getElementById('avatar');
+  const input = document.getElementById('avatar-input');
+  const img = document.getElementById('avatar-img');
+
+  function setPhoto(dataUrl) {
+    img.src = dataUrl;
+    img.hidden = false;
+    avatar.classList.add('has-photo');
+    try { localStorage.setItem(STORAGE_KEY, dataUrl); } catch (e) {}
+  }
+
+  function readFile(file) {
+    if (!file || !file.type.startsWith('image/')) return;
+    const r = new FileReader();
+    r.onload = e => setPhoto(e.target.result);
+    r.readAsDataURL(file);
+  }
+
+  // Restore on load
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) setPhoto(saved);
+  } catch (e) {}
+
+  input.addEventListener('change', e => readFile(e.target.files && e.target.files[0]));
+
+  // Drag and drop
+  ['dragenter','dragover'].forEach(t => avatar.addEventListener(t, e => {
+    e.preventDefault(); e.stopPropagation();
+    avatar.classList.add('dragover');
+  }));
+  ['dragleave','drop'].forEach(t => avatar.addEventListener(t, e => {
+    e.preventDefault(); e.stopPropagation();
+    avatar.classList.remove('dragover');
+  }));
+  avatar.addEventListener('drop', e => {
+    const f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
+    if (f) readFile(f);
+  });
+
+  // Keyboard activation
+  avatar.addEventListener('keydown', e => {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); input.click(); }
+  });
+})();
+</script>
+</body></html>

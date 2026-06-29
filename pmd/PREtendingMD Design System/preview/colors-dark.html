@@ -1,0 +1,25 @@
+<!doctype html>
+<!-- @dsCard group="Colors" name="Colors — Dark Mode" subtitle="Warm-dark surface stack" viewport="700x200" -->
+<html><head><meta charset="utf-8"><title>Dark mode surfaces</title>
+<link rel="stylesheet" href="_base.css">
+<style>
+html, body { background: #0B1717; color: #ECECE6; }
+.card-frame { background: #0B1717; }
+h4 { font-family: var(--font-display); font-size: 18px; margin: 0 0 14px; color: #ECECE6; font-weight: 600; }
+.surfaces { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr 1fr; gap: 8px; }
+.s { height: 100px; border-radius: 12px; padding: 12px; font-family: var(--font-mono); font-size: 10px; color: #B5B7B0; display: flex; flex-direction: column; justify-content: space-between; border: 1px solid rgba(255,255,255,0.06); }
+.s .nm { color: #ECECE6; font-weight: 600; }
+.note { margin-top: 12px; font-size: 12px; color: #8A8C85; }
+.note b { color: #6FC3B3; }
+</style></head>
+<body><div class="card-frame">
+<h4>Dark mode — warm-dark, made for 3am</h4>
+<div class="surfaces">
+  <div class="s" style="background:#0B1717"><div class="nm">bg</div><div>#0B1717</div></div>
+  <div class="s" style="background:#0F1C1B"><div class="nm">bg-muted</div><div>#0F1C1B</div></div>
+  <div class="s" style="background:#13201F"><div class="nm">bg-card</div><div>#13201F</div></div>
+  <div class="s" style="background:#1A2A29"><div class="nm">bg-inset</div><div>#1A2A29</div></div>
+  <div class="s" style="background:#14302C"><div class="nm">bg-tint</div><div>#14302C</div></div>
+</div>
+<div class="note">Never pure black. Brand shifts from <b>Teal 600 → Teal 400</b> for AA contrast on dark surfaces.</div>
+</div></body></html>

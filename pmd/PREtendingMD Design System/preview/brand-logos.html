@@ -1,0 +1,192 @@
+<!doctype html>
+<!-- @dsCard group="Brand" name="Brand — Logos" subtitle="Tweakable — primary is whiteout-on-teal; surfaces & variants per tile" viewport="700x560" -->
+<html><head><meta charset="utf-8"><title>Logos</title>
+<link rel="stylesheet" href="_base.css">
+<style>
+:root {
+  --surface-white: #ffffff;
+  --surface-cream: #F6F1E7;
+  --surface-teal:  #128873;
+  --surface-ink:   #0B1E1D;
+}
+.card-frame { background: var(--bg); }
+.grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+.tile {
+  border-radius: 16px; border: 1px solid var(--hairline);
+  padding: 22px;
+  display: flex; flex-direction: column; gap: 12px; align-items: center;
+  position: relative;
+  min-height: 160px;
+  justify-content: center;
+}
+.tile[data-surface="white"] { background: var(--surface-white); }
+.tile[data-surface="cream"] { background: var(--surface-cream); border-color: rgba(11,30,29,0.08); }
+.tile[data-surface="teal"]  { background: var(--surface-teal);  border-color: rgba(11,30,29,0.08); }
+.tile[data-surface="ink"]   { background: var(--surface-ink);   border-color: rgba(255,255,255,0.06); }
+
+.tile.primary {
+  grid-column: span 3;
+  min-height: 240px;
+}
+.tile.primary .mark { height: 132px; }
+.tile.duo { grid-column: span 2; }
+.tile.full { grid-column: span 3; }
+
+.mark { height: 72px; width: auto; display: block; }
+.wordmark { height: 56px; width: auto; display: block; }
+.tile.duo .wordmark, .tile.full .wordmark { height: 72px; }
+
+.label {
+  font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.08em;
+  text-transform: uppercase; color: var(--fg-3);
+  position: absolute; left: 14px; bottom: 10px;
+}
+.tile[data-surface="teal"] .label,
+.tile[data-surface="ink"]  .label { color: rgba(255,255,255,0.75); }
+.primary-badge {
+  position: absolute; right: 14px; top: 12px;
+  font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.1em;
+  text-transform: uppercase; color: rgba(255,255,255,0.85);
+  background: rgba(255,255,255,0.14); padding: 4px 8px; border-radius: 999px;
+}
+</style>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+</head>
+<body>
+<div class="card-frame">
+  <div id="root"></div>
+</div>
+
+<script type="text/babel" src="tweaks-panel.jsx"></script>
+<script type="text/babel">
+const { useMemo } = React;
+
+const MARK_OPTIONS = [
+  { value: 'whiteout',  label: 'Whiteout',          src: '../brand/closedose-mark-whiteout.png' },
+  { value: 'two-tone',  label: 'Two-tone teal',     src: '../brand/closedose-mark-teal.png' },
+  { value: 'mono-black',label: 'Mono black',        src: '../brand/closedose-mark-mono-black.png' },
+  { value: 'mono-white',label: 'Mono white',        src: '../brand/closedose-mark-mono-white.png' },
+];
+const WORDMARK_OPTIONS = [
+  { value: 'two-tone', label: 'Two-tone teal', src: '../brand/closedose-wordmark.png' },
+  { value: 'whiteout', label: 'Whiteout',      src: '../brand/closedose-wordmark-whiteout.png' },
+];
+const SURFACE_OPTIONS = ['white','cream','teal','ink'];
+
+const markSrc     = v => (MARK_OPTIONS.find(o=>o.value===v) || MARK_OPTIONS[0]).src;
+const wordmarkSrc = v => (WORDMARK_OPTIONS.find(o=>o.value===v) || WORDMARK_OPTIONS[0]).src;
+
+const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+  "primarySurface": "teal",
+  "primaryMark": "whiteout",
+  "tile2Surface": "white",
+  "tile2Mark": "two-tone",
+  "tile3Surface": "cream",
+  "tile3Mark": "mono-black",
+  "tile4Surface": "ink",
+  "tile4Mark": "mono-white",
+  "wordmark1Surface": "white",
+  "wordmark1Variant": "two-tone",
+  "wordmark2Surface": "teal",
+  "wordmark2Variant": "whiteout"
+}/*EDITMODE-END*/;
+
+function Tile({ surface, src, label, primary }) {
+  return (
+    <div className={`tile ${primary ? 'primary' : ''}`} data-surface={surface}>
+      {primary && <div className="primary-badge">Primary</div>}
+      <img className="mark" src={src} alt=""/>
+      <div className="label">{label}</div>
+    </div>
+  );
+}
+function WordmarkTile({ surface, src, label, span }) {
+  return (
+    <div className={`tile ${span}`} data-surface={surface}>
+      <img className="wordmark" src={src} alt=""/>
+      <div className="label">{label}</div>
+    </div>
+  );
+}
+
+function App() {
+  const [t, setTweak] = useTweaks(TWEAK_DEFAULTS);
+
+  return (
+    <>
+      <div className="grid">
+        <Tile primary
+          surface={t.primarySurface}
+          src={markSrc(t.primaryMark)}
+          label={`Primary · ${t.primaryMark} on ${t.primarySurface}`}/>
+        <Tile surface={t.tile2Surface} src={markSrc(t.tile2Mark)} label={`${t.tile2Mark} · on ${t.tile2Surface}`}/>
+        <Tile surface={t.tile3Surface} src={markSrc(t.tile3Mark)} label={`${t.tile3Mark} · on ${t.tile3Surface}`}/>
+        <Tile surface={t.tile4Surface} src={markSrc(t.tile4Mark)} label={`${t.tile4Mark} · on ${t.tile4Surface}`}/>
+        <WordmarkTile span="full"
+          surface={t.wordmark1Surface}
+          src={wordmarkSrc(t.wordmark1Variant)}
+          label={`Wordmark · ${t.wordmark1Variant} on ${t.wordmark1Surface}`}/>
+        <WordmarkTile span="full"
+          surface={t.wordmark2Surface}
+          src={wordmarkSrc(t.wordmark2Variant)}
+          label={`Wordmark · ${t.wordmark2Variant} on ${t.wordmark2Surface}`}/>
+      </div>
+
+      <TweaksPanel title="Tweaks">
+        <TweakSection title="Primary lockup">
+          <TweakSelect label="Surface" value={t.primarySurface} options={SURFACE_OPTIONS}
+            onChange={v=>setTweak('primarySurface', v)}/>
+          <TweakSelect label="Mark variant" value={t.primaryMark}
+            options={MARK_OPTIONS.map(o=>({value:o.value,label:o.label}))}
+            onChange={v=>setTweak('primaryMark', v)}/>
+        </TweakSection>
+
+        <TweakSection title="Mark tile 2">
+          <TweakSelect label="Surface" value={t.tile2Surface} options={SURFACE_OPTIONS}
+            onChange={v=>setTweak('tile2Surface', v)}/>
+          <TweakSelect label="Mark" value={t.tile2Mark}
+            options={MARK_OPTIONS.map(o=>({value:o.value,label:o.label}))}
+            onChange={v=>setTweak('tile2Mark', v)}/>
+        </TweakSection>
+
+        <TweakSection title="Mark tile 3">
+          <TweakSelect label="Surface" value={t.tile3Surface} options={SURFACE_OPTIONS}
+            onChange={v=>setTweak('tile3Surface', v)}/>
+          <TweakSelect label="Mark" value={t.tile3Mark}
+            options={MARK_OPTIONS.map(o=>({value:o.value,label:o.label}))}
+            onChange={v=>setTweak('tile3Mark', v)}/>
+        </TweakSection>
+
+        <TweakSection title="Mark tile 4">
+          <TweakSelect label="Surface" value={t.tile4Surface} options={SURFACE_OPTIONS}
+            onChange={v=>setTweak('tile4Surface', v)}/>
+          <TweakSelect label="Mark" value={t.tile4Mark}
+            options={MARK_OPTIONS.map(o=>({value:o.value,label:o.label}))}
+            onChange={v=>setTweak('tile4Mark', v)}/>
+        </TweakSection>
+
+        <TweakSection title="Wordmark · row 1">
+          <TweakSelect label="Surface" value={t.wordmark1Surface} options={SURFACE_OPTIONS}
+            onChange={v=>setTweak('wordmark1Surface', v)}/>
+          <TweakSelect label="Variant" value={t.wordmark1Variant}
+            options={WORDMARK_OPTIONS.map(o=>({value:o.value,label:o.label}))}
+            onChange={v=>setTweak('wordmark1Variant', v)}/>
+        </TweakSection>
+
+        <TweakSection title="Wordmark · row 2">
+          <TweakSelect label="Surface" value={t.wordmark2Surface} options={SURFACE_OPTIONS}
+            onChange={v=>setTweak('wordmark2Surface', v)}/>
+          <TweakSelect label="Variant" value={t.wordmark2Variant}
+            options={WORDMARK_OPTIONS.map(o=>({value:o.value,label:o.label}))}
+            onChange={v=>setTweak('wordmark2Variant', v)}/>
+        </TweakSection>
+      </TweaksPanel>
+    </>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body></html>

@@ -1,0 +1,60 @@
+<!-- @dsCard group="PREtendingMD" name="Sub-brand Overview" subtitle="Pediatric ED board · child of the CloseDose family" viewport="1100x520" -->
+<!doctype html>
+<html><head><meta charset="utf-8"><title>PREtendingMD — Overview</title>
+<link rel="stylesheet" href="_base.css">
+<style>
+  .card-frame { padding: 0; }
+  .wrap { display: grid; grid-template-columns: 1.05fr 1fr; min-height: 520px; font-family: var(--pmd-font-ui); }
+  .left { padding: 40px 38px; background: var(--pmd-bg); color: var(--pmd-ink); display: flex; flex-direction: column; gap: 20px; }
+  .left.pmd[data-pmd-theme="dark"] { }
+  .lock { display: flex; align-items: center; gap: 14px; }
+  .lock .head { height: 64px; }
+  .lock .word { height: 30px; }
+  .eyebrow { font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--pmd-ink-3); }
+  h2 { font-family: var(--pmd-font-brand); font-weight: 800; font-size: 30px; letter-spacing: -.02em; margin: 0; color: var(--pmd-ink); }
+  p { font-size: 14px; line-height: 1.6; color: var(--pmd-ink-2); margin: 0; max-width: 42ch; }
+  .pills { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+  .pill { display: inline-flex; align-items: center; gap: 7px; height: 32px; padding: 0 13px; border-radius: 999px; background: var(--pmd-surface); border: 1px solid var(--pmd-line); font-size: 12px; font-weight: 600; color: var(--pmd-ink-2); }
+  .dot { width: 9px; height: 9px; border-radius: 50%; }
+  .family { margin-top: auto; display: inline-flex; align-items: center; gap: 8px; font-size: 12.5px; color: var(--pmd-ink-3); }
+  .family b { color: var(--pmd-family-ink); }
+  .family .seed { width: 10px; height: 10px; border-radius: 50%; background: var(--pmd-family); }
+
+  .right { position: relative; display: grid; place-items: center; overflow: hidden;
+    background: radial-gradient(120% 90% at 50% 0%, var(--pmd-sky), transparent 62%), linear-gradient(180deg, var(--pmd-cream), var(--pmd-bg)); }
+  .right .teddy { width: 230px; filter: drop-shadow(0 16px 26px rgba(20,40,68,.20)); }
+  .right .star { position: absolute; color: color-mix(in oklab, var(--pmd-workup) 30%, transparent); }
+</style></head>
+<body>
+<div class="card-frame">
+  <div class="wrap">
+    <div class="left pmd" data-pmd-theme="dark">
+      <div class="lock">
+        <img class="head" src="../assets/pretendingmd/sticker-head.png" alt="">
+        <img class="word" src="../assets/pretendingmd/wordmark-tight.png" alt="PREtendingMD">
+      </div>
+      <div>
+        <div class="eyebrow">Sub-brand</div>
+        <h2>The pediatric ED board</h2>
+      </div>
+      <p>PREtendingMD keeps CloseDose's calm bones but leads with a vivid, tuned <b>clinical spectrum</b> so a fellow can read the whole room at a glance — light or dark.</p>
+      <div class="pills">
+        <span class="pill"><span class="dot" style="background:var(--pmd-tobeseen)"></span> To be seen</span>
+        <span class="pill"><span class="dot" style="background:var(--pmd-workup)"></span> Work-up</span>
+        <span class="pill"><span class="dot" style="background:var(--pmd-staffed)"></span> Staffed</span>
+        <span class="pill"><span class="dot" style="background:var(--pmd-attending)"></span> Attending</span>
+        <span class="pill"><span class="dot" style="background:var(--pmd-dispo)"></span> Dispo</span>
+        <span class="pill"><span class="dot" style="background:var(--pmd-ready)"></span> Ready</span>
+      </div>
+      <span class="family"><span class="seed"></span> part of the <b>CloseDose</b> family</span>
+    </div>
+    <div class="right pmd" data-pmd-theme="light">
+      <span class="star" style="top:12%;left:14%;font-size:26px">★</span>
+      <span class="star" style="top:24%;right:16%;font-size:18px">★</span>
+      <span class="star" style="bottom:16%;left:20%;font-size:22px">★</span>
+      <span class="star" style="bottom:24%;right:14%;font-size:16px">★</span>
+      <img class="teddy" src="../assets/pretendingmd/teddy-full-tight.png" alt="PREtendingMD teddy">
+    </div>
+  </div>
+</div>
+</body></html>

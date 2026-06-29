@@ -1,0 +1,23 @@
+<!doctype html>
+<!-- @dsCard group="Colors" name="Colors — Semantic" subtitle="Brand, success, warn, error roles" viewport="700x200" -->
+<html><head><meta charset="utf-8"><title>Semantic colors</title>
+<link rel="stylesheet" href="_base.css">
+<style>
+.card-frame { background: var(--bg); }
+h4 { font-family: var(--font-display); font-size: 18px; margin: 0 0 14px; color: var(--fg); font-weight: 600; }
+.row3 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 10px; }
+.tile { border-radius: 14px; padding: 14px; border: 1px solid var(--hairline); background: var(--bg-card); display: flex; flex-direction: column; gap: 8px; }
+.dot { width: 28px; height: 28px; border-radius: 8px; }
+.name { font-family: var(--font-sans); font-weight: 600; font-size: 13px; color: var(--fg); }
+.hex { font-family: var(--font-mono); font-size: 11px; color: var(--fg-3); }
+.use { font-family: var(--font-sans); font-size: 11px; color: var(--fg-2); line-height: 1.4; }
+</style></head>
+<body><div class="card-frame">
+<h4>Semantic color roles</h4>
+<div class="row3">
+  <div class="tile"><div class="dot" style="background:#128873"></div><div class="name">Brand</div><div class="hex">#128873</div><div class="use">Buttons, links, primary actions</div></div>
+  <div class="tile"><div class="dot" style="background:#2E9E6E"></div><div class="name">Success</div><div class="hex">#2E9E6E</div><div class="use">Confirmations, "safe to give"</div></div>
+  <div class="tile"><div class="dot" style="background:#D97A0E"></div><div class="name">Warn</div><div class="hex">#D97A0E</div><div class="use">"Double-check" reminders</div></div>
+  <div class="tile"><div class="dot" style="background:#D84A4A"></div><div class="name">Error</div><div class="hex">#D84A4A</div><div class="use">Form errors, blocked dose</div></div>
+</div>
+</div></body></html>

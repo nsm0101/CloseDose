@@ -1,0 +1,60 @@
+<!-- @dsCard group="PREtendingMD" name="Clinical Spectrum" subtitle="One tuned family · the grown-up sibling of the crayon rainbow" viewport="1120x600" -->
+<!doctype html>
+<html><head><meta charset="utf-8"><title>PREtendingMD — Spectrum</title>
+<link rel="stylesheet" href="_base.css">
+<style>
+  .card-frame { padding: 0; }
+  .frame { font-family: var(--pmd-font-ui); }
+  .band { padding: 26px 30px; }
+  .band.pmd { background: var(--pmd-bg); color: var(--pmd-ink); }
+  .htop { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 18px; }
+  .htop h3 { font-family: var(--pmd-font-clinical); font-weight: 800; font-size: 16px; margin: 0; color: var(--pmd-ink); }
+  .htop .mode { font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--pmd-ink-3); }
+  .spectrum { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; }
+  .stop { display: flex; flex-direction: column; gap: 8px; }
+  .bar { height: 62px; border-radius: 14px; display: flex; align-items: flex-end; padding: 9px; box-shadow: var(--pmd-shadow-1); }
+  .bar .on { font-family: var(--pmd-font-mono); font-size: 10px; font-weight: 600; }
+  .chip { height: 30px; border-radius: 999px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800; }
+  .nm { font-size: 11px; font-weight: 700; color: var(--pmd-ink-2); text-align: center; }
+  .hx { font-family: var(--pmd-font-mono); font-size: 9.5px; color: var(--pmd-ink-faint); text-align: center; }
+
+  .crayon { padding: 22px 30px 26px; background: var(--pmd-cream); }
+  .crayon .lbl { font-family: var(--pmd-font-chalk); font-size: 20px; color: var(--pmd-ink-2); margin-bottom: 12px; }
+  .crayon.pmd { color: var(--pmd-ink); }
+  .crow { display: grid; grid-template-columns: repeat(8, 1fr); gap: 10px; }
+  .cdab { height: 38px; border-radius: 12px 12px 14px 11px; box-shadow: var(--pmd-shadow-1); }
+  .note { margin-top: 14px; font-size: 12px; line-height: 1.6; color: var(--pmd-ink-3); }
+  .note b { color: var(--pmd-ink-2); }
+</style></head>
+<body>
+<div class="card-frame">
+<div class="frame">
+  <div class="band pmd" data-pmd-theme="dark" id="dark"></div>
+  <div class="band pmd" data-pmd-theme="light" id="light" style="border-top:1px solid var(--pmd-line)"></div>
+  <div class="crayon pmd" data-pmd-theme="light">
+    <div class="lbl">…the same hues, in crayon</div>
+    <div class="crow" id="crow"></div>
+    <div class="note"><b>One through-line.</b> The clinical spectrum is the professional sibling of the wordmark's crayon rainbow — tuned to a single lightness &amp; chroma so the states read as a set, not a clash.</div>
+  </div>
+</div>
+</div>
+<script>
+const states = [
+  ['To be seen','tobeseen'],['Work-up','workup'],['Fellow','fellow'],
+  ['Staffed','staffed'],['Attending','attending'],['Dispo','dispo'],['Ready','ready']
+];
+function band(mode){
+  return `<div class="htop"><h3>Clinical spectrum</h3><span class="mode">${mode}</span></div>
+  <div class="spectrum">${states.map(([n,k])=>`
+    <div class="stop">
+      <div class="bar" style="background:var(--pmd-${k})"><span class="on" style="color:var(--pmd-${k}-on)">${n}</span></div>
+      <div class="chip" style="background:var(--pmd-${k}-soft);color:var(--pmd-${k}-ink);border:1px solid var(--pmd-${k}-line)">${n}</div>
+      <div class="nm">${n}</div>
+    </div>`).join('')}</div>`;
+}
+document.getElementById('dark').innerHTML = band('Dark · navy board');
+document.getElementById('light').innerHTML = band('Light · pastel');
+const crayons = ['red','orange','yellow','green','teal','blue','indigo','violet'];
+document.getElementById('crow').innerHTML = crayons.map(c=>`<div class="cdab" style="background:var(--crayon-${c})"></div>`).join('');
+</script>
+</body></html>

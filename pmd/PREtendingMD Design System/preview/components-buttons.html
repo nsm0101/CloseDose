@@ -1,0 +1,36 @@
+<!doctype html>
+<!-- @dsCard group="Components" name="Components — Buttons" subtitle="Primary, secondary, tertiary, danger" viewport="700x260" -->
+<html><head><meta charset="utf-8"><title>Buttons</title>
+<link rel="stylesheet" href="_base.css">
+<style>
+.card-frame { background: var(--bg); }
+h4 { font-family: var(--font-display); font-size: 18px; margin: 0 0 14px; color: var(--fg); font-weight: 600; }
+.grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; align-items: start; }
+.col { display: flex; flex-direction: column; gap: 10px; align-items: flex-start; }
+.col .label { font-family: var(--font-mono); font-size: 10px; color: var(--fg-3); text-transform: uppercase; letter-spacing: 0.08em; }
+.btn {
+  font-family: var(--font-sans); font-size: 15px; font-weight: 600;
+  padding: 12px 20px; border-radius: 12px; border: 1px solid transparent;
+  cursor: pointer; transition: all 200ms cubic-bezier(0.2,0,0,1);
+  display: inline-flex; align-items: center; gap: 8px;
+}
+.primary { background: #18A78D; color: white; }
+.primary:hover { background: #128873; }
+.secondary { background: white; color: #322F2C; border-color: rgba(11,30,29,0.14); }
+.secondary:hover { background: #F7F5F0; }
+.tertiary { background: transparent; color: #0E6D5C; padding: 12px 12px; }
+.tertiary:hover { background: #E8F6F2; }
+.danger { background: white; color: #B43838; border-color: rgba(216,74,74,0.3); }
+.danger:hover { background: #FBE3E1; }
+.sm { font-size: 13px; padding: 8px 14px; border-radius: 10px; }
+.lg { font-size: 17px; padding: 16px 28px; border-radius: 14px; }
+</style></head>
+<body><div class="card-frame">
+<h4>Buttons</h4>
+<div class="grid">
+  <div class="col"><div class="label">Primary</div><button class="btn primary">Find dose</button><button class="btn primary sm">Find dose</button><button class="btn primary lg">Find dose</button></div>
+  <div class="col"><div class="label">Secondary</div><button class="btn secondary">Cancel</button><button class="btn secondary sm">Back</button><button class="btn secondary lg">More options</button></div>
+  <div class="col"><div class="label">Tertiary</div><button class="btn tertiary">Learn more →</button><button class="btn tertiary sm">View safety info</button><button class="btn tertiary">Add child profile</button></div>
+  <div class="col"><div class="label">Destructive</div><button class="btn danger">Remove profile</button><button class="btn danger sm">Delete</button></div>
+</div>
+</div></body></html>

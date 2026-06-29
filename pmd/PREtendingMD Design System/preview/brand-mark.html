@@ -1,0 +1,70 @@
+<!doctype html>
+<!-- @dsCard group="Brand" name="Brand — Mark & Wordmark" subtitle="Apple-C mark + CloseDose wordmark lockups" viewport="700x360" -->
+<html><head><meta charset="utf-8"><title>Mark & Wordmark</title>
+<link rel="stylesheet" href="_base.css">
+<style>
+.card-frame { background: var(--bg); padding: 0; }
+.lockups {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+.tile {
+  border-radius: 16px;
+  border: 1px solid rgba(11,30,29,0.08);
+  display: flex; align-items: center; justify-content: center;
+  padding: 28px;
+  min-height: 180px;
+}
+.tile.teal { background: #128873; }
+.tile.cream { background: #F6F1E7; }
+.tile.white { background: #ffffff; }
+.tile.ink { background: #0B1E1D; }
+.tile img.mark { height: 120px; width: auto; display: block; }
+.tile .label {
+  position: absolute;
+  font-family: var(--font-mono);
+  font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--fg-3);
+}
+.tile { position: relative; }
+.tile .meta {
+  position: absolute; left: 14px; bottom: 10px;
+  font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.tile.teal .meta, .tile.ink .meta { color: rgba(255,255,255,0.7); }
+.tile.cream .meta, .tile.white .meta { color: var(--fg-3); }
+
+.wordmark-row {
+  background: white;
+  border-radius: 16px;
+  border: 1px solid rgba(11,30,29,0.08);
+  padding: 28px 32px;
+  display: flex; align-items: center; justify-content: center;
+  position: relative;
+}
+.wordmark-row img { height: 88px; width: auto; }
+.wordmark-row .meta {
+  position: absolute; left: 14px; bottom: 10px;
+  font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.08em;
+  text-transform: uppercase; color: var(--fg-3);
+}
+</style></head>
+<body><div class="card-frame">
+<div class="lockups">
+  <div class="tile teal">
+    <img class="mark" src="../brand/closedose-mark-teal.png" alt="CloseDose mark, white on teal">
+    <div class="meta">Primary · reverse on Teal 600</div>
+  </div>
+  <div class="tile cream">
+    <img class="mark" src="../brand/closedose-mark-black.png" alt="CloseDose mark, black on cream">
+    <div class="meta">Mono · ink on Cream</div>
+  </div>
+</div>
+<div class="wordmark-row">
+  <img src="../brand/closedose-wordmark.png" alt="CloseDose wordmark">
+  <div class="meta">Wordmark · two-tone teal on white</div>
+</div>
+</div></body></html>

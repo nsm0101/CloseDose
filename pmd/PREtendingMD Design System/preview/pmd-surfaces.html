@@ -1,0 +1,47 @@
+<!-- @dsCard group="PREtendingMD" name="Surfaces — Dark & Light" subtitle="Warm navy board · soft pediatric pastel" viewport="1120x430" -->
+<!doctype html>
+<html><head><meta charset="utf-8"><title>PREtendingMD — Surfaces</title>
+<link rel="stylesheet" href="_base.css">
+<style>
+  .card-frame { padding: 0; }
+  .wrap { display: grid; grid-template-columns: 1fr 1fr; font-family: var(--pmd-font-ui); min-height: 430px; }
+  .col { padding: 28px 30px; }
+  .col.pmd { background: var(--pmd-bg); color: var(--pmd-ink); }
+  .col + .col { border-left: 1px solid var(--pmd-line); }
+  h3 { font-family: var(--pmd-font-clinical); font-weight: 800; font-size: 15px; margin: 0 0 4px; }
+  .sub { font-size: 11.5px; color: var(--pmd-ink-3); margin-bottom: 18px; }
+  .stack { display: flex; flex-direction: column; gap: 10px; }
+  .srow { display: flex; align-items: center; gap: 12px; }
+  .sw { width: 56px; height: 40px; border-radius: 10px; border: 1px solid var(--pmd-line); flex: 0 0 auto; }
+  .meta { display: flex; flex-direction: column; }
+  .meta .t { font-size: 12.5px; font-weight: 700; color: var(--pmd-ink); }
+  .meta .v { font-family: var(--pmd-font-mono); font-size: 10.5px; color: var(--pmd-ink-faint); }
+  .demo { margin-top: 18px; padding: 16px; border-radius: var(--pmd-r-card); background: var(--pmd-surface); border: 1px solid var(--pmd-line); box-shadow: var(--pmd-shadow-1); }
+  .demo .ins { padding: 11px 13px; border-radius: 12px; background: var(--pmd-surface-2); border: 1px solid var(--pmd-line-soft); font-size: 12px; color: var(--pmd-ink-2); }
+  .demo .ttl { font-family: var(--pmd-font-clinical); font-weight: 800; font-size: 13px; margin-bottom: 8px; color: var(--pmd-ink); }
+</style></head>
+<body>
+<div class="card-frame"><div class="wrap">
+  <div class="col pmd" data-pmd-theme="dark">
+    <h3>Dark · warm navy</h3>
+    <div class="sub">The live board. Never pure black; cool deep navy so the spectrum glows.</div>
+    <div class="stack" id="d"></div>
+    <div class="demo"><div class="ttl">Card on page</div><div class="ins">Inset surface for chief complaint &amp; fields</div></div>
+  </div>
+  <div class="col pmd" data-pmd-theme="light">
+    <h3>Light · pediatric pastel</h3>
+    <div class="sub">Pale-blue ground, warm cream for playful shells, white cards. Gentle, not clinical-white.</div>
+    <div class="stack" id="l"></div>
+    <div class="demo"><div class="ttl">Card on page</div><div class="ins">Inset surface for chief complaint &amp; fields</div></div>
+  </div>
+</div></div>
+<script>
+const rows = [['Page','--pmd-bg'],['Rails','--pmd-bg-2'],['Cream / shell','--pmd-cream'],['Sky wash','--pmd-sky'],['Card','--pmd-surface'],['Inset','--pmd-surface-2']];
+function fill(id){
+  document.getElementById(id).innerHTML = rows.map(([t,v])=>`
+    <div class="srow"><div class="sw" style="background:var(${v})"></div>
+    <div class="meta"><span class="t">${t}</span><span class="v">${v}</span></div></div>`).join('');
+}
+fill('d'); fill('l');
+</script>
+</body></html>
