@@ -1,4 +1,4 @@
-# PMD (PretendingMD / PEM FlowMaster) — source
+# PMD (PretendingMD)
 
 This directory holds the **source** for the PretendingMD app. It is a
 Vite + React 19 + TypeScript single-page app (Firebase realtime, Tailwind),
