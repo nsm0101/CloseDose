@@ -308,7 +308,7 @@ export const PatientCard: React.FC<PatientCardProps> = ({
           aria-label={`${s.sub}${s.done ? ' — done, tap to undo' : ' — tap to mark done'}`}
           title={s.sub}
           className={cn(
-            "flex items-center gap-1 px-2 py-1.5 text-[10px] font-black uppercase tracking-wide transition-colors active:scale-95",
+            "flex items-center gap-1 px-2.5 py-2 text-[10px] min-h-11 font-black uppercase tracking-wide transition-colors active:scale-95",
             i > 0 && "border-l border-slate-200 dark:border-slate-700",
             s.done
               ? cn(TONES[s.tone].bar, "text-white")
@@ -340,7 +340,7 @@ export const PatientCard: React.FC<PatientCardProps> = ({
             aria-label={`Disposition ${d.label}${active ? ' — selected, tap to clear' : ''}`}
             title={d.label}
             className={cn(
-              "flex items-center gap-1 px-2 py-1.5 text-[10px] font-black uppercase tracking-wide transition-colors active:scale-95",
+              "flex items-center gap-1 px-2.5 py-2 text-[10px] min-h-11 font-black uppercase tracking-wide transition-colors active:scale-95",
               i > 0 && "border-l border-slate-200 dark:border-slate-700",
               active
                 ? cn(TONES[d.tone].bar, "text-white")
@@ -453,7 +453,7 @@ export const PatientCard: React.FC<PatientCardProps> = ({
         // `@container` lets the card respond to its OWN width — so the same
         // component adapts whether it's full-width on a phone or a narrow tile
         // in the desktop grid hub.
-        "@container relative rounded-3xl border bg-white dark:bg-slate-900 shadow-sm overflow-hidden transition-all duration-300",
+        "@container relative rounded-[var(--pmd-r-card)] border bg-white dark:bg-slate-900 shadow-sm overflow-hidden transition-all duration-300 pmd-native-card",
         patient.isCompleted && "opacity-60",
         isGoodToGo
           ? cn("border-emerald-300 dark:border-emerald-800/70 ring-2", tone.ring)
@@ -476,7 +476,7 @@ export const PatientCard: React.FC<PatientCardProps> = ({
             <button
               onClick={() => setExpanded(true)}
               aria-label="Expand patient card"
-              className="shrink-0 w-14 h-14 rounded-2xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex flex-col items-center justify-center"
+              className="shrink-0 w-16 h-16 rounded-2xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex flex-col items-center justify-center"
             >
               <span className="block text-[8px] font-black uppercase text-slate-400 dark:text-slate-500 leading-none">Room</span>
               <span className="block font-black text-xl leading-tight text-slate-900 dark:text-white uppercase truncate max-w-[3rem]">{patient.room || '—'}</span>
@@ -519,7 +519,7 @@ export const PatientCard: React.FC<PatientCardProps> = ({
                 <button
                   onClick={(e) => { e.stopPropagation(); onUpdate(patient.id, { isPinned: !patient.isPinned }); }}
                   className={cn(
-                    "w-8 h-8 rounded-full grid place-items-center transition-all",
+                    "w-11 h-11 rounded-full grid place-items-center transition-all",
                     patient.isPinned ? "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400" : "text-slate-300 hover:text-slate-500 dark:text-slate-600 dark:hover:text-slate-400"
                   )}
                   aria-label={patient.isPinned ? 'Unpin patient' : 'Pin patient'}
@@ -528,7 +528,7 @@ export const PatientCard: React.FC<PatientCardProps> = ({
                 </button>
                 <button
                   onClick={() => setExpanded(true)}
-                  className="w-8 h-8 rounded-full grid place-items-center bg-slate-100 text-slate-400 hover:text-slate-600 dark:bg-slate-800 dark:text-slate-300 transition-colors"
+                  className="w-11 h-11 rounded-full grid place-items-center bg-slate-100 text-slate-400 hover:text-slate-600 dark:bg-slate-800 dark:text-slate-300 transition-colors"
                   aria-label="Expand"
                 >
                   <ChevronDown size={16} />
@@ -539,7 +539,7 @@ export const PatientCard: React.FC<PatientCardProps> = ({
 
           {/* Quick-advance action bar — tap to move the patient through their
               ED course (care phase + disposition) without expanding. */}
-          <div className="flex flex-wrap items-center gap-1.5 pl-4 pr-3 pb-3 pt-0.5">
+          <div className="flex flex-wrap items-center gap-2 pl-4 pr-3 pb-3 pt-0.5">
             <span className="text-[8px] font-black uppercase tracking-widest text-slate-300 dark:text-slate-600 self-center mr-0.5">Advance</span>
             {quickStepper}
             {quickDispo}
@@ -557,7 +557,7 @@ export const PatientCard: React.FC<PatientCardProps> = ({
             transition={{ duration: 0.25, ease: 'easeOut' }}
             className="overflow-hidden"
           >
-            <div className="max-h-[80dvh] overflow-y-auto scroll-touch">
+            <div className="max-h-[82dvh] overflow-y-auto scroll-touch">
               <div className="p-3 @md:p-4 space-y-3.5">
 
                 {/* Top region: clicking any non-control space above the free-text box collapses the card. */}

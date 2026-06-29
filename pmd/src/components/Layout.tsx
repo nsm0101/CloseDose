@@ -9,6 +9,7 @@ import { cn, getTimerColor } from '../lib/utils';
 import { TeamMember, Role } from '../types';
 import { BRAND } from '../lib/brand';
 import { SyncStatus, SyncState } from './SyncStatus';
+import { nativeDS } from '../lib/nativeDesignSystem';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -88,10 +89,11 @@ export const Layout: React.FC<LayoutProps> = ({ children, activeTab, setActiveTa
   };
 
   return (
-    <div className="pmd pmd-app-shell min-h-[100dvh] flex flex-col transition-colors overflow-x-hidden" data-pmd-theme={pmdTheme}>
+    <div className="pmd pmd-app-shell min-h-[100dvh] flex flex-col transition-colors overflow-x-hidden"
+      style={{ ['--pmd-native-max-width' as any]: `${nativeDS.board.maxContentWidth}px` }} data-pmd-theme={pmdTheme}>
       {/* Top Navigation - Hidden on Mobile */}
       <header className="pmd-glass-header sticky top-0 z-50 border-b shadow-sm md:block transition-colors">
-        <div className="max-w-7xl mx-auto px-4 h-12 md:h-14 flex items-center justify-between">
+        <div className="max-w-[var(--pmd-native-max-width)] mx-auto px-4 h-14 md:h-16 flex items-center justify-between">
           <div className="flex items-center gap-2 cursor-pointer" onClick={() => setActiveTab('board')}>
             <img src={BRAND.bearHead} alt="PREtendingMD bear mascot" className="w-7 h-7 md:w-9 md:h-9 object-contain" />
             <h1 className="pmd-brand text-sm md:text-base font-black tracking-tight text-[var(--pmd-ink)]">PRE<span className="text-[var(--pmd-family)]">tendingMD</span></h1>
@@ -99,7 +101,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, activeTab, setActiveTa
 
           <motion.div 
             whileTap={{ scale: 0.95 }}
-            className="flex items-center gap-2 px-4 py-1.5 pmd-control-surface rounded-full border shadow-xs cursor-pointer select-none transition-transform"
+            className="flex items-center gap-2 px-4 py-2 pmd-control-surface rounded-full min-h-11 border shadow-xs cursor-pointer select-none transition-transform"
             onContextMenu={(e) => { e.preventDefault(); handleTimerReset(); }}
             onTouchStart={startHold}
             onTouchEnd={endHold}
@@ -149,12 +151,12 @@ export const Layout: React.FC<LayoutProps> = ({ children, activeTab, setActiveTa
       </header>
 
       {/* Main Content Area */}
-      <main className="flex-1 max-w-7xl mx-auto w-full px-4 pt-0 pb-28 md:pb-4 scroll-touch">
+      <main className="flex-1 max-w-[var(--pmd-native-max-width)] mx-auto w-full px-3 sm:px-4 pt-0 pb-28 md:pb-5 scroll-touch">
         {children}
       </main>
 
       {/* Bottom Navigation (Mobile Friendly) */}
-      <nav className="pmd-glass-header fixed bottom-0 left-0 right-0 border-t px-4 pt-1 pb-[calc(4px+env(safe-area-inset-bottom))] z-30 md:relative md:border-t-0 md:bg-transparent md:max-w-7xl md:mx-auto md:w-full md:px-4 md:py-4">
+      <nav className="pmd-glass-header fixed bottom-0 left-0 right-0 border-t px-4 pt-1 pb-[calc(4px+env(safe-area-inset-bottom))] z-30 md:relative md:border-t-0 md:bg-transparent md:max-w-[var(--pmd-native-max-width)] md:mx-auto md:w-full md:px-4 md:py-4">
         <div className="flex items-center justify-around md:justify-start md:gap-6 max-w-lg mx-auto md:mx-0">
           {tabs.map(tab => (
             <motion.button
@@ -165,7 +167,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, activeTab, setActiveTa
                 setActiveTab(tab.id);
               }}
               className={cn(
-                "flex flex-col md:flex-row items-center gap-0.5 md:gap-3 px-4 py-1.5 rounded-2xl transition-all",
+                "flex flex-col md:flex-row items-center gap-0.5 md:gap-3 px-4 py-2 rounded-2xl min-h-11 transition-all",
                 activeTab === tab.id 
                   ? "text-[var(--pmd-family-ink)] bg-[var(--pmd-family-soft)] md:pmd-primary-action md:text-white md:shadow-lg" 
                   : "text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800"

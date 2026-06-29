@@ -11,6 +11,7 @@ import { Search, Filter, SortAsc, SortDesc, Users, Plus, X } from 'lucide-react'
 import { cn, getRoleColor, getPatientPhase, PHASE_TONES, type EdPhaseKey } from '../lib/utils';
 import { DndContext, DragOverlay, useDraggable, useDroppable, DragEndEvent, TouchSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
 import { motion, AnimatePresence } from 'framer-motion';
+import { nativeDS } from '../lib/nativeDesignSystem';
 
 interface PatientBoardProps {
   patients: Patient[];
@@ -52,7 +53,7 @@ const DraggableTeamMember = ({ member, onFilter }: { member: TeamMember, onFilte
         }
       }}
       className={cn(
-        "w-10 h-10 rounded-full border-2 flex flex-col items-center justify-center text-xs font-black cursor-grab active:cursor-grabbing transition-all shadow-sm shrink-0 relative group touch-none",
+        "w-11 h-11 rounded-full border-2 flex flex-col items-center justify-center text-xs font-black cursor-grab active:cursor-grabbing transition-all shadow-sm shrink-0 relative group touch-none",
         getRoleColor(member.role),
         isDragging && "opacity-0 scale-110 shadow-lg"
       )}
@@ -78,10 +79,10 @@ const DraggableTeamMember = ({ member, onFilter }: { member: TeamMember, onFilte
   );
 };
 
-export const PatientBoard: React.FC<PatientBoardProps> = ({ 
-  patients, 
-  teamMembers, 
-  onUpdatePatient, 
+export const PatientBoard: React.FC<PatientBoardProps> = ({
+  patients,
+  teamMembers,
+  onUpdatePatient,
   onDeletePatient,
   onCompletePatient,
   onResetTimer,
@@ -186,7 +187,7 @@ export const PatientBoard: React.FC<PatientBoardProps> = ({
       } else if (sortBy === 'timer') {
         comparison = a.lastAssessmentAt.toMillis() - b.lastAssessmentAt.toMillis();
       }
-      
+
       return sortOrder === 'asc' ? comparison : -comparison;
     });
 
@@ -229,7 +230,7 @@ export const PatientBoard: React.FC<PatientBoardProps> = ({
 
   const groupedPatients = useMemo(() => {
     if (filterProvider === 'all') return { all: filteredAndSortedPatients };
-    
+
     const groups: Record<string, Patient[]> = {};
     filteredAndSortedPatients.forEach(p => {
       if (p.assignedTeam.length === 0) {
@@ -294,7 +295,7 @@ export const PatientBoard: React.FC<PatientBoardProps> = ({
       const memberId = active.data.current.member.id;
       const patientId = over.id as string;
       const patient = patients.find(p => p.id === patientId);
-      
+
       if (patient && !patient.assignedTeam.includes(memberId)) {
         onUpdatePatient(patientId, {
           assignedTeam: [...patient.assignedTeam, memberId]
@@ -333,7 +334,7 @@ export const PatientBoard: React.FC<PatientBoardProps> = ({
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1">
                   <label className="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest px-1">First name</label>
-                  <input 
+                  <input
                     autoFocus
                     required
                     className="w-full p-2.5 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-sm text-gray-900 dark:text-white focus:ring-2 focus:ring-[var(--pmd-family)] outline-none transition-colors"
@@ -344,7 +345,7 @@ export const PatientBoard: React.FC<PatientBoardProps> = ({
                 </div>
                 <div className="space-y-1">
                   <label className="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest px-1">Last name</label>
-                  <input 
+                  <input
                     required
                     className="w-full p-2.5 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-sm text-gray-900 dark:text-white focus:ring-2 focus:ring-[var(--pmd-family)] outline-none transition-colors"
                     placeholder="Last"
@@ -357,7 +358,7 @@ export const PatientBoard: React.FC<PatientBoardProps> = ({
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1">
                   <label className="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest px-1">Initials</label>
-                  <input 
+                  <input
                     required
                     maxLength={3}
                     className="w-full p-2.5 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-sm text-gray-900 dark:text-white focus:ring-2 focus:ring-[var(--pmd-family)] outline-none uppercase transition-colors"
@@ -368,7 +369,7 @@ export const PatientBoard: React.FC<PatientBoardProps> = ({
                 </div>
                 <div className="space-y-1">
                   <label className="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest px-1">Role</label>
-                  <select 
+                  <select
                     className="w-full p-2.5 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-sm text-gray-900 dark:text-white focus:ring-2 focus:ring-[var(--pmd-family)] outline-none transition-colors"
                     value={quickAddData.role}
                     onChange={(e) => setQuickAddData({ ...quickAddData, role: e.target.value as any })}
@@ -383,7 +384,7 @@ export const PatientBoard: React.FC<PatientBoardProps> = ({
                 </div>
               </div>
 
-              <button 
+              <button
                 type="submit"
                 className="w-full py-3 pmd-primary-action rounded-xl font-black uppercase tracking-widest text-xs transition-all shadow-lg dark:shadow-none active:scale-95"
               >
@@ -394,9 +395,10 @@ export const PatientBoard: React.FC<PatientBoardProps> = ({
         </div>
       )}
 
-      <div className="space-y-4">
+      <div className="space-y-3 sm:space-y-4 pmd-native-board"
+        style={{ ['--pmd-card-gap' as any]: `${nativeDS.board.cardGap}px`, ['--pmd-card-min' as any]: `${nativeDS.board.desktopCardMinWidth}px` }}>
         {/* Team Bar - Scrolling with patients */}
-        <div className="sticky top-12 md:top-14 z-50 pmd-glass-header py-2 border-b -mx-4 px-4 shadow-sm flex items-center gap-3 transition-colors overflow-y-hidden">
+        <div className="sticky top-14 md:top-16 z-50 pmd-glass-header py-2 border-b -mx-4 px-4 shadow-sm flex items-center gap-3 transition-colors overflow-y-hidden">
           <div className="flex items-center gap-1.5 shrink-0 opacity-60">
             <Users size={14} className="text-gray-400 dark:text-gray-500" />
             <span className="col-header whitespace-nowrap">Team</span>
@@ -405,9 +407,9 @@ export const PatientBoard: React.FC<PatientBoardProps> = ({
           <div className="flex-1 flex items-center gap-2 overflow-x-auto no-scrollbar py-1 scroll-touch snap-x-mandatory">
             {teamMembers.map(m => (
               <div key={m.id} className="snap-center relative">
-                <DraggableTeamMember 
-                  member={m} 
-                  onFilter={(id) => setFilterProvider(id === filterProvider ? 'all' : id)} 
+                <DraggableTeamMember
+                  member={m}
+                  onFilter={(id) => setFilterProvider(id === filterProvider ? 'all' : id)}
                 />
                 {teamWorkload[m.id] > 0 && (
                   <div className="absolute bottom-0.5 left-1/2 -translate-x-1/2 flex flex-wrap justify-center gap-0.5 z-10 w-8 pointer-events-none">
@@ -426,7 +428,7 @@ export const PatientBoard: React.FC<PatientBoardProps> = ({
             <div className="snap-center">
               <button
                 onClick={() => setIsQuickAddOpen(true)}
-                className="w-10 h-10 rounded-full border-2 border-dashed border-gray-300 dark:border-gray-700 flex items-center justify-center text-gray-400 dark:text-gray-600 hover:text-[var(--pmd-family-ink)] hover:border-[var(--pmd-family-line)] hover:bg-[var(--pmd-family-soft)] transition-all shrink-0"
+                className="w-11 h-11 rounded-full border-2 border-dashed border-gray-300 dark:border-gray-700 flex items-center justify-center text-gray-400 dark:text-gray-600 hover:text-[var(--pmd-family-ink)] hover:border-[var(--pmd-family-line)] hover:bg-[var(--pmd-family-soft)] transition-all shrink-0"
                 title="Quick add team member"
               >
                 <Plus size={16} />
@@ -442,7 +444,7 @@ export const PatientBoard: React.FC<PatientBoardProps> = ({
             Census counts are live and tappable: each filters the board to that
             ED-course phase so the whole department can be triaged at a glance.
             Add patient now lives here (not the team bar) as the mainstay action. */}
-        <div className="flex items-center gap-2">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-2">
           <div className="flex-1 flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5 -my-0.5">
             <span className="shrink-0 inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-gray-100 dark:bg-slate-900 border border-gray-200/60 dark:border-gray-800">
               <span className="text-[9px] font-black uppercase tracking-widest text-gray-400 dark:text-gray-500">Census</span>
@@ -522,14 +524,14 @@ export const PatientBoard: React.FC<PatientBoardProps> = ({
               {isSearchOpen ? (
                 <div className="relative animate-in slide-in-from-left-2 duration-200 min-w-[200px]">
                   <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500" />
-                  <input 
+                  <input
                     autoFocus
                     className="w-full pl-9 pr-8 py-1.5 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg text-xs text-gray-900 dark:text-white focus:ring-2 focus:ring-[var(--pmd-family)] outline-none shadow-sm transition-colors font-mono"
                     placeholder="Search..."
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
                   />
-                  <button 
+                  <button
                     onClick={() => { setSearch(''); setIsSearchOpen(false); }}
                     className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
                   >
@@ -537,15 +539,15 @@ export const PatientBoard: React.FC<PatientBoardProps> = ({
                   </button>
                 </div>
               ) : (
-                <button 
+                <button
                   onClick={() => setIsSearchOpen(true)}
                   className="col-header opacity-100 hover:text-[var(--pmd-family-ink)] transition-colors"
                 >
                   SEARCH
                 </button>
               )}
-              
-              <button 
+
+              <button
                 onClick={() => {
                   setIsFilterOpen(!isFilterOpen);
                   setIsSortOpen(false);
@@ -558,7 +560,7 @@ export const PatientBoard: React.FC<PatientBoardProps> = ({
                 FILTER
               </button>
 
-              <button 
+              <button
                 onClick={() => {
                   setIsSortOpen(!isSortOpen);
                   setIsFilterOpen(false);
@@ -571,13 +573,13 @@ export const PatientBoard: React.FC<PatientBoardProps> = ({
                 SORT
               </button>
             </div>
-            
+
             <SyncStatus state={syncState} variant="dot" />
           </div>
 
           <AnimatePresence>
             {isSortOpen && (
-              <motion.div 
+              <motion.div
                 initial={{ height: 0, opacity: 0 }}
                 animate={{ height: 'auto', opacity: 1 }}
                 exit={{ height: 0, opacity: 0 }}
@@ -586,7 +588,7 @@ export const PatientBoard: React.FC<PatientBoardProps> = ({
                 <div className="flex flex-wrap items-center gap-2 p-3 glass rounded-2xl shadow-sm transition-colors mb-2">
                   <div className="flex items-center gap-1.5 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-lg px-2 py-1 transition-colors">
                     <SortAsc size={14} className="text-gray-400 dark:text-gray-500" />
-                    <select 
+                    <select
                       className="text-xs font-bold text-gray-600 dark:text-gray-300 bg-transparent outline-none font-mono"
                       value={sortBy}
                       onChange={(e) => setSortBy(e.target.value as any)}
@@ -597,7 +599,7 @@ export const PatientBoard: React.FC<PatientBoardProps> = ({
                       <option value="age">Age</option>
                       <option value="timer">Timer</option>
                     </select>
-                    <button 
+                    <button
                       onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
                       className="p-1 hover:bg-gray-200 dark:hover:bg-gray-700 rounded text-gray-400 dark:text-gray-500 transition-colors"
                     >
@@ -609,7 +611,7 @@ export const PatientBoard: React.FC<PatientBoardProps> = ({
             )}
 
             {isFilterOpen && (
-              <motion.div 
+              <motion.div
                 initial={{ height: 0, opacity: 0 }}
                 animate={{ height: 'auto', opacity: 1 }}
                 exit={{ height: 0, opacity: 0 }}
@@ -618,7 +620,7 @@ export const PatientBoard: React.FC<PatientBoardProps> = ({
                 <div className="flex flex-wrap items-center gap-2 p-3 glass rounded-2xl shadow-sm transition-colors mb-2">
                   <div className="flex items-center gap-1.5 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-lg px-2 py-1 transition-colors">
                     <Users size={14} className="text-gray-400 dark:text-gray-500" />
-                    <select 
+                    <select
                       className="text-xs font-bold text-gray-600 dark:text-gray-300 bg-transparent outline-none max-w-[100px]"
                       value={filterProvider}
                       onChange={(e) => setFilterProvider(e.target.value)}
@@ -632,7 +634,7 @@ export const PatientBoard: React.FC<PatientBoardProps> = ({
 
                   <div className="flex items-center gap-1.5 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-lg px-2 py-1 transition-colors">
                     <Filter size={14} className="text-gray-400 dark:text-gray-500" />
-                    <select 
+                    <select
                       className="text-xs font-bold text-gray-600 dark:text-gray-300 bg-transparent outline-none max-w-[100px]"
                       value={filterStatus}
                       onChange={(e) => setFilterStatus(e.target.value)}
@@ -652,8 +654,8 @@ export const PatientBoard: React.FC<PatientBoardProps> = ({
         {/* Patient List */}
         {filterProvider === 'all' ? (
           <div className={cn(
-            "grid gap-2", 
-            twoColumnMode ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4" : "grid-cols-1"
+            "grid gap-[var(--pmd-card-gap)]",
+            twoColumnMode ? "grid-cols-1 md:grid-cols-[repeat(auto-fit,minmax(var(--pmd-card-min),1fr))]" : "grid-cols-1 max-w-[720px]"
           )}>
             {filteredAndSortedPatients.map(patient => (
               <PatientCard
@@ -714,21 +716,21 @@ export const PatientBoard: React.FC<PatientBoardProps> = ({
                   Filtered by: {teamMembers.find(m => m.id === filterProvider)?.lastName || 'Unknown'}
                 </span>
               </div>
-              <button 
+              <button
                 onClick={() => setFilterProvider('all')}
                 className="text-xs font-bold text-[var(--pmd-family-ink)] hover:text-blue-800 dark:hover:text-blue-300 bg-white dark:bg-gray-800 px-3 py-1.5 rounded-lg shadow-sm transition-colors"
               >
                 Clear Filter (All providers)
               </button>
             </div>
-            
+
             {Object.entries(groupedPatients).filter(([groupId]) => groupId === filterProvider).map(([groupId, groupPatients]) => {
               const provider = teamMembers.find(m => m.id === groupId);
               const isCollapsed = collapsedGroups[groupId];
-              
+
               return (
                 <div key={groupId} className="space-y-2">
-                  <button 
+                  <button
                     onClick={() => toggleGroup(groupId)}
                     className="w-full flex items-center justify-between p-3 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl shadow-sm hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"
                   >
@@ -750,11 +752,11 @@ export const PatientBoard: React.FC<PatientBoardProps> = ({
                       <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-gray-400 dark:text-gray-500"><path d="m18 15-6-6-6 6"/></svg>
                     </div>
                   </button>
-                  
+
                   {!isCollapsed && (
                     <div className={cn(
-                      "grid gap-2 pl-2 md:pl-4 border-l-2 border-gray-100 dark:border-gray-800 transition-colors", 
-                      twoColumnMode ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4" : "grid-cols-1"
+                      "grid gap-[var(--pmd-card-gap)] pl-2 md:pl-4 border-l-2 border-gray-100 dark:border-gray-800 transition-colors",
+                      twoColumnMode ? "grid-cols-1 md:grid-cols-[repeat(auto-fit,minmax(var(--pmd-card-min),1fr))]" : "grid-cols-1 max-w-[720px]"
                     )}>
                       {groupPatients.map(patient => (
                         <PatientCard

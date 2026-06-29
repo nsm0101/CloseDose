@@ -257,3 +257,37 @@
   outline-offset: 2px;
   border-radius: 6px;
 }
+
+/* React Native migration bridge: numeric primitives mirror nativeDesignSystem.ts. */
+.pmd {
+  --pmd-native-touch-min: 44px;
+  --pmd-native-touch-comfortable: 52px;
+  --pmd-native-content-max: 1180px;
+  --pmd-native-card-min: 320px;
+}
+
+.pmd button,
+.pmd input,
+.pmd select,
+.pmd textarea {
+  touch-action: manipulation;
+}
+
+.pmd button,
+.pmd [role="button"] {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.pmd-native-card {
+  box-shadow: var(--pmd-shadow-card), 0 10px 30px -22px rgba(20,40,68,0.55);
+}
+
+@media (max-width: 640px) {
+  .pmd-native-board {
+    margin-inline: -0.25rem;
+  }
+
+  .pmd-native-card {
+    border-radius: 22px;
+  }
+}
