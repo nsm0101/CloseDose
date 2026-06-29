@@ -1,9 +1,7 @@
 # PMD (PretendingMD)
 
 This directory holds the **source** for the PretendingMD app. It is a
-Vite + React 19 + TypeScript single-page app (Firebase realtime, Tailwind),
-originally exported from Google AI Studio
-(<https://ai.studio/apps/2f1b1ed6-35b2-4162-bac6-1fbc2d599b35>).
+Vite + React 19 + TypeScript single-page app (Firebase realtime, Tailwind)
 
 The **built, deployed** site lives in [`../public/PMD/`](../public/PMD) and is
 served at <https://closedose.com/PMD/> (the site is published from the repo's
