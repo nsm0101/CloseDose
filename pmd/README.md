@@ -62,6 +62,3 @@ npm run dev
   the deployed folder (see the build step above) so only these slim assets ship.
 - **Firebase:** `firebase-applet-config.json` holds the web config. The web
   `apiKey` is public by design; access is governed by `firestore.rules`.
-- `server.ts` is the AI Studio local dev server and is **not** used for static
-  hosting on GitHub Pages.
-- No Gemini API key is required to build; the source does not call the Gemini API.
