@@ -370,6 +370,78 @@ export const PatientCard: React.FC<PatientCardProps> = ({
   const timerColor = getTimerColor(elapsed);
   const sectionLabel = "text-[10px] @md:text-[11px] font-black uppercase tracking-wider text-slate-400 dark:text-slate-500";
 
+  const shouldIgnoreCollapseClick = (target: EventTarget | null) => {
+    return target instanceof HTMLElement && !!target.closest('button, input, select, textarea, a, [role="button"]');
+  };
+
+  const collapseFromCardTop = (e: React.MouseEvent) => {
+    if (shouldIgnoreCollapseClick(e.target)) return;
+    setExpanded(false);
+  };
+
+  const inferTaskState = (text: string, patterns: RegExp[]): TaskState | undefined => {
+    const hasMention = patterns.some((pattern) => pattern.test(text));
+    if (!hasMention) return undefined;
+
+    const completionPattern = /\b(done|completed|complete|resulted|result|negative|normal|clear|given|gave|received|s\/p|after|finished)\b/;
+    const pendingPattern = /\b(plan|ordered?|pending|await(?:ing)?|follow[- ]?up|f\/u|send(?:ing)?|obtain|check|collect|swab|culture|cx|consult|page|trial|po challenge|needs?|give|start)\b/;
+
+    if (completionPattern.test(text) && !pendingPattern.test(text)) return 'complete';
+    return 'pending';
+  };
+
+  const getSmartTextUpdates = (rawText: string): Partial<Patient> => {
+    const text = rawText.toLowerCase();
+    const taskUpdates: Partial<Patient['tasks']> = {};
+
+    const inferredTasks: Array<[keyof Patient['tasks'], RegExp[]]> = [
+      ['labs', [/\b(labs?|blood ?work|cbc|cmp|bmp|esr|crp|ua|urine|u\/?a|ucx|urine culture|stool|swab|culture|cx|rpp|viral panel)\b/]],
+      ['imaging', [/\b(x-?ray|xr\b|ct\b|mri\b|ultrasound|u\/s\b|us\b|kub|scan|imaging|film)\b/]],
+      ['meds', [/\b(meds?|medications?|zofran|ondansetron|tylenol|acetaminophen|motrin|ibuprofen|antibiotic|abx|fluids?|bolus|dose|given|give)\b/]],
+      ['consult', [/\b(consult|consultant|page|paged|surgery|ortho|neuro\b|cards|cardiology|pulm|endocrine|psych|social work)\b/]],
+      ['poIntake', [/\b(po|oral intake|drink(?:ing)?|fluids?|hydration|decreased po|po challenge|tolerat(?:e|ing) po)\b/]],
+      ['painControl', [/\b(pain|analgesia|morphine|toradol|fentanyl|dilaudid|ibuprofen|motrin|tylenol|acetaminophen)\b/]],
+      ['ambulation', [/\b(ambulat(?:e|ing|ion)|walk(?:ing)?|gait|bear weight|weight[- ]bearing)\b/]],
+      ['documents', [/\b(discharge instructions?|paperwork|school note|work note|chart(?:ing)?|documentation|note)\b/]],
+    ];
+
+    inferredTasks.forEach(([key, patterns]) => {
+      const next = inferTaskState(text, patterns);
+      if (next && (patient.tasks[key] === 'off' || patient.tasks[key] === 'none')) {
+        taskUpdates[key] = next;
+      }
+    });
+
+    let status: Patient['status'] | undefined;
+    if (/\b(likely|probable|probably|anticipate|plan(?:ning)? for|possible)\s+(d\/c|dc|discharge|home)\b|\b(discharge|d\/c|dc)\s+(home|if|with|after)\b/.test(text)) {
+      status = 'Likely Discharge';
+    } else if (/\b(likely|probable|probably|anticipate|plan(?:ning)? for|possible)\s+(admit|admission)\b/.test(text)) {
+      status = 'Likely Admit';
+    } else if (/\b(ed obs|observation|obs)\b/.test(text)) {
+      status = 'ED Observation';
+    } else if (/\b(admit|admission)\b/.test(text)) {
+      status = 'Admit';
+    } else if (/\b(discharge|d\/c|dc)\b/.test(text)) {
+      status = 'Discharge';
+    }
+
+    const workflowFlags: Partial<Patient['workflowFlags']> = {};
+    if (/\b(staffed|discussed with attending|d\/w attending|dw attending)\b/.test(text)) workflowFlags.awaitingDispo = true;
+    if (/\b(awaiting dispo|pending dispo|dispo pending|likely discharge|likely admit)\b/.test(text)) workflowFlags.awaitingDispo = true;
+    if (/\b(discharge instructions?|paperwork)\b/.test(text)) workflowFlags.readyForDischargePaperwork = true;
+
+    const updates: Partial<Patient> = {};
+    if (Object.keys(taskUpdates).length > 0) updates.tasks = { ...patient.tasks, ...taskUpdates };
+    if (status && patient.status !== status) updates.status = status;
+    if (Object.keys(workflowFlags).length > 0) updates.workflowFlags = { ...patient.workflowFlags, ...workflowFlags };
+    return updates;
+  };
+
+  const updateChiefComplaintWithSmartToggles = (value: string) => {
+    const smartUpdates = getSmartTextUpdates(value);
+    onUpdate(patient.id, { chiefComplaint: value, ...smartUpdates });
+  };
+
   return (
     <motion.div
       ref={cardRef}
@@ -488,8 +560,14 @@ export const PatientCard: React.FC<PatientCardProps> = ({
             <div className="max-h-[80dvh] overflow-y-auto scroll-touch">
               <div className="p-3 @md:p-4 space-y-3.5">
 
-                {/* Top bar: collapse · phase · timer · pin */}
-                <div className="flex items-center gap-2">
+                {/* Top region: clicking any non-control space above the free-text box collapses the card. */}
+                <div
+                  onClick={collapseFromCardTop}
+                  className="cursor-pointer rounded-2xl -m-1 p-1 transition-colors hover:bg-slate-50/70 dark:hover:bg-slate-800/30"
+                  title="Click this upper card area to collapse"
+                >
+                  {/* Top bar: collapse · phase · timer · pin */}
+                  <div className="flex items-center gap-2">
                   <button
                     onClick={() => setExpanded(false)}
                     className="flex items-center gap-1 px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700 rounded-lg text-[10px] font-black uppercase tracking-wider transition-all"
@@ -614,6 +692,7 @@ export const PatientCard: React.FC<PatientCardProps> = ({
                         </select>
                       </div>
                     </div>
+                  </div>
                 </div>
 
                 {/* Chief complaint */}
@@ -622,10 +701,13 @@ export const PatientCard: React.FC<PatientCardProps> = ({
                   <textarea
                     rows={2}
                     value={patient.chiefComplaint}
-                    onChange={(e) => onUpdate(patient.id, { chiefComplaint: e.target.value })}
+                    onChange={(e) => updateChiefComplaintWithSmartToggles(e.target.value)}
                     className="w-full text-sm font-semibold text-slate-700 dark:text-slate-200 bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-xl p-2.5 focus:bg-white dark:focus:bg-slate-800 resize-none outline-none leading-snug focus:ring-2 focus:ring-blue-500 transition-colors"
-                    placeholder="Describe clinical presentation details…"
+                    placeholder="Paste a quick EMR-style note here; labs, meds, PO, consults, disposition, etc. are inferred into the toggles as you type…"
                   />
+                  <p className="mt-1 text-[10px] font-semibold text-slate-400 dark:text-slate-500">
+                    Smart toggles: note text like “UA pending,” “Zofran given,” “PO challenge,” “consult,” or “likely discharge” will flag the matching task/status without clearing existing work.
+                  </p>
                 </div>
 
                 {/* Care phase — tappable Fellow → Staffed → Attending (compact) */}
