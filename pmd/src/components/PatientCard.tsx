@@ -380,13 +380,23 @@ export const PatientCard: React.FC<PatientCardProps> = ({
   };
 
   const inferTaskState = (text: string, patterns: RegExp[]): TaskState | undefined => {
-    const hasMention = patterns.some((pattern) => pattern.test(text));
-    if (!hasMention) return undefined;
-
     const completionPattern = /\b(done|completed|complete|resulted|result|negative|normal|clear|given|gave|received|s\/p|after|finished)\b/;
     const pendingPattern = /\b(plan|ordered?|pending|await(?:ing)?|follow[- ]?up|f\/u|send(?:ing)?|obtain|check|collect|swab|culture|cx|consult|page|trial|po challenge|needs?|give|start)\b/;
 
-    if (completionPattern.test(text) && !pendingPattern.test(text)) return 'complete';
+    // Evaluate cues only within the same local phrase/clause as the task
+    // mention. This keeps unrelated work (for example, "labs pending") from
+    // forcing another mentioned task (for example, "meds given") to pending.
+    const taskContexts = text
+      .split(/(?:[.;!?\n]+|,|\s+-\s+|\s+\b(?:and|but|then)\b\s+)/)
+      .map((context) => context.trim())
+      .filter((context) => context.length > 0 && patterns.some((pattern) => pattern.test(context)));
+
+    if (taskContexts.length === 0) return undefined;
+
+    const hasPendingContext = taskContexts.some((context) => pendingPattern.test(context));
+    const hasCompleteContext = taskContexts.some((context) => completionPattern.test(context));
+
+    if (hasCompleteContext && !hasPendingContext) return 'complete';
     return 'pending';
   };
 
