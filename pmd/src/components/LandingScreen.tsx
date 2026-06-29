@@ -30,7 +30,7 @@ export const LandingScreen: React.FC<LandingScreenProps> = ({ onComplete, loadin
       return;
     }
     if (!role) {
-      setError('Please select your role (Attending or Fellow).');
+      setError('Please select your role (attending or fellow).');
       return;
     }
 
@@ -51,15 +51,15 @@ export const LandingScreen: React.FC<LandingScreenProps> = ({ onComplete, loadin
   };
 
   return (
-    <div className="min-h-[100dvh] bg-slate-50 dark:bg-slate-950 flex items-center justify-center p-4 transition-colors">
+    <div className="pmd pmd-playful-shell min-h-[100dvh] flex items-center justify-center p-4 transition-colors" data-pmd-theme={document.documentElement.classList.contains('dark') ? 'dark' : 'light'}>
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, ease: 'easeOut' }}
-        className="max-w-md w-full bg-white dark:bg-slate-900 rounded-[2.5rem] shadow-2xl border border-slate-100 dark:border-slate-800/85 overflow-hidden transition-colors"
+        className="max-w-md w-full pmd-card-surface rounded-[2.5rem] border overflow-hidden transition-colors"
       >
         {/* Banner/Header — brand-forward hero: oversized sticker bear + rainbow wordmark */}
-        <div className="relative overflow-hidden px-8 pt-10 pb-9 text-center bg-gradient-to-b from-slate-50 via-white to-white dark:from-slate-800/40 dark:via-slate-900 dark:to-slate-900 transition-colors">
+        <div className="relative overflow-hidden px-8 pt-10 pb-9 text-center bg-[linear-gradient(180deg,var(--pmd-sky),var(--pmd-surface))] transition-colors">
           {/* Soft rainbow glow echoes the wordmark and spotlights the bear (replaces the old hard circle) */}
           <div
             aria-hidden="true"
@@ -91,13 +91,13 @@ export const LandingScreen: React.FC<LandingScreenProps> = ({ onComplete, loadin
             <img src={BRAND.wordmark} alt="PREtendingMD" className="mx-auto block h-10 w-auto" />
           </h1>
 
-          <p className="relative z-10 mt-3 text-[11px] font-bold uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">Pediatric Emergency Medicine Co-Pilot</p>
+          <p className="relative z-10 mt-3 text-[11px] font-bold uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">Pediatric emergency medicine co-pilot</p>
         </div>
 
         {/* Form Body */}
         <div className="p-8 space-y-6">
           <div className="text-center space-y-1">
-            <h2 className="text-lg font-black text-slate-800 dark:text-slate-100 tracking-tight">Introduce Yourself</h2>
+            <h2 className="text-lg font-black text-slate-800 dark:text-slate-100 tracking-tight">Introduce yourself</h2>
             <p className="text-xs text-slate-400 dark:text-slate-500 font-medium">Quick entry for real-time collaboration with your shift partner</p>
           </div>
 
@@ -115,7 +115,7 @@ export const LandingScreen: React.FC<LandingScreenProps> = ({ onComplete, loadin
             {/* Name Fields */}
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1">
-                <label className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest px-1">First Name</label>
+                <label className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest px-1">First name</label>
                 <input
                   type="text"
                   required
@@ -128,7 +128,7 @@ export const LandingScreen: React.FC<LandingScreenProps> = ({ onComplete, loadin
               </div>
 
               <div className="space-y-1">
-                <label className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest px-1">Last Name</label>
+                <label className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest px-1">Last name</label>
                 <input
                   type="text"
                   required
@@ -142,7 +142,7 @@ export const LandingScreen: React.FC<LandingScreenProps> = ({ onComplete, loadin
 
             {/* Role Cards (Extremely visual & easy to tap) */}
             <div className="space-y-2">
-              <label className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest px-1 block">Your Shift Role</label>
+              <label className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest px-1 block">Your shift role</label>
               
               <div className="grid grid-cols-2 gap-4">
                 {/* Attending Card */}
@@ -184,13 +184,13 @@ export const LandingScreen: React.FC<LandingScreenProps> = ({ onComplete, loadin
               whileTap={{ scale: 0.98 }}
               type="submit"
               disabled={isSubmitting || loading}
-              className="w-full py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl font-black uppercase tracking-wider text-xs shadow-xl shadow-blue-200 dark:shadow-none flex items-center justify-center gap-2 disabled:opacity-50 transition-all cursor-pointer"
+              className="w-full py-4 pmd-primary-action text-white rounded-2xl font-black uppercase tracking-wider text-xs shadow-xl shadow-blue-200 dark:shadow-none flex items-center justify-center gap-2 disabled:opacity-50 transition-all cursor-pointer"
             >
               {isSubmitting || loading ? (
                 <Loader2 size={16} className="animate-spin" />
               ) : (
                 <>
-                  Enter Shift board
+                  Enter shift board
                   <ArrowRight size={16} />
                 </>
               )}
@@ -201,7 +201,7 @@ export const LandingScreen: React.FC<LandingScreenProps> = ({ onComplete, loadin
         {/* Bottom PII Notice */}
         <div className="p-6 bg-slate-50/50 dark:bg-slate-900/50 border-t border-slate-100 dark:border-slate-800/55 text-center">
           <div className="inline-flex items-center gap-1 text-slate-400 dark:text-slate-500 text-[9px] font-bold uppercase tracking-widest leading-none text-center">
-            <ShieldCheck size={12} className="text-emerald-500 shrink-0" /> Secure Co-Pilot · Limited identifiers only (first name + last initial)
+            <ShieldCheck size={12} className="text-emerald-500 shrink-0" /> Secure co-pilot · limited identifiers only (first name + last initial)
           </div>
         </div>
       </motion.div>

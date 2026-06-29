@@ -1,0 +1,259 @@
+/* =========================================================================
+   PREtendingMD — sub-brand tokens
+   A child of the CloseDose family. The vivid CLINICAL SPECTRUM leads the app;
+   CloseDose teal stays a quiet family thread. Two registers:
+     • CLINICAL  — board, patient cards, workflow. Clean, professional, dense.
+     • PLAYFUL   — launch / login / empty states / settings / footer. Teddy + crayon.
+   The harmonized clinical spectrum is the grown-up sibling of the crayon rainbow
+   in the wordmark — same hues, tuned to one lightness/chroma so they read as a set.
+   Works in warm-dark navy AND soft pediatric-pastel light.
+   All tokens are --pmd-* namespaced; surfaces switch on .pmd[data-pmd-theme].
+   ========================================================================= */
+
+:root {
+  /* ---------------------------------------------------------------------
+     CRAYON RAINBOW — the playful register (sampled from the wordmark)
+     Used in playful shells, empty states, the launch hero, decorative bits.
+     --------------------------------------------------------------------- */
+  --crayon-red:    #e64a44;
+  --crayon-orange: #f18b2b;
+  --crayon-yellow: #f4c430;
+  --crayon-green:  #3aa553;
+  --crayon-teal:   #3ba2c3;
+  --crayon-blue:   #1b69b9;
+  --crayon-indigo: #5b62c4;
+  --crayon-violet: #8769b6;
+
+  /* Teddy / paper tones (for sticker grounds, illustration captions) */
+  --teddy-fur:    #d9a36b;
+  --teddy-fur-dk: #a9743f;
+  --teddy-cream:  #f7efe1;
+  --teddy-nose:   #4a3b34;
+
+  /* ---------------------------------------------------------------------
+     CLINICAL SPECTRUM — the lead system. One tuned family (L~0.63, C high).
+     Each: base vivid fill (mode-independent), -on (text over fill),
+     -ink (text/icon on a light surface), -soft (tint over any surface),
+     -line (hairline over any surface), -grad (signature active gradient).
+     --------------------------------------------------------------------- */
+
+  /* TO BE SEEN · rose — needs a clinician */
+  --pmd-tobeseen:      oklch(0.665 0.205 18);
+  --pmd-tobeseen-ink:  oklch(0.555 0.190 18);
+  --pmd-tobeseen-on:   #ffffff;
+  --pmd-tobeseen-soft: color-mix(in oklab, var(--pmd-tobeseen) 15%, transparent);
+  --pmd-tobeseen-line: color-mix(in oklab, var(--pmd-tobeseen) 42%, transparent);
+  --pmd-tobeseen-grad: linear-gradient(135deg, oklch(0.72 0.19 26), oklch(0.62 0.21 12)); /* @kind color */
+
+  /* WORK-UP · sky — orders in flight */
+  --pmd-workup:        oklch(0.705 0.145 230);
+  --pmd-workup-ink:    oklch(0.560 0.135 232);
+  --pmd-workup-on:     #ffffff;
+  --pmd-workup-soft:   color-mix(in oklab, var(--pmd-workup) 16%, transparent);
+  --pmd-workup-line:   color-mix(in oklab, var(--pmd-workup) 42%, transparent);
+  --pmd-workup-grad:   linear-gradient(135deg, oklch(0.76 0.13 222), oklch(0.66 0.16 238)); /* @kind color */
+
+  /* FELLOW · blue — care phase 1 */
+  --pmd-fellow:        oklch(0.620 0.180 254);
+  --pmd-fellow-ink:    oklch(0.515 0.165 254);
+  --pmd-fellow-on:     #ffffff;
+  --pmd-fellow-soft:   color-mix(in oklab, var(--pmd-fellow) 16%, transparent);
+  --pmd-fellow-line:   color-mix(in oklab, var(--pmd-fellow) 44%, transparent);
+  --pmd-fellow-grad:   linear-gradient(135deg, oklch(0.70 0.16 244), oklch(0.57 0.19 258)); /* @kind color */
+
+  /* STAFFED · indigo — care phase 2 / admit */
+  --pmd-staffed:       oklch(0.590 0.195 276);
+  --pmd-staffed-ink:   oklch(0.500 0.180 276);
+  --pmd-staffed-on:    #ffffff;
+  --pmd-staffed-soft:  color-mix(in oklab, var(--pmd-staffed) 17%, transparent);
+  --pmd-staffed-line:  color-mix(in oklab, var(--pmd-staffed) 44%, transparent);
+  --pmd-staffed-grad:  linear-gradient(135deg, oklch(0.67 0.17 268), oklch(0.55 0.20 280)); /* @kind color */
+
+  /* ATTENDING · violet — care phase 3 */
+  --pmd-attending:      oklch(0.625 0.205 300);
+  --pmd-attending-ink:  oklch(0.520 0.190 300);
+  --pmd-attending-on:   #ffffff;
+  --pmd-attending-soft: color-mix(in oklab, var(--pmd-attending) 17%, transparent);
+  --pmd-attending-line: color-mix(in oklab, var(--pmd-attending) 44%, transparent);
+  --pmd-attending-grad: linear-gradient(135deg, oklch(0.71 0.18 296), oklch(0.58 0.21 306)); /* @kind color */
+
+  /* DISPO · fuchsia — disposition pending */
+  --pmd-dispo:        oklch(0.635 0.225 334);
+  --pmd-dispo-ink:    oklch(0.535 0.205 334);
+  --pmd-dispo-on:     #ffffff;
+  --pmd-dispo-soft:   color-mix(in oklab, var(--pmd-dispo) 16%, transparent);
+  --pmd-dispo-line:   color-mix(in oklab, var(--pmd-dispo) 42%, transparent);
+  --pmd-dispo-grad:   linear-gradient(135deg, oklch(0.71 0.21 340), oklch(0.59 0.23 326)); /* @kind color */
+
+  /* READY · emerald — good to go (rhymes with the family teal) */
+  --pmd-ready:        oklch(0.735 0.165 160);
+  --pmd-ready-ink:    oklch(0.560 0.135 162);
+  --pmd-ready-on:     #06231a;
+  --pmd-ready-soft:   color-mix(in oklab, var(--pmd-ready) 18%, transparent);
+  --pmd-ready-line:   color-mix(in oklab, var(--pmd-ready) 44%, transparent);
+  --pmd-ready-grad:   linear-gradient(135deg, oklch(0.80 0.16 158), oklch(0.69 0.17 166)); /* @kind color */
+
+  /* ---------- Clinical semantics (reuse spectrum hues) ---------- */
+  --pmd-admit:        var(--pmd-staffed);
+  --pmd-admit-grad:   var(--pmd-staffed-grad);
+  --pmd-discharge:    var(--pmd-ready);
+  --pmd-edobs:        var(--pmd-workup);
+
+  /* Flag / barrier states */
+  --pmd-flag:         oklch(0.785 0.155 78);   /* amber — barrier open */
+  --pmd-flag-ink:     oklch(0.580 0.130 70);
+  --pmd-flag-on:      #2c1d02;
+  --pmd-flag-soft:    color-mix(in oklab, var(--pmd-flag) 18%, transparent);
+  --pmd-flag-line:    color-mix(in oklab, var(--pmd-flag) 46%, transparent);
+  --pmd-clear:        var(--pmd-ready);        /* barrier cleared */
+
+  /* Overdue / urgent */
+  --pmd-urgent:       oklch(0.640 0.225 22);
+  --pmd-urgent-soft:  color-mix(in oklab, var(--pmd-urgent) 16%, transparent);
+
+  /* ---------- FAMILY THREAD — CloseDose teal, kept quiet ---------- */
+  --pmd-family:       #18a78d;                 /* CloseDose Teal 500 */
+  --pmd-family-2:     #128873;
+  --pmd-family-ink:   #0e6d5c;
+  --pmd-family-soft:  color-mix(in oklab, var(--pmd-family) 16%, transparent);
+  --pmd-family-line:  color-mix(in oklab, var(--pmd-family) 40%, transparent);
+
+  /* Sex tags (board convention) */
+  --pmd-male:         var(--pmd-fellow);
+  --pmd-female:       var(--pmd-dispo);
+
+  /* ---------------------------------------------------------------------
+     Type — clinical core stays clean; brand display is warm + rounded.
+     --------------------------------------------------------------------- */
+  --pmd-font-brand:    'Baloo 2', 'Nunito Sans', ui-rounded, system-ui, sans-serif;
+  --pmd-font-clinical: 'Nunito Sans', ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --pmd-font-ui:       'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --pmd-font-mono:     'DM Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+  --pmd-font-chalk:    'Gochi Hand', 'Baloo 2', cursive;  /* sparing: launch tagline, empty states */
+
+  /* ---------------------------------------------------------------------
+     Radii — a touch friendlier than CloseDose.
+     --------------------------------------------------------------------- */
+  --pmd-r-chip:   8px;
+  --pmd-r-btn:    11px;
+  --pmd-r-field:  12px;
+  --pmd-r-card:   18px;
+  --pmd-r-panel:  22px;
+  --pmd-r-hero:   28px;
+  --pmd-r-pill:   999px;
+
+  /* ---------- Motion (inherits CloseDose calm) ---------- */
+  --pmd-fast: 160ms; /* @kind other */
+  --pmd-base: 280ms; /* @kind other */
+  --pmd-ease: cubic-bezier(0.2, 0, 0, 1); /* @kind other */
+  --pmd-spring: cubic-bezier(0.34, 1.3, 0.64, 1); /* @kind other */  /* gentle, for playful shells only */
+}
+
+/* =========================================================================
+   LIGHT — soft pediatric pastel (default for .pmd)
+   Warm-cream + pale-blue ground; white cards. Gentle, not clinical-white.
+   ========================================================================= */
+.pmd,
+.pmd[data-pmd-theme="light"] {
+  --pmd-bg:         #eaf1fb;   /* pale blue page wash */
+  --pmd-bg-2:       #e1ebf8;   /* rails / deeper ground */
+  --pmd-cream:      #fcf8f0;   /* warm cream — playful shells */
+  --pmd-sky:        #d4ecfa;   /* pale sky — hero grounds, teddy sticker bg */
+  --pmd-surface:    #ffffff;   /* card */
+  --pmd-surface-2:  #f4f8fd;   /* inset */
+  --pmd-surface-3:  #ffffff;   /* raised */
+  --pmd-header:     rgba(255,255,255,0.82);
+
+  --pmd-line:       rgba(20,40,68,0.10);
+  --pmd-line-soft:  rgba(20,40,68,0.055);
+  --pmd-line-strong:rgba(20,40,68,0.16);
+
+  --pmd-ink:        #14233c;   /* primary */
+  --pmd-ink-2:      #475a76;   /* secondary */
+  --pmd-ink-3:      #74849f;   /* tertiary / captions */
+  --pmd-ink-faint:  #9aa7bf;   /* placeholder / disabled */
+  --pmd-ink-onbrand:#ffffff;
+
+  /* On light, spectrum LABEL text uses the darker -ink variants. */
+  --pmd-shadow-1: 0 1px 2px rgba(20,40,68,0.05), 0 4px 12px -6px rgba(20,40,68,0.10);
+  --pmd-shadow-2: 0 2px 4px rgba(20,40,68,0.06), 0 12px 28px -10px rgba(20,40,68,0.16);
+  --pmd-shadow-3: 0 4px 8px rgba(20,40,68,0.07), 0 24px 48px -14px rgba(20,40,68,0.22);
+  --pmd-shadow-card: var(--pmd-shadow-1);
+  --pmd-active-ring: 0 0 0 1px var(--pmd-line-soft);
+  color-scheme: light;
+}
+
+/* =========================================================================
+   DARK — warm navy board (matches the live screenshot). Never pure black.
+   Vivid spectrum pops; active states glow.
+   ========================================================================= */
+.pmd[data-pmd-theme="dark"] {
+  --pmd-bg:         #070e1c;   /* deep navy page */
+  --pmd-bg-2:       #0a1322;   /* rails */
+  --pmd-cream:      #121a2b;   /* "cream" slot goes warm-navy in dark */
+  --pmd-sky:        #0e1c33;   /* hero ground */
+  --pmd-surface:    #0f1a30;   /* card */
+  --pmd-surface-2:  #16233f;   /* inset */
+  --pmd-surface-3:  #1c2c4c;   /* raised */
+  --pmd-header:     rgba(10,18,34,0.72);
+
+  --pmd-line:       rgba(255,255,255,0.09);
+  --pmd-line-soft:  rgba(255,255,255,0.05);
+  --pmd-line-strong:rgba(255,255,255,0.16);
+
+  --pmd-ink:        #eaf1fb;
+  --pmd-ink-2:      #aab7cf;
+  --pmd-ink-3:      #76849f;
+  --pmd-ink-faint:  #515f7a;
+  --pmd-ink-onbrand:#ffffff;
+
+  /* On dark, spectrum LABEL text uses the bright base variants (override -ink). */
+  --pmd-tobeseen-ink:  var(--pmd-tobeseen);
+  --pmd-workup-ink:    var(--pmd-workup);
+  --pmd-fellow-ink:    var(--pmd-fellow);
+  --pmd-staffed-ink:   color-mix(in oklab, var(--pmd-staffed) 82%, white);
+  --pmd-attending-ink: var(--pmd-attending);
+  --pmd-dispo-ink:     var(--pmd-dispo);
+  --pmd-ready-ink:     var(--pmd-ready);
+  --pmd-flag-ink:      var(--pmd-flag);
+  --pmd-family-ink:    color-mix(in oklab, var(--pmd-family) 70%, white);
+
+  --pmd-shadow-1: 0 1px 2px rgba(0,0,0,0.32), 0 4px 14px -6px rgba(0,0,0,0.46);
+  --pmd-shadow-2: 0 1px 0 rgba(255,255,255,0.04) inset, 0 14px 34px -12px rgba(0,0,0,0.6);
+  --pmd-shadow-3: 0 1px 0 rgba(255,255,255,0.05) inset, 0 26px 56px -16px rgba(0,0,0,0.74);
+  --pmd-shadow-card: var(--pmd-shadow-1);
+  --pmd-active-ring: 0 0 0 1px var(--pmd-line-soft);
+  color-scheme: dark;
+}
+
+/* =========================================================================
+   Base element rules for anything inside .pmd
+   ========================================================================= */
+.pmd {
+  background: var(--pmd-bg);
+  color: var(--pmd-ink);
+  font-family: var(--pmd-font-ui);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+.pmd .pmd-brand    { font-family: var(--pmd-font-brand); font-weight: 700; letter-spacing: -0.01em; }
+.pmd .pmd-clinical { font-family: var(--pmd-font-clinical); }
+.pmd .pmd-mono     { font-family: var(--pmd-font-mono); font-feature-settings: "tnum" 1, "zero" 1; }
+.pmd .pmd-chalk    { font-family: var(--pmd-font-chalk); }
+
+/* Eyebrow / section label */
+.pmd .pmd-eyebrow {
+  font-family: var(--pmd-font-ui);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: var(--pmd-ink-3);
+}
+
+/* Focus ring — uses whichever spectrum color the element carries, falls to fellow */
+.pmd :focus-visible {
+  outline: 2px solid var(--pmd-fellow);
+  outline-offset: 2px;
+  border-radius: 6px;
+}

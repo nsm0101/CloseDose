@@ -53,7 +53,7 @@ export const TeamSetup: React.FC<TeamSetupProps> = ({ teamMembers, onAdd, onRemo
 
       <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-4 gap-3 p-4 bg-gray-50 dark:bg-gray-800/50 rounded-xl border border-gray-100 dark:border-gray-700 transition-colors">
         <div className="space-y-1">
-          <label className="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase px-1">First Name</label>
+          <label className="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase px-1">First name</label>
           <input 
             className="w-full p-2 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none transition-colors"
             placeholder="John"
@@ -62,7 +62,7 @@ export const TeamSetup: React.FC<TeamSetupProps> = ({ teamMembers, onAdd, onRemo
           />
         </div>
         <div className="space-y-1">
-          <label className="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase px-1">Last Name</label>
+          <label className="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase px-1">Last name</label>
           <input 
             className="w-full p-2 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none transition-colors"
             placeholder="Doe"
