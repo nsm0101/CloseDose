@@ -24,6 +24,7 @@ interface LayoutProps {
 import { motion } from 'framer-motion';
 
 export const Layout: React.FC<LayoutProps> = ({ children, activeTab, setActiveTab, user, onLogout, onAddTeamMember, activeShiftId, syncState = 'connecting' }) => {
+  const pmdTheme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
   const tabs = [
     { id: 'board', label: 'Board', icon: <LayoutDashboard size={20} /> },
     { id: 'handoff', label: 'Handoff', icon: <Users size={20} /> },
@@ -87,18 +88,18 @@ export const Layout: React.FC<LayoutProps> = ({ children, activeTab, setActiveTa
   };
 
   return (
-    <div className="min-h-[100dvh] bg-gray-50 dark:bg-gray-950 flex flex-col transition-colors overflow-x-hidden">
+    <div className="pmd pmd-app-shell min-h-[100dvh] flex flex-col transition-colors overflow-x-hidden" data-pmd-theme={pmdTheme}>
       {/* Top Navigation - Hidden on Mobile */}
-      <header className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 sticky top-0 z-50 shadow-sm md:block transition-colors">
+      <header className="pmd-glass-header sticky top-0 z-50 border-b shadow-sm md:block transition-colors">
         <div className="max-w-7xl mx-auto px-4 h-12 md:h-14 flex items-center justify-between">
           <div className="flex items-center gap-2 cursor-pointer" onClick={() => setActiveTab('board')}>
             <img src={BRAND.bearHead} alt="PREtendingMD bear mascot" className="w-7 h-7 md:w-9 md:h-9 object-contain" />
-            <h1 className="text-sm md:text-base font-black text-gray-900 dark:text-white tracking-tight">PRE<span className="text-blue-600 dark:text-blue-400">tendingMD</span></h1>
+            <h1 className="pmd-brand text-sm md:text-base font-black tracking-tight text-[var(--pmd-ink)]">PRE<span className="text-[var(--pmd-family)]">tendingMD</span></h1>
           </div>
 
           <motion.div 
             whileTap={{ scale: 0.95 }}
-            className="flex items-center gap-2 px-4 py-1.5 bg-gray-50 dark:bg-gray-800 rounded-full border border-gray-100 dark:border-gray-700 shadow-xs cursor-pointer select-none transition-transform"
+            className="flex items-center gap-2 px-4 py-1.5 pmd-control-surface rounded-full border shadow-xs cursor-pointer select-none transition-transform"
             onContextMenu={(e) => { e.preventDefault(); handleTimerReset(); }}
             onTouchStart={startHold}
             onTouchEnd={endHold}
@@ -107,7 +108,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, activeTab, setActiveTa
             onMouseLeave={endHold}
             title="Right click or hold to reset"
           >
-            <span className="text-[10px] md:text-xs font-black text-gray-400 uppercase tracking-wider">RTL:</span>
+            <span className="text-[10px] md:text-xs font-black pmd-muted-text uppercase tracking-wider">RTL:</span>
             <span className="text-xs md:text-sm font-black tabular-nums" style={{ color: getTimerColor(rtlSeconds) }}>
               {formatTime(rtlSeconds)}
             </span>
@@ -120,8 +121,8 @@ export const Layout: React.FC<LayoutProps> = ({ children, activeTab, setActiveTa
               <motion.button
                 whileTap={{ scale: 0.9 }}
                 onClick={handleShare}
-                className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-full border border-blue-100 dark:border-blue-800 hover:bg-blue-100 transition-colors"
-                title="Share Session"
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-[var(--pmd-family-soft)] text-[var(--pmd-family-ink)] rounded-full border border-[var(--pmd-family-line)] hover:bg-[var(--pmd-family-line)] transition-colors"
+                title="Share session"
               >
                 {isCopied ? <Check size={16} /> : <Share2 size={16} />}
                 <span className="text-[10px] font-black uppercase tracking-tighter hidden sm:inline">
@@ -131,10 +132,10 @@ export const Layout: React.FC<LayoutProps> = ({ children, activeTab, setActiveTa
             )}
 
             <div 
-              className="flex items-center gap-2 px-2 py-1 md:px-3 md:py-1.5 bg-gray-50 dark:bg-gray-800 rounded-full border border-gray-100 dark:border-gray-700 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+              className="flex items-center gap-2 px-2 py-1 md:px-3 md:py-1.5 pmd-control-surface rounded-full border cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
               onClick={() => setActiveTab('settings')}
             >
-              <div className="w-5 h-5 md:w-6 md:h-6 rounded-full bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center text-blue-600 dark:text-blue-400 overflow-hidden">
+              <div className="w-5 h-5 md:w-6 md:h-6 rounded-full bg-[var(--pmd-family-soft)] flex items-center justify-center text-[var(--pmd-family-ink)] overflow-hidden">
                 {user?.photoURL ? (
                   <img src={user.photoURL} alt="Avatar" className="w-full h-full object-cover" />
                 ) : (
@@ -153,7 +154,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, activeTab, setActiveTa
       </main>
 
       {/* Bottom Navigation (Mobile Friendly) */}
-      <nav className="fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 px-4 pt-1 pb-[calc(4px+env(safe-area-inset-bottom))] z-30 md:relative md:border-t-0 md:bg-transparent md:max-w-7xl md:mx-auto md:w-full md:px-4 md:py-4">
+      <nav className="pmd-glass-header fixed bottom-0 left-0 right-0 border-t px-4 pt-1 pb-[calc(4px+env(safe-area-inset-bottom))] z-30 md:relative md:border-t-0 md:bg-transparent md:max-w-7xl md:mx-auto md:w-full md:px-4 md:py-4">
         <div className="flex items-center justify-around md:justify-start md:gap-6 max-w-lg mx-auto md:mx-0">
           {tabs.map(tab => (
             <motion.button
@@ -166,7 +167,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, activeTab, setActiveTa
               className={cn(
                 "flex flex-col md:flex-row items-center gap-0.5 md:gap-3 px-4 py-1.5 rounded-2xl transition-all",
                 activeTab === tab.id 
-                  ? "text-blue-600 bg-blue-50 dark:bg-blue-900/30 md:bg-blue-600 md:text-white md:shadow-lg" 
+                  ? "text-[var(--pmd-family-ink)] bg-[var(--pmd-family-soft)] md:pmd-primary-action md:text-white md:shadow-lg" 
                   : "text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800"
               )}
             >

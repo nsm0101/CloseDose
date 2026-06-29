@@ -1,4 +1,5 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=DM+Mono:wght@400;500&family=Gochi+Hand&family=Inter:wght@400;500;600;700;800;900&family=Nunito+Sans:wght@600;700;800;900&display=swap');
+@import './pretendingmd.css';
 @import "tailwindcss";
 
 @layer base {
@@ -60,7 +61,7 @@
 
 @theme {
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+  --font-mono: "DM Mono", ui-monospace, SFMono-Regular, monospace;
   --font-serif: "Georgia", serif;
 
   /* BUH Primary Palette (Brown University Health / Lifespan inspired) */
@@ -96,5 +97,69 @@
 
   .col-header {
     @apply font-sans not-italic text-[10px] uppercase tracking-widest opacity-50;
+  }
+}
+
+
+@layer utilities {
+  .pmd-app-shell {
+    background:
+      radial-gradient(circle at top left, color-mix(in oklab, var(--pmd-family) 18%, transparent), transparent 34rem),
+      linear-gradient(180deg, var(--pmd-bg), var(--pmd-bg-2));
+    color: var(--pmd-ink);
+    font-family: var(--pmd-font-ui);
+  }
+
+  .pmd-board-panel {
+    background: color-mix(in oklab, var(--pmd-surface) 84%, transparent);
+    border-color: var(--pmd-line);
+    box-shadow: var(--pmd-shadow-card);
+  }
+
+  .pmd-primary-action {
+    background: var(--pmd-fellow-grad);
+    color: var(--pmd-ink-onbrand);
+    box-shadow: 0 14px 30px -16px color-mix(in oklab, var(--pmd-fellow) 70%, transparent);
+  }
+
+  .pmd-primary-action:hover {
+    filter: saturate(1.05) brightness(0.98);
+  }
+}
+
+@layer components {
+  .pmd .pmd-card-surface {
+    background: var(--pmd-surface);
+    border-color: var(--pmd-line);
+    box-shadow: var(--pmd-shadow-card);
+    color: var(--pmd-ink);
+  }
+
+  .pmd .pmd-glass-header {
+    background: var(--pmd-header);
+    border-color: var(--pmd-line);
+    backdrop-filter: blur(16px);
+  }
+
+  .pmd .pmd-muted-text {
+    color: var(--pmd-ink-3);
+  }
+
+  .pmd .pmd-control-surface {
+    background: var(--pmd-surface-2);
+    border-color: var(--pmd-line);
+    color: var(--pmd-ink-2);
+  }
+
+  .pmd .pmd-playful-shell {
+    background:
+      radial-gradient(circle at 20% 0%, color-mix(in oklab, var(--crayon-yellow) 18%, transparent), transparent 22rem),
+      radial-gradient(circle at 80% 8%, color-mix(in oklab, var(--crayon-teal) 20%, transparent), transparent 24rem),
+      linear-gradient(180deg, var(--pmd-cream), var(--pmd-bg));
+  }
+
+  .pmd .pmd-clinical-title {
+    font-family: var(--pmd-font-clinical);
+    letter-spacing: -0.025em;
   }
 }

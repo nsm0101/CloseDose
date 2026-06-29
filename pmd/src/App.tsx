@@ -588,7 +588,7 @@ export default function App() {
         batch.set(ref, m);
       }
 
-      // Add Patients
+      // Add patients
       const patientsData = [
         { initials: 'JD', firstName: 'Jordan', lastInitial: 'D', age: '4', room: '12', status: 'Work-up', seenState: 'Seen by Fellow', tasks: { labs: 'pending', imaging: 'ordered', meds: 'off', consult: 'off', poIntake: 'off', painControl: 'off', ambulation: 'off', documents: 'off' } },
         { initials: 'MK', firstName: 'Mia', lastInitial: 'K', age: '12', room: '05', status: 'New', seenState: 'To Be Seen', tasks: { labs: 'off', imaging: 'off', meds: 'off', consult: 'off', poIntake: 'off', painControl: 'off', ambulation: 'off', documents: 'off' } },
@@ -633,12 +633,12 @@ export default function App() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-950 flex flex-col items-center justify-center gap-5 transition-colors">
+      <div className="pmd pmd-playful-shell min-h-screen flex flex-col items-center justify-center gap-5 transition-colors" data-pmd-theme={document.documentElement.classList.contains('dark') ? 'dark' : 'light'}>
         <img src={BRAND.mascot} alt="PREtendingMD bear mascot" className="w-24 h-24 object-contain animate-bounce drop-shadow-md" />
         <img src={BRAND.wordmark} alt="PREtendingMD" className="h-7 w-auto" />
         <div className="flex items-center gap-2 text-gray-400 dark:text-gray-500">
           <Loader2 size={16} className="animate-spin" />
-          <p className="text-sm font-bold uppercase tracking-widest">Initializing Workflow...</p>
+          <p className="text-sm font-bold uppercase tracking-widest">Initializing workflow...</p>
         </div>
       </div>
     );
@@ -761,14 +761,14 @@ export default function App() {
               <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-800 p-6 transition-colors">
                 <div className="flex items-center justify-between mb-6">
                   <div>
-                    <h2 className="text-xl font-black text-gray-900 dark:text-white tracking-tight">Shift Handoff</h2>
+                    <h2 className="text-xl font-black text-gray-900 dark:text-white tracking-tight">Shift handoff</h2>
                     <p className="text-sm text-gray-400 dark:text-gray-500 font-medium">Review and sign-out active patients</p>
                   </div>
                   <button 
                     onClick={() => window.print()}
                     className="px-4 py-2 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-xl text-sm font-bold transition-colors print:hidden"
                   >
-                    Print Handoff
+                    Print handoff
                   </button>
                 </div>
                 
@@ -800,7 +800,7 @@ export default function App() {
                                 <p className="text-sm font-medium text-gray-800 dark:text-gray-200"><span className="text-gray-400 dark:text-gray-500">CC:</span> {patient.chiefComplaint}</p>
                               </div>
                               <div className="flex-1 space-y-2">
-                                <div className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Pending Tasks</div>
+                                <div className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Pending tasks</div>
                                 <div className="flex flex-wrap gap-2">
                                   {Object.entries(patient.tasks).filter(([_, v]) => v === 'pending').map(([k]) => (
                                     <span key={k} className="px-2 py-1 bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-500 rounded-md text-xs font-bold capitalize">
