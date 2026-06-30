@@ -379,25 +379,40 @@ export const PatientCard: React.FC<PatientCardProps> = ({
     setExpanded(false);
   };
 
-  const inferTaskState = (text: string, patterns: RegExp[]): TaskState | undefined => {
+  const inferTaskState = (text: string, patterns: RegExp[], allPatterns: RegExp[]): TaskState | undefined => {
     const completionPattern = /\b(done|completed|complete|resulted|result|negative|normal|clear|given|gave|received|s\/p|after|finished)\b/;
     const pendingPattern = /\b(plan|ordered?|pending|await(?:ing)?|follow[- ]?up|f\/u|send(?:ing)?|obtain|check|collect|swab|culture|cx|consult|page|trial|po challenge|needs?|give|start)\b/;
+    const cuePattern = new RegExp(`${completionPattern.source}|${pendingPattern.source}`);
 
-    // Evaluate cues only within the same local phrase/clause as the task
-    // mention. This keeps unrelated work (for example, "labs pending") from
-    // forcing another mentioned task (for example, "meds given") to pending.
-    const taskContexts = text
+    // Evaluate cues in the task clause plus adjacent cue-only clauses. This
+    // captures shorthand like "CT, negative" without letting another task's
+    // cues (for example, "labs pending") change this task.
+    const clauses = text
       .split(/(?:[.;!?\n]+|,|\s+-\s+|\s+\b(?:and|but|then)\b\s+)/)
       .map((context) => context.trim())
-      .filter((context) => context.length > 0 && patterns.some((pattern) => pattern.test(context)));
+      .filter((context) => context.length > 0);
+    const taskContexts = new Map<number, string>();
 
-    if (taskContexts.length === 0) return undefined;
+    clauses.forEach((context, index) => {
+      if (!patterns.some((pattern) => pattern.test(context))) return;
+      taskContexts.set(index, context);
+      [index - 1, index + 1].forEach((adjacentIndex) => {
+        const adjacent = clauses[adjacentIndex];
+        if (adjacent && cuePattern.test(adjacent) && !allPatterns.some((pattern) => pattern.test(adjacent))) {
+          taskContexts.set(adjacentIndex, adjacent);
+        }
+      });
+    });
 
-    const hasPendingContext = taskContexts.some((context) => pendingPattern.test(context));
-    const hasCompleteContext = taskContexts.some((context) => completionPattern.test(context));
+    if (taskContexts.size === 0) return undefined;
 
-    if (hasCompleteContext && !hasPendingContext) return 'complete';
-    return 'pending';
+    return [...taskContexts]
+      .sort(([a], [b]) => a - b)
+      .reduce<TaskState>((state, [, context]) => {
+        if (pendingPattern.test(context)) return 'pending';
+        if (completionPattern.test(context)) return 'complete';
+        return state;
+      }, 'pending');
   };
 
   const getSmartTextUpdates = (rawText: string): Partial<Patient> => {
@@ -415,8 +430,10 @@ export const PatientCard: React.FC<PatientCardProps> = ({
       ['documents', [/\b(discharge instructions?|paperwork|school note|work note|chart(?:ing)?|documentation|note)\b/]],
     ];
 
+    const allTaskPatterns = inferredTasks.flatMap(([, patterns]) => patterns);
+
     inferredTasks.forEach(([key, patterns]) => {
-      const next = inferTaskState(text, patterns);
+      const next = inferTaskState(text, patterns, allTaskPatterns);
       if (next && (patient.tasks[key] === 'off' || patient.tasks[key] === 'none')) {
         taskUpdates[key] = next;
       }
