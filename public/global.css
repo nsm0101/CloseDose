@@ -3072,3 +3072,20 @@ html[data-theme="light"] .menu-theme-btn.is-active {
 html[data-theme="dark"] .menu-secret-bar::before { background: rgba(255, 255, 255, 0.14); }
 html[data-theme="dark"] .menu-secret-bar:hover::before,
 html[data-theme="dark"] .menu-secret-bar:focus-visible::before { background: rgba(255, 255, 255, 0.28); }
+
+/* Allergy calculator and cough/cold guidance additions */
+.calculator-expansion-grid { display: grid; gap: 16px; margin-top: 18px; }
+.calculator-expansion-card { text-decoration: none; color: inherit; }
+.allergy-calculator { display: grid; gap: 22px; }
+.allergy-calculator__header h2 { margin: 6px 0 8px; font-size: clamp(1.7rem, 3vw, 2.3rem); }
+.allergy-calculator__header p { margin: 0; color: var(--text-muted); }
+.allergy-calculator__form { display: grid; gap: 16px; }
+.allergy-calculator__form label { display: grid; gap: 7px; font-weight: 900; color: var(--ink-900); }
+.allergy-calculator__form input,
+.allergy-calculator__form select { width: 100%; min-height: 48px; border: 2px solid var(--ink-900); border-radius: 16px; padding: 10px 14px; background: var(--card-bg); color: var(--ink-900); font: inherit; }
+.allergy-calculator__row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(120px, 0.45fr); gap: 12px; }
+.primary-button { border: 2px solid var(--ink-900); border-radius: 999px; background: var(--teal-500); color: #fff; padding: 13px 20px; font-weight: 900; cursor: pointer; box-shadow: 0 5px 0 var(--ink-900); }
+.allergy-calculator__result:empty { display: none; }
+.allergy-result-card h3 span { display: block; font-size: 0.9rem; color: var(--text-muted); }
+.honey-guide .dose-reading-tip { margin: 14px 0; }
+@media (max-width: 560px) { .allergy-calculator__row { grid-template-columns: 1fr; } }
