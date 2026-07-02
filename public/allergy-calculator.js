@@ -13,19 +13,12 @@
       ageGroupAria: 'Select patient age',
       agePrompt: '',
       ageOptions: {
-        '0-11m': {
-          primary: '0 TO 11',
+        '0-23m': {
+          primary: '0 TO 23',
           connector: 'MONTHS',
           secondary: '',
           align: 'center',
-          accessible: '0 to 11 Months',
-        },
-        '12-23m': {
-          primary: '12 TO 23',
-          connector: 'MONTHS',
-          secondary: '',
-          align: 'center',
-          accessible: '12 to 23 Months',
+          accessible: '0 to 23 Months',
         },
         '2-5y': {
           primary: '2 TO 5',
@@ -71,8 +64,7 @@
       allergySafetyTitle: 'Antihistamine Safety Reminder',
       allergySafetyBody: 'Use only one oral antihistamine at a time unless directed. Seek emergency care for trouble breathing, severe swelling, or signs of anaphylaxis.',
       benadrylDrowsiness: 'Benadryl can cause marked sleepiness or paradoxical agitation. Do not use to make a child sleepy.',
-      underTwoClinician: '<strong>Clinician guidance needed.</strong> Allergy medicine dosing is not recommended for children under 2 years without direct clinician instructions. Please contact your pediatrician or pharmacist.',
-      underTwelveMonthsClinician: '<strong>Ask your child\'s clinician first.</strong> Children under 1 year need individualized allergy guidance. Call 911 for breathing trouble, severe swelling, or a rapidly worsening reaction.',
+      underTwoClinician: '<strong>Clinician guidance needed.</strong> Allergy medicine dosing is not recommended for children under 2 years without direct clinician instructions. Call 911 for breathing trouble, severe swelling, or signs of anaphylaxis.',
       benadrylAgeLimit: 'Not recommended for children under 6 years. Consult your pediatrician before using Benadryl.'
     },
     results: {
@@ -576,9 +568,6 @@
       .cdcalc-segmented-buttons {
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
-      .cdcalc-segmented-buttons > button:nth-child(5) {
-        grid-column: span 2;
-      }
 
       .cdcalc-age-option {
         min-height: 80px;
@@ -667,9 +656,7 @@
 
   function resolveAgeGate(age) {
     switch (age) {
-      case '0-11m':
-        return 'emergency';
-      case '12-23m':
+      case '0-23m':
         return 'clinician';
       case '2-5y':
         return 'toddler';
@@ -727,8 +714,7 @@
       };
     };
 
-    const ageLabel0to11 = normalizeAgeLabel(ageOptions['0-11m']);
-    const ageLabel12to23 = normalizeAgeLabel(ageOptions['12-23m']);
+    const ageLabel0to23 = normalizeAgeLabel(ageOptions['0-23m']);
     const ageLabel2to5 = normalizeAgeLabel(ageOptions['2-5y']);
     const ageLabel6to11 = normalizeAgeLabel(ageOptions['6-11y']);
     const ageLabel12Plus = normalizeAgeLabel(ageOptions['12y+']);
@@ -782,8 +768,7 @@
               <div class="cdcalc-group-title cdcalc-group-title--step" aria-label="${escapeHtml(stepAge.aria)}">${stepAge.html}</div>
               <div class="cdcalc-segmented">
                 <div class="cdcalc-segmented-buttons" role="group" aria-label="${form.ageGroupAria}">
-                  ${renderAgeButton('0-11m', ageLabel0to11)}
-                  ${renderAgeButton('12-23m', ageLabel12to23)}
+                  ${renderAgeButton('0-23m', ageLabel0to23)}
                   ${renderAgeButton('2-5y', ageLabel2to5)}
                   ${renderAgeButton('6-11y', ageLabel6to11)}
                   ${renderAgeButton('12y+', ageLabel12Plus)}
@@ -791,8 +776,7 @@
               </div>
               <select data-age-select aria-hidden="true" tabindex="-1" hidden>
                 <option value="">${form.ageSelectLabel}</option>
-                <option value="0-11m">${escapeHtml(ageLabel0to11.accessible)}</option>
-                <option value="12-23m">${escapeHtml(ageLabel12to23.accessible)}</option>
+                <option value="0-23m">${escapeHtml(ageLabel0to23.accessible)}</option>
                 <option value="2-5y">${escapeHtml(ageLabel2to5.accessible)}</option>
                 <option value="6-11y">${escapeHtml(ageLabel6to11.accessible)}</option>
                 <option value="12y+">${escapeHtml(ageLabel12Plus.accessible)}</option>
@@ -878,7 +862,7 @@
       return;
     }
 
-    if (gate === 'emergency' || gate === 'clinician') {
+    if (gate === 'clinician') {
       // These show messages directly via elements.message in updateForm
       trackCalculatorEvent('calculate_dose', { age_group: age, weight_unit: weightUnit, result_type: gate });
       return;
@@ -1081,14 +1065,7 @@
     elements.unitSelect.disabled = false;
     clearButtonAttention(elements.submitButton);
 
-    if (gate === 'emergency') {
-      elements.message.hidden = false;
-      elements.message.style.display = 'block';
-      elements.message.innerHTML = strings.warnings.underTwelveMonthsClinician;
-      elements.submitButton.disabled = true;
-      elements.weightInput.disabled = true;
-      elements.unitSelect.disabled = true;
-    } else if (gate === 'clinician') {
+    if (gate === 'clinician') {
       elements.message.hidden = false;
       elements.message.style.display = 'block';
       elements.message.innerHTML = strings.warnings.underTwoClinician;
@@ -1117,7 +1094,7 @@
         return false;
       }
       const gate = resolveAgeGate(elements.ageSelect.value);
-      return Boolean(gate && gate !== 'emergency' && gate !== 'clinician');
+      return Boolean(gate && gate !== 'clinician');
     };
 
     const shouldAnimateWeightInput = () => {
@@ -1126,7 +1103,7 @@
       }
       const ageValue = elements.ageSelect.value;
       const gate = resolveAgeGate(ageValue);
-      if (!gate || gate === 'emergency' || gate === 'clinician') {
+      if (!gate || gate === 'clinician') {
         return false;
       }
       if (document.activeElement === elements.weightInput) {
