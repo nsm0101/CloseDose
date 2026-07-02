@@ -22,95 +22,465 @@
   <meta name="twitter:card" content="summary" />
   <script>(function(){var t=localStorage.getItem("cd-theme");if(t)document.documentElement.setAttribute("data-theme",t);})();</script>
   <style>
-    /* ===== About V4 — "Watercolor Flow" (scoped, card-free) ===== */
-    .aw{ width:100%; }
-    .aw [data-reveal]{ opacity:0; transform:translateY(20px); transition:opacity .8s ease, transform .8s ease; }
-    .aw [data-reveal].is-in{ opacity:1; transform:none; }
-    /* full-bleed band that escapes the centered column */
-    .aw .aw-band{ width:100vw; max-width:100vw; margin-inline:calc(50% - 50vw); padding:clamp(30px,4.5vw,56px) clamp(22px,5vw,48px); position:relative; }
-    .aw .aw-inner{ max-width:1080px; margin:0 auto; position:relative; z-index:2; }
-    .aw .aw-tight{ max-width:720px; }
+    /* ===== About V5 — "tasteskill" Premium Editorial ===== */
+    .aw {
+      width: 100%;
+      font-family: "Nunito", system-ui, -apple-system, sans-serif;
+      color: #0f2c2a;
+    }
+    
+    .aw [data-reveal] {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity .8s cubic-bezier(0.16, 1, 0.3, 1), transform .8s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .aw [data-reveal].is-in {
+      opacity: 1;
+      transform: none;
+    }
+    
+    .aw .aw-band {
+      width: 100vw;
+      max-width: 100vw;
+      margin-inline: calc(50% - 50vw);
+      padding: clamp(40px, 6vw, 80px) clamp(20px, 5vw, 40px);
+      position: relative;
+      background: transparent;
+    }
+    
+    .aw .aw-inner {
+      max-width: 960px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 2;
+    }
+    
+    .aw .aw-tight {
+      max-width: 640px;
+    }
 
-    /* watercolor washes / blobs */
-    .aw .aw-wash{ position:absolute; inset:0; z-index:0; overflow:hidden; pointer-events:none; }
-    .aw .aw-wash::before, .aw .aw-wash::after{ content:""; position:absolute; border-radius:50%; filter:blur(60px); opacity:.55; }
-    .aw .aw-wash--mint::before{ width:46vw;height:46vw; background:radial-gradient(circle,#9be3cf,transparent 70%); top:-12vw; left:-10vw; }
-    .aw .aw-wash--mint::after{ width:40vw;height:40vw; background:radial-gradient(circle,#ffd9b0,transparent 70%); bottom:-14vw; right:-8vw; }
-    .aw .aw-wash--peach::before{ width:42vw;height:42vw; background:radial-gradient(circle,#ffc9d6,transparent 70%); top:-10vw; right:-6vw; }
-    .aw .aw-wash--peach::after{ width:44vw;height:44vw; background:radial-gradient(circle,#a8e6d4,transparent 70%); bottom:-16vw; left:-8vw; }
+    /* Soft gradients instead of raw image washes */
+    .aw .aw-wash {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
+    .aw .aw-wash::before,
+    .aw .aw-wash::after {
+      content: "";
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.35;
+    }
+    .aw .aw-wash--mint::before {
+      width: 40vw;
+      height: 40vw;
+      background: radial-gradient(circle, #a8e6d4, transparent 70%);
+      top: -10vw;
+      left: -5vw;
+    }
+    .aw .aw-wash--mint::after {
+      width: 35vw;
+      height: 35vw;
+      background: radial-gradient(circle, #ffe8a8, transparent 70%);
+      bottom: -10vw;
+      right: -5vw;
+    }
+    .aw .aw-wash--peach::before {
+      width: 40vw;
+      height: 40vw;
+      background: radial-gradient(circle, #ffc9d6, transparent 70%);
+      top: -5vw;
+      right: -5vw;
+    }
+    .aw .aw-wash--peach::after {
+      width: 35vw;
+      height: 35vw;
+      background: radial-gradient(circle, #a8e6d4, transparent 70%);
+      bottom: -12vw;
+      left: -5vw;
+    }
 
     /* HERO */
-    .aw .aw-hero{ text-align:center; padding-top:clamp(44px,6vw,76px); padding-bottom:clamp(20px,3.5vw,40px); }
-    .aw .aw-hero .aw-wash{ background:url('Donations/WC_bg.webp') center/cover no-repeat; opacity:.5; -webkit-mask-image:radial-gradient(circle at 50% 35%, #000 35%, transparent 78%); mask-image:radial-gradient(circle at 50% 35%, #000 35%, transparent 78%); }
-    .aw .aw-eyebrow{ display:inline-flex; align-items:center; gap:8px; font-size:.78rem; font-weight:900; letter-spacing:.16em; text-transform:uppercase; color:var(--teal-600); margin-bottom:18px; }
-    .aw .aw-hero h1{ font-size:clamp(2.4rem,4.5vw+1rem,4.6rem); line-height:1.02; font-weight:900; letter-spacing:-.02em; color:var(--ink-900); margin:0 auto 16px; max-width:14ch; }
-    .aw .aw-hero h1 em{ font-style:normal; color:var(--teal-500); }
-    .aw .aw-hero .sub{ font-size:clamp(1.05rem,.6vw+1rem,1.3rem); line-height:1.55; color:var(--ink-700); max-width:46ch; margin:0 auto 30px; }
-    .aw .aw-actions{ display:flex; flex-wrap:wrap; gap:14px; justify-content:center; align-items:center; }
-    .aw .aw-cta{ display:inline-flex; align-items:center; gap:10px; padding:16px 30px; border-radius:999px; font-weight:900; font-size:1.05rem; text-decoration:none; background:var(--teal-500); color:#fff; box-shadow:0 14px 30px rgba(31,143,123,.4); transition:transform .16s ease, box-shadow .16s ease, background .16s ease; }
-    .aw .aw-cta:hover{ transform:translateY(-3px) scale(1.02); box-shadow:0 20px 40px rgba(31,143,123,.5); background:var(--teal-400); }
-    .aw .aw-textlink{ font-weight:800; color:var(--teal-600); text-decoration:none; border-bottom:2px solid transparent; transition:border-color .16s ease; }
-    .aw .aw-textlink:hover{ border-color:var(--teal-500); }
+    .aw .aw-hero {
+      text-align: center;
+      padding-top: clamp(60px, 8vw, 100px);
+      padding-bottom: clamp(30px, 4vw, 50px);
+    }
+    
+    .aw .aw-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      background: #0f2c2a;
+      color: #ffffff;
+      padding: 6px 16px;
+      border-radius: 999px;
+      margin-bottom: 24px;
+    }
+    
+    .aw .aw-eyebrow svg {
+      width: 12px;
+      height: 12px;
+      stroke: #24a687;
+    }
+    
+    .aw .aw-hero h1 {
+      font-size: clamp(2.4rem, 5vw, 4.2rem);
+      line-height: 1.05;
+      font-weight: 900;
+      letter-spacing: -0.02em;
+      color: #0f2c2a;
+      margin: 0 auto 20px;
+      max-width: 16ch;
+      text-transform: uppercase;
+    }
+    
+    .aw .aw-hero h1 em {
+      font-style: normal;
+      color: #24a687;
+      background: linear-gradient(120deg, rgba(36, 166, 135, 0.15) 0%, rgba(36, 166, 135, 0) 100%);
+      padding: 0 4px;
+      border-radius: 4px;
+    }
+    
+    .aw .aw-hero .sub {
+      font-size: clamp(1.05rem, 1.5vw, 1.25rem);
+      line-height: 1.6;
+      color: #123a37;
+      max-width: 60ch;
+      margin: 0 auto 30px;
+    }
+    
+    .aw .aw-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .aw .aw-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 28px;
+      border-radius: 999px;
+      font-weight: 900;
+      font-size: 1rem;
+      text-decoration: none;
+      background: #1f8f7b;
+      color: #ffffff;
+      border: 2px solid #0f2c2a;
+      box-shadow: 0 5px 0 #0f2c2a;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+    }
+    
+    .aw .aw-cta:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 7px 0 #0f2c2a;
+      background: #24a687;
+    }
+    
+    .aw .aw-textlink {
+      font-weight: 800;
+      color: #1f8f7b;
+      text-decoration: underline;
+      text-underline-offset: 4px;
+      transition: color 0.15s ease;
+    }
+    
+    .aw .aw-textlink:hover {
+      color: #24a687;
+    }
 
-    /* DESTINATIONS — big animated tiles (what people seek) */
-    .aw .aw-h2{ text-align:center; font-size:clamp(1.5rem,1.4vw+1rem,2.2rem); font-weight:900; color:var(--ink-900); margin:0 0 6px; }
-    .aw .aw-h2-sub{ text-align:center; color:var(--ink-700); font-size:1rem; margin:0 0 clamp(26px,4vw,44px); }
-    .aw .aw-dest{ display:grid; grid-template-columns:repeat(2,1fr); gap:clamp(14px,2vw,22px); }
-    @media(min-width:820px){ .aw .aw-dest{ grid-template-columns:repeat(4,1fr); } }
-    .aw .aw-tile{ position:relative; overflow:hidden; text-decoration:none; text-align:center; padding:26px 16px 24px; border-radius:26px; background:transparent; transition:transform .22s cubic-bezier(.2,.8,.3,1.2), background .22s ease, box-shadow .22s ease; }
-    .aw .aw-tile::before{ content:""; position:absolute; inset:0; z-index:0; opacity:0; background:radial-gradient(circle at 50% 0%, var(--c1), transparent 70%); transition:opacity .25s ease; }
-    .aw .aw-tile > *{ position:relative; z-index:1; }
-    .aw .aw-tile:hover{ transform:translateY(-8px); background:rgba(255,255,255,.6); box-shadow:0 22px 42px rgba(13,52,82,.16); }
-    .aw .aw-tile:hover::before{ opacity:.9; }
-    .aw .aw-tile .glyph{ font-size:clamp(2.6rem,5vw,3.6rem); line-height:1; display:inline-block; transition:transform .3s cubic-bezier(.2,.8,.3,1.4); }
-    .aw .aw-tile:hover .glyph{ transform:translateY(-4px) scale(1.18) rotate(-6deg); }
-    .aw .aw-tile .t{ display:block; margin-top:14px; font-weight:900; font-size:1.05rem; color:var(--ink-900); }
-    .aw .aw-tile .s{ display:block; margin-top:3px; font-size:.82rem; color:var(--ink-700); }
-    .aw .aw-tile::after{ content:"Open →"; display:block; margin-top:10px; font-weight:900; font-size:.8rem; color:var(--teal-600); position:relative; z-index:1; opacity:0; transform:translateY(-4px); transition:opacity .22s ease, transform .22s ease; }
-    .aw .aw-tile:hover::after, .aw .aw-tile:focus-visible::after{ opacity:1; transform:none; }
-    .aw .aw-tile--calc{ --c1:#bdeede; } .aw .aw-tile--meds{ --c1:#ffd6c2; } .aw .aw-tile--weigh{ --c1:#cfe4ff; } .aw .aw-tile--give{ --c1:#ffe1a8; }
-    .aw .aw-tile:focus-visible, .aw .aw-mail:focus-visible, .aw .aw-cta:focus-visible, .aw .aw-textlink:focus-visible{ outline:3px solid var(--teal-500); outline-offset:4px; border-radius:18px; }
+    /* BENTO DESTINATIONS GRID */
+    .aw .aw-h2 {
+      text-align: center;
+      font-size: clamp(1.8rem, 3vw, 2.4rem);
+      font-weight: 900;
+      color: #0f2c2a;
+      margin: 0 0 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    
+    .aw .aw-h2-sub {
+      text-align: center;
+      color: #123a37;
+      font-size: 1.05rem;
+      margin: 0 0 clamp(30px, 5vw, 50px);
+    }
+    
+    .aw .aw-dest {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 20px;
+    }
+    
+    .aw .aw-tile {
+      position: relative;
+      text-decoration: none;
+      padding: 28px;
+      border: 3px solid #0f2c2a;
+      border-radius: 24px;
+      background: #ffffff;
+      box-shadow: 0 5px 0 rgba(15, 44, 42, 0.15);
+      transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: space-between;
+      min-height: 200px;
+      color: #0f2c2a;
+    }
+    
+    .aw .aw-tile:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 9px 0 rgba(15, 44, 42, 0.18);
+    }
+    
+    /* Bento cell column layouts */
+    .aw .aw-tile--hero {
+      grid-column: span 6;
+      background: #123a37;
+      color: #ffffff;
+      border-color: #0f2c2a;
+    }
+    .aw .aw-tile--two {
+      grid-column: span 6;
+    }
+    .aw .aw-tile--three {
+      grid-column: span 6;
+    }
+    
+    @media(min-width: 768px) {
+      .aw .aw-tile--hero {
+        grid-column: span 4;
+      }
+      .aw .aw-tile--two {
+        grid-column: span 2;
+      }
+      .aw .aw-tile--three {
+        grid-column: span 3;
+      }
+    }
+    
+    .aw .aw-tile .tile-ic {
+      width: 36px;
+      height: 36px;
+      color: #24a687;
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .aw .aw-tile--hero .tile-ic {
+      color: #ffe8a8;
+    }
+    
+    .aw .aw-tile:hover .tile-ic {
+      transform: scale(1.15) rotate(-6deg);
+    }
+    
+    .aw .aw-tile .t {
+      font-size: 1.3rem;
+      font-weight: 900;
+      margin-top: 16px;
+      display: block;
+    }
+    
+    .aw .aw-tile .s {
+      font-size: 0.95rem;
+      opacity: 0.9;
+      line-height: 1.4;
+      margin-top: 4px;
+      display: block;
+    }
+    .aw .aw-tile--hero .s {
+      color: #ffe8a8;
+    }
 
-    /* WHY / TRUST highlights — airy, no boxes */
-    .aw .aw-quote{ text-align:center; font-size:clamp(1.4rem,2.2vw+1rem,2.4rem); line-height:1.3; font-weight:800; color:var(--ink-900); max-width:18ch; margin:0 auto; }
-    .aw .aw-quote .by{ display:block; margin-top:18px; font-size:1rem; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:var(--teal-600); }
-    .aw .aw-highlights{ display:grid; grid-template-columns:repeat(2,1fr); gap:clamp(26px,4vw,40px) clamp(14px,3vw,28px); max-width:880px; margin:0 auto; justify-items:center; }
-    @media(min-width:560px){ .aw .aw-highlights{ grid-template-columns:repeat(3,1fr); } }
-    @media(min-width:940px){ .aw .aw-highlights{ grid-template-columns:repeat(6,1fr); } }
-    .aw .aw-hl{ width:100%; max-width:150px; text-align:center; }
-    .aw .aw-hl img{ width:54px; height:54px; transition:transform .25s ease; }
-    .aw .aw-hl:hover img{ transform:translateY(-6px) scale(1.1); }
-    .aw .aw-hl span{ display:block; margin-top:12px; font-weight:800; font-size:.92rem; color:var(--ink-900); line-height:1.3; }
+    /* WHY / TRUST HIGHLIGHTS */
+    .aw .aw-quote {
+      text-align: center;
+      font-size: clamp(1.4rem, 2.5vw, 2.2rem);
+      line-height: 1.35;
+      font-weight: 800;
+      color: #0f2c2a;
+      max-width: 25ch;
+      margin: 0 auto;
+      position: relative;
+    }
+    
+    .aw .aw-quote .by {
+      display: block;
+      margin-top: 20px;
+      font-size: 0.8rem;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #1f8f7b;
+    }
+    
+    .aw .aw-highlights {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    @media(min-width: 768px) {
+      .aw .aw-highlights {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+    
+    .aw .aw-hl {
+      border: 3px solid #0f2c2a;
+      border-radius: 20px;
+      padding: 24px;
+      background: #ffffff;
+      text-align: center;
+      box-shadow: 0 4px 0 rgba(15, 44, 42, 0.1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      transition: transform 0.2s ease;
+    }
+    .aw .aw-hl:hover {
+      transform: translateY(-2px);
+    }
+    
+    .aw .aw-hl svg {
+      width: 32px;
+      height: 32px;
+      color: #1f8f7b;
+      transition: transform 0.25s ease;
+    }
+    .aw .aw-hl:hover svg {
+      transform: scale(1.1);
+    }
+    
+    .aw .aw-hl span {
+      font-weight: 800;
+      font-size: 0.95rem;
+      color: #0f2c2a;
+      line-height: 1.3;
+    }
 
-    /* CONTACT — single animated email button */
-    .aw #contact{ scroll-margin-top:84px; text-align:center; }
-    .aw .aw-mail{ display:inline-flex; flex-direction:column; align-items:center; gap:16px; text-decoration:none; padding:8px 18px; border-radius:24px; transition:transform .2s ease; }
-    .aw .aw-mail:hover{ transform:translateY(-4px); }
-    .aw .env-svg{ width:clamp(104px,24vw,140px); height:auto; overflow:visible; filter:drop-shadow(0 14px 24px rgba(13,52,82,.18)); }
-    .aw .env-body{ fill:var(--teal-500); }
-    .aw .env-front{ fill:var(--teal-600); }
-    .aw .env-letter{ fill:#fff; transform-box:fill-box; transition:transform .42s cubic-bezier(.2,.8,.3,1.2); }
-    .aw .env-l{ stroke:#cfe7df; stroke-width:5; stroke-linecap:round; transform-box:fill-box; transition:transform .42s cubic-bezier(.2,.8,.3,1.2); }
-    .aw .env-flap{ fill:var(--teal-400); transform-box:fill-box; transform-origin:50% 0%; transition:transform .45s ease; }
-    .aw .aw-mail:hover .env-flap, .aw .aw-mail:focus-visible .env-flap{ transform:rotateX(180deg); }
+    /* CONTACT */
+    .aw #contact {
+      scroll-margin-top: 84px;
+      text-align: center;
+    }
+    .aw .aw-mail {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      text-decoration: none;
+      padding: 12px 24px;
+      border-radius: 24px;
+      transition: transform 0.2s ease;
+    }
+    .aw .aw-mail:hover {
+      transform: translateY(-4px);
+    }
+    .aw .env-svg {
+      width: clamp(100px, 20vw, 130px);
+      height: auto;
+      overflow: visible;
+      filter: drop-shadow(0 12px 24px rgba(15, 44, 42, 0.12));
+    }
+    .aw .env-body { fill: #1f8f7b; }
+    .aw .env-front { fill: #123a37; }
+    .aw .env-letter { fill: #ffffff; transform-box: fill-box; transition: transform .42s cubic-bezier(.2,.8,.3,1.2); }
+    .aw .env-l { stroke: #cfe7df; stroke-width: 5; stroke-linecap: round; transform-box: fill-box; transition: transform .42s cubic-bezier(.2,.8,.3,1.2); }
+    .aw .env-flap { fill: #24a687; transform-box: fill-box; transform-origin: 50% 0%; transition: transform .45s ease; }
+    
+    .aw .aw-mail:hover .env-flap, .aw .aw-mail:focus-visible .env-flap { transform: rotateX(180deg); }
     .aw .aw-mail:hover .env-letter, .aw .aw-mail:focus-visible .env-letter,
-    .aw .aw-mail:hover .env-l, .aw .aw-mail:focus-visible .env-l{ transform:translateY(-15px); }
-    .aw .aw-mail-txt{ font-weight:900; font-size:clamp(1rem,.5vw+.95rem,1.2rem); color:var(--teal-600); border-bottom:2px solid transparent; transition:border-color .2s ease; }
-    .aw .aw-mail:hover .aw-mail-txt{ border-color:var(--teal-500); }
+    .aw .aw-mail:hover .env-l, .aw .aw-mail:focus-visible .env-l { transform: translateY(-15px); }
+    .aw .aw-mail-txt {
+      font-weight: 900;
+      font-size: clamp(1.1rem, 2vw, 1.35rem);
+      color: #1f8f7b;
+      text-decoration: underline;
+      text-underline-offset: 4px;
+      transition: color 0.2s ease;
+    }
+    .aw .aw-mail:hover .aw-mail-txt {
+      color: #24a687;
+    }
 
-    /* DISCLAIMER — collapsed by default, plain (not a card) */
-    .aw .aw-disc{ width:min(640px,100%); margin:0 auto; text-align:center; }
-    .aw .aw-disc-sum{ list-style:none; cursor:pointer; display:inline-flex; align-items:center; gap:10px; justify-content:center; padding:11px 22px; border-radius:999px; font-weight:900; font-size:.9rem; color:#8b1111; background:rgba(253,236,236,.7); border:1px solid rgba(139,17,17,.2); transition:background .15s ease; }
-    .aw .aw-disc-sum::-webkit-details-marker{ display:none; }
-    .aw .aw-disc-sum:hover{ background:rgba(253,236,236,.95); }
-    .aw .aw-disc-ic{ width:20px;height:20px;border-radius:50%;background:#8b1111;color:#fff;display:flex;align-items:center;justify-content:center;font-size:.78rem; }
-    .aw .aw-disc-body{ text-align:left; max-width:600px; margin:16px auto 0; color:var(--ink-700); font-size:.9rem; line-height:1.6; }
-    .aw .aw-disc-body ul{ margin:10px 0; padding-left:18px; }
-    .aw .aw-disc-body a{ color:var(--teal-600); font-weight:800; text-decoration:none; }
+    /* DISCLAIMER */
+    .aw .aw-disc {
+      width: min(640px, 100%);
+      margin: 0 auto;
+      text-align: center;
+    }
+    .aw .aw-disc-sum {
+      list-style: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      justify-content: center;
+      padding: 12px 24px;
+      border-radius: 999px;
+      font-weight: 900;
+      font-size: 0.9rem;
+      color: #8b1111;
+      background: rgba(253, 236, 236, 0.7);
+      border: 2px solid rgba(139, 17, 17, 0.2);
+      transition: background 0.15s ease, transform 0.15s ease;
+    }
+    .aw .aw-disc-sum::-webkit-details-marker {
+      display: none;
+    }
+    .aw .aw-disc-sum:hover {
+      background: rgba(253, 236, 236, 0.95);
+      transform: translateY(-1px);
+    }
+    .aw .aw-disc-body {
+      text-align: left;
+      max-width: 600px;
+      margin: 16px auto 0;
+      color: #0f2c2a;
+      font-size: 0.95rem;
+      line-height: 1.6;
+      border: 2px solid rgba(139, 17, 17, 0.2);
+      background: #fdfcfc;
+      padding: 20px;
+      border-radius: 18px;
+    }
+    .aw .aw-disc-body ul {
+      margin: 10px 0;
+      padding-left: 18px;
+    }
+    .aw .aw-disc-body a {
+      color: #1f8f7b;
+      font-weight: 800;
+      text-decoration: underline;
+    }
 
-    @media (prefers-reduced-motion: reduce){
-      .aw [data-reveal]{ opacity:1 !important; transform:none !important; transition:none !important; }
-      .aw *{ animation:none !important; transition:none !important; }
+    @media (prefers-reduced-motion: reduce) {
+      .aw [data-reveal] {
+        opacity: 1 !important;
+        transform: none !important;
+        transition: none !important;
+      }
+      .aw * {
+        animation: none !important;
+        transition: none !important;
+      }
     }
   </style>
 </head>
@@ -134,7 +504,10 @@
         <section class="aw-band aw-hero" aria-labelledby="about-heading" data-reveal>
           <div class="aw-wash" aria-hidden="true"></div>
           <div class="aw-inner">
-            <span class="aw-eyebrow">🩺 Built by pediatric physicians</span>
+            <span class="aw-eyebrow">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="aw-eyebrow-ic"><path d="M4.5 22v-5a8 8 0 0 1 15 0v5"></path><path d="M12 2v15"></path><circle cx="12" cy="17" r="1"></circle></svg>
+              Physician Led
+            </span>
             <h1 id="about-heading">Pediatric dosing, made <em>calm</em>.</h1>
             <p class="sub">The right dose for your child in seconds — free, ad-free, and reviewed by a practicing pediatric emergency physician.</p>
             <div class="aw-actions">
@@ -151,17 +524,33 @@
             <h2 class="aw-h2" id="find-heading">Everything families reach for</h2>
             <p class="aw-h2-sub">Jump straight to what you need.</p>
             <div class="aw-dest">
-              <a class="aw-tile aw-tile--calc" href="index.html">
-                <span class="glyph" aria-hidden="true">🧮</span><span class="t">Calculator</span><span class="s">Dose by weight, instantly</span>
+              <a class="aw-tile aw-tile--hero" href="index.html">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="tile-ic"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect><line x1="9" y1="22" x2="9" y2="16"></line><line x1="15" y1="22" x2="15" y2="16"></line><line x1="9" y1="16" x2="15" y2="16"></line><path d="M8 6h8"></path><path d="M8 10h8"></path></svg>
+                <div>
+                  <span class="t">Calculator</span>
+                  <span class="s">Dose by weight, instantly. Get rapid access to fever, pain, and allergy calculations.</span>
+                </div>
               </a>
-              <a class="aw-tile aw-tile--meds" href="medication-guides.html">
-                <span class="glyph" aria-hidden="true">💊</span><span class="t">Medication Guides</span><span class="s">Products &amp; concentrations</span>
+              <a class="aw-tile aw-tile--two" href="medication-guides.html">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="tile-ic"><path d="m10.5 3 7.07 7.07-7.07 7.07-7.07-7.07z"></path><path d="m4.35 10.76 6.36 6.36"></path></svg>
+                <div>
+                  <span class="t">Medication Guides</span>
+                  <span class="s">Products &amp; concentrations.</span>
+                </div>
               </a>
-              <a class="aw-tile aw-tile--weigh" href="weighing-guide.html">
-                <span class="glyph" aria-hidden="true">⚖️</span><span class="t">Weighing Guide</span><span class="s">Get an accurate weight</span>
+              <a class="aw-tile aw-tile--three" href="weighing-guide.html">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="tile-ic"><line x1="12" y1="2" x2="12" y2="22"></line><line x1="5" y1="7" x2="19" y2="7"></line><path d="M5 7a7 7 0 0 0 14 0"></path></svg>
+                <div>
+                  <span class="t">Weighing Guide</span>
+                  <span class="s">Get an accurate weight.</span>
+                </div>
               </a>
-              <a class="aw-tile aw-tile--give" href="donations.html">
-                <span class="glyph" aria-hidden="true">🐷</span><span class="t">Support Us</span><span class="s">Keep CloseDose free</span>
+              <a class="aw-tile aw-tile--three" href="donations.html">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="tile-ic"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path></svg>
+                <div>
+                  <span class="t">Support Us</span>
+                  <span class="s">Keep CloseDose free.</span>
+                </div>
               </a>
             </div>
           </div>
@@ -181,12 +570,30 @@
             <h2 class="aw-h2" id="trust-heading">Why families trust it</h2>
             <p class="aw-h2-sub">Clinical accuracy, made effortless.</p>
             <div class="aw-highlights">
-              <div class="aw-hl"><img src="images/about_icons/physician-reviewed.svg" alt="" aria-hidden="true"><span>Physician-reviewed</span></div>
-              <div class="aw-hl"><img src="images/about_icons/evidence-based.svg" alt="" aria-hidden="true"><span>Evidence-based</span></div>
-              <div class="aw-hl"><img src="images/about_icons/no-login-required.svg" alt="" aria-hidden="true"><span>Free &amp; no login</span></div>
-              <div class="aw-hl"><img src="images/about_icons/fast-results.svg" alt="" aria-hidden="true"><span>Results in seconds</span></div>
-              <div class="aw-hl"><img src="images/about_icons/color-coded-warnings.svg" alt="" aria-hidden="true"><span>Clear safety cues</span></div>
-              <div class="aw-hl"><img src="images/about_icons/accessible-design.svg" alt="" aria-hidden="true"><span>Accessible to all</span></div>
+              <div class="aw-hl">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg>
+                <span>Physician-reviewed</span>
+              </div>
+              <div class="aw-hl">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><path d="m9 11 2 2 4-4"></path></svg>
+                <span>Evidence-based</span>
+              </div>
+              <div class="aw-hl">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                <span>Free &amp; no login</span>
+              </div>
+              <div class="aw-hl">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                <span>Results in seconds</span>
+              </div>
+              <div class="aw-hl">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                <span>Clear safety cues</span>
+              </div>
+              <div class="aw-hl">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                <span>Accessible to all</span>
+              </div>
             </div>
           </div>
         </section>
@@ -213,10 +620,13 @@
           </div>
         </section>
 
-        <!-- Disclaimer (collapsed by default, plain) -->
+        <!-- Disclaimer -->
         <section class="aw-band" aria-label="Disclaimer">
           <details class="aw-disc">
-            <summary class="aw-disc-sum"><span class="aw-disc-ic" aria-hidden="true">!</span> Disclaimer &amp; medication safety</summary>
+            <summary class="aw-disc-sum">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px; color: #8b1111; flex-shrink: 0;"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+              Disclaimer &amp; medication safety
+            </summary>
             <div class="aw-disc-body">
               <p><strong>This tool does not provide medical advice.</strong> The dosing information is for educational purposes only and should be verified with a healthcare provider.</p>
               <ul>

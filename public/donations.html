@@ -22,90 +22,420 @@
   <meta name="twitter:card" content="summary" />
   <script>(function(){var t=localStorage.getItem("cd-theme");if(t)document.documentElement.setAttribute("data-theme",t);})();</script>
   <style>
-    /* ===== Support V4 — "Watercolor Flow" (scoped, card-free) ===== */
-    .sw{ width:100%; }
-    .sw [data-reveal]{ opacity:0; transform:translateY(20px); transition:opacity .8s ease, transform .8s ease; }
-    .sw [data-reveal].is-in{ opacity:1; transform:none; }
-    .sw .sw-band{ width:100vw; max-width:100vw; margin-inline:calc(50% - 50vw); padding:clamp(30px,4.5vw,56px) clamp(22px,5vw,48px); position:relative; }
-    .sw .sw-inner{ max-width:1080px; margin:0 auto; position:relative; z-index:2; }
-    .sw .sw-tight{ max-width:720px; }
+    /* ===== Support V5 — "tasteskill" Premium Editorial ===== */
+    .sw {
+      width: 100%;
+      font-family: "Nunito", system-ui, -apple-system, sans-serif;
+      color: #0f2c2a;
+    }
+    
+    .sw [data-reveal] {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity .8s cubic-bezier(0.16, 1, 0.3, 1), transform .8s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .sw [data-reveal].is-in {
+      opacity: 1;
+      transform: none;
+    }
+    
+    .sw .sw-band {
+      width: 100vw;
+      max-width: 100vw;
+      margin-inline: calc(50% - 50vw);
+      padding: clamp(40px, 6vw, 80px) clamp(20px, 5vw, 40px);
+      position: relative;
+      background: transparent;
+    }
+    
+    .sw .sw-inner {
+      max-width: 960px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 2;
+    }
+    
+    .sw .sw-tight {
+      max-width: 640px;
+    }
 
-    .sw .sw-wash{ position:absolute; inset:0; z-index:0; overflow:hidden; pointer-events:none; }
-    .sw .sw-wash::before, .sw .sw-wash::after{ content:""; position:absolute; border-radius:50%; filter:blur(60px); opacity:.55; }
-    .sw .sw-wash--a::before{ width:46vw;height:46vw; background:radial-gradient(circle,#ffd9b0,transparent 70%); top:-12vw; right:-10vw; }
-    .sw .sw-wash--a::after{ width:42vw;height:42vw; background:radial-gradient(circle,#a8e6d4,transparent 70%); bottom:-14vw; left:-8vw; }
-    .sw .sw-wash--b::before{ width:44vw;height:44vw; background:radial-gradient(circle,#ffc9d6,transparent 70%); top:-10vw; left:-6vw; }
-    .sw .sw-wash--b::after{ width:40vw;height:40vw; background:radial-gradient(circle,#bdeede,transparent 70%); bottom:-12vw; right:-8vw; }
+    /* Soft gradients instead of raw image washes */
+    .sw .sw-wash {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
+    .sw .sw-wash::before,
+    .sw .sw-wash::after {
+      content: "";
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.35;
+    }
+    .sw .sw-wash--a::before {
+      width: 40vw;
+      height: 40vw;
+      background: radial-gradient(circle, #ffe8a8, transparent 70%);
+      top: -10vw;
+      right: -5vw;
+    }
+    .sw .sw-wash--a::after {
+      width: 35vw;
+      height: 35vw;
+      background: radial-gradient(circle, #24a687, transparent 70%);
+      bottom: -10vw;
+      left: -5vw;
+    }
+    .sw .sw-wash--b::before {
+      width: 40vw;
+      height: 40vw;
+      background: radial-gradient(circle, #ffc9d6, transparent 70%);
+      top: -5vw;
+      left: -5vw;
+    }
 
     /* HERO */
-    .sw .sw-hero{ text-align:center; padding-top:clamp(44px,6vw,76px); padding-bottom:clamp(20px,3.5vw,40px); }
-    .sw .sw-hero .sw-wash{ background:url('Donations/WC_bg.webp') center/cover no-repeat; opacity:.5; -webkit-mask-image:radial-gradient(circle at 50% 35%, #000 35%, transparent 78%); mask-image:radial-gradient(circle at 50% 35%, #000 35%, transparent 78%); }
-    .sw .sw-eyebrow{ display:inline-flex; align-items:center; gap:8px; font-size:.78rem; font-weight:900; letter-spacing:.16em; text-transform:uppercase; color:var(--teal-600); margin-bottom:18px; }
-    .sw .sw-hero h1{ font-size:clamp(2.3rem,4.2vw+1rem,4.4rem); line-height:1.03; font-weight:900; letter-spacing:-.02em; color:var(--ink-900); margin:0 auto 16px; max-width:15ch; }
-    .sw .sw-hero h1 em{ font-style:normal; color:var(--teal-500); }
-    .sw .sw-hero .sub{ font-size:clamp(1.05rem,.6vw+1rem,1.28rem); line-height:1.55; color:var(--ink-700); max-width:48ch; margin:0 auto 8px; }
-    .sw .sw-piggy{ width:clamp(88px,12vw,140px); margin:clamp(18px,2.5vw,28px) auto 0; display:block; filter:drop-shadow(0 14px 24px rgba(13,52,82,.22)); animation:sw-float 5s ease-in-out infinite; }
-    @keyframes sw-float{ 0%,100%{ transform:translateY(0) rotate(-3deg);} 50%{ transform:translateY(-14px) rotate(3deg);} }
+    .sw .sw-hero {
+      text-align: center;
+      padding-top: clamp(60px, 8vw, 100px);
+      padding-bottom: clamp(30px, 4vw, 50px);
+    }
+    
+    .sw .sw-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      background: #0f2c2a;
+      color: #ffffff;
+      padding: 6px 16px;
+      border-radius: 999px;
+      margin-bottom: 24px;
+    }
+    
+    .sw .sw-eyebrow svg {
+      width: 12px;
+      height: 12px;
+      fill: #24a687;
+    }
+    
+    .sw .sw-hero h1 {
+      font-size: clamp(2.4rem, 5vw, 4.2rem);
+      line-height: 1.05;
+      font-weight: 900;
+      letter-spacing: -0.02em;
+      color: #0f2c2a;
+      margin: 0 auto 20px;
+      max-width: 16ch;
+      text-transform: uppercase;
+    }
+    
+    .sw .sw-hero h1 em {
+      font-style: normal;
+      color: #24a687;
+      background: linear-gradient(120deg, rgba(36, 166, 135, 0.15) 0%, rgba(36, 166, 135, 0) 100%);
+      padding: 0 4px;
+      border-radius: 4px;
+    }
+    
+    .sw .sw-hero .sub {
+      font-size: clamp(1.05rem, 1.5vw, 1.25rem);
+      line-height: 1.6;
+      color: #123a37;
+      max-width: 60ch;
+      margin: 0 auto;
+    }
+    
+    .sw .sw-piggy {
+      width: clamp(80px, 10vw, 110px);
+      margin: clamp(24px, 4vw, 40px) auto 0;
+      display: block;
+      filter: drop-shadow(0 12px 24px rgba(15, 44, 42, 0.12));
+      animation: sw-float 6s ease-in-out infinite;
+    }
+    @keyframes sw-float {
+      0%, 100% { transform: translateY(0) rotate(-2deg); }
+      50% { transform: translateY(-10px) rotate(2deg); }
+    }
 
-    /* WAYS TO GIVE — large animated platform tiles */
-    .sw .sw-h2{ text-align:center; font-size:clamp(1.5rem,1.4vw+1rem,2.2rem); font-weight:900; color:var(--ink-900); margin:0 0 6px; }
-    .sw .sw-h2-sub{ text-align:center; color:var(--ink-700); font-size:1rem; margin:0 0 clamp(26px,4vw,44px); }
-    .sw .sw-give{ display:grid; grid-template-columns:1fr; gap:clamp(18px,2.6vw,28px); }
-    @media(min-width:760px){ .sw .sw-give{ grid-template-columns:1fr 1fr; } }
-    .sw .sw-pf{ position:relative; overflow:hidden; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; text-decoration:none; min-height:clamp(260px,30vw,320px); padding:clamp(30px,4vw,44px) clamp(20px,3vw,28px); border-radius:30px; background:transparent; transition:transform .24s cubic-bezier(.2,.8,.3,1.2), box-shadow .24s ease, background .24s ease; cursor:pointer; }
-    .sw .sw-pf::before{ content:""; position:absolute; inset:0; z-index:0; opacity:.0; background:radial-gradient(circle at 50% 18%, var(--c), transparent 72%); transition:opacity .3s ease; }
-    .sw .sw-pf > *{ position:relative; z-index:1; }
-    .sw .sw-pf:hover{ transform:translateY(-9px); background:rgba(255,255,255,.6); box-shadow:0 24px 48px rgba(13,52,82,.16); }
-    .sw .sw-pf:hover::before{ opacity:.95; }
-    .sw .sw-pf .badge{ width:clamp(96px,12vw,128px); height:clamp(96px,12vw,128px); border-radius:50%; display:flex; align-items:center; justify-content:center; box-shadow:0 14px 30px rgba(13,52,82,.18); transition:transform .3s cubic-bezier(.2,.8,.3,1.5); }
-    .sw .sw-pf .badge .em{ font-size:clamp(3rem,6vw,4rem); line-height:1; }
-    .sw .sw-pf .badge img{ width:62%; height:auto; }
-    .sw .sw-pf:hover .badge{ transform:translateY(-6px) scale(1.1) rotate(-8deg); }
-    .sw .sw-pf .name{ margin:22px 0 6px; font-size:clamp(1.5rem,2vw,1.9rem); font-weight:900; }
-    .sw .sw-pf .tag{ font-size:.98rem; color:var(--ink-700); max-width:24ch; }
-    .sw .sw-pf .go{ margin-top:20px; display:inline-flex; align-items:center; gap:8px; font-weight:900; padding:12px 26px; border-radius:999px; color:#fff; box-shadow:0 10px 22px rgba(13,52,82,.2); transition:transform .2s ease; }
-    .sw .sw-pf:hover .go{ transform:translateX(4px); }
-    /* Ko-fi */
-    .sw .sw-pf--kofi{ --c:#bfe7fb; }
-    .sw .sw-pf--kofi .badge{ background:linear-gradient(135deg,#e3f5fd,#cdeefb); }
-    .sw .sw-pf--kofi .name{ color:#1a7fb0; }
-    .sw .sw-pf--kofi .go{ background:#29abe0; }
-    /* Givebutter */
-    .sw .sw-pf--gb{ --c:#ffd3c6; }
-    .sw .sw-pf--gb .badge{ background:linear-gradient(135deg,#fbe4dd,#f7cfc2); }
-    .sw .sw-pf--gb .name{ color:#c4452f; }
-    .sw .sw-pf--gb .go{ background:#c4452f; }
-    /* style the Givebutter inner fallback anchor to fill the tile look */
-    .sw givebutter-widget{ display:flex; align-items:center; justify-content:center; height:100%; min-height:clamp(260px,30vw,320px); }
-    .sw givebutter-widget .sw-pf{ width:100%; height:100%; box-sizing:border-box; }
-    .sw .sw-pf:focus-visible{ outline:3px solid var(--teal-500); outline-offset:4px; border-radius:22px; }
+    /* WAYS TO GIVE */
+    .sw .sw-h2 {
+      text-align: center;
+      font-size: clamp(1.8rem, 3vw, 2.4rem);
+      font-weight: 900;
+      color: #0f2c2a;
+      margin: 0 0 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    
+    .sw .sw-h2-sub {
+      text-align: center;
+      color: #123a37;
+      font-size: 1.05rem;
+      margin: 0 0 clamp(30px, 5vw, 50px);
+    }
+    
+    .sw .sw-give {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 24px;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    @media(min-width: 640px) {
+      .sw .sw-give {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+    
+    .sw .sw-pf {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      text-align: center;
+      text-decoration: none;
+      padding: 32px 24px;
+      border: 3px solid #0f2c2a;
+      border-radius: 26px;
+      background: #ffffff;
+      box-shadow: 0 6px 0 rgba(15, 44, 42, 0.15);
+      transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      cursor: pointer;
+      color: #0f2c2a;
+      min-height: 280px;
+    }
+    
+    .sw .sw-pf:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 0 rgba(15, 44, 42, 0.18);
+    }
+    
+    .sw .sw-pf .badge {
+      width: 72px;
+      height: 72px;
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid #0f2c2a;
+      background: #f1f8f6;
+      box-shadow: 0 4px 0 rgba(15, 44, 42, 0.1);
+      margin-bottom: 16px;
+      transition: transform 0.3s ease;
+    }
+    
+    .sw .sw-pf:hover .badge {
+      transform: scale(1.08) rotate(-4deg);
+    }
+    
+    .sw .sw-pf .badge img {
+      width: 60%;
+      height: auto;
+    }
+    
+    .sw .sw-pf .name {
+      font-size: 1.4rem;
+      font-weight: 900;
+      margin: 0 0 8px;
+    }
+    
+    .sw .sw-pf .tag {
+      font-size: 0.95rem;
+      color: #123a37;
+      line-height: 1.5;
+      margin-bottom: 20px;
+      max-width: 28ch;
+    }
+    
+    .sw .sw-pf .go {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 800;
+      padding: 10px 24px;
+      border-radius: 999px;
+      border: 2px solid #0f2c2a;
+      background: #ffffff;
+      color: #0f2c2a;
+      transition: background 0.15s ease, color 0.15s ease;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    
+    .sw .sw-pf:hover .go {
+      background: #0f2c2a;
+      color: #ffffff;
+    }
 
-    /* IMPACT — 3 simple visual chips */
-    .sw .sw-impact{ display:grid; grid-template-columns:repeat(2,1fr); gap:clamp(24px,3vw,36px) clamp(14px,3vw,28px); max-width:760px; margin:0 auto; justify-items:center; }
-    @media(min-width:680px){ .sw .sw-impact{ grid-template-columns:repeat(4,1fr); } }
-    .sw .sw-chip{ text-align:center; width:100%; max-width:170px; }
-    .sw .sw-chip .big{ font-size:clamp(2rem,4vw,2.8rem); font-weight:900; color:var(--teal-500); line-height:1; }
-    .sw .sw-chip .em{ font-size:2.4rem; line-height:1; }
-    .sw .sw-chip span{ display:block; margin-top:10px; font-weight:800; color:var(--ink-900); font-size:.95rem; line-height:1.35; }
+    /* Platform Color Variants */
+    .sw .sw-pf--kofi {
+      border-color: #0f2c2a;
+    }
+    .sw .sw-pf--gb {
+      border-color: #0f2c2a;
+    }
 
-    /* SPONSOR — quiet single line */
-    .sw .sw-sponsor{ text-align:center; font-size:1.05rem; line-height:1.6; color:var(--ink-700); max-width:60ch; margin:0 auto; }
-    .sw .sw-sponsor a{ color:var(--teal-600); font-weight:900; text-decoration:none; border-bottom:2px solid transparent; transition:border-color .16s ease; }
-    .sw .sw-sponsor a:hover{ border-color:var(--teal-500); }
+    /* BENTO IMPACT GRID */
+    .sw .sw-bento {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 20px;
+      margin-top: 24px;
+    }
+    
+    .sw .sw-bento-cell {
+      border: 3px solid #0f2c2a;
+      border-radius: 24px;
+      padding: 28px;
+      background: #ffffff;
+      box-shadow: 0 4px 0 rgba(15, 44, 42, 0.1);
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    
+    /* Bento cell column layouts */
+    .sw .sw-bento-cell--hero {
+      grid-column: span 6;
+      background: #123a37;
+      color: #ffffff;
+      border-color: #0f2c2a;
+    }
+    .sw .sw-bento-cell--two {
+      grid-column: span 6;
+    }
+    .sw .sw-bento-cell--three {
+      grid-column: span 6;
+    }
+    
+    @media(min-width: 768px) {
+      .sw .sw-bento-cell--hero {
+        grid-column: span 4;
+      }
+      .sw .sw-bento-cell--two {
+        grid-column: span 2;
+      }
+      .sw .sw-bento-cell--three {
+        grid-column: span 3;
+      }
+    }
+    
+    .sw .sw-bento-cell .title {
+      font-size: 1.15rem;
+      font-weight: 800;
+      margin: 0;
+    }
+    
+    .sw .sw-bento-cell .big-metric {
+      font-size: clamp(2.5rem, 5vw, 3.8rem);
+      font-weight: 900;
+      line-height: 1;
+      color: #24a687;
+    }
+    .sw .sw-bento-cell--hero .big-metric {
+      color: #ffe8a8;
+    }
+    
+    .sw .sw-bento-cell .desc {
+      font-size: 0.95rem;
+      line-height: 1.5;
+      margin: 0;
+      opacity: 0.95;
+    }
 
-    /* DISCLAIMER — collapsed by default, plain (not a card) */
-    .sw .sw-disc{ width:min(640px,100%); margin:0 auto; text-align:center; }
-    .sw .sw-disc-sum{ list-style:none; cursor:pointer; display:inline-flex; align-items:center; gap:10px; justify-content:center; padding:11px 22px; border-radius:999px; font-weight:900; font-size:.9rem; color:#8b1111; background:rgba(253,236,236,.7); border:1px solid rgba(139,17,17,.2); transition:background .15s ease; }
-    .sw .sw-disc-sum::-webkit-details-marker{ display:none; }
-    .sw .sw-disc-sum:hover{ background:rgba(253,236,236,.95); }
-    .sw .sw-disc-ic{ width:20px;height:20px;border-radius:50%;background:#8b1111;color:#fff;display:flex;align-items:center;justify-content:center;font-size:.78rem; }
-    .sw .sw-disc-body{ text-align:left; max-width:600px; margin:16px auto 0; color:var(--ink-700); font-size:.9rem; line-height:1.6; }
-    .sw .sw-disc-body ul{ margin:10px 0; padding-left:18px; }
-    .sw .sw-disc-body a{ color:var(--teal-600); font-weight:800; text-decoration:none; }
+    /* SPONSOR */
+    .sw .sw-sponsor {
+      text-align: center;
+      font-size: 1.1rem;
+      line-height: 1.6;
+      color: #0f2c2a;
+      max-width: 60ch;
+      margin: 0 auto;
+    }
+    .sw .sw-sponsor a {
+      color: #1f8f7b;
+      font-weight: 900;
+      text-decoration: underline;
+      text-underline-offset: 4px;
+      transition: color 0.15s ease;
+    }
+    .sw .sw-sponsor a:hover {
+      color: #24a687;
+    }
 
-    @media (prefers-reduced-motion: reduce){
-      .sw [data-reveal]{ opacity:1 !important; transform:none !important; transition:none !important; }
-      .sw *{ animation:none !important; transition:none !important; }
+    /* DISCLAIMER */
+    .sw .sw-disc {
+      width: min(640px, 100%);
+      margin: 0 auto;
+      text-align: center;
+    }
+    .sw .sw-disc-sum {
+      list-style: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      justify-content: center;
+      padding: 12px 24px;
+      border-radius: 999px;
+      font-weight: 900;
+      font-size: 0.9rem;
+      color: #8b1111;
+      background: rgba(253, 236, 236, 0.7);
+      border: 2px solid rgba(139, 17, 17, 0.2);
+      transition: background 0.15s ease, transform 0.15s ease;
+    }
+    .sw .sw-disc-sum::-webkit-details-marker {
+      display: none;
+    }
+    .sw .sw-disc-sum:hover {
+      background: rgba(253, 236, 236, 0.95);
+      transform: translateY(-1px);
+    }
+    .sw .sw-disc-body {
+      text-align: left;
+      max-width: 600px;
+      margin: 16px auto 0;
+      color: #0f2c2a;
+      font-size: 0.95rem;
+      line-height: 1.6;
+      border: 2px solid rgba(139, 17, 17, 0.2);
+      background: #fdfcfc;
+      padding: 20px;
+      border-radius: 18px;
+    }
+    .sw .sw-disc-body ul {
+      margin: 10px 0;
+      padding-left: 18px;
+    }
+    .sw .sw-disc-body a {
+      color: #1f8f7b;
+      font-weight: 800;
+      text-decoration: underline;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .sw [data-reveal] {
+        opacity: 1 !important;
+        transform: none !important;
+        transition: none !important;
+      }
+      .sw * {
+        animation: none !important;
+        transition: none !important;
+      }
     }
   </style>
 </head>
@@ -129,7 +459,10 @@
         <section class="sw-band sw-hero" aria-labelledby="support-heading" data-reveal>
           <div class="sw-wash" aria-hidden="true"></div>
           <div class="sw-inner">
-            <span class="sw-eyebrow">💛 Powered by people like you</span>
+            <span class="sw-eyebrow">
+              <svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path></svg>
+              Support CloseDose
+            </span>
             <h1 id="support-heading">Keep CloseDose <em>free</em> for every family.</h1>
             <p class="sub">No ads. No paywalls. Just safe dosing guidance — kept alive by caregivers and clinicians who chip in.</p>
             <img class="sw-piggy" src="images/Pig/piggybank-color.svg" alt="" aria-hidden="true" />
@@ -144,7 +477,9 @@
             <p class="sw-h2-sub">Both platforms pass 100% to CloseDose.</p>
             <div class="sw-give">
               <a class="sw-pf sw-pf--kofi" href="https://ko-fi.com/drnsm" target="_blank" rel="noopener" aria-label="Support CloseDose on Ko-fi">
-                <span class="badge" aria-hidden="true"><span class="em">☕</span></span>
+                <span class="badge" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 32px; height: 32px; color: #1f8f7b;"><path d="M18 8h1a4 4 0 0 1 0 8h-1"></path><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path><line x1="6" y1="2" x2="6" y2="4"></line><line x1="10" y1="2" x2="10" y2="4"></line><line x1="14" y1="2" x2="14" y2="4"></line></svg>
+                </span>
                 <span class="name">Ko-fi</span>
                 <span class="tag">Buy Dr. Nick a coffee — one tap, no account needed.</span>
                 <span class="go" aria-hidden="true">Give on Ko-fi →</span>
@@ -161,16 +496,40 @@
           </div>
         </section>
 
-        <!-- IMPACT chips -->
+        <!-- BENTO IMPACT GRID -->
         <section class="sw-band" aria-labelledby="impact-heading" data-reveal>
           <div class="sw-inner">
             <h2 class="sw-h2" id="impact-heading">Where it goes</h2>
             <p class="sw-h2-sub">Every gift goes straight to the work.</p>
-            <div class="sw-impact">
-              <div class="sw-chip"><div class="big" data-count="0" data-suffix="%">0%</div><span>Platform fees</span></div>
-              <div class="sw-chip"><div class="em" aria-hidden="true">🚫</div><span>Ad-free, forever</span></div>
-              <div class="sw-chip"><div class="em" aria-hidden="true">💊</div><span>More medication guides</span></div>
-              <div class="sw-chip"><div class="em" aria-hidden="true">📚</div><span>New caregiver resources</span></div>
+            <div class="sw-bento">
+              <div class="sw-bento-cell sw-bento-cell--hero">
+                <div class="big-metric" data-count="0" data-suffix="%">0%</div>
+                <div>
+                  <h3 class="title">Platform fees</h3>
+                  <p class="desc">We absorb or bypass transaction costs so that 100% of your contribution supports medical calculators.</p>
+                </div>
+              </div>
+              <div class="sw-bento-cell sw-bento-cell--two">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 32px; height: 32px; color: #ffe8a8;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><path d="m9 11 2 2 4-4"></path></svg>
+                <div>
+                  <h3 class="title">Ad-Free Forever</h3>
+                  <p class="desc">No intrusive trackers, medical ads, or hidden sponsorships.</p>
+                </div>
+              </div>
+              <div class="sw-bento-cell sw-bento-cell--three">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 32px; height: 32px; color: #24a687;"><path d="m10.5 3 7.07 7.07-7.07 7.07-7.07-7.07z"></path><path d="m4.35 10.76 6.36 6.36"></path></svg>
+                <div>
+                  <h3 class="title">Guides &amp; Products</h3>
+                  <p class="desc">Helps expand photo guides for new over-the-counter medicine types.</p>
+                </div>
+              </div>
+              <div class="sw-bento-cell sw-bento-cell--three">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 32px; height: 32px; color: #24a687;"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"></path><path d="M6 6h10M6 10h10"></path></svg>
+                <div>
+                  <h3 class="title">Caregiver Support</h3>
+                  <p class="desc">Supports translation and accessibility features for diverse families.</p>
+                </div>
+              </div>
             </div>
           </div>
         </section>
@@ -184,10 +543,13 @@
           </div>
         </section>
 
-        <!-- Disclaimer (collapsed by default, plain) -->
+        <!-- Disclaimer -->
         <section class="sw-band" aria-label="Disclaimer">
           <details class="sw-disc">
-            <summary class="sw-disc-sum"><span class="sw-disc-ic" aria-hidden="true">!</span> Disclaimer &amp; medication safety</summary>
+            <summary class="sw-disc-sum">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px; color: #8b1111; flex-shrink: 0;"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+              Disclaimer &amp; medication safety
+            </summary>
             <div class="sw-disc-body">
               <p><strong>This tool does not provide medical advice.</strong> The dosing information is for educational purposes only and should be verified with a healthcare provider.</p>
               <ul>
