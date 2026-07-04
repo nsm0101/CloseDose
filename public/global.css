@@ -52,8 +52,8 @@
     --menu-overlay-bg: rgba(13, 18, 30, 0.98);
     --menu-link-color: #e2e8f0;
     --theme-toggle-icon: '☀️';
-    --card-bg: rgba(255, 255, 255, 0.97);
-    --card-border: 1px solid rgba(255, 255, 255, 0.18);
+    --card-bg: rgba(20, 32, 48, 0.95);
+    --card-border: 1px solid rgba(255, 255, 255, 0.08);
   }
 }
 
@@ -83,8 +83,8 @@ html[data-theme="dark"] {
   --menu-overlay-bg: rgba(13, 18, 30, 0.98);
   --menu-link-color: #e2e8f0;
   --theme-toggle-icon: '☀️';
-  --card-bg: rgba(255, 255, 255, 0.97);
-  --card-border: 1px solid rgba(255, 255, 255, 0.18);
+  --card-bg: rgba(20, 32, 48, 0.95);
+  --card-border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 @keyframes slam-in {
@@ -100,7 +100,7 @@ html[data-theme="dark"] {
 
 body {
   margin: 0;
-  font-family: 'Inter', 'Nunito', system-ui, -apple-system, sans-serif;
+  font-family: 'Nunito', system-ui, -apple-system, sans-serif;
   background-color: var(--page-bg);
   background-image:
     linear-gradient(160deg, var(--page-overlay-start), var(--page-overlay-end)),
@@ -3089,3 +3089,296 @@ html[data-theme="dark"] .menu-secret-bar:focus-visible::before { background: rgb
 .allergy-result-card h3 span { display: block; font-size: 0.9rem; color: var(--text-muted); }
 .honey-guide .dose-reading-tip { margin: 14px 0; }
 @media (max-width: 560px) { .allergy-calculator__row { grid-template-columns: 1fr; } }
+
+/* =============================================
+   DARK MODE — TEXT & INTERACTION OVERRIDES
+   ============================================= */
+
+/* 1. Base card container overrides */
+@media (prefers-color-scheme: dark) {
+  html:not([data-theme="light"]) .card {
+    color: #f1f5f9;
+  }
+  html:not([data-theme="light"]) .card h2,
+  html:not([data-theme="light"]) .card h3,
+  html:not([data-theme="light"]) .card .info-card-title,
+  html:not([data-theme="light"]) .card .donate-heading,
+  html:not([data-theme="light"]) .card .cross-link-card__title,
+  html:not([data-theme="light"]) .card .step-card__title,
+  html:not([data-theme="light"]) .card .med-guide__header-text h2,
+  html:not([data-theme="light"]) .card .subtraction-calc__header-title,
+  html:not([data-theme="light"]) .card .allergy-calculator__form label {
+    color: #ffffff;
+  }
+  html:not([data-theme="light"]) .card p,
+  html:not([data-theme="light"]) .card .donate-intro,
+  html:not([data-theme="light"]) .card .cross-link-card__sub,
+  html:not([data-theme="light"]) .card .step-card__text,
+  html:not([data-theme="light"]) .card .med-guide__header-text p {
+    color: #9ca3af;
+  }
+  html:not([data-theme="light"]) .allergy-calculator__form input,
+  html:not([data-theme="light"]) .allergy-calculator__form select,
+  html:not([data-theme="light"]) .subtraction-calc__field input {
+    border-color: rgba(255, 255, 255, 0.2);
+    color: #ffffff;
+    background: rgba(17, 24, 39, 0.6);
+  }
+  html:not([data-theme="light"]) .menu-btn {
+    background: rgba(31, 41, 55, 0.9);
+    border-color: rgba(255, 255, 255, 0.15);
+    color: #ffffff;
+  }
+  html:not([data-theme="light"]) .menu-btn .hamburger span {
+    background: #ffffff;
+  }
+  html:not([data-theme="light"]) .menu-btn:hover {
+    background: rgba(55, 65, 81, 0.9);
+  }
+}
+
+html[data-theme="dark"] .card {
+  color: #f1f5f9;
+}
+html[data-theme="dark"] .card h2,
+html[data-theme="dark"] .card h3,
+html[data-theme="dark"] .card .info-card-title,
+html[data-theme="dark"] .card .donate-heading,
+html[data-theme="dark"] .card .cross-link-card__title,
+html[data-theme="dark"] .card .step-card__title,
+html[data-theme="dark"] .card .med-guide__header-text h2,
+html[data-theme="dark"] .card .subtraction-calc__header-title,
+html[data-theme="dark"] .card .allergy-calculator__form label {
+  color: #ffffff;
+}
+html[data-theme="dark"] .card p,
+html[data-theme="dark"] .card .donate-intro,
+html[data-theme="dark"] .card .cross-link-card__sub,
+html[data-theme="dark"] .card .step-card__text,
+html[data-theme="dark"] .card .med-guide__header-text p {
+  color: #9ca3af;
+}
+html[data-theme="dark"] .allergy-calculator__form input,
+html[data-theme="dark"] .allergy-calculator__form select,
+html[data-theme="dark"] .subtraction-calc__field input {
+  border-color: rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  background: rgba(17, 24, 39, 0.6);
+}
+html[data-theme="dark"] .menu-btn {
+  background: rgba(31, 41, 55, 0.9);
+  border-color: rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+}
+html[data-theme="dark"] .menu-btn .hamburger span {
+  background: #ffffff;
+}
+html[data-theme="dark"] .menu-btn:hover {
+  background: rgba(55, 65, 81, 0.9);
+}
+
+/* 2. Subtraction calculator widget overrides */
+@media (prefers-color-scheme: dark) {
+  html:not([data-theme="light"]) .subtraction-calc {
+    border-color: rgba(255, 255, 255, 0.2) !important;
+  }
+  html:not([data-theme="light"]) .subtraction-calc__header {
+    background: rgba(255, 255, 255, 0.05) !important;
+    border-bottom-color: rgba(255, 255, 255, 0.2) !important;
+  }
+  html:not([data-theme="light"]) .subtraction-calc__screen {
+    background: rgba(0, 0, 0, 0.2) !important;
+    border-bottom-color: rgba(255, 255, 255, 0.2) !important;
+  }
+}
+html[data-theme="dark"] .subtraction-calc {
+  border-color: rgba(255, 255, 255, 0.2) !important;
+}
+html[data-theme="dark"] .subtraction-calc__header {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border-bottom-color: rgba(255, 255, 255, 0.2) !important;
+}
+html[data-theme="dark"] .subtraction-calc__screen {
+  background: rgba(0, 0, 0, 0.2) !important;
+  border-bottom-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+/* 3. Main pediatric calculator widget overrides */
+@media (prefers-color-scheme: dark) {
+  html:not([data-theme="light"]) .cdcalc-card {
+    background: rgba(20, 32, 48, 0.95) !important;
+    border-color: rgba(255, 255, 255, 0.2) !important;
+    color: #f1f5f9 !important;
+    box-shadow: 0 6px 0 rgba(0, 0, 0, 0.6) !important;
+  }
+  html:not([data-theme="light"]) .cdcalc-header {
+    background: linear-gradient(135deg, #182e3c 0%, #0d2433 100%) !important;
+    border-bottom-color: rgba(255, 255, 255, 0.2) !important;
+  }
+  html:not([data-theme="light"]) .cdcalc-title {
+    color: #ffffff !important;
+  }
+  html:not([data-theme="light"]) .cdcalc-hello {
+    color: #cbd5e1 !important;
+  }
+  html:not([data-theme="light"]) .cdcalc-group-title {
+    color: #ffffff !important;
+  }
+  html:not([data-theme="light"]) .cdcalc-age-option,
+  html:not([data-theme="light"]) .cdcalc-unit-option {
+    background: rgba(31, 41, 55, 0.8) !important;
+    border-color: rgba(255, 255, 255, 0.2) !important;
+    color: #f1f5f9 !important;
+  }
+  html:not([data-theme="light"]) .cdcalc-age-option.is-active,
+  html:not([data-theme="light"]) .cdcalc-unit-option.is-active {
+    background: var(--teal-500) !important;
+    color: #ffffff !important;
+    box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.4) !important;
+  }
+  html:not([data-theme="light"]) .cdcalc-input {
+    background: rgba(17, 24, 39, 0.9) !important;
+    border-color: rgba(255, 255, 255, 0.3) !important;
+    color: #ffffff !important;
+  }
+  html:not([data-theme="light"]) .cdcalc-input:focus,
+  html:not([data-theme="light"]) .cdcalc-input:focus-visible {
+    border-color: var(--teal-400) !important;
+    box-shadow: 0 0 0 8px rgba(36, 166, 135, 0.35) !important;
+  }
+  html:not([data-theme="light"]) .cdcalc-step-callout {
+    color: #ffffff !important;
+  }
+  html:not([data-theme="light"]) .cdcalc-result-card {
+    border-color: rgba(255, 255, 255, 0.2) !important;
+    background: rgba(31, 41, 55, 0.86) !important;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1) !important;
+  }
+  html:not([data-theme="light"]) .cdcalc-result-card h3,
+  html:not([data-theme="light"]) .cdcalc-result-card h3 span {
+    color: #ffffff !important;
+  }
+  html:not([data-theme="light"]) .cdcalc-result-card p,
+  html:not([data-theme="light"]) .cdcalc-result-card li,
+  html:not([data-theme="light"]) .cdcalc-result-card span {
+    color: #cbd5e1 !important;
+  }
+  html:not([data-theme="light"]) .cdcalc-result-card .conc-badge {
+    color: #ffffff !important;
+  }
+  html:not([data-theme="light"]) .cdcalc-guide-promo {
+    border-color: rgba(36, 166, 135, 0.5) !important;
+    background: linear-gradient(
+        150deg,
+        rgba(13, 148, 136, 0.15),
+        rgba(17, 24, 39, 0.95)
+      ) !important;
+    color: #f1f5f9 !important;
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.4) !important;
+  }
+  html:not([data-theme="light"]) .cdcalc-guide-promo h3,
+  html:not([data-theme="light"]) .cdcalc-guide-promo p,
+  html:not([data-theme="light"]) .cdcalc-guide-promo span {
+    color: #ffffff !important;
+  }
+}
+
+html[data-theme="dark"] .cdcalc-card {
+  background: rgba(20, 32, 48, 0.95) !important;
+  border-color: rgba(255, 255, 255, 0.2) !important;
+  color: #f1f5f9 !important;
+  box-shadow: 0 6px 0 rgba(0, 0, 0, 0.6) !important;
+}
+html[data-theme="dark"] .cdcalc-header {
+  background: linear-gradient(135deg, #182e3c 0%, #0d2433 100%) !important;
+  border-bottom-color: rgba(255, 255, 255, 0.2) !important;
+}
+html[data-theme="dark"] .cdcalc-title {
+  color: #ffffff !important;
+}
+html[data-theme="dark"] .cdcalc-hello {
+  color: #cbd5e1 !important;
+}
+html[data-theme="dark"] .cdcalc-group-title {
+  color: #ffffff !important;
+}
+html[data-theme="dark"] .cdcalc-age-option,
+html[data-theme="dark"] .cdcalc-unit-option {
+  background: rgba(31, 41, 55, 0.8) !important;
+  border-color: rgba(255, 255, 255, 0.2) !important;
+  color: #f1f5f9 !important;
+}
+html[data-theme="dark"] .cdcalc-age-option.is-active,
+html[data-theme="dark"] .cdcalc-unit-option.is-active {
+  background: var(--teal-500) !important;
+  color: #ffffff !important;
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.4) !important;
+}
+html[data-theme="dark"] .cdcalc-input {
+  background: rgba(17, 24, 39, 0.9) !important;
+  border-color: rgba(255, 255, 255, 0.3) !important;
+  color: #ffffff !important;
+}
+html[data-theme="dark"] .cdcalc-input:focus,
+html[data-theme="dark"] .cdcalc-input:focus-visible {
+  border-color: var(--teal-400) !important;
+  box-shadow: 0 0 0 8px rgba(36, 166, 135, 0.35) !important;
+}
+html[data-theme="dark"] .cdcalc-step-callout {
+  color: #ffffff !important;
+}
+html[data-theme="dark"] .cdcalc-result-card {
+  border-color: rgba(255, 255, 255, 0.2) !important;
+  background: rgba(31, 41, 55, 0.86) !important;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1) !important;
+}
+html[data-theme="dark"] .cdcalc-result-card h3,
+html[data-theme="dark"] .cdcalc-result-card h3 span {
+  color: #ffffff !important;
+}
+html[data-theme="dark"] .cdcalc-result-card p,
+html[data-theme="dark"] .cdcalc-result-card li,
+html[data-theme="dark"] .cdcalc-result-card span {
+  color: #cbd5e1 !important;
+}
+html[data-theme="dark"] .cdcalc-result-card .conc-badge {
+  color: #ffffff !important;
+}
+html[data-theme="dark"] .cdcalc-guide-promo {
+  border-color: rgba(36, 166, 135, 0.5) !important;
+  background: linear-gradient(
+      150deg,
+      rgba(13, 148, 136, 0.15),
+      rgba(17, 24, 39, 0.95)
+    ) !important;
+  color: #f1f5f9 !important;
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.4) !important;
+}
+html[data-theme="dark"] .cdcalc-guide-promo h3,
+html[data-theme="dark"] .cdcalc-guide-promo p,
+html[data-theme="dark"] .cdcalc-guide-promo span {
+  color: #ffffff !important;
+}
+
+/* 4. Donate links list overrides in dark mode */
+@media (prefers-color-scheme: dark) {
+  html:not([data-theme="light"]) .donate-links a {
+    background: rgba(255, 255, 255, 0.05) !important;
+    border-color: rgba(255, 255, 255, 0.12) !important;
+    color: #ffffff !important;
+  }
+  html:not([data-theme="light"]) .donate-links a:hover {
+    background: rgba(255, 255, 255, 0.12) !important;
+    border-color: var(--teal-400) !important;
+  }
+}
+html[data-theme="dark"] .donate-links a {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+  color: #ffffff !important;
+}
+html[data-theme="dark"] .donate-links a:hover {
+  background: rgba(255, 255, 255, 0.12) !important;
+  border-color: var(--teal-400) !important;
+}
+

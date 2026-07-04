@@ -13,12 +13,26 @@
       ageGroupAria: 'Select patient age',
       agePrompt: '',
       ageOptions: {
-        '0-23m': {
-          primary: '0 TO 23',
+        'under_6m': {
+          primary: '< 6',
           connector: 'MONTHS',
           secondary: '',
           align: 'center',
-          accessible: '0 to 23 Months',
+          accessible: 'Under 6 Months',
+        },
+        '6_11m': {
+          primary: '6 TO 11',
+          connector: 'MONTHS',
+          secondary: '',
+          align: 'center',
+          accessible: '6 to 11 Months',
+        },
+        '12_23m': {
+          primary: '12 TO 23',
+          connector: 'MONTHS',
+          secondary: '',
+          align: 'center',
+          accessible: '12 to 23 Months',
         },
         '2-5y': {
           primary: '2 TO 5',
@@ -34,7 +48,7 @@
           align: 'center',
           accessible: '6 to 11 Years',
         },
-        '12y+': {
+        '12y_plus': {
           primary: '12 Years',
           connector: '+',
           secondary: '',
@@ -57,7 +71,7 @@
     },
     warnings: {
       ageRequiredTitle: 'Age required',
-      ageRequiredBody: 'Please select an age group and exact age to continue.',
+      ageRequiredBody: 'Please select an age group to continue.',
       weightRequiredTitle: 'Weight required',
       weightRequiredBody: 'Please enter a valid weight to calculate dosing.',
       severityRequiredTitle: 'Severity required',
@@ -881,10 +895,12 @@
       };
     };
 
-    const ageLabel0to23 = normalizeAgeLabel(ageOptions['0-23m']);
+    const ageLabelUnder6m = normalizeAgeLabel(ageOptions['under_6m']);
+    const ageLabel6to11m = normalizeAgeLabel(ageOptions['6_11m']);
+    const ageLabel12to23m = normalizeAgeLabel(ageOptions['12_23m']);
     const ageLabel2to5 = normalizeAgeLabel(ageOptions['2-5y']);
     const ageLabel6to11 = normalizeAgeLabel(ageOptions['6-11y']);
-    const ageLabel12Plus = normalizeAgeLabel(ageOptions['12y+']);
+    const ageLabel12Plus = normalizeAgeLabel(ageOptions['12y_plus']);
 
     const renderAgeButton = function (ageValue, label) {
       const alignmentClass = label.align === 'center' ? ' cdcalc-age-option--align-center' : '';
@@ -936,25 +952,23 @@
               <div class="cdcalc-group-title cdcalc-group-title--step" aria-label="${escapeHtml(stepAge.aria)}">${stepAge.html}</div>
               <div class="cdcalc-segmented">
                 <div class="cdcalc-segmented-buttons" role="group" aria-label="${form.ageGroupAria}">
-                  ${renderAgeButton('0-23m', ageLabel0to23)}
+                  ${renderAgeButton('under_6m', ageLabelUnder6m)}
+                  ${renderAgeButton('6_11m', ageLabel6to11m)}
+                  ${renderAgeButton('12_23m', ageLabel12to23m)}
                   ${renderAgeButton('2-5y', ageLabel2to5)}
                   ${renderAgeButton('6-11y', ageLabel6to11)}
-                  ${renderAgeButton('12y+', ageLabel12Plus)}
+                  ${renderAgeButton('12y_plus', ageLabel12Plus)}
                 </div>
               </div>
               <select data-age-select aria-hidden="true" tabindex="-1" hidden>
                 <option value="">${form.ageSelectLabel}</option>
-                <option value="0-23m">${escapeHtml(ageLabel0to23.accessible)}</option>
+                <option value="under_6m">${escapeHtml(ageLabelUnder6m.accessible)}</option>
+                <option value="6_11m">${escapeHtml(ageLabel6to11m.accessible)}</option>
+                <option value="12_23m">${escapeHtml(ageLabel12to23m.accessible)}</option>
                 <option value="2-5y">${escapeHtml(ageLabel2to5.accessible)}</option>
                 <option value="6-11y">${escapeHtml(ageLabel6to11.accessible)}</option>
-                <option value="12y+">${escapeHtml(ageLabel12Plus.accessible)}</option>
+                <option value="12y_plus">${escapeHtml(ageLabel12Plus.accessible)}</option>
               </select>
-              <div class="cdcalc-group" data-exact-age-wrapper style="display: none; margin-top: 12px; padding: 0;">
-                <label for="${ids.exactAge}" class="cdcalc-select-label" data-exact-age-label>Exact age</label>
-                <select id="${ids.exactAge}" class="cdcalc-select" data-exact-age-select>
-                  <option value="">Select age</option>
-                </select>
-              </div>
               <p class="cdcalc-alert" data-message hidden></p>
             </div>
 
@@ -1023,9 +1037,6 @@
       submitButton: root.querySelector('[data-submit]'),
       results: root.querySelector('[data-results]'),
       form: root.querySelector('[data-calculator-form]'),
-      exactAgeWrapper: root.querySelector('[data-exact-age-wrapper]'),
-      exactAgeLabel: root.querySelector('[data-exact-age-label]'),
-      exactAgeSelect: root.querySelector('[data-exact-age-select]'),
       severitySelect: root.querySelector('[data-severity-select]'),
       severityButtons: root.querySelectorAll('.cdcalc-severity-option'),
     };
@@ -1162,12 +1173,11 @@
       };
     } else if (ageYears >= 12 && ageYears <= 17) {
       return {
-        doseMgOption1: 60,
-        doseMgOption2: 180,
-        frequencyOption1: "Twice daily",
-        frequencyOption2: "Once daily",
+        doseMg: 180,
+        volumeMl: null,
+        frequency: "Once daily",
         maxDailyMg: 180,
-        formulation: "Tablet (60 mg or 180 mg)",
+        formulation: "Tablet (180 mg)",
         warning: null,
         special: "⚠️ Give on EMPTY STOMACH. Avoid fruit juices."
       };
@@ -1288,12 +1298,12 @@
     } else if (ageYears >= 12 && ageYears <= 17) {
       return {
         doseMg: 25,
-        doseRange: "25–50 mg",
+        volumeMl: null,
         frequency: "Every 4–6 hours as needed",
         maxDailyMg: 300,
         maxDosesPerDay: 6,
         formulation: "Any (solution, chewable, capsule, or tablet)",
-        warning: null,
+        warning: "Note: Typical single dose is 25 mg (can increase to 50 mg if directed by physician).",
         globalWarning: globalWarning
       };
     }
@@ -1427,24 +1437,23 @@
         message: "⚠️ Not typically used under 1 year for allergic reactions. Consult doctor."
       };
     } else if (ageMonths >= 12 && ageYears < 12) {
-      const doseLow = Math.round(0.25 * weightKg);
-      let doseHigh = Math.round(0.5 * weightKg);
-      doseHigh = Math.min(doseHigh, 20);
+      let dose = Math.round(0.5 * weightKg);
+      dose = Math.min(dose, 20);
       
       return {
-        doseRange: doseLow + "–" + doseHigh + " mg",
+        doseMg: dose,
         frequency: "Once or twice daily",
-        maxDailyMg: Math.min(2 * doseHigh, 40),
+        maxDailyMg: Math.min(2 * dose, 40),
         formulation: "Rx oral suspension (8 mg/mL) for young children; OTC tablets (10 mg, 20 mg) for older children who can swallow",
         warning: "Off-label for allergic reactions. Use as ADJUNCT to H1 antihistamine, not alone."
       };
     } else if (ageYears >= 12 && ageYears <= 17) {
       return {
-        doseMg: "10–20 mg",
+        doseMg: 20,
         frequency: "Once or twice daily",
         maxDailyMg: 40,
         formulation: "OTC tablet (10 mg or 20 mg)",
-        warning: "Off-label for allergic reactions."
+        warning: "Off-label for allergic reactions. Note: Typical single dose is 20 mg (10 mg may also be used)."
       };
     }
     return null;
@@ -1461,10 +1470,8 @@
       };
     }
     
-    let doseLow = Math.round(1.0 * weightKg);
-    let doseHigh = Math.round(2.0 * weightKg);
-    doseHigh = Math.min(doseHigh, 60);
-    doseLow = Math.min(doseLow, 60);
+    let dailyDose = Math.round(1.0 * weightKg);
+    dailyDose = Math.min(dailyDose, 60);
     
     let formulation = "";
     if (weightKg < 10) {
@@ -1476,75 +1483,18 @@
     }
     
     return {
-      doseRange: doseLow + "–" + doseHigh + " mg/day",
+      doseMg: dailyDose,
       frequency: "Once daily (morning) or divided twice daily",
       duration: "3–5 days (no taper needed for short courses)",
       maxDailyMg: 60,
       formulation: formulation,
-      warning: "Rx only. Weak evidence for benefit in anaphylaxis. Commonly used for moderate-severe allergic reactions.",
+      warning: "Rx only. Weak evidence for benefit in anaphylaxis. Commonly used for moderate-severe allergic reactions. Note: Calculated at a standard 1 mg/kg starting dose (can go up to 2 mg/kg per physician direction).",
       globalWarning: globalWarning
     };
   }
 
-  function populateExactAgeOptions(elements, ageGroup) {
-    if (!elements || !elements.exactAgeSelect || !elements.exactAgeWrapper || !elements.exactAgeLabel) {
-      return;
-    }
-    
-    const previousValue = elements.exactAgeSelect.value;
-    elements.exactAgeSelect.innerHTML = '';
-    
-    if (!ageGroup) {
-      elements.exactAgeWrapper.style.display = 'none';
-      return;
-    }
-    
-    elements.exactAgeWrapper.style.display = 'block';
-    
-    let options = [];
-    if (ageGroup === '0-23m') {
-      elements.exactAgeLabel.textContent = 'Select exact age (months):';
-      options.push({ value: '', text: 'Select months' });
-      for (let m = 0; m <= 23; m++) {
-        const text = m === 0 ? '0 months (under 1 month)' : m === 1 ? '1 month' : `${m} months`;
-        options.push({ value: String(m), text });
-      }
-    } else if (ageGroup === '2-5y') {
-      elements.exactAgeLabel.textContent = 'Select exact age (years):';
-      options.push({ value: '', text: 'Select years' });
-      for (let y = 2; y <= 5; y++) {
-        options.push({ value: String(y * 12), text: `${y} years old` });
-      }
-    } else if (ageGroup === '6-11y') {
-      elements.exactAgeLabel.textContent = 'Select exact age (years):';
-      options.push({ value: '', text: 'Select years' });
-      for (let y = 6; y <= 11; y++) {
-        options.push({ value: String(y * 12), text: `${y} years old` });
-      }
-    } else if (ageGroup === '12y+') {
-      elements.exactAgeLabel.textContent = 'Select exact age (years):';
-      options.push({ value: '', text: 'Select years' });
-      for (let y = 12; y <= 17; y++) {
-        options.push({ value: String(y * 12), text: `${y} years old` });
-      }
-    }
-    
-    options.forEach(opt => {
-      const optionEl = document.createElement('option');
-      optionEl.value = opt.value;
-      optionEl.textContent = opt.text;
-      elements.exactAgeSelect.appendChild(optionEl);
-    });
-    
-    if (previousValue && Array.from(elements.exactAgeSelect.options).some(o => o.value === previousValue)) {
-      elements.exactAgeSelect.value = previousValue;
-    } else {
-      elements.exactAgeSelect.value = '';
-    }
-  }
-
   function calculateDose(elements, strings, onResultsRendered) {
-    if (!elements || !elements.ageSelect || !elements.exactAgeSelect || !elements.weightInput || !elements.unitSelect || !elements.results || !elements.severitySelect) {
+    if (!elements || !elements.ageSelect || !elements.weightInput || !elements.unitSelect || !elements.results || !elements.severitySelect) {
       return;
     }
 
@@ -1555,7 +1505,6 @@
     };
 
     const ageGroup = elements.ageSelect.value;
-    const ageMonthsStr = elements.exactAgeSelect.value;
     const weightInput = parseFloat(elements.weightInput.value);
     const weightUnit = elements.unitSelect.value;
     const severity = elements.severitySelect.value;
@@ -1563,13 +1512,28 @@
     clearResults(elements);
     notifyResultsRendered();
 
-    if (!ageGroup || ageMonthsStr === '') {
+    if (!ageGroup) {
       elements.results.innerHTML = renderWarning(strings, {
         title: strings.warnings.ageRequiredTitle,
         body: strings.warnings.ageRequiredBody,
       });
       notifyResultsRendered();
       return;
+    }
+
+    let ageMonths = 0;
+    if (ageGroup === 'under_6m') {
+      ageMonths = 3;
+    } else if (ageGroup === '6_11m') {
+      ageMonths = 8;
+    } else if (ageGroup === '12_23m') {
+      ageMonths = 18;
+    } else if (ageGroup === '2-5y') {
+      ageMonths = 42;
+    } else if (ageGroup === '6-11y') {
+      ageMonths = 102;
+    } else if (ageGroup === '12y_plus') {
+      ageMonths = 180;
     }
 
     if (isNaN(weightInput) || weightInput <= 0) {
@@ -1590,7 +1554,6 @@
       return;
     }
 
-    const ageMonths = parseInt(ageMonthsStr, 10);
     const weightKg = weightUnit === 'lbs' ? weightInput / 2.20462 : weightInput;
     const weightLbs = weightUnit === 'lbs' ? weightInput : weightInput * 2.20462;
 
@@ -1721,14 +1684,13 @@
       if (fex) {
         const extra = fex.maxDailyMg ? `Max daily: ${fex.maxDailyMg} mg` : '';
         let doseText = '';
-        if (fex.doseMgOption1) {
-          doseText = `Give <span class="cdcalc-dose-ml">${fex.doseMgOption1} mg</span> ${fex.frequencyOption1} <strong>OR</strong> <span class="cdcalc-dose-ml">${fex.doseMgOption2} mg</span> ${fex.frequencyOption2}.`;
-        } else if (fex.doseMg) {
-          doseText = `Give <span class="cdcalc-dose-ml">${fex.volumeMl.toFixed(1)} mL</span> <span class="cdcalc-dose-mg">(${fex.doseMg} mg)</span> ${fex.frequency}.`;
+        if (fex.doseMg) {
+          const volumeText = fex.volumeMl ? `<span class="cdcalc-dose-ml">${fex.volumeMl.toFixed(1)} mL</span> ` : '';
+          doseText = `Give ${volumeText}<span class="cdcalc-dose-mg">(${fex.doseMg} mg)</span> ${fex.frequency}.`;
         } else {
           doseText = `<strong>${fex.message}</strong>`;
         }
-        htmlOutput += renderCard('Fexofenadine (Allegra)', fex.formulation, doseText, !(fex.doseMg || fex.doseMgOption1), 'preferred', 'Preferred', fex.warning, fex.special, null, extra);
+        htmlOutput += renderCard('Fexofenadine (Allegra)', fex.formulation, doseText, !fex.doseMg, 'preferred', 'Preferred', fex.warning, fex.special, null, extra);
       }
       
       const lev = getLevocetirizineDose(ageMonths, weightKg);
@@ -1744,10 +1706,8 @@
       if (ben) {
         const extra = ben.doseMg ? `Max daily: ${ben.maxDailyMg.toFixed(1).replace('.0', '')} mg (up to ${ben.maxDosesPerDay} doses of ${ben.doseMg} mg in 24 hours)` : '';
         let doseText = '';
-        if (ben.doseRange) {
-          doseText = `Give <span class="cdcalc-dose-ml">${ben.doseRange}</span> ${ben.frequency}.`;
-        } else if (ben.doseMg) {
-          doseText = `Give <span class="cdcalc-dose-ml">${ben.volumeMl.toFixed(1)} mL</span> <span class="cdcalc-dose-mg">(${ben.doseMg} mg)</span> ${ben.frequency}.`;
+        if (ben.doseMg) {
+          doseText = `Give <span class="cdcalc-dose-ml">${ben.volumeMl ? ben.volumeMl.toFixed(1) + ' mL' : ben.doseMg + ' mg'}</span> <span class="cdcalc-dose-mg">(${ben.doseMg} mg)</span> ${ben.frequency}.`;
         } else {
           doseText = `<strong>${ben.message}</strong>`;
         }
@@ -1782,14 +1742,13 @@
       if (fex) {
         const extra = fex.maxDailyMg ? `Max daily: ${fex.maxDailyMg} mg` : '';
         let doseText = '';
-        if (fex.doseMgOption1) {
-          doseText = `Give <span class="cdcalc-dose-ml">${fex.doseMgOption1} mg</span> ${fex.frequencyOption1} <strong>OR</strong> <span class="cdcalc-dose-ml">${fex.doseMgOption2} mg</span> ${fex.frequencyOption2}.`;
-        } else if (fex.doseMg) {
-          doseText = `Give <span class="cdcalc-dose-ml">${fex.volumeMl.toFixed(1)} mL</span> <span class="cdcalc-dose-mg">(${fex.doseMg} mg)</span> ${fex.frequency}.`;
+        if (fex.doseMg) {
+          const volumeText = fex.volumeMl ? `<span class="cdcalc-dose-ml">${fex.volumeMl.toFixed(1)} mL</span> ` : '';
+          doseText = `Give ${volumeText}<span class="cdcalc-dose-mg">(${fex.doseMg} mg)</span> ${fex.frequency}.`;
         } else {
           doseText = `<strong>${fex.message}</strong>`;
         }
-        htmlOutput += renderCard('Fexofenadine (Allegra)', fex.formulation, doseText, !(fex.doseMg || fex.doseMgOption1), 'preferred', 'Preferred', fex.warning, fex.special, null, extra);
+        htmlOutput += renderCard('Fexofenadine (Allegra)', fex.formulation, doseText, !fex.doseMg, 'preferred', 'Preferred', fex.warning, fex.special, null, extra);
       }
       
       const lev = getLevocetirizineDose(ageMonths, weightKg);
@@ -1804,8 +1763,18 @@
       const fam = getFamotidineDose(ageMonths, weightKg);
       if (fam) {
         const extra = fam.maxDailyMg ? `Max daily: ${fam.maxDailyMg} mg` : '';
-        const doseText = fam.doseMg ? `Give <span class="cdcalc-dose-ml">${fam.doseMg} mg</span> ${fam.frequency}.` : fam.doseRange ? `Give <span class="cdcalc-dose-ml">${fam.doseRange}</span> ${fam.frequency}.` : `<strong>${fam.message}</strong>`;
-        htmlOutput += renderCard('Famotidine (Pepcid)', fam.formulation, doseText, !(fam.doseMg || fam.doseRange), 'adjunct', 'Adjunct H2', fam.warning, null, null, extra);
+        let doseText = '';
+        if (fam.doseMg) {
+          let volumeText = '';
+          if (ageMonths < 144) {
+            const famVolume = fam.doseMg / 8;
+            volumeText = `<span class="cdcalc-dose-ml">${famVolume.toFixed(2).replace(/\.?0+$/, '')} mL</span> `;
+          }
+          doseText = `Give ${volumeText}<span class="cdcalc-dose-mg">(${fam.doseMg} mg)</span> ${fam.frequency}.`;
+        } else {
+          doseText = `<strong>${fam.message}</strong>`;
+        }
+        htmlOutput += renderCard('Famotidine (Pepcid)', fam.formulation, doseText, !fam.doseMg, 'adjunct', 'Adjunct H2', fam.warning, null, null, extra);
       }
       
       htmlOutput += `<div class="cdcalc-result-section-title">⚠️ Alternative H1 (if 2nd-gen unavailable)</div>`;
@@ -1814,10 +1783,8 @@
       if (ben) {
         const extra = ben.doseMg ? `Max daily: ${ben.maxDailyMg.toFixed(1).replace('.0', '')} mg (up to ${ben.maxDosesPerDay} doses of ${ben.doseMg} mg in 24 hours)` : '';
         let doseText = '';
-        if (ben.doseRange) {
-          doseText = `Give <span class="cdcalc-dose-ml">${ben.doseRange}</span> ${ben.frequency}.`;
-        } else if (ben.doseMg) {
-          doseText = `Give <span class="cdcalc-dose-ml">${ben.volumeMl.toFixed(1)} mL</span> <span class="cdcalc-dose-mg">(${ben.doseMg} mg)</span> ${ben.frequency}.`;
+        if (ben.doseMg) {
+          doseText = `Give <span class="cdcalc-dose-ml">${ben.volumeMl ? ben.volumeMl.toFixed(1) + ' mL' : ben.doseMg + ' mg'}</span> <span class="cdcalc-dose-mg">(${ben.doseMg} mg)</span> ${ben.frequency}.`;
         } else {
           doseText = `<strong>${ben.message}</strong>`;
         }
@@ -1863,10 +1830,8 @@
       if (ben) {
         const extra = ben.doseMg ? `Max daily: ${ben.maxDailyMg.toFixed(1).replace('.0', '')} mg (up to ${ben.maxDosesPerDay} doses of ${ben.doseMg} mg in 24 hours)` : '';
         let doseText = '';
-        if (ben.doseRange) {
-          doseText = `Give <span class="cdcalc-dose-ml">${ben.doseRange}</span> ${ben.frequency}.`;
-        } else if (ben.doseMg) {
-          doseText = `Give <span class="cdcalc-dose-ml">${ben.volumeMl.toFixed(1)} mL</span> <span class="cdcalc-dose-mg">(${ben.doseMg} mg)</span> ${ben.frequency}.`;
+        if (ben.doseMg) {
+          doseText = `Give <span class="cdcalc-dose-ml">${ben.volumeMl ? ben.volumeMl.toFixed(1) + ' mL' : ben.doseMg + ' mg'}</span> <span class="cdcalc-dose-mg">(${ben.doseMg} mg)</span> ${ben.frequency}.`;
         } else {
           doseText = `<strong>${ben.message}</strong>`;
         }
@@ -1878,15 +1843,35 @@
       const fam = getFamotidineDose(ageMonths, weightKg);
       if (fam) {
         const extra = fam.maxDailyMg ? `Max daily: ${fam.maxDailyMg} mg` : '';
-        const doseText = fam.doseMg ? `Give <span class="cdcalc-dose-ml">${fam.doseMg} mg</span> ${fam.frequency}.` : fam.doseRange ? `Give <span class="cdcalc-dose-ml">${fam.doseRange}</span> ${fam.frequency}.` : `<strong>${fam.message}</strong>`;
-        htmlOutput += renderCard('Famotidine (Pepcid)', fam.formulation, doseText, !(fam.doseMg || fam.doseRange), 'adjunct', 'Adjunct H2', fam.warning, null, null, extra);
+        let doseText = '';
+        if (fam.doseMg) {
+          let volumeText = '';
+          if (ageMonths < 144) {
+            const famVolume = fam.doseMg / 8;
+            volumeText = `<span class="cdcalc-dose-ml">${famVolume.toFixed(2).replace(/\.?0+$/, '')} mL</span> `;
+          }
+          doseText = `Give ${volumeText}<span class="cdcalc-dose-mg">(${fam.doseMg} mg)</span> ${fam.frequency}.`;
+        } else {
+          doseText = `<strong>${fam.message}</strong>`;
+        }
+        htmlOutput += renderCard('Famotidine (Pepcid)', fam.formulation, doseText, !fam.doseMg, 'adjunct', 'Adjunct H2', fam.warning, null, null, extra);
       }
       
       const pred = getPrednisoloneDose(ageMonths, weightKg);
       if (pred) {
-        const extra = pred.doseRange ? `Duration: ${pred.duration} | Max daily: ${pred.maxDailyMg} mg` : '';
-        const doseText = pred.doseRange ? `Give <span class="cdcalc-dose-ml">${pred.doseRange}</span> as directed by physician.` : `<strong>${pred.message}</strong>`;
-        htmlOutput += renderCard('Prednisolone / Prednisone', pred.formulation, doseText, !pred.doseRange, 'prescription', 'Rx Corticosteroid', pred.warning, null, pred.globalWarning, extra);
+        const extra = pred.doseMg ? `Duration: ${pred.duration} | Max daily: ${pred.maxDailyMg} mg` : '';
+        let doseText = '';
+        if (pred.doseMg) {
+          let volumeText = '';
+          if (weightKg < 30) {
+            const predVolume = pred.doseMg / 3;
+            volumeText = `<span class="cdcalc-dose-ml">${predVolume.toFixed(1).replace('.0', '')} mL</span> `;
+          }
+          doseText = `Give ${volumeText}<span class="cdcalc-dose-mg">(${pred.doseMg} mg)</span> ${pred.frequency}.`;
+        } else {
+          doseText = `<strong>${pred.message}</strong>`;
+        }
+        htmlOutput += renderCard('Prednisolone / Prednisone', pred.formulation, doseText, !pred.doseMg, 'prescription', 'Rx Corticosteroid', pred.warning, null, pred.globalWarning, extra);
       }
     }
 
@@ -1928,8 +1913,6 @@
       button.classList.toggle('is-active', isSelected);
     });
 
-    populateExactAgeOptions(elements, age);
-
     clearResults(elements);
     elements.message.hidden = true;
     elements.message.innerHTML = '';
@@ -1951,13 +1934,11 @@
     };
 
     const shouldAnimateSubmit = () => {
-      if (!elements || !elements.weightInput || !elements.ageSelect || !elements.exactAgeSelect || !elements.severitySelect) {
+      if (!elements || !elements.weightInput || !elements.ageSelect || !elements.severitySelect) {
         return false;
       }
       const ageGroup = elements.ageSelect.value;
       if (!ageGroup) return false;
-      const exactAge = elements.exactAgeSelect.value;
-      if (exactAge === '') return false;
       const weightValue = parseFloat(elements.weightInput.value);
       if (Number.isNaN(weightValue) || weightValue <= 0) {
         return false;
@@ -2059,14 +2040,6 @@
       }
     };
 
-    const onExactAgeSelectChange = () => {
-      refreshGuidanceAnimations();
-      clearResults(elements);
-      if (typeof onResultsRendered === 'function') {
-        onResultsRendered();
-      }
-    };
-
     const onSeveritySelectChange = () => {
       updateForm(elements, strings);
       refreshGuidanceAnimations();
@@ -2092,7 +2065,6 @@
     };
 
     elements.ageSelect.addEventListener('change', onAgeSelectChange);
-    elements.exactAgeSelect.addEventListener('change', onExactAgeSelectChange);
     elements.severitySelect.addEventListener('change', onSeveritySelectChange);
     elements.unitSelect.addEventListener('change', onUnitSelectChange);
     elements.weightInput.addEventListener('input', onWeightInput);
@@ -2125,7 +2097,6 @@
         button.removeEventListener('click', onUnitButtonClick);
       });
       elements.ageSelect.removeEventListener('change', onAgeSelectChange);
-      elements.exactAgeSelect.removeEventListener('change', onExactAgeSelectChange);
       elements.severitySelect.removeEventListener('change', onSeveritySelectChange);
       elements.unitSelect.removeEventListener('change', onUnitSelectChange);
       elements.form.removeEventListener('submit', onSubmit);
@@ -2142,7 +2113,6 @@
     const ids = {
       title: `cdcalc-title-${idSuffix}`,
       weight: `cdcalc-weight-${idSuffix}`,
-      exactAge: `cdcalc-exact-age-${idSuffix}`,
     };
 
     const logomarkSrc = Object.prototype.hasOwnProperty.call(options, 'logomarkSrc')
