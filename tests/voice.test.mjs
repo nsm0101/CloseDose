@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { parseDose } from '../voice.mjs';
+import { parseDose } from '../public/voice.mjs';
 
 const cases = [
   ['five mL', 5],
