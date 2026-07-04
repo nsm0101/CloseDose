@@ -1648,11 +1648,11 @@
       return `
         <article class="cdcalc-result-card${disabledClass}">
           <div class="cdcalc-result-title-row">
-            <h3>${escapeHtml(medName)} <span style="font-size:0.85rem; font-weight:normal; color:#597b7a; display:block; margin-top:2px;">${escapeHtml(subtitle)}</span></h3>
+            <h3>${escapeHtml(medName)} <span style="font-size:0.85rem; font-weight:normal; color:var(--cdcalc-result-weight-span-color, #3f5c5b); display:block; margin-top:2px;">${escapeHtml(subtitle)}</span></h3>
             ${badgeHtml}
           </div>
           ${doseText ? `<p>${doseText}</p>` : ''}
-          ${extraDetails ? `<p style="font-size: 0.9rem; color: #124643; margin-top: 6px;">${extraDetails}</p>` : ''}
+          ${extraDetails ? `<p style="font-size: 0.9rem; color: var(--cdcalc-result-text-color, #124643); margin-top: 6px;">${extraDetails}</p>` : ''}
           ${globalWarningHtml ? `<div class="cdcalc-warning cdcalc-warning--orange" style="margin-top: 8px; padding: 10px; font-size: 0.88rem;">${globalWarningHtml}</div>` : ''}
           ${warningHtml ? `<div class="cdcalc-warning cdcalc-warning--orange" style="margin-top: 8px; padding: 10px; font-size: 0.88rem;">${warningHtml}</div>` : ''}
           ${specialHtml ? `<div class="cdcalc-warning cdcalc-warning--teal" style="margin-top: 8px; padding: 10px; font-size: 0.88rem;">${specialHtml}</div>` : ''}
@@ -1684,7 +1684,7 @@
               <strong>Intranasal spray instructions:</strong> ${escapeHtml(epiRes.intranasalInstructions)}
             </div>
           ` : ''}
-          <div style="margin-top: 8px; font-size: 0.9rem; color: #124643;">
+          <div style="margin-top: 8px; font-size: 0.9rem; color: var(--cdcalc-result-text-color, #124643);">
             <strong>Injection site:</strong> ${escapeHtml(epiRes.site)}<br/>
             <strong>Repeat:</strong> ${escapeHtml(epiRes.repeat)}
           </div>
@@ -1693,7 +1693,7 @@
       
       const globalMsgsHtml = `
         <div style="margin-top: 12px; border-top: 2px dashed rgba(185, 28, 28, 0.25); padding-top: 10px;">
-          <ul style="margin: 0; padding-left: 20px; font-size: 0.9rem; line-height: 1.4; color: #7f1d1d;">
+          <ul style="margin: 0; padding-left: 20px; font-size: 0.9rem; line-height: 1.4; color: var(--cdcalc-warning-red-color, #7f1d1d);">
             ${epiRes.globalMessages.map(msg => `<li><strong>${escapeHtml(msg)}</strong></li>`).join('')}
           </ul>
         </div>
@@ -1702,7 +1702,7 @@
       return `
         <article class="cdcalc-result-card ${disabledClass}">
           <div class="cdcalc-result-title-row">
-            <h3>Epinephrine Auto-Injector <span style="font-size:0.85rem; font-weight:normal; color:#b91c1c; display:block; margin-top:2px;">First-line Anaphylaxis Treatment</span></h3>
+            <h3>Epinephrine Auto-Injector <span style="font-size:0.85rem; font-weight:normal; color:var(--cdcalc-warning-red-color, #b91c1c); display:block; margin-top:2px;">First-line Anaphylaxis Treatment</span></h3>
             ${badgeHtml}
           </div>
           ${content}

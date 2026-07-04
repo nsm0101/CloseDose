@@ -175,14 +175,14 @@
 
     .cdcalc-card {
       font-family: "Nunito", system-ui, -apple-system, "Segoe UI", sans-serif;
-      background: rgba(255, 255, 255, 0.92);
-      border: 3px solid #0f2c2a;
+      background: var(--cdcalc-bg, rgba(255, 255, 255, 0.92));
+      border: 3px solid var(--cdcalc-border-color, #0f2c2a);
       border-radius: 26px;
-      box-shadow: 0 6px 0 rgba(15, 44, 42, 0.18);
+      box-shadow: var(--cdcalc-shadow, 0 6px 0 rgba(15, 44, 42, 0.18));
       padding: clamp(20px, 3vw, 32px);
       max-width: 100%;
       margin: 0;
-      color: #0f2c2a;
+      color: var(--cdcalc-color, #0f2c2a);
       --cdcalc-gold: #ffe8a8;
     }
 
@@ -190,8 +190,8 @@
       margin: calc(-1 * clamp(20px, 3vw, 32px));
       margin-bottom: 28px;
       padding: clamp(18px, 3.2vw, 28px) clamp(20px, 3vw, 32px);
-      background: linear-gradient(135deg, #e9f6f2 0%, #cdeee6 100%);
-      border-bottom: 3px solid #0f2c2a;
+      background: var(--cdcalc-header-bg, linear-gradient(135deg, #e9f6f2 0%, #cdeee6 100%));
+      border-bottom: 3px solid var(--cdcalc-header-border-bottom, #0f2c2a);
       border-radius: 23px 23px 0 0;
       display: flex;
       flex-direction: column;
@@ -207,8 +207,8 @@
       margin: 0;
       padding: 4px 14px;
       border-radius: 999px;
-      background: #0f2c2a;
-      color: #ffffff;
+      background: var(--ink-900, #0f2c2a);
+      color: var(--white, #ffffff);
       font-size: 0.72rem;
       font-weight: 800;
       letter-spacing: 0.18em;
@@ -227,6 +227,7 @@
       letter-spacing: 0.04em;
       text-transform: uppercase;
       margin: 0;
+      color: var(--cdcalc-title-color, inherit);
     }
 
     .cdcalc-form {
@@ -247,6 +248,7 @@
       letter-spacing: 0.08em;
       text-transform: uppercase;
       margin: 0;
+      color: var(--cdcalc-group-title-color, inherit);
     }
 
     .cdcalc-group-title--step,
@@ -264,9 +266,9 @@
       width: 44px;
       height: 44px;
       border-radius: 999px;
-      background: #24a687;
-      color: #ffffff;
-      border: 3px solid #0f2c2a;
+      background: var(--cdcalc-option-active-bg, #24a687);
+      color: var(--white, #ffffff);
+      border: 3px solid var(--cdcalc-border-color, #0f2c2a);
       box-shadow: 0 3px 0 rgba(15, 44, 42, 0.25);
       font-size: 1.35rem;
       font-weight: 900;
@@ -293,10 +295,10 @@
     .cdcalc-age-option,
     .cdcalc-unit-option {
       appearance: none;
-      border: 3px solid #0f2c2a;
+      border: 3px solid var(--cdcalc-option-border-color, #0f2c2a);
       border-radius: 16px;
-      background: #ffffff;
-      color: #0f2c2a;
+      background: var(--cdcalc-option-bg, #ffffff);
+      color: var(--cdcalc-option-color, #0f2c2a);
       font-weight: 800;
       font-size: 0.95rem;
       letter-spacing: 0.08em;
@@ -324,9 +326,9 @@
 
     .cdcalc-age-option.is-active,
     .cdcalc-unit-option.is-active {
-      background: #24a687;
-      color: #ffffff;
-      box-shadow: inset 0 0 0 2px #0f2c2a;
+      background: var(--cdcalc-option-active-bg, #24a687);
+      color: var(--white, #ffffff);
+      box-shadow: inset 0 0 0 2px var(--cdcalc-border-color, #0f2c2a);
     }
 
     .cdcalc-age-line {
@@ -353,14 +355,14 @@
     .cdcalc-age-option:focus-visible,
     .cdcalc-unit-option:focus-visible,
     .cdcalc-button:focus-visible {
-      outline: 3px solid #0f2c2a;
+      outline: 3px solid var(--cdcalc-border-color, #0f2c2a);
       outline-offset: 3px;
     }
 
     .cdcalc-hello {
       margin: 0;
       font-weight: 700;
-      color: #124643;
+      color: var(--cdcalc-hello-color, #124643);
     }
 
     .cdcalc-unit-row {
@@ -379,13 +381,13 @@
     .cdcalc-input {
       width: 100%;
       display: block;
-      border: 4px dashed #0f2c2a;
+      border: 4px dashed var(--cdcalc-input-border-color, #0f2c2a);
       border-radius: 16px;
       padding: 16px 18px;
       font-size: 1.1rem;
       font-weight: 700;
-      color: #0f2c2a;
-      background: #ffffff;
+      color: var(--cdcalc-input-color, #0f2c2a);
+      background: var(--cdcalc-input-bg, #ffffff);
       text-align: center;
       letter-spacing: 0.04em;
       transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
@@ -395,8 +397,8 @@
     .cdcalc-input:focus,
     .cdcalc-input:focus-visible {
       outline: none;
-      border-color: var(--cdcalc-gold);
-      box-shadow: 0 0 0 8px rgba(255, 232, 168, 0.3);
+      border-color: var(--cdcalc-input-focus-border-color, var(--cdcalc-gold, #ffe8a8));
+      box-shadow: var(--cdcalc-input-focus-shadow, 0 0 0 8px rgba(255, 232, 168, 0.3));
       transform: scale(1.01);
     }
 
@@ -433,7 +435,7 @@
       font-size: 0.95rem;
       letter-spacing: 0.08em;
       text-transform: uppercase;
-      color: #0f2c2a;
+      color: var(--cdcalc-step-callout-color, #0f2c2a);
     }
 
     .cdcalc-step-callout--step {
@@ -442,10 +444,10 @@
 
     .cdcalc-button {
       appearance: none;
-      border: 3px solid #0f2c2a;
+      border: 3px solid var(--cdcalc-border-color, #0f2c2a);
       border-radius: 999px;
-      background: linear-gradient(135deg, #24a687 0%, #1f8f7b 70%);
-      color: #ffffff;
+      background: var(--cdcalc-option-active-bg, linear-gradient(135deg, #24a687 0%, #1f8f7b 70%));
+      color: var(--white, #ffffff);
       font-weight: 900;
       letter-spacing: 0.14em;
       text-transform: uppercase;
@@ -458,10 +460,11 @@
     }
 
     .cdcalc-button:disabled {
-      background: #cbd5d5;
-      color: #597b7a;
+      background: var(--cdcalc-result-disabled-bg, #e2e8f0);
+      color: var(--text-subtle, #64748b);
       cursor: not-allowed;
       box-shadow: none;
+      border-color: var(--cdcalc-result-border-color, #cbd5d5);
     }
 
     .cdcalc-button:not(:disabled):hover {
@@ -476,7 +479,7 @@
         box-shadow:
           0 4px 0 rgba(15, 44, 42, 0.25),
           0 0 0 0 rgba(255, 232, 168, 0);
-        background: linear-gradient(135deg, #24a687 0%, #1f8f7b 70%);
+        background: var(--cdcalc-option-active-bg, linear-gradient(135deg, #24a687 0%, #1f8f7b 70%));
         filter: drop-shadow(0 0 0 rgba(255, 232, 168, 0));
       }
       45% {
@@ -493,13 +496,13 @@
       0%,
       100% {
         transform: scale(1);
-        border-color: #0f2c2a;
+        border-color: var(--cdcalc-border-color, #0f2c2a);
         box-shadow: 0 0 0 0 rgba(255, 232, 168, 0);
       }
       50% {
         transform: scale(1.02);
-        border-color: var(--cdcalc-gold);
-        box-shadow: 0 0 0 10px rgba(255, 232, 168, 0.35);
+        border-color: var(--cdcalc-input-focus-border-color, var(--cdcalc-gold, #ffe8a8));
+        box-shadow: var(--cdcalc-input-focus-shadow, 0 0 0 10px rgba(255, 232, 168, 0.35));
       }
     }
 
@@ -514,11 +517,11 @@
 
     .cdcalc-alert {
       border-radius: 16px;
-      border: 3px solid #d14343;
-      background: #fee2e2;
+      border: 3px solid var(--cdcalc-warning-red-border, #d14343);
+      background: var(--cdcalc-warning-red-bg, #fee2e2);
       padding: 16px;
       font-weight: 700;
-      color: #7f1d1d;
+      color: var(--cdcalc-warning-red-color, #7f1d1d);
       margin: 0;
     }
 
@@ -543,11 +546,11 @@
     }
 
     .cdcalc-result-card {
-      border: 3px solid #0f2c2a;
+      border: 3px solid var(--cdcalc-result-border-color, var(--cdcalc-border-color, #0f2c2a));
       border-radius: 18px;
       padding: 16px;
-      background: rgba(255, 255, 255, 0.86);
-      box-shadow: inset 0 0 0 1px rgba(15, 44, 42, 0.12);
+      background: var(--cdcalc-result-bg, rgba(255, 255, 255, 0.86));
+      box-shadow: var(--cdcalc-result-shadow, inset 0 0 0 1px rgba(15, 44, 42, 0.12));
       display: flex;
       flex-direction: column;
       gap: 10px;
@@ -569,16 +572,16 @@
       margin-top: 12px;
       padding: 16px 18px;
       border-radius: 16px;
-      border: 2px solid rgba(36, 166, 135, 0.38);
-      background: linear-gradient(
+      border: 2px solid var(--cdcalc-guide-promo-border-color, rgba(36, 166, 135, 0.38));
+      background: var(--cdcalc-guide-promo-bg, linear-gradient(
           150deg,
           rgba(228, 244, 240, calc(0.45 + var(--cdcalc-guide-reveal-scroll, 0) * 0.25)),
           rgba(255, 255, 255, 0.96)
-        );
+        ));
       display: grid;
       gap: 10px;
-      color: #0f2c2a;
-      box-shadow: 0 12px 24px rgba(15, 44, 42, 0.12);
+      color: var(--cdcalc-guide-promo-color, #0f2c2a);
+      box-shadow: var(--cdcalc-guide-promo-shadow, 0 12px 24px rgba(15, 44, 42, 0.12));
       position: relative;
       overflow: hidden;
       transition: box-shadow 0.3s ease, transform 0.3s ease;
@@ -605,7 +608,7 @@
       font-weight: 800;
       letter-spacing: 0.14em;
       text-transform: uppercase;
-      color: #124643;
+      color: var(--cdcalc-guide-promo-text-color, #124643);
     }
 
     .cdcalc-guide-promo__body {
@@ -727,8 +730,8 @@
       font-size: clamp(1.8rem, 5vw, 2.4rem);
       font-weight: 900;
       letter-spacing: 0.01em;
-      color: #0f2c2a;
-      background: var(--cdcalc-gold);
+      color: var(--cdcalc-result-title-color, #0f2c2a);
+      background: var(--cdcalc-dose-ml-bg, var(--cdcalc-gold, #ffe8a8));
       padding: 2px 12px;
       border-radius: 12px;
       margin: 0 6px 0 2px;
@@ -740,16 +743,16 @@
       display: inline-block;
       font-size: 0.95rem;
       font-weight: 700;
-      color: #124643;
+      color: var(--cdcalc-dose-mg-color, #124643);
       margin-right: 6px;
       vertical-align: middle;
     }
 
     .cdcalc-info-banner {
       border-radius: 14px;
-      border: 2px solid #1d4ed8;
-      background: #e0ecff;
-      color: #0b2660;
+      border: 2px solid var(--cdcalc-info-banner-border, #1d4ed8);
+      background: var(--cdcalc-info-banner-bg, #e0ecff);
+      color: var(--cdcalc-info-banner-color, #0b2660);
       padding: 12px 14px;
       font-size: 0.92rem;
       line-height: 1.45;
@@ -764,8 +767,8 @@
 
     .cdcalc-accordion {
       border-radius: 14px;
-      border: 2px solid #0f2c2a;
-      background: #ffffff;
+      border: 2px solid var(--cdcalc-accordion-border-color, #0f2c2a);
+      background: var(--cdcalc-accordion-bg, #ffffff);
       overflow: hidden;
     }
 
@@ -779,8 +782,8 @@
       padding: 12px 14px;
       font-weight: 800;
       font-size: 0.95rem;
-      color: #0f2c2a;
-      background: #f1f8f6;
+      color: var(--cdcalc-accordion-summary-color, #0f2c2a);
+      background: var(--cdcalc-accordion-summary-bg, #f1f8f6);
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -795,7 +798,7 @@
       content: '▾';
       font-size: 0.9rem;
       transition: transform 0.2s ease;
-      color: #124643;
+      color: var(--cdcalc-accordion-summary-after-color, #124643);
     }
 
     .cdcalc-accordion[open] > summary::after {
@@ -803,8 +806,8 @@
     }
 
     .cdcalc-accordion[open] > summary {
-      background: #e4f4f0;
-      border-bottom: 2px solid #0f2c2a;
+      background: var(--cdcalc-accordion-open-summary-bg, #e4f4f0);
+      border-bottom: 2px solid var(--cdcalc-accordion-border-color, #0f2c2a);
     }
 
     .cdcalc-accordion-body {
@@ -813,30 +816,30 @@
 
     .cdcalc-warning {
       border-radius: 16px;
-      border: 3px solid #124643;
-      background: #e4f4f0;
-      color: #123a37;
+      border: 3px solid var(--cdcalc-warning-border-color, #124643);
+      background: var(--cdcalc-warning-bg, #e4f4f0);
+      color: var(--cdcalc-warning-color, #123a37);
       padding: 14px;
       font-size: 0.95rem;
       line-height: 1.5;
     }
 
     .cdcalc-warning--orange {
-      border-color: #b45309;
-      background: #fef3c7;
-      color: #92400e;
+      border-color: var(--cdcalc-warning-orange-border, #b45309);
+      background: var(--cdcalc-warning-orange-bg, #fef3c7);
+      color: var(--cdcalc-warning-orange-color, #92400e);
     }
 
     .cdcalc-warning--red {
-      border-color: #b91c1c;
-      background: #fee2e2;
-      color: #7f1d1d;
+      border-color: var(--cdcalc-warning-red-border, #b91c1c);
+      background: var(--cdcalc-warning-red-bg, #fee2e2);
+      color: var(--cdcalc-warning-red-color, #7f1d1d);
     }
 
     .cdcalc-warning--teal {
-      border-color: #124643;
-      background: #e4f4f0;
-      color: #123a37;
+      border-color: var(--cdcalc-warning-teal-border, #124643);
+      background: var(--cdcalc-warning-teal-bg, #e4f4f0);
+      color: var(--cdcalc-warning-teal-color, #123a37);
     }
 
     .cdcalc-warning strong {
@@ -870,7 +873,6 @@
         min-height: 92px;
       }
     }
-
   `;
 
   function escapeHtml(value) {
