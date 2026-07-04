@@ -94,14 +94,20 @@
     const activeChoice = stored || 'system';
     const effective = getEffectiveTheme();
 
-    // Animated toggle checkbox in the menu
+    // Sync menu checkbox
     const themeSwitch = document.getElementById('menu-theme-switch');
     if (themeSwitch) {
       themeSwitch.checked = effective === 'dark';
     }
 
-    // System button active state
-    document.querySelectorAll('.menu-theme-btn').forEach(b => {
+    // Sync header checkbox
+    const headerSwitch = document.getElementById('header-theme-switch');
+    if (headerSwitch) {
+      headerSwitch.checked = effective === 'dark';
+    }
+
+    // Sync active state for both menu & header system/theme buttons
+    document.querySelectorAll('.menu-theme-btn, .header-theme-btn').forEach(b => {
       const isActive = b.dataset.themeChoice === activeChoice;
       b.classList.toggle('is-active', isActive);
       b.setAttribute('aria-pressed', String(isActive));
@@ -110,7 +116,7 @@
 
   // Inject theme toggle and wire up click
   document.addEventListener('DOMContentLoaded', function () {
-    // Inject animated Day/Night toggle + System button into the menu panel
+    // 1. Inject animated Day/Night toggle + System button into the menu panel
     const menuPanel = document.querySelector('.menu-panel');
     if (menuPanel) {
       const picker = document.createElement('div');
@@ -161,31 +167,86 @@
         btn.addEventListener('click', function () { applyTheme(btn.dataset.themeChoice); });
       });
 
-      // Inject Accessibility options panel
-      const accPicker = document.createElement('div');
+      // 2. Inject desktop header theme picker next to menu button
+      const menuBtn = document.querySelector('.menu-btn');
+      if (menuBtn && menuBtn.parentNode) {
+        const headerPicker = document.createElement('div');
+        headerPicker.className = 'header-theme-picker';
+        headerPicker.innerHTML =
+          '<label class="theme-toggle-wrapper" for="header-theme-switch" aria-label="Toggle dark mode">' +
+            '<input type="checkbox" id="header-theme-switch">' +
+            '<svg class="toggle-bg-day" viewBox="0 0 180 72" preserveAspectRatio="none">' +
+              '<rect width="180" height="72" fill="#74a1d3"/>' +
+              '<circle cx="36" cy="36" r="45" fill="#8bb3de"/>' +
+              '<circle cx="36" cy="36" r="70" fill="#9ebfe5"/>' +
+              '<circle cx="36" cy="36" r="95" fill="#b0cbec"/>' +
+              '<g fill="#e3f0fa"><circle cx="15" cy="76" r="24"/><circle cx="65" cy="74" r="30"/><circle cx="115" cy="76" r="26"/><circle cx="165" cy="74" r="32"/></g>' +
+              '<g fill="#ffffff"><circle cx="10" cy="80" r="24"/><circle cx="55" cy="80" r="30"/><circle cx="105" cy="80" r="26"/><circle cx="155" cy="80" r="32"/><circle cx="190" cy="80" r="24"/></g>' +
+            '</svg>' +
+            '<svg class="toggle-bg-night" viewBox="0 0 180 72" preserveAspectRatio="none">' +
+              '<rect width="180" height="72" fill="#2f3640"/>' +
+              '<circle cx="144" cy="36" r="45" fill="#3b434f"/>' +
+              '<circle cx="144" cy="36" r="70" fill="#464f5d"/>' +
+              '<circle cx="144" cy="36" r="95" fill="#525c6b"/>' +
+              '<path d="M 40 15 Q 40 22 47 22 Q 40 22 40 29 Q 40 22 33 22 Q 40 22 40 15" fill="#ffffff" opacity="0.9"/>' +
+              '<path d="M 85 40 Q 85 44 89 44 Q 85 44 85 48 Q 85 44 81 44 Q 85 44 85 40" fill="#ffffff" opacity="0.7"/>' +
+              '<circle cx="20" cy="45" r="1.5" fill="#ffffff" opacity="0.8"/>' +
+              '<circle cx="65" cy="25" r="1" fill="#ffffff" opacity="0.6"/>' +
+              '<circle cx="100" cy="18" r="2" fill="#ffffff" opacity="0.9"/>' +
+              '<circle cx="110" cy="55" r="1.5" fill="#ffffff" opacity="0.5"/>' +
+            '</svg>' +
+            '<div class="toggle-knob">' +
+              '<div class="crater crater-1"></div>' +
+              '<div class="crater crater-2"></div>' +
+              '<div class="crater crater-3"></div>' +
+            '</div>' +
+          '</label>' +
+          '<button type="button" class="header-theme-btn" data-theme-choice="system" title="Use system setting" aria-label="Use system theme setting">🖥️</button>';
+
+        menuBtn.parentNode.insertBefore(headerPicker, menuBtn);
+
+        const headerSwitch = headerPicker.querySelector('#header-theme-switch');
+        if (headerSwitch) {
+          headerSwitch.addEventListener('change', function () {
+            applyTheme(this.checked ? 'dark' : 'light');
+          });
+        }
+
+        headerPicker.querySelectorAll('.header-theme-btn').forEach(function (btn) {
+          btn.addEventListener('click', function () { applyTheme(btn.dataset.themeChoice); });
+        });
+      }
+
+      // 3. Inject Accessibility options panel as details (expandable)
+      const accPicker = document.createElement('details');
       accPicker.className = 'menu-accessibility-picker';
       accPicker.innerHTML =
-        '<p class="menu-theme-label">Reading Options</p>' +
-        '<div class="menu-access-group">' +
-          '<span class="menu-access-label">Font</span>' +
-          '<div class="menu-access-buttons">' +
-            '<button type="button" class="menu-access-btn" data-pref="font" data-val="default">Standard</button>' +
-            '<button type="button" class="menu-access-btn" data-pref="font" data-val="dyslexic">Dyslexic-Friendly</button>' +
+        '<summary class="menu-accessibility-summary">' +
+          '<span class="menu-theme-label">Reading Options</span>' +
+          '<span class="menu-accessibility-icon" aria-hidden="true">▾</span>' +
+        '</summary>' +
+        '<div class="menu-accessibility-content">' +
+          '<div class="menu-access-group">' +
+            '<span class="menu-access-label">Font</span>' +
+            '<div class="menu-access-buttons">' +
+              '<button type="button" class="menu-access-btn" data-pref="font" data-val="default">Standard</button>' +
+              '<button type="button" class="menu-access-btn" data-pref="font" data-val="dyslexic">Dyslexic-Friendly</button>' +
+            '</div>' +
           '</div>' +
-        '</div>' +
-        '<div class="menu-access-group">' +
-          '<span class="menu-access-label">Text Size</span>' +
-          '<div class="menu-access-buttons">' +
-            '<button type="button" class="menu-access-btn" data-pref="text" data-val="md">Normal</button>' +
-            '<button type="button" class="menu-access-btn" data-pref="text" data-val="lg">Large</button>' +
-            '<button type="button" class="menu-access-btn" data-pref="text" data-val="xl">X-Large</button>' +
+          '<div class="menu-access-group">' +
+            '<span class="menu-access-label">Text Size</span>' +
+            '<div class="menu-access-buttons">' +
+              '<button type="button" class="menu-access-btn" data-pref="text" data-val="md">Normal</button>' +
+              '<button type="button" class="menu-access-btn" data-pref="text" data-val="lg">Large</button>' +
+              '<button type="button" class="menu-access-btn" data-pref="text" data-val="xl">X-Large</button>' +
+            '</div>' +
           '</div>' +
-        '</div>' +
-        '<div class="menu-access-group">' +
-          '<span class="menu-access-label">Animations</span>' +
-          '<div class="menu-access-buttons">' +
-            '<button type="button" class="menu-access-btn" data-pref="motion" data-val="full">On</button>' +
-            '<button type="button" class="menu-access-btn" data-pref="motion" data-val="reduced">Off</button>' +
+          '<div class="menu-access-group">' +
+            '<span class="menu-access-label">Animations</span>' +
+            '<div class="menu-access-buttons">' +
+              '<button type="button" class="menu-access-btn" data-pref="motion" data-val="full">On</button>' +
+              '<button type="button" class="menu-access-btn" data-pref="motion" data-val="reduced">Off</button>' +
+            '</div>' +
           '</div>' +
         '</div>';
 

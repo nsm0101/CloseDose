@@ -1130,9 +1130,9 @@ html[data-theme="dark"] .brand-hero__wordmark {
   min-height: var(--donate-pill-h);
   padding: 14px 18px;
   border-radius: 999px;
-  border: 2px solid #0f2c2a;
-  background: linear-gradient(135deg, #ffe8a8, #ffcf6b);
-  color: #0f2c2a;
+  border: 2px solid #0f2c2a !important;
+  background: linear-gradient(135deg, #ffe8a8, #ffcf6b) !important;
+  color: #0f2c2a !important;
   cursor: pointer;
   box-shadow: 0 6px 0 rgba(15, 44, 42, 0.22);
   transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.2s ease;
@@ -1149,8 +1149,21 @@ html[data-theme="dark"] .brand-hero__wordmark {
   box-shadow: 0 2px 0 rgba(15, 44, 42, 0.22);
 }
 .donate-pill-lines { display: grid; gap: 2px; }
-.donate-pill-line { font-size: 1.05rem; font-weight: 900; letter-spacing: 0.02em; text-transform: uppercase; }
-.donate-pill-sub { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; opacity: 0.75; }
+.donate-pill-line {
+  font-size: 1.05rem;
+  font-weight: 900;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: #0f2c2a !important;
+}
+.donate-pill-sub {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.75;
+  color: #0f2c2a !important;
+}
 .donate-pill img {
   /* Oversized piggy: 1.5x the height of the pill it sits on */
   height: calc(var(--donate-pill-h) * 1.5);
@@ -1637,16 +1650,117 @@ html[data-theme="dark"] .crater {
   box-shadow: var(--menu-theme-btn-active-shadow);
 }
 
-/* --- Side Menu Accessibility Picker --- */
-.menu-accessibility-picker {
+/* --- Side Menu Accessibility Picker (details element) --- */
+details.menu-accessibility-picker {
   margin-top: 16px;
   margin-bottom: 24px;
   border-top: 1px solid var(--menu-theme-picker-border);
   padding-top: 16px;
   display: flex;
   flex-direction: column;
+  align-items: stretch;
+  width: 100%;
+}
+
+.menu-accessibility-summary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  list-style: none;
+  user-select: none;
+  outline: none;
+  width: 100%;
+  text-align: center;
+}
+
+.menu-accessibility-summary::-webkit-details-marker {
+  display: none;
+}
+
+.menu-accessibility-summary .menu-theme-label {
+  margin: 0;
+}
+
+.menu-accessibility-icon {
+  font-size: 0.95rem;
+  transition: transform var(--duration-fast) var(--ease-out);
+  color: var(--menu-theme-label-color);
+}
+
+details.menu-accessibility-picker[open] .menu-accessibility-icon {
+  transform: rotate(180deg);
+}
+
+.menu-accessibility-content {
+  display: flex;
+  flex-direction: column;
   align-items: center;
   gap: 12px;
+  margin-top: 16px;
+  width: 100%;
+}
+
+/* --- Header Theme Picker (Desktop Only) --- */
+.header-theme-picker {
+  display: none; /* hidden on mobile */
+  position: fixed;
+  z-index: 1200;
+  height: 56px;
+  align-items: center;
+  gap: 12px;
+  top: clamp(16px, 3vw, 32px);
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .header-theme-picker {
+    display: flex;
+    right: clamp(18px, 5vw, 48px);
+    left: auto;
+  }
+  .menu-theme-picker {
+    display: none !important;
+  }
+}
+
+@media (min-width: 1024px) {
+  .header-theme-picker {
+    display: flex;
+    left: clamp(18px, 5vw, 48px);
+    right: auto;
+  }
+  .menu-theme-picker {
+    display: none !important;
+  }
+}
+
+/* Header theme system button */
+.header-theme-btn {
+  background: var(--theme-toggle-bg, var(--white));
+  border: 1px solid var(--menu-theme-btn-border-color);
+  border-radius: 50%;
+  width: 38px;
+  height: 38px;
+  display: inline-grid;
+  place-items: center;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all var(--duration-fast) var(--ease-out);
+  box-shadow: var(--shadow-xs);
+  padding: 0;
+  outline: none;
+}
+
+.header-theme-btn:hover {
+  background: var(--menu-theme-btn-hover-bg);
+  transform: translateY(-1px);
+}
+
+.header-theme-btn.is-active {
+  background: var(--menu-theme-btn-active-bg, var(--teal-500));
+  border-color: var(--menu-theme-btn-active-border-color, var(--teal-500));
+  box-shadow: 0 0 0 3px rgba(31, 143, 123, 0.25);
 }
 
 .menu-access-group {
