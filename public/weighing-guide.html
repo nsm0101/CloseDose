@@ -112,7 +112,7 @@
           </div>
 
           <!-- CTA back to calculator -->
-          <a class="cross-link-card" href="index.html" style="margin-top: 18px;">
+          <a class="cross-link-card cross-link-card--margin" href="index.html">
             <span class="cross-link-card__emoji">🧮</span>
             <span class="cross-link-card__body">
               <span class="cross-link-card__title">Got the weight? Calculate the dose.</span>
@@ -123,7 +123,7 @@
         </article>
 
         <!-- Disclaimer -->
-        <section class="card card--disclaimer" id="disclaimer-card" aria-labelledby="disclaimer-heading" aria-expanded="false">
+        <section class="card card--disclaimer" id="disclaimer-card" aria-labelledby="disclaimer-heading">
           <button type="button" class="disclaimer-pill" aria-controls="disclaimer-panel" aria-expanded="false">Disclaimer</button>
           <div class="disclaimer-body" id="disclaimer-panel">
             <div class="disclaimer-body__inner">
@@ -149,20 +149,23 @@
     </main>
   </div>
 
-  <footer class="cd-footer" role="contentinfo">
-    <p class="cd-copy">2026 CloseDose. All rights reserved.</p>
-    <a class="cd-footer-contact" href="about.html#contact">Contact us</a>
+    <footer class="cd-footer" role="contentinfo">
+    <a href="index.html" class="cd-footer-logo-link" aria-label="CloseDose home">
+      <img src="images/LOGO-WC.png" alt="CloseDose" class="cd-footer-logo" width="800" height="800" loading="lazy" />
+    </a>
+    <p class="cd-copy">&copy; 2026 CloseDose. All rights reserved.</p>
+    <p class="cd-note">For medical emergencies, call 911. For poisoning, call Poison Control at 1-800-222-1222.</p>
     <nav class="cd-legal cd-legal--full" aria-label="Legal">
       <a href="/legal/terms">Terms</a>
       <a href="/legal/privacy">Privacy</a>
       <a href="/legal/disclaimer">Disclaimer</a>
+      <a href="about.html#contact">Contact us</a>
     </nav>
-    <p class="cd-note">For medical emergencies, call 911. For poisoning, call Poison Control at 1-800-222-1222.</p>
   </footer>
 
   <div class="menu-overlay" id="siteMenu" hidden>
     <div class="menu-panel">
-      <nav class="menu-links">
+      <nav class="menu-links" aria-label="Site">
         <a href="index.html" class="nav-calc">Calculator</a>
         <a href="allergy-calculator.html" class="nav-allergy">Allergy Calculator</a>
         <a href="medication-guides.html" class="nav-guides">Medication Guides</a>

@@ -20,7 +20,7 @@
   <div class="wrap">
     
     <header>
-      <img src="images/logomark-WC.png" alt="CloseDose" class="header-wordmark" />
+      <a href="index.html" class="header-wordmark-link"><img src="images/logomark-WC.png" alt="CloseDose" class="header-wordmark" /></a>
       <button class="menu-btn" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="siteMenu" aria-label="Open menu">
         <span class="label">Menu</span>
         <span class="hamburger" aria-hidden="true"><span></span><span></span><span></span></span>
@@ -30,7 +30,7 @@
       <div class="layout">
         
       <section class="panel">
-        <h2>Your families</h2>
+        <h1>Your families</h1>
         <p>Manage members, invites, and care team settings for every family you support.</p>
       </section>
 
@@ -40,23 +40,29 @@
     </main>
   </div>
   
-  <footer class="cd-footer">
-    <p class="cd-copy">2026 CloseDose. All rights reserved.</p>
-    <a class="cd-footer-contact" href="about.html#contact">Contact us</a>
-    <nav class="cd-legal cd-legal--full">
+    <footer class="cd-footer" role="contentinfo">
+    <a href="index.html" class="cd-footer-logo-link" aria-label="CloseDose home">
+      <img src="images/LOGO-WC.png" alt="CloseDose" class="cd-footer-logo" width="800" height="800" loading="lazy" />
+    </a>
+    <p class="cd-copy">&copy; 2026 CloseDose. All rights reserved.</p>
+    <p class="cd-note">For medical emergencies, call 911. For poisoning, call Poison Control at 1-800-222-1222.</p>
+    <nav class="cd-legal cd-legal--full" aria-label="Legal">
       <a href="/legal/terms">Terms</a>
       <a href="/legal/privacy">Privacy</a>
       <a href="/legal/disclaimer">Disclaimer</a>
+      <a href="about.html#contact">Contact us</a>
     </nav>
   </footer>
 
   <div class="menu-overlay" id="siteMenu" hidden>
     <div class="menu-panel">
-      <nav class="menu-links">
+      <nav class="menu-links" aria-label="Site">
         <a href="index.html" class="nav-calc">Calculator</a>
         <a href="allergy-calculator.html" class="nav-allergy">Allergy Calculator</a>
         <a href="medication-guides.html" class="nav-guides">Medication Guides</a>
         <a href="cold-cough-guidance.html" class="nav-cough">Cough &amp; Cold Guidance</a>
+        <a href="weighing-guide.html" class="nav-weighing">Weighing Guide</a>
+        <a href="dosing-guide.html" class="nav-dosing">Dosing Guide</a>
         <a href="about.html" class="nav-about">About</a>
         <a href="donations.html" class="nav-support">Support</a>
       </nav>

@@ -10,6 +10,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
   <link rel="icon" type="image/png" href="images/LOGO-WC.png">
+  <link rel="apple-touch-icon" href="images/LOGO-WC.png">
   <link rel="stylesheet" href="global.css" />
   <script>(function(){var t=localStorage.getItem("cd-theme");if(t)document.documentElement.setAttribute("data-theme",t);})();</script>
 </head>
@@ -29,7 +30,7 @@
         <section class="card info-card info-card--urgent">
           <h2 class="info-card-title">When allergy symptoms are an emergency</h2>
           <p class="info-urgent-line"><strong>Administer Epinephrine and Call 911 immediately</strong> if you notice any of these signs after allergen exposure:</p>
-          <ul style="margin: 8px 0 12px 20px; padding: 0; line-height: 1.5; color: inherit; list-style-type: disc;">
+          <ul class="emergency-signs">
             <li><strong>Breathing difficulty:</strong> wheezing, stridor, throat tightness, hoarse voice, or persistent cough.</li>
             <li><strong>Swelling:</strong> of the tongue, lips, or throat.</li>
             <li><strong>Circulation:</strong> dizziness, fainting, sudden limpness, or pallor (especially in infants).</li>
@@ -41,8 +42,34 @@
       </div>
     </main>
   </div>
-  <footer class="cd-footer" role="contentinfo"><a href="index.html" class="cd-footer-logo-link" aria-label="CloseDose home"><img src="images/LOGO-WC.png" alt="CloseDose" class="cd-footer-logo" width="800" height="800" loading="lazy" /></a><p class="cd-copy">2026 CloseDose. All rights reserved.</p><a class="cd-footer-contact" href="about.html#contact">Contact us</a><p class="cd-note">For medical emergencies, call 911. For poisoning, call Poison Control at 1-800-222-1222.</p></footer>
-  <div class="menu-overlay" id="siteMenu" hidden><div class="menu-panel"><nav class="menu-links" aria-label="Site"><a href="index.html">Fever/Pain Calculator</a><a href="allergy-calculator.html" aria-current="page">Allergy Calculator</a><a href="medication-guides.html">Medication Guides</a><a href="cold-cough-guidance.html">Cough &amp; Cold Guidance</a><a href="weighing-guide.html">Weighing Guide</a><a href="dosing-guide.html">Dosing Guide</a><a href="about.html">About</a></nav><button class="close-menu" type="button">Close</button></div></div>
+    <footer class="cd-footer" role="contentinfo">
+    <a href="index.html" class="cd-footer-logo-link" aria-label="CloseDose home">
+      <img src="images/LOGO-WC.png" alt="CloseDose" class="cd-footer-logo" width="800" height="800" loading="lazy" />
+    </a>
+    <p class="cd-copy">&copy; 2026 CloseDose. All rights reserved.</p>
+    <p class="cd-note">For medical emergencies, call 911. For poisoning, call Poison Control at 1-800-222-1222.</p>
+    <nav class="cd-legal cd-legal--full" aria-label="Legal">
+      <a href="/legal/terms">Terms</a>
+      <a href="/legal/privacy">Privacy</a>
+      <a href="/legal/disclaimer">Disclaimer</a>
+      <a href="about.html#contact">Contact us</a>
+    </nav>
+  </footer>
+  <div class="menu-overlay" id="siteMenu" hidden>
+    <div class="menu-panel">
+      <nav class="menu-links" aria-label="Site">
+        <a href="index.html" class="nav-calc">Calculator</a>
+        <a href="allergy-calculator.html" class="nav-allergy" aria-current="page">Allergy Calculator</a>
+        <a href="medication-guides.html" class="nav-guides">Medication Guides</a>
+        <a href="cold-cough-guidance.html" class="nav-cough">Cough &amp; Cold Guidance</a>
+        <a href="weighing-guide.html" class="nav-weighing">Weighing Guide</a>
+        <a href="dosing-guide.html" class="nav-dosing">Dosing Guide</a>
+        <a href="about.html" class="nav-about">About</a>
+        <a href="donations.html" class="nav-support">Support</a>
+      </nav>
+      <button class="close-menu" type="button">Close</button>
+    </div>
+  </div>
   <script src="allergy-calculator.js"></script>
   <script>window.addEventListener('DOMContentLoaded',function(){window.CloseDoseAllergyCalculator.mount(document.getElementById('allergy-calculator-root'));});</script>
   <script src="global.js" defer></script>

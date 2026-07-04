@@ -684,6 +684,56 @@
       background: #f8fafc;
     }
 
+    .cdcalc-accordion {
+      border-radius: 14px;
+      border: 2px solid #0f2c2a;
+      background: #ffffff;
+      overflow: hidden;
+      margin-top: 10px;
+    }
+
+    .cdcalc-accordion + .cdcalc-accordion {
+      margin-top: 4px;
+    }
+
+    .cdcalc-accordion > summary {
+      list-style: none;
+      cursor: pointer;
+      padding: 12px 14px;
+      font-weight: 800;
+      font-size: 0.95rem;
+      color: #0f2c2a;
+      background: #f1f8f6;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .cdcalc-accordion > summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .cdcalc-accordion > summary::after {
+      content: '▾';
+      font-size: 0.9rem;
+      transition: transform 0.2s ease;
+      color: #124643;
+    }
+
+    .cdcalc-accordion[open] > summary::after {
+      transform: rotate(180deg);
+    }
+
+    .cdcalc-accordion[open] > summary {
+      background: #e4f4f0;
+      border-bottom: 2px solid #0f2c2a;
+    }
+
+    .cdcalc-accordion-body {
+      padding: 14px;
+    }
+
     .cdcalc-result-title-row {
       display: flex;
       justify-content: space-between;
@@ -1661,23 +1711,36 @@
       `;
     };
 
+    const activeSectionsMap = new Map();
+    const disabledCardsHtml = [];
+
+    const addCard = (sectionName, medName, subtitle, doseText, isDisabled, badgeType, badgeText, warningHtml, specialHtml, globalWarningHtml, extraDetails) => {
+      const cardHtml = renderCard(medName, subtitle, doseText, isDisabled, badgeType, badgeText, warningHtml, specialHtml, globalWarningHtml, extraDetails);
+      if (isDisabled) {
+        disabledCardsHtml.push(cardHtml);
+      } else {
+        if (!activeSectionsMap.has(sectionName)) {
+          activeSectionsMap.set(sectionName, []);
+        }
+        activeSectionsMap.get(sectionName).push(cardHtml);
+      }
+    };
+
     let htmlOutput = '';
 
     if (severity === 'mild') {
-      htmlOutput += `<div class="cdcalc-result-section-title">✅ Recommended: 2nd-Generation Antihistamine (choose one)</div>`;
-      
       const cet = getCetirizineDose(ageMonths, weightKg);
       if (cet) {
         const extra = cet.doseMg ? `Max daily: ${cet.maxDailyMg} mg` : '';
         const doseText = cet.doseMg ? `Give <span class="cdcalc-dose-ml">${cet.volumeMl.toFixed(1)} mL</span> <span class="cdcalc-dose-mg">(${cet.doseMg} mg)</span> ${cet.frequency}.` : `<strong>${cet.message}</strong>${cet.action ? ' ' + cet.action : ''}`;
-        htmlOutput += renderCard('Cetirizine (Zyrtec)', cet.formulation, doseText, !cet.doseMg, 'preferred', 'Preferred', cet.warning, null, null, extra);
+        addCard('✅ Recommended: 2nd-Generation Antihistamine (choose one)', 'Cetirizine (Zyrtec)', cet.formulation, doseText, !cet.doseMg, 'preferred', 'Preferred', cet.warning, null, null, extra);
       }
       
       const lor = getLoratadineDose(ageMonths, weightKg);
       if (lor) {
         const extra = lor.doseMg ? `Max daily: ${lor.maxDailyMg} mg` : '';
         const doseText = lor.doseMg ? `Give <span class="cdcalc-dose-ml">${lor.volumeMl.toFixed(1)} mL</span> <span class="cdcalc-dose-mg">(${lor.doseMg} mg)</span> ${lor.frequency}.` : `<strong>${lor.message}</strong>`;
-        htmlOutput += renderCard('Loratadine (Claritin)', lor.formulation, doseText, !lor.doseMg, 'preferred', 'Preferred', lor.warning, null, null, extra);
+        addCard('✅ Recommended: 2nd-Generation Antihistamine (choose one)', 'Loratadine (Claritin)', lor.formulation, doseText, !lor.doseMg, 'preferred', 'Preferred', lor.warning, null, null, extra);
       }
       
       const fex = getFexofenadineDose(ageMonths, weightKg);
@@ -1690,17 +1753,15 @@
         } else {
           doseText = `<strong>${fex.message}</strong>`;
         }
-        htmlOutput += renderCard('Fexofenadine (Allegra)', fex.formulation, doseText, !fex.doseMg, 'preferred', 'Preferred', fex.warning, fex.special, null, extra);
+        addCard('✅ Recommended: 2nd-Generation Antihistamine (choose one)', 'Fexofenadine (Allegra)', fex.formulation, doseText, !fex.doseMg, 'preferred', 'Preferred', fex.warning, fex.special, null, extra);
       }
       
       const lev = getLevocetirizineDose(ageMonths, weightKg);
       if (lev) {
         const extra = lev.doseMg ? `Max daily: ${lev.maxDailyMg} mg` : '';
         const doseText = lev.doseMg ? `Give <span class="cdcalc-dose-ml">${lev.volumeMl.toFixed(1)} mL</span> <span class="cdcalc-dose-mg">(${lev.doseMg} mg)</span> ${lev.frequency}.` : `<strong>${lev.message}</strong>`;
-        htmlOutput += renderCard('Levocetirizine (Xyzal)', lev.formulation, doseText, !lev.doseMg, 'preferred', 'Preferred', lev.warning, null, null, extra);
+        addCard('✅ Recommended: 2nd-Generation Antihistamine (choose one)', 'Levocetirizine (Xyzal)', lev.formulation, doseText, !lev.doseMg, 'preferred', 'Preferred', lev.warning, null, null, extra);
       }
-      
-      htmlOutput += `<div class="cdcalc-result-section-title">⚠️ Alternative (if 2nd-gen unavailable)</div>`;
       
       const ben = getDiphenhydramineDose(ageMonths, weightKg);
       if (ben) {
@@ -1711,31 +1772,29 @@
         } else {
           doseText = `<strong>${ben.message}</strong>`;
         }
-        htmlOutput += renderCard('Diphenhydramine (Benadryl)', ben.formulation, doseText, !ben.doseMg, 'alternative', 'Alternative H1', ben.warning, null, ben.globalWarning, extra);
+        addCard('⚠️ Alternative (if 2nd-gen unavailable)', 'Diphenhydramine (Benadryl)', ben.formulation, doseText, !ben.doseMg, 'alternative', 'Alternative H1', ben.warning, null, ben.globalWarning, extra);
       }
       
       const chl = getChlorpheniramineDose(ageMonths, weightKg);
       if (chl) {
         const extra = chl.doseMg ? `Max daily: ${chl.maxDailyMg} mg` : '';
         const doseText = chl.doseMg ? `Give <span class="cdcalc-dose-ml">${chl.volumeMl ? chl.volumeMl.toFixed(1) + ' mL' : chl.doseMg + ' mg'}</span> <span class="cdcalc-dose-mg">(${chl.doseMg} mg)</span> ${chl.frequency}.` : `<strong>${chl.message}</strong>`;
-        htmlOutput += renderCard('Chlorpheniramine (Chlor-Trimeton)', chl.formulation, doseText, !chl.doseMg, 'alternative', 'Alternative H1', chl.warning, null, chl.globalWarning, extra);
+        addCard('⚠️ Alternative (if 2nd-gen unavailable)', 'Chlorpheniramine (Chlor-Trimeton)', chl.formulation, doseText, !chl.doseMg, 'alternative', 'Alternative H1', chl.warning, null, chl.globalWarning, extra);
       }
       
     } else if (severity === 'moderate') {
-      htmlOutput += `<div class="cdcalc-result-section-title">✅ Recommended: 2nd-Generation Antihistamine (choose one)</div>`;
-      
       const cet = getCetirizineDose(ageMonths, weightKg);
       if (cet) {
         const extra = cet.doseMg ? `Max daily: ${cet.maxDailyMg} mg` : '';
         const doseText = cet.doseMg ? `Give <span class="cdcalc-dose-ml">${cet.volumeMl.toFixed(1)} mL</span> <span class="cdcalc-dose-mg">(${cet.doseMg} mg)</span> ${cet.frequency}.` : `<strong>${cet.message}</strong>${cet.action ? ' ' + cet.action : ''}`;
-        htmlOutput += renderCard('Cetirizine (Zyrtec)', cet.formulation, doseText, !cet.doseMg, 'preferred', 'Preferred', cet.warning, null, null, extra);
+        addCard('✅ Recommended: 2nd-Generation Antihistamine (choose one)', 'Cetirizine (Zyrtec)', cet.formulation, doseText, !cet.doseMg, 'preferred', 'Preferred', cet.warning, null, null, extra);
       }
       
       const lor = getLoratadineDose(ageMonths, weightKg);
       if (lor) {
         const extra = lor.doseMg ? `Max daily: ${lor.maxDailyMg} mg` : '';
         const doseText = lor.doseMg ? `Give <span class="cdcalc-dose-ml">${lor.volumeMl.toFixed(1)} mL</span> <span class="cdcalc-dose-mg">(${lor.doseMg} mg)</span> ${lor.frequency}.` : `<strong>${lor.message}</strong>`;
-        htmlOutput += renderCard('Loratadine (Claritin)', lor.formulation, doseText, !lor.doseMg, 'preferred', 'Preferred', lor.warning, null, null, extra);
+        addCard('✅ Recommended: 2nd-Generation Antihistamine (choose one)', 'Loratadine (Claritin)', lor.formulation, doseText, !lor.doseMg, 'preferred', 'Preferred', lor.warning, null, null, extra);
       }
       
       const fex = getFexofenadineDose(ageMonths, weightKg);
@@ -1748,17 +1807,15 @@
         } else {
           doseText = `<strong>${fex.message}</strong>`;
         }
-        htmlOutput += renderCard('Fexofenadine (Allegra)', fex.formulation, doseText, !fex.doseMg, 'preferred', 'Preferred', fex.warning, fex.special, null, extra);
+        addCard('✅ Recommended: 2nd-Generation Antihistamine (choose one)', 'Fexofenadine (Allegra)', fex.formulation, doseText, !fex.doseMg, 'preferred', 'Preferred', fex.warning, fex.special, null, extra);
       }
       
       const lev = getLevocetirizineDose(ageMonths, weightKg);
       if (lev) {
         const extra = lev.doseMg ? `Max daily: ${lev.maxDailyMg} mg` : '';
         const doseText = lev.doseMg ? `Give <span class="cdcalc-dose-ml">${lev.volumeMl.toFixed(1)} mL</span> <span class="cdcalc-dose-mg">(${lev.doseMg} mg)</span> ${lev.frequency}.` : `<strong>${lev.message}</strong>`;
-        htmlOutput += renderCard('Levocetirizine (Xyzal)', lev.formulation, doseText, !lev.doseMg, 'preferred', 'Preferred', lev.warning, null, null, extra);
+        addCard('✅ Recommended: 2nd-Generation Antihistamine (choose one)', 'Levocetirizine (Xyzal)', lev.formulation, doseText, !lev.doseMg, 'preferred', 'Preferred', lev.warning, null, null, extra);
       }
-      
-      htmlOutput += `<div class="cdcalc-result-section-title">➕ Consider Adding: H2 Blocker</div>`;
       
       const fam = getFamotidineDose(ageMonths, weightKg);
       if (fam) {
@@ -1774,10 +1831,8 @@
         } else {
           doseText = `<strong>${fam.message}</strong>`;
         }
-        htmlOutput += renderCard('Famotidine (Pepcid)', fam.formulation, doseText, !fam.doseMg, 'adjunct', 'Adjunct H2', fam.warning, null, null, extra);
+        addCard('➕ Consider Adding: H2 Blocker', 'Famotidine (Pepcid)', fam.formulation, doseText, !fam.doseMg, 'adjunct', 'Adjunct H2', fam.warning, null, null, extra);
       }
-      
-      htmlOutput += `<div class="cdcalc-result-section-title">⚠️ Alternative H1 (if 2nd-gen unavailable)</div>`;
       
       const ben = getDiphenhydramineDose(ageMonths, weightKg);
       if (ben) {
@@ -1788,21 +1843,15 @@
         } else {
           doseText = `<strong>${ben.message}</strong>`;
         }
-        htmlOutput += renderCard('Diphenhydramine (Benadryl)', ben.formulation, doseText, !ben.doseMg, 'alternative', 'Alternative H1', ben.warning, null, ben.globalWarning, extra);
+        addCard('⚠️ Alternative H1 (if 2nd-gen unavailable)', 'Diphenhydramine (Benadryl)', ben.formulation, doseText, !ben.doseMg, 'alternative', 'Alternative H1', ben.warning, null, ben.globalWarning, extra);
       }
       
       const chl = getChlorpheniramineDose(ageMonths, weightKg);
       if (chl) {
         const extra = chl.doseMg ? `Max daily: ${chl.maxDailyMg} mg` : '';
         const doseText = chl.doseMg ? `Give <span class="cdcalc-dose-ml">${chl.volumeMl ? chl.volumeMl.toFixed(1) + ' mL' : chl.doseMg + ' mg'}</span> <span class="cdcalc-dose-mg">(${chl.doseMg} mg)</span> ${chl.frequency}.` : `<strong>${chl.message}</strong>`;
-        htmlOutput += renderCard('Chlorpheniramine (Chlor-Trimeton)', chl.formulation, doseText, !chl.doseMg, 'alternative', 'Alternative H1', chl.warning, null, chl.globalWarning, extra);
+        addCard('⚠️ Alternative H1 (if 2nd-gen unavailable)', 'Chlorpheniramine (Chlor-Trimeton)', chl.formulation, doseText, !chl.doseMg, 'alternative', 'Alternative H1', chl.warning, null, chl.globalWarning, extra);
       }
-      
-      htmlOutput += `
-        <div class="cdcalc-warning cdcalc-warning--red" style="margin-top: 16px; padding: 14px;">
-          <strong>🔴 Monitor closely.</strong> If swelling involves lips, tongue, or throat, or if breathing difficulties develop, treat as <strong>SEVERE</strong> immediately.
-        </div>
-      `;
       
     } else if (severity === 'severe') {
       htmlOutput += `<div class="cdcalc-result-section-title">🚨 FIRST: EPINEPHRINE — Give IMMEDIATELY</div>`;
@@ -1817,13 +1866,11 @@
         </div>
       `;
       
-      htmlOutput += `<div class="cdcalc-result-section-title">➕ After Epinephrine: Antihistamine</div>`;
-      
       const cet = getCetirizineDose(ageMonths, weightKg);
       if (cet) {
         const extra = cet.doseMg ? `Max daily: ${cet.maxDailyMg} mg` : '';
         const doseText = cet.doseMg ? `Give <span class="cdcalc-dose-ml">${cet.volumeMl.toFixed(1)} mL</span> <span class="cdcalc-dose-mg">(${cet.doseMg} mg)</span> ${cet.frequency}.` : `<strong>${cet.message}</strong>${cet.action ? ' ' + cet.action : ''}`;
-        htmlOutput += renderCard('Cetirizine (Zyrtec) - Preferred', cet.formulation, doseText, !cet.doseMg, 'preferred', 'Preferred Post-Epi', cet.warning, null, null, extra);
+        addCard('➕ After Epinephrine: Antihistamine', 'Cetirizine (Zyrtec) - Preferred', cet.formulation, doseText, !cet.doseMg, 'preferred', 'Preferred Post-Epi', cet.warning, null, null, extra);
       }
       
       const ben = getDiphenhydramineDose(ageMonths, weightKg);
@@ -1835,10 +1882,8 @@
         } else {
           doseText = `<strong>${ben.message}</strong>`;
         }
-        htmlOutput += renderCard('Diphenhydramine (Benadryl) - Alternative', ben.formulation, doseText, !ben.doseMg, 'alternative', 'Alternative Post-Epi', ben.warning, null, ben.globalWarning, extra);
+        addCard('⚠️ Alternative H1 (if 2nd-gen unavailable)', 'Diphenhydramine (Benadryl) - Alternative', ben.formulation, doseText, !ben.doseMg, 'alternative', 'Alternative Post-Epi', ben.warning, null, ben.globalWarning, extra);
       }
-      
-      htmlOutput += `<div class="cdcalc-result-section-title">➕ Adjunctive (physician-directed)</div>`;
       
       const fam = getFamotidineDose(ageMonths, weightKg);
       if (fam) {
@@ -1854,7 +1899,7 @@
         } else {
           doseText = `<strong>${fam.message}</strong>`;
         }
-        htmlOutput += renderCard('Famotidine (Pepcid)', fam.formulation, doseText, !fam.doseMg, 'adjunct', 'Adjunct H2', fam.warning, null, null, extra);
+        addCard('➕ Adjunctive (physician-directed)', 'Famotidine (Pepcid)', fam.formulation, doseText, !fam.doseMg, 'adjunct', 'Adjunct H2', fam.warning, null, null, extra);
       }
       
       const pred = getPrednisoloneDose(ageMonths, weightKg);
@@ -1871,11 +1916,39 @@
         } else {
           doseText = `<strong>${pred.message}</strong>`;
         }
-        htmlOutput += renderCard('Prednisolone / Prednisone', pred.formulation, doseText, !pred.doseMg, 'prescription', 'Rx Corticosteroid', pred.warning, null, pred.globalWarning, extra);
+        addCard('➕ Adjunctive (physician-directed)', 'Prednisolone / Prednisone', pred.formulation, doseText, !pred.doseMg, 'prescription', 'Rx Corticosteroid', pred.warning, null, pred.globalWarning, extra);
       }
     }
 
-    resultBlocks.push(`<div class="cdcalc-result-group">${htmlOutput}</div>`);
+    // Assemble final output html
+    activeSectionsMap.forEach((cardsList, sectionTitle) => {
+      htmlOutput += `<div class="cdcalc-result-section-title">${sectionTitle}</div>`;
+      htmlOutput += cardsList.join('');
+    });
+
+    if (severity === 'moderate') {
+      htmlOutput += `
+        <div class="cdcalc-warning cdcalc-warning--red" style="margin-top: 16px; padding: 14px;">
+          <strong>🔴 Monitor closely.</strong> If swelling involves lips, tongue, or throat, or if breathing difficulties develop, treat as <strong>SEVERE</strong> immediately.
+        </div>
+      `;
+    }
+
+    if (disabledCardsHtml.length > 0) {
+      htmlOutput += `
+        <div class="cdcalc-result-section-title" style="margin-top: 24px;">🚫 Not Recommended Meds</div>
+        <details class="cdcalc-accordion cdcalc-accordion--disabled-meds" style="margin-top: 8px;">
+          <summary>
+            Show medications not recommended for this age/weight (${disabledCardsHtml.length})
+          </summary>
+          <div class="cdcalc-accordion-body" style="display: grid; gap: 12px;">
+            ${disabledCardsHtml.join('')}
+          </div>
+        </details>
+      `;
+    }
+
+    resultBlocks.push(htmlOutput);
     elements.results.innerHTML = resultBlocks.join('');
     notifyResultsRendered();
 

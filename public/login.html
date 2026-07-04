@@ -14,13 +14,19 @@
   <link rel="stylesheet" href="global.css" />
 
   <title>CloseDose Login</title>
+  <meta name="description" content="Securely log in or register your account to manage family profiles and track medication doses with CloseDose." />
+  <meta property="og:title" content="CloseDose Login" />
+  <meta property="og:description" content="Securely log in or register your account to manage family profiles and track medication doses with CloseDose." />
+  <meta property="og:image" content="https://closedose.com/images/favicon-192.png" />
+  <meta property="og:url" content="https://closedose.com/login.html" />
+  <meta name="twitter:card" content="summary" />
   <script>(function(){var t=localStorage.getItem("cd-theme");if(t)document.documentElement.setAttribute("data-theme",t);})();</script>
 </head>
 <body>
   <div class="wrap">
     
     <header>
-      <img src="images/logomark-WC.png" alt="CloseDose" class="header-wordmark" />
+      <a href="index.html" class="header-wordmark-link"><img src="images/logomark-WC.png" alt="CloseDose" class="header-wordmark" /></a>
       <button class="menu-btn" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="siteMenu" aria-label="Open menu">
         <span class="label">Menu</span>
         <span class="hamburger" aria-hidden="true"><span></span><span></span><span></span></span>
@@ -80,173 +86,35 @@
       </form>
     </section>
   </div>
-
-  <script type="module">
-    import { supabase } from "./auth/supabaseClient.js";
-
-    const ensureActiveFamilyForCurrentUser = async (options = {}) => {
-      const { retries = 2, delayMs = 500 } = options;
-      const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-      let lastError = null;
-
-      for (let attempt = 0; attempt <= retries; attempt += 1) {
-        const { data: familyId, error } = await supabase.rpc("ensure_active_family_for_current_user");
-        if (!error && familyId) {
-          return familyId;
-        }
-        if (error) {
-          lastError = error;
-          console.error("family ensure failed", error);
-        }
-        if (attempt < retries) {
-          await sleep(delayMs);
-        }
-      }
-
-      if (lastError) {
-        console.warn("family ensure did not resolve after retries");
-      }
-      return null;
-    };
-
-    const redirectParam = new URLSearchParams(window.location.search).get("redirect");
-
-    const sanitizeRedirect = (value) => {
-      if (!value || !value.startsWith("/")) return "/dashboard.html";
-      if (value.includes("http") || value.includes("//") || value.includes("\\")) return "/dashboard.html";
-      return value;
-    };
-
-    const redirectTarget = sanitizeRedirect(redirectParam);
-
-    const resolveRedirectTarget = () => {
-      const pendingInvite = localStorage.getItem("pending_invite_token");
-      if (pendingInvite) {
-        return `/cappy/join.html?token=${encodeURIComponent(pendingInvite)}`;
-      }
-      return redirectTarget;
-    };
-
-    const tabs = document.querySelectorAll(".tab-button");
-    const panels = document.querySelectorAll("[role='tabpanel']");
-
-    const setStatus = (element, message, type = "") => {
-      if (!element) return;
-      element.textContent = message;
-      element.classList.remove("error", "success");
-      if (type) {
-        element.classList.add(type);
-      }
-    };
-
-    tabs.forEach((button) => {
-      button.addEventListener("click", () => {
-        const target = button.dataset.target;
-        tabs.forEach((tab) => tab.setAttribute("aria-pressed", String(tab === button)));
-        panels.forEach((panel) => {
-          panel.classList.toggle("hidden", panel.id !== target);
-        });
-      });
-    });
-
-    document.getElementById("loginForm")?.addEventListener("submit", async (event) => {
-      event.preventDefault();
-      const status = document.getElementById("loginStatus");
-      setStatus(status, "Signing you in...");
-
-      const formData = new FormData(event.target);
-      const email = String(formData.get("email") || "").trim();
-      const password = String(formData.get("password") || "");
-
-      const { error } = await supabase.auth.signInWithPassword({ email, password });
-      if (error) {
-        setStatus(status, error.message, "error");
-        return;
-      }
-
-      const resolvedRedirect = resolveRedirectTarget();
-      const familyId = await ensureActiveFamilyForCurrentUser();
-      if (!familyId && !resolvedRedirect.startsWith("/cappy/")) {
-        setStatus(status, "Signed in! We are still setting up your family.", "success");
-      } else {
-        setStatus(status, "Success! Redirecting...", "success");
-      }
-      window.location.href = resolvedRedirect;
-    });
-
-    document.getElementById("registerForm")?.addEventListener("submit", async (event) => {
-      event.preventDefault();
-      const status = document.getElementById("registerStatus");
-      setStatus(status, "Creating your account...");
-
-      const formData = new FormData(event.target);
-      const email = String(formData.get("email") || "").trim();
-      const password = String(formData.get("password") || "");
-
-      const { data, error } = await supabase.auth.signUp({ email, password });
-      if (error) {
-        setStatus(status, error.message, "error");
-        return;
-      }
-
-      if (data?.session) {
-        const resolvedRedirect = resolveRedirectTarget();
-        const familyId = await ensureActiveFamilyForCurrentUser();
-        if (!familyId && !resolvedRedirect.startsWith("/cappy/")) {
-          setStatus(status, "Account created! We are still setting up your family.", "success");
-        } else {
-          setStatus(status, "Account created! Redirecting...", "success");
-        }
-        window.location.href = resolvedRedirect;
-        return;
-      }
-
-      setStatus(status, "Check your email for a confirmation link.", "success");
-    });
-
-    document.getElementById("resetForm")?.addEventListener("submit", async (event) => {
-      event.preventDefault();
-      const status = document.getElementById("resetStatus");
-      setStatus(status, "Sending reset email...");
-
-      const formData = new FormData(event.target);
-      const email = String(formData.get("email") || "").trim();
-
-      const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${window.location.origin}/login.html`,
-      });
-
-      if (error) {
-        setStatus(status, error.message, "error");
-        return;
-      }
-
-      setStatus(status, "Reset email sent. Check your inbox.", "success");
-    });
-  </script>
   <script src="nfc.js" defer></script>
 
       </div>
     </main>
   </div>
   
-  <footer class="cd-footer">
-    <p class="cd-copy">2026 CloseDose. All rights reserved.</p>
-    <a class="cd-footer-contact" href="about.html#contact">Contact us</a>
-    <nav class="cd-legal cd-legal--full">
+    <footer class="cd-footer" role="contentinfo">
+    <a href="index.html" class="cd-footer-logo-link" aria-label="CloseDose home">
+      <img src="images/LOGO-WC.png" alt="CloseDose" class="cd-footer-logo" width="800" height="800" loading="lazy" />
+    </a>
+    <p class="cd-copy">&copy; 2026 CloseDose. All rights reserved.</p>
+    <p class="cd-note">For medical emergencies, call 911. For poisoning, call Poison Control at 1-800-222-1222.</p>
+    <nav class="cd-legal cd-legal--full" aria-label="Legal">
       <a href="/legal/terms">Terms</a>
       <a href="/legal/privacy">Privacy</a>
       <a href="/legal/disclaimer">Disclaimer</a>
+      <a href="about.html#contact">Contact us</a>
     </nav>
   </footer>
 
   <div class="menu-overlay" id="siteMenu" hidden>
     <div class="menu-panel">
-      <nav class="menu-links">
+      <nav class="menu-links" aria-label="Site">
         <a href="index.html" class="nav-calc">Calculator</a>
         <a href="allergy-calculator.html" class="nav-allergy">Allergy Calculator</a>
         <a href="medication-guides.html" class="nav-guides">Medication Guides</a>
         <a href="cold-cough-guidance.html" class="nav-cough">Cough &amp; Cold Guidance</a>
+        <a href="weighing-guide.html" class="nav-weighing">Weighing Guide</a>
+        <a href="dosing-guide.html" class="nav-dosing">Dosing Guide</a>
         <a href="about.html" class="nav-about">About</a>
         <a href="donations.html" class="nav-support">Support</a>
       </nav>
