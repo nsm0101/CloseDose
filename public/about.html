@@ -22,6 +22,258 @@
   <meta property="og:url" content="https://closedose.com/about.html" />
   <meta name="twitter:card" content="summary" />
   <script>(function(){var t=localStorage.getItem("cd-theme");if(t)document.documentElement.setAttribute("data-theme",t);})();</script>
+
+  <style>
+    /* Premium Theme refinements for About & Support page */
+    
+    /* Remove cheap-looking blotchy gradient washes */
+    .editorial-wash {
+      display: none !important;
+    }
+    
+    .editorial-wrap {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: clamp(24px, 4vw, 48px) 16px;
+    }
+    
+    /* Standardize clean, modern, spacious layouts */
+    .editorial-section {
+      width: 100%;
+      max-width: 100%;
+      margin: 0;
+      padding: clamp(32px, 5vw, 64px) 0;
+      border-bottom: 1px solid rgba(15, 44, 42, 0.08);
+    }
+    html[data-theme="dark"] .editorial-section {
+      border-bottom-color: rgba(255, 255, 255, 0.08);
+    }
+    
+    .editorial-section:last-of-type {
+      border-bottom: none;
+    }
+    
+    /* Premium Cards - soft, clean, clear borders, subtle shadows */
+    .editorial-card {
+      background: var(--card-bg);
+      border: 1px solid var(--cdcalc-border-color);
+      box-shadow: 0 4px 16px rgba(15, 44, 42, 0.02), 0 2px 4px rgba(15, 44, 42, 0.01);
+      border-radius: var(--radius-md);
+      padding: 24px;
+      transition: transform var(--duration-fast) var(--ease-out), border-color var(--duration-fast), box-shadow var(--duration-fast);
+      text-decoration: none;
+      color: inherit;
+    }
+    
+    .editorial-card:hover {
+      border-color: var(--teal-500);
+      box-shadow: 0 8px 24px rgba(15, 44, 42, 0.04), 0 4px 12px rgba(15, 44, 42, 0.02);
+      transform: translateY(-2px);
+    }
+    
+    .editorial-card:active {
+      transform: scale(0.99) translateY(-1px);
+    }
+    
+    /* Grid adjustments */
+    .editorial-bento {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+      margin-top: 24px;
+    }
+    
+    @media (min-width: 640px) {
+      .editorial-bento {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .editorial-bento--three-col {
+        grid-template-columns: repeat(3, 1fr);
+      }
+      .editorial-bento--three-col .editorial-card {
+        grid-column: span 1;
+      }
+    }
+    
+    /* Hero Adjustments */
+    .aw-hero {
+      padding-top: clamp(24px, 4vw, 40px);
+    }
+    
+    .aw-hero h1 {
+      font-size: clamp(2.2rem, 5vw, 3.2rem);
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+      margin-bottom: 16px;
+    }
+    
+    .aw-hero p.sub {
+      font-size: var(--text-md);
+      line-height: 1.6;
+      color: var(--text-secondary);
+      max-width: 58ch;
+      margin-bottom: 28px;
+    }
+    
+    /* Cohesive, beautiful Support Cards */
+    .editorial-give {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+      margin-top: 28px;
+      width: 100%;
+    }
+    
+    @media (min-width: 640px) {
+      .editorial-give {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+    
+    .editorial-pf {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 24px;
+      border-radius: var(--radius-md);
+      background: var(--card-bg);
+      border: 1px solid var(--cdcalc-border-color);
+      box-shadow: 0 4px 12px rgba(15, 44, 42, 0.02);
+      transition: border-color var(--duration-fast) var(--ease-out), transform var(--duration-fast) var(--ease-out), box-shadow var(--duration-fast) var(--ease-out);
+      color: var(--text-primary);
+      text-decoration: none;
+      box-sizing: border-box;
+      height: 100%;
+    }
+    
+    .editorial-pf .badge {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      margin-bottom: 16px;
+      transition: transform var(--duration-fast) var(--ease-out);
+    }
+    
+    .editorial-pf .name {
+      font-size: 1.25rem;
+      font-weight: 800;
+      margin-bottom: 8px;
+      display: block;
+    }
+    
+    .editorial-pf .tag {
+      font-size: var(--text-sm);
+      line-height: 1.5;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+      display: block;
+      flex-grow: 1;
+    }
+    
+    .editorial-pf .go {
+      font-size: var(--text-sm);
+      font-weight: 800;
+      color: var(--teal-500);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: transform var(--duration-fast);
+    }
+    html[data-theme="dark"] .editorial-pf .go {
+      color: var(--teal-400);
+    }
+    
+    /* Ko-Fi Specific Hover state */
+    .editorial-pf--kofi:hover {
+      border-color: #ff5f5f;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(255, 95, 95, 0.08);
+    }
+    .editorial-pf--kofi .badge {
+      background: rgba(255, 95, 95, 0.1);
+    }
+    .editorial-pf--kofi:hover .badge {
+      transform: scale(1.05);
+    }
+    
+    /* GiveButter Specific Hover state */
+    .editorial-pf--gb:hover {
+      border-color: var(--teal-500);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(31, 143, 123, 0.08);
+    }
+    .editorial-pf--gb .badge {
+      background: rgba(31, 143, 123, 0.1);
+    }
+    .editorial-pf--gb:hover .badge {
+      transform: scale(1.05);
+    }
+    
+    /* Clean, pill-based mail contact link (No huge symbol) */
+    .editorial-mail-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 24px;
+      border-radius: var(--radius-pill);
+      background: var(--card-bg);
+      border: 1px solid var(--cdcalc-border-color);
+      color: var(--text-primary);
+      text-decoration: none;
+      font-size: var(--text-base);
+      font-weight: 700;
+      box-shadow: 0 2px 8px rgba(15, 44, 42, 0.02);
+      transition: transform var(--duration-fast) var(--ease-out), border-color var(--duration-fast), box-shadow var(--duration-fast);
+      margin-top: 16px;
+    }
+    
+    .editorial-mail-btn:hover {
+      border-color: var(--teal-500);
+      box-shadow: 0 4px 16px rgba(15, 44, 42, 0.06);
+      transform: translateY(-1px);
+    }
+    
+    .editorial-mail-btn:active {
+      transform: translateY(0);
+    }
+    
+    .editorial-mail-btn .mail-icon {
+      width: 20px;
+      height: 20px;
+      color: var(--teal-500);
+    }
+    html[data-theme="dark"] .editorial-mail-btn .mail-icon {
+      color: var(--teal-400);
+    }
+    
+    /* Seeking Info Links List Style (Sleek cards with inline arrows) */
+    .editorial-card--arrow {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    
+    .editorial-card--arrow .arrow-ic {
+      width: 20px;
+      height: 20px;
+      color: var(--teal-500);
+      transition: transform var(--duration-fast) var(--ease-out);
+      flex-shrink: 0;
+    }
+    html[data-theme="dark"] .editorial-card--arrow .arrow-ic {
+      color: var(--teal-400);
+    }
+    
+    .editorial-card--arrow:hover .arrow-ic {
+      transform: translateX(4px);
+    }
+  </style>
 </head>
 <body>
   <div class="wrap">
@@ -41,10 +293,9 @@
 
         <!-- HERO -->
         <section class="editorial-section aw-hero editorial-reveal" aria-labelledby="about-heading" data-reveal>
-          <div class="editorial-wash" aria-hidden="true"></div>
           <div class="editorial-inner">
             <span class="editorial-eyebrow">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="editorial-eyebrow-ic"><path d="M4.5 22v-5a8 8 0 0 1 15 0v5"></path><path d="M12 2v15"></path><circle cx="12" cy="17" r="1"></circle></svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="editorial-eyebrow-ic" style="width: 14px; height: 14px; display: inline-block; vertical-align: text-top; margin-right: 4px;"><path d="M4.5 22v-5a8 8 0 0 1 15 0v5"></path><path d="M12 2v15"></path><circle cx="12" cy="17" r="1"></circle></svg>
               Physician Led
             </span>
             <h1 id="about-heading">Pediatric dosing, made <em>calm</em>.</h1>
@@ -58,31 +309,24 @@
 
         <!-- CORE VALUES / ABOUT -->
         <section class="editorial-section editorial-reveal" aria-labelledby="why-heading" data-reveal>
-          <div class="editorial-wash aw-wash--mint" aria-hidden="true"></div>
           <div class="editorial-inner">
             <h2 class="editorial-h2" id="why-heading">Designed for stressed parents</h2>
             <p class="editorial-h2-sub">When your child is sick, you need clear details, not distractions.</p>
             
             <div class="editorial-bento">
-              <div class="editorial-card editorial-card--two">
-                <div>
-                  <h3 class="title">Clinical Credibility</h3>
-                  <p class="desc">Reviewed and maintained by an actively practicing pediatric emergency physician. Calculations follow standard pediatric dosing guidelines.</p>
-                </div>
+              <div class="editorial-card">
+                <h3 class="title">Clinical Credibility</h3>
+                <p class="desc">Reviewed and maintained by an actively practicing pediatric emergency physician. Calculations follow standard pediatric dosing guidelines.</p>
               </div>
               
-              <div class="editorial-card editorial-card--two">
-                <div>
-                  <h3 class="title">Zero Ad Clutter</h3>
-                  <p class="desc">No ads, no cookie popups, and no paywalls. We do not track you or collect any identifying health data.</p>
-                </div>
+              <div class="editorial-card">
+                <h3 class="title">Zero Ad Clutter</h3>
+                <p class="desc">No ads, no cookie popups, and no paywalls. We do not track you or collect any identifying health data.</p>
               </div>
 
-              <div class="editorial-card editorial-card--two">
-                <div>
-                  <h3 class="title">Rapid Clarity</h3>
-                  <p class="desc">Dose by weight instantly. Visual safety warnings prevent common dosing mistakes and coordinate volume guides.</p>
-                </div>
+              <div class="editorial-card" style="grid-column: span 1; @media (min-width: 640px) { grid-column: span 2; }">
+                <h3 class="title">Rapid Clarity</h3>
+                <p class="desc">Dose by weight instantly. Visual safety warnings prevent common dosing mistakes and coordinate volume guides.</p>
               </div>
             </div>
           </div>
@@ -90,7 +334,6 @@
 
         <!-- SUPPORT / DONATIONS -->
         <section class="editorial-section editorial-reveal" id="support" aria-labelledby="support-heading" data-reveal>
-          <div class="editorial-wash aw-wash--peach" aria-hidden="true"></div>
           <div class="editorial-inner">
             <h2 class="editorial-h2" id="support-heading">Keep CloseDose free</h2>
             <p class="editorial-h2-sub">We absorb all payment fees so 100% of your donation directly keeps CloseDose alive, updated, and ad-free for all families.</p>
@@ -98,7 +341,7 @@
             <div class="editorial-give">
               <a class="editorial-pf editorial-pf--kofi" href="https://ko-fi.com/drnsm" target="_blank" rel="noopener" aria-label="Support CloseDose on Ko-fi">
                 <span class="badge" aria-hidden="true">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 32px; height: 32px; color: #ffffff;"><path d="M18 8h1a4 4 0 0 1 0 8h-1"></path><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path><line x1="6" y1="2" x2="6" y2="4"></line><line x1="10" y1="2" x2="10" y2="4"></line><line x1="14" y1="2" x2="14" y2="4"></line></svg>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="#ff5f5f" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 24px; height: 24px;"><path d="M18 8h1a4 4 0 0 1 0 8h-1"></path><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path><line x1="6" y1="2" x2="6" y2="4"></line><line x1="10" y1="2" x2="10" y2="4"></line><line x1="14" y1="2" x2="14" y2="4"></line></svg>
                 </span>
                 <span class="name">Ko-fi</span>
                 <span class="tag">Quick one-tap support. No account required.</span>
@@ -108,7 +351,7 @@
               <givebutter-widget id="gOeyDj">
                 <a class="editorial-pf editorial-pf--gb" aria-label="Donate through Givebutter">
                   <span class="badge" aria-hidden="true">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 32px; height: 32px; color: #ffffff;"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path></svg>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#1f8f7b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 24px; height: 24px;"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path></svg>
                   </span>
                   <span class="name">Givebutter</span>
                   <span class="tag">Supports Cards, Venmo, PayPal, Apple &amp; Google Pay.</span>
@@ -129,24 +372,27 @@
             <h2 class="editorial-h2" id="details-heading">Seeking more information?</h2>
             <p class="editorial-h2-sub">If you have extra time or want to double-check details, explore our standard guides:</p>
             
-            <div class="editorial-bento">
-              <a class="editorial-card editorial-card--three" href="medication-guides.html">
+            <div class="editorial-bento editorial-bento--three-col">
+              <a class="editorial-card editorial-card--arrow" href="medication-guides.html">
                 <div>
                   <span class="title">Medication Guides</span>
-                  <p class="desc">List of common over-the-counter products and active concentrations.</p>
+                  <p class="desc">Common over-the-counter products and active concentrations.</p>
                 </div>
+                <svg class="arrow-ic" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"></path></svg>
               </a>
-              <a class="editorial-card editorial-card--three" href="weighing-guide.html">
+              <a class="editorial-card editorial-card--arrow" href="weighing-guide.html">
                 <div>
                   <span class="title">Weighing Guide</span>
                   <p class="desc">How to get an accurate weight for infants and toddlers at home.</p>
                 </div>
+                <svg class="arrow-ic" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"></path></svg>
               </a>
-              <a class="editorial-card editorial-card--three" href="dosing-guide.html">
+              <a class="editorial-card editorial-card--arrow" href="dosing-guide.html">
                 <div>
                   <span class="title">Dosing Guide</span>
                   <p class="desc">Instructions for reading syringes, cups, and avoiding volume errors.</p>
                 </div>
+                <svg class="arrow-ic" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"></path></svg>
               </a>
             </div>
           </div>
@@ -154,22 +400,15 @@
 
         <!-- Direct Contact -->
         <section class="editorial-section editorial-reveal" id="contact" aria-labelledby="contact-heading" data-reveal>
-          <div class="editorial-wash aw-wash--mint" aria-hidden="true"></div>
           <div class="editorial-inner">
             <h2 class="editorial-h2" id="contact-heading">Get in touch</h2>
             <p class="editorial-h2-sub">Have feedback or suggestions? We read and reply to every message.</p>
-            <a class="editorial-mail" href="mailto:hello@closedose.com?subject=Hello%20CloseDose" aria-label="Email hello@closedose.com">
-              <span class="aw-env" aria-hidden="true">
-                <svg class="env-svg" viewBox="0 0 120 92" role="img" aria-hidden="true">
-                  <rect class="env-body" x="8" y="26" width="104" height="58" rx="10"/>
-                  <rect class="env-letter" x="26" y="12" width="68" height="46" rx="4"/>
-                  <line class="env-l" x1="36" y1="28" x2="84" y2="28"/>
-                  <line class="env-l" x1="36" y1="40" x2="70" y2="40"/>
-                  <path class="env-front" d="M8 40 L60 76 L112 40 L112 84 L8 84 Z"/>
-                  <path class="env-flap" d="M8 30 L60 64 L112 30 Z"/>
-                </svg>
-              </span>
-              <span class="editorial-mail-txt">hello@closedose.com</span>
+            <a class="editorial-mail-btn" href="mailto:hello@closedose.com?subject=Hello%20CloseDose" aria-label="Email hello@closedose.com">
+              <svg class="mail-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                <polyline points="22,6 12,13 2,6"></polyline>
+              </svg>
+              <span>hello@closedose.com</span>
             </a>
           </div>
         </section>
