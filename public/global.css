@@ -7,8 +7,8 @@
   --ink-900: #0f2c2a;
   --ink-700: #124643;
   --white: #ffffff;
-  --card-bg: rgba(255, 255, 255, 0.94);
-  --card-border: 1px solid rgba(16, 68, 110, 0.16);
+  --card-bg: rgba(255, 255, 255, 0.98);
+  --card-border: 1px solid rgba(15, 44, 42, 0.14);
   --card-radius: var(--radius-lg);
   
   --footer-bg: #0d1b2a;
@@ -46,6 +46,8 @@
   --shadow-lg:    0 22px 45px rgba(13, 52, 82, 0.18);
   --shadow-xl:    0 32px 64px rgba(13, 52, 82, 0.22);
   --shadow-press: 0 6px 0 rgba(15, 44, 42, 0.22);
+  --shadow-card:  0 12px 30px rgba(15, 44, 42, 0.08), 0 2px 8px rgba(15, 44, 42, 0.04);
+  --shadow-btn:   0 4px 12px rgba(15, 44, 42, 0.08), 0 1px 3px rgba(15, 44, 42, 0.04);
 
   /* Border Radii */
   --radius-sm: 8px;
@@ -67,8 +69,8 @@
 
   /* Semantic Theme Variables - Light defaults */
   --page-bg: #e8f5f0;
-  --page-overlay-start: rgba(205, 238, 226, 0.85);
-  --page-overlay-end: rgba(178, 218, 206, 0.9);
+  --page-overlay-start: rgba(230, 246, 241, 0.72);
+  --page-overlay-end: rgba(210, 238, 230, 0.78);
   --hero-color: var(--ink-900);
   --hero-eyebrow-color: rgba(15, 44, 42, 0.72);
   --hero-sub-color: rgba(15, 44, 42, 0.78);
@@ -81,9 +83,9 @@
   --theme-toggle-icon: '🌙';
 
   --text-primary:   var(--ink-900);
-  --text-secondary: rgba(15, 46, 68, 0.8);
-  --text-muted:     rgba(15, 46, 68, 0.7);
-  --text-subtle:    rgba(15, 46, 68, 0.55);
+  --text-secondary: rgba(15, 44, 42, 0.88);
+  --text-muted:     rgba(15, 44, 42, 0.78);
+  --text-subtle:    rgba(15, 44, 42, 0.62);
 
   --brand-hero-filter: none;
   --no-tare-bg: rgba(255, 200, 100, 0.1);
@@ -111,7 +113,7 @@
   --card-color: var(--ink-900);
   --card-heading-color: var(--ink-900);
   --card-muted-color: var(--text-muted);
-  --form-input-border-color: rgba(15, 44, 42, 0.18);
+  --form-input-border-color: rgba(15, 44, 42, 0.24);
   --form-input-color: var(--ink-900);
   --form-input-bg: var(--white);
   --menu-btn-bg: var(--white);
@@ -127,7 +129,7 @@
   --subtraction-calc-screen-border: #bbf7d0;
   
   --cdcalc-bg: var(--card-bg);
-  --cdcalc-border-color: rgba(16, 68, 110, 0.16);
+  --cdcalc-border-color: rgba(15, 44, 42, 0.14);
   --cdcalc-color: var(--ink-900);
   --cdcalc-shadow: var(--shadow-btn);
   --cdcalc-header-bg: linear-gradient(135deg, #e0faf0 0%, #cdedd8 100%);
@@ -136,11 +138,11 @@
   --cdcalc-hello-color: var(--text-muted);
   --cdcalc-group-title-color: var(--ink-900);
   --cdcalc-option-bg: rgba(255, 255, 255, 0.65);
-  --cdcalc-option-border-color: rgba(15, 44, 42, 0.12);
+  --cdcalc-option-border-color: rgba(15, 44, 42, 0.16);
   --cdcalc-option-color: var(--ink-900);
   --cdcalc-option-active-bg: var(--teal-500);
   --cdcalc-input-bg: var(--white);
-  --cdcalc-input-border-color: rgba(15, 44, 42, 0.18);
+  --cdcalc-input-border-color: rgba(15, 44, 42, 0.24);
   --cdcalc-input-color: var(--ink-900);
   --cdcalc-input-focus-border-color: var(--teal-500);
   --cdcalc-input-focus-shadow: 0 0 0 8px rgba(31, 143, 123, 0.25);
@@ -201,7 +203,9 @@ html[data-theme="dark"] {
   --page-overlay-start: rgba(10, 15, 25, 0.78);
   --page-overlay-end: rgba(17, 24, 39, 0.88);
   --hero-color: #ffffff;
-  --hero-eyebrow-color: rgba(255, 255, 255, 0.78);
+  --hero-eyebrow-color: var(--teal-400);
+  --shadow-card: 0 12px 30px rgba(0, 0, 0, 0.35), 0 2px 8px rgba(0, 0, 0, 0.2);
+  --shadow-btn: 0 4px 12px rgba(0, 0, 0, 0.25), 0 1px 3px rgba(0, 0, 0, 0.15);
   --hero-sub-color: rgba(255, 255, 255, 0.86);
   --hero-shadow: 0 2px 18px rgba(0, 0, 0, 0.35);
   --on-bg-muted: rgba(255, 255, 255, 0.78);
@@ -263,7 +267,7 @@ html[data-theme="dark"] {
   --cdcalc-border-color: rgba(255, 255, 255, 0.2);
   --cdcalc-color: #f1f5f9;
   --cdcalc-shadow: 0 6px 0 rgba(0, 0, 0, 0.6);
-  --cdcalc-header-bg: linear-gradient(135deg, #182e3c 0%, #0d2433 100%);
+  --cdcalc-header-bg: linear-gradient(135deg, var(--teal-600) 0%, #0d2433 100%);
   --cdcalc-header-border-bottom: rgba(255, 255, 255, 0.2);
   --cdcalc-title-color: #ffffff;
   --cdcalc-hello-color: #cbd5e1;
@@ -339,7 +343,7 @@ html[data-theme="dark"] .info-card {
   color: #e2e8f0 !important;
 }
 html[data-theme="dark"] .info-card-title {
-  color: #ffffff !important;
+  color: var(--teal-400) !important;
 }
 html[data-theme="dark"] .info-list li {
   color: #e2e8f0 !important;
@@ -348,7 +352,21 @@ html[data-theme="dark"] .donate-card {
   color: #e2e8f0 !important;
 }
 html[data-theme="dark"] .donate-heading {
-  color: #ffffff !important;
+  color: var(--teal-400) !important;
+}
+
+html[data-theme="dark"] h2:not(.visually-hidden),
+html[data-theme="dark"] .editorial-h2,
+html[data-theme="dark"] .dose-unit-card h2,
+html[data-theme="dark"] .story-card h2,
+html[data-theme="dark"] .values-card h2,
+html[data-theme="dark"] .trust-card h2,
+html[data-theme="dark"] .med-guide__header-text h2,
+html[data-theme="dark"] .contact-grid-card > h2,
+html[data-theme="dark"] .about-values h2,
+html[data-theme="dark"] .about-trust h2,
+html[data-theme="dark"] .disclaimer-header h2 {
+  color: var(--teal-400) !important;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -357,7 +375,9 @@ html[data-theme="dark"] .donate-heading {
     --page-overlay-start: rgba(10, 15, 25, 0.78);
     --page-overlay-end: rgba(17, 24, 39, 0.88);
     --hero-color: #ffffff;
-    --hero-eyebrow-color: rgba(255, 255, 255, 0.78);
+    --hero-eyebrow-color: var(--teal-400);
+    --shadow-card: 0 12px 30px rgba(0, 0, 0, 0.35), 0 2px 8px rgba(0, 0, 0, 0.2);
+    --shadow-btn: 0 4px 12px rgba(0, 0, 0, 0.25), 0 1px 3px rgba(0, 0, 0, 0.15);
     --hero-sub-color: rgba(255, 255, 255, 0.86);
     --hero-shadow: 0 2px 18px rgba(0, 0, 0, 0.35);
     --on-bg-muted: rgba(255, 255, 255, 0.78);
@@ -419,7 +439,7 @@ html[data-theme="dark"] .donate-heading {
     --cdcalc-border-color: rgba(255, 255, 255, 0.2);
     --cdcalc-color: #f1f5f9;
     --cdcalc-shadow: 0 6px 0 rgba(0, 0, 0, 0.6);
-    --cdcalc-header-bg: linear-gradient(135deg, #182e3c 0%, #0d2433 100%);
+    --cdcalc-header-bg: linear-gradient(135deg, var(--teal-600) 0%, #0d2433 100%);
     --cdcalc-header-border-bottom: rgba(255, 255, 255, 0.2);
     --cdcalc-title-color: #ffffff;
     --cdcalc-hello-color: #cbd5e1;
@@ -498,7 +518,7 @@ html[data-theme="dark"] .donate-heading {
     color: #e2e8f0 !important;
   }
   html:not([data-theme="light"]) .info-card-title {
-    color: #ffffff !important;
+    color: var(--teal-400) !important;
   }
   html:not([data-theme="light"]) .info-list li {
     color: #e2e8f0 !important;
@@ -507,7 +527,21 @@ html[data-theme="dark"] .donate-heading {
     color: #e2e8f0 !important;
   }
   html:not([data-theme="light"]) .donate-heading {
-    color: #ffffff !important;
+    color: var(--teal-400) !important;
+  }
+
+  html:not([data-theme="light"]) h2:not(.visually-hidden),
+  html:not([data-theme="light"]) .editorial-h2,
+  html:not([data-theme="light"]) .dose-unit-card h2,
+  html:not([data-theme="light"]) .story-card h2,
+  html:not([data-theme="light"]) .values-card h2,
+  html:not([data-theme="light"]) .trust-card h2,
+  html:not([data-theme="light"]) .med-guide__header-text h2,
+  html:not([data-theme="light"]) .contact-grid-card > h2,
+  html:not([data-theme="light"]) .about-values h2,
+  html:not([data-theme="light"]) .about-trust h2,
+  html:not([data-theme="light"]) .disclaimer-header h2 {
+    color: var(--teal-400) !important;
   }
 }
 @keyframes slam-in {
