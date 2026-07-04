@@ -3127,7 +3127,7 @@ html[data-theme="dark"] .no-tare-btn { background: rgba(255, 200, 100, 0.07); }
   left: -5vw;
 }
 
-.aw-cta {
+.editorial-cta {
   background: linear-gradient(135deg, var(--teal-500) 0%, var(--teal-600) 100%);
   color: var(--white);
   padding: 16px 36px;
@@ -3141,15 +3141,15 @@ html[data-theme="dark"] .no-tare-btn { background: rgba(255, 200, 100, 0.07); }
   box-shadow: var(--shadow-sm);
   transition: transform var(--duration-fast) var(--ease-out), box-shadow var(--duration-fast) var(--ease-out);
 }
-.aw-cta:hover {
+.editorial-cta:hover {
   transform: translateY(-2px);
   box-shadow: var(--shadow-md);
 }
-.aw-cta:active {
+.editorial-cta:active {
   transform: translateY(0);
 }
 
-.aw-quote {
+.editorial-quote {
   font-size: var(--text-lg);
   font-style: italic;
   line-height: 1.6;
@@ -3159,24 +3159,24 @@ html[data-theme="dark"] .no-tare-btn { background: rgba(255, 200, 100, 0.07); }
   margin: 32px 0;
 }
 
-.aw-textlink {
+.editorial-textlink {
   color: var(--teal-500);
   font-weight: 800;
   text-decoration: underline;
   transition: color var(--duration-fast);
 }
-.aw-textlink:hover {
+.editorial-textlink:hover {
   color: var(--teal-400);
 }
 
 /* Mail Envelope Animation */
-.aw-mail {
+.editorial-mail {
   display: flex;
   flex-direction: column;
   align-items: center;
   margin-top: 40px;
 }
-.aw-mail-txt {
+.editorial-mail-txt {
   font-size: var(--text-xs);
   font-weight: 900;
   letter-spacing: 0.12em;
@@ -3235,13 +3235,13 @@ html[data-theme="dark"] .no-tare-btn { background: rgba(255, 200, 100, 0.07); }
   right: -5vw;
 }
 
-.sw-pf {
+.editorial-pf {
   display: flex;
   flex-direction: column;
   gap: 16px;
   margin-top: 32px;
 }
-.sw-pf a {
+.editorial-pf a {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -3252,27 +3252,27 @@ html[data-theme="dark"] .no-tare-btn { background: rgba(255, 200, 100, 0.07); }
   font-size: var(--text-md);
   transition: transform var(--duration-fast) var(--ease-out), box-shadow var(--duration-fast) var(--ease-out);
 }
-.sw-pf a:hover {
+.editorial-pf a:hover {
   transform: translateY(-2px);
 }
-.sw-pf--kofi {
+.editorial-pf--kofi {
   background: #ff5f5f;
   color: var(--white);
   box-shadow: 0 4px 14px rgba(255, 95, 95, 0.4);
 }
-.sw-pf--kofi:hover {
+.editorial-pf--kofi:hover {
   box-shadow: 0 6px 20px rgba(255, 95, 95, 0.6);
 }
-.sw-pf--gb {
+.editorial-pf--gb {
   background: #24a687;
   color: var(--white);
   box-shadow: 0 4px 14px rgba(36, 166, 135, 0.4);
 }
-.sw-pf--gb:hover {
+.editorial-pf--gb:hover {
   box-shadow: 0 6px 20px rgba(36, 166, 135, 0.6);
 }
 
-.sw-sponsor {
+.editorial-sponsor {
   border: 2px dashed rgba(15, 44, 42, 0.15);
   border-radius: var(--radius-lg);
   padding: 32px;
@@ -3281,7 +3281,7 @@ html[data-theme="dark"] .no-tare-btn { background: rgba(255, 200, 100, 0.07); }
   background: rgba(255, 255, 255, 0.3);
 }
 
-.sw-give {
+.editorial-give {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -3289,13 +3289,13 @@ html[data-theme="dark"] .no-tare-btn { background: rgba(255, 200, 100, 0.07); }
 }
 
 /* Piggy Bobbing animation */
-.sw-piggy {
+.editorial-piggy {
   width: 80px;
   height: auto;
   cursor: pointer;
   transition: transform var(--duration-base) var(--ease-out);
 }
-.sw-piggy:hover {
+.editorial-piggy:hover {
   animation: piggy-bob 0.8s infinite alternate ease-in-out;
 }
 @keyframes piggy-bob {
@@ -3304,7 +3304,7 @@ html[data-theme="dark"] .no-tare-btn { background: rgba(255, 200, 100, 0.07); }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .sw-piggy:hover {
+  .editorial-piggy:hover {
     animation: none !important;
     transform: none !important;
   }
