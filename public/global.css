@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap');
+
 :root {
   --teal-400: #24a687;
   --teal-500: #1f8f7b;
@@ -1457,6 +1459,208 @@ html[data-theme="dark"] .brand-hero__wordmark {
 .menu-links a[aria-current="page"] { color: var(--menu-link-active-color); pointer-events: none; }
 .close-menu { appearance: none; background: var(--close-menu-bg); border: 1px solid var(--close-menu-border-color); border-radius: var(--radius-pill); padding: 12px 32px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; cursor: pointer; box-shadow: var(--shadow-btn); color: var(--close-menu-color); transition: background var(--duration-fast) var(--ease-out), border-color var(--duration-fast) var(--ease-out), color var(--duration-fast) var(--ease-out); }
 .close-menu:hover { background: var(--close-menu-hover-bg); }
+
+/* --- Side Menu Theme Picker --- */
+.menu-theme-picker {
+  margin-top: 24px;
+  border-top: 1px solid var(--menu-theme-picker-border);
+  padding-top: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.menu-theme-label {
+  font-size: var(--text-xs);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--menu-theme-label-color);
+  margin: 0;
+}
+
+.theme-toggle-wrapper {
+  position: relative;
+  display: inline-block;
+  width: 90px;
+  height: 36px;
+  cursor: pointer;
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+}
+
+.theme-toggle-wrapper input {
+  display: none;
+}
+
+.toggle-bg-day,
+.toggle-bg-night {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  transition: opacity var(--duration-base) var(--ease-out);
+}
+
+.toggle-bg-night {
+  opacity: 0;
+}
+
+html[data-theme="dark"] .toggle-bg-day {
+  opacity: 0;
+}
+
+html[data-theme="dark"] .toggle-bg-night {
+  opacity: 1;
+}
+
+.toggle-knob {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 30px;
+  height: 30px;
+  background: #fef08a;
+  border-radius: 50%;
+  transition: transform var(--duration-base) var(--ease-out), background var(--duration-base);
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+html[data-theme="dark"] .toggle-knob {
+  transform: translateX(54px);
+  background: #e2e8f0;
+}
+
+.crater {
+  position: absolute;
+  background: #cbd5e1;
+  border-radius: 50%;
+  opacity: 0;
+  transition: opacity var(--duration-base);
+}
+
+html[data-theme="dark"] .crater {
+  opacity: 1;
+}
+
+.crater-1 { top: 6px; left: 8px; width: 6px; height: 6px; }
+.crater-2 { top: 15px; left: 16px; width: 8px; height: 8px; }
+.crater-3 { top: 8px; left: 20px; width: 4px; height: 4px; }
+
+.menu-theme-btn {
+  appearance: none;
+  background: var(--menu-theme-btn-bg);
+  border: 1px solid var(--menu-theme-btn-border-color);
+  border-radius: var(--radius-pill);
+  padding: 8px 16px;
+  font-family: inherit;
+  font-size: var(--text-xs);
+  font-weight: 700;
+  color: var(--menu-theme-btn-color);
+  cursor: pointer;
+  transition: all var(--duration-fast) var(--ease-out);
+}
+
+.menu-theme-btn:hover {
+  background: var(--menu-theme-btn-hover-bg);
+}
+
+.menu-theme-btn.is-active {
+  background: var(--menu-theme-btn-active-bg);
+  border-color: var(--menu-theme-btn-active-border-color);
+  color: var(--menu-theme-btn-active-color);
+  box-shadow: var(--menu-theme-btn-active-shadow);
+}
+
+/* --- Side Menu Accessibility Picker --- */
+.menu-accessibility-picker {
+  margin-top: 16px;
+  margin-bottom: 24px;
+  border-top: 1px solid var(--menu-theme-picker-border);
+  padding-top: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.menu-access-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+}
+
+.menu-access-label {
+  font-size: var(--text-2xs);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--menu-theme-label-color);
+}
+
+.menu-access-buttons {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.menu-access-btn {
+  appearance: none;
+  background: var(--menu-theme-btn-bg);
+  border: 1px solid var(--menu-theme-btn-border-color);
+  border-radius: var(--radius-pill);
+  padding: 6px 12px;
+  font-family: inherit;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--menu-theme-btn-color);
+  cursor: pointer;
+  transition: all var(--duration-fast) var(--ease-out);
+}
+
+.menu-access-btn:hover {
+  background: var(--menu-theme-btn-hover-bg);
+}
+
+.menu-access-btn.is-active {
+  background: var(--menu-theme-btn-active-bg);
+  border-color: var(--menu-theme-btn-active-border-color);
+  color: var(--menu-theme-btn-active-color);
+  box-shadow: var(--menu-theme-btn-active-shadow);
+}
+
+/* --- Accessibility Behavior Overrides --- */
+
+/* 1. Dyslexic-Friendly Font */
+html[data-font="dyslexic"] body,
+html[data-font="dyslexic"] input,
+html[data-font="dyslexic"] button,
+html[data-font="dyslexic"] select,
+html[data-font="dyslexic"] textarea {
+  font-family: "Atkinson Hyperlegible", "Nunito", system-ui, -apple-system, sans-serif !important;
+}
+
+/* 2. Text Sizing Scale */
+html[data-text="lg"] {
+  font-size: 112.5% !important; /* Scale page base to 18px */
+}
+html[data-text="xl"] {
+  font-size: 125% !important; /* Scale page base to 20px */
+}
+
+/* 3. Reduced Motion */
+html[data-motion="reduced"] *,
+html[data-motion="reduced"] *::before,
+html[data-motion="reduced"] *::after {
+  animation-duration: 0.001s !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.001s !important;
+  scroll-behavior: auto !important;
+}
 
 /* =============================================
    MEDICATION GUIDES

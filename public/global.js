@@ -1,4 +1,67 @@
 (function () {
+  // --- Accessibility Management ---
+  const ACCESS_KEY = 'cd-accessibility';
+  const ACCESS_DEFAULTS = {
+    calm: 'off',
+    text: 'md',
+    motion: 'full',
+    font: 'default',
+    icon: 'off',
+    lang: 'en'
+  };
+
+  function getStoredAccessibility() {
+    try {
+      const saved = localStorage.getItem(ACCESS_KEY);
+      return saved ? JSON.parse(saved) : { ...ACCESS_DEFAULTS };
+    } catch (e) {
+      return { ...ACCESS_DEFAULTS };
+    }
+  }
+
+  function saveAccessibility(prefs) {
+    localStorage.setItem(ACCESS_KEY, JSON.stringify(prefs));
+    applyAccessibility(prefs);
+  }
+
+  function applyAccessibility(prefs) {
+    const root = document.documentElement;
+    root.dataset.calm = prefs.calm;
+    root.dataset.text = prefs.text;
+    root.dataset.font = prefs.font;
+    root.dataset.icon = prefs.icon;
+    root.dataset.lang = prefs.lang;
+    
+    const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const reducedMotion = prefs.motion === 'reduced' || motionQuery.matches;
+    root.dataset.motion = reducedMotion ? 'reduced' : 'full';
+    root.lang = prefs.lang || 'en';
+    
+    updateAccessibilityUI(prefs);
+  }
+
+  function updateAccessibilityUI(prefs) {
+    document.querySelectorAll('.menu-access-btn[data-pref="font"]').forEach(b => {
+      const isActive = b.dataset.val === prefs.font;
+      b.classList.toggle('is-active', isActive);
+      b.setAttribute('aria-pressed', String(isActive));
+    });
+    document.querySelectorAll('.menu-access-btn[data-pref="text"]').forEach(b => {
+      const isActive = b.dataset.val === prefs.text;
+      b.classList.toggle('is-active', isActive);
+      b.setAttribute('aria-pressed', String(isActive));
+    });
+    document.querySelectorAll('.menu-access-btn[data-pref="motion"]').forEach(b => {
+      const isActive = b.dataset.val === prefs.motion;
+      b.classList.toggle('is-active', isActive);
+      b.setAttribute('aria-pressed', String(isActive));
+    });
+  }
+
+  // Load and apply accessibility settings immediately to prevent flashing
+  const initialPrefs = getStoredAccessibility();
+  applyAccessibility(initialPrefs);
+
   // --- Theme Management ---
   // Stored values: 'light' | 'dark' | absent (means "system")
   const THEME_KEY = 'cd-theme';
@@ -98,6 +161,46 @@
         btn.addEventListener('click', function () { applyTheme(btn.dataset.themeChoice); });
       });
 
+      // Inject Accessibility options panel
+      const accPicker = document.createElement('div');
+      accPicker.className = 'menu-accessibility-picker';
+      accPicker.innerHTML =
+        '<p class="menu-theme-label">Reading Options</p>' +
+        '<div class="menu-access-group">' +
+          '<span class="menu-access-label">Font</span>' +
+          '<div class="menu-access-buttons">' +
+            '<button type="button" class="menu-access-btn" data-pref="font" data-val="default">Standard</button>' +
+            '<button type="button" class="menu-access-btn" data-pref="font" data-val="dyslexic">Dyslexic-Friendly</button>' +
+          '</div>' +
+        '</div>' +
+        '<div class="menu-access-group">' +
+          '<span class="menu-access-label">Text Size</span>' +
+          '<div class="menu-access-buttons">' +
+            '<button type="button" class="menu-access-btn" data-pref="text" data-val="md">Normal</button>' +
+            '<button type="button" class="menu-access-btn" data-pref="text" data-val="lg">Large</button>' +
+            '<button type="button" class="menu-access-btn" data-pref="text" data-val="xl">X-Large</button>' +
+          '</div>' +
+        '</div>' +
+        '<div class="menu-access-group">' +
+          '<span class="menu-access-label">Animations</span>' +
+          '<div class="menu-access-buttons">' +
+            '<button type="button" class="menu-access-btn" data-pref="motion" data-val="full">On</button>' +
+            '<button type="button" class="menu-access-btn" data-pref="motion" data-val="reduced">Off</button>' +
+          '</div>' +
+        '</div>';
+
+      menuPanel.insertBefore(accPicker, closeBtn);
+
+      accPicker.querySelectorAll('.menu-access-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          const prefKey = this.dataset.pref;
+          const prefVal = this.dataset.val;
+          const prefs = getStoredAccessibility();
+          prefs[prefKey] = prefVal;
+          saveAccessibility(prefs);
+        });
+      });
+
       // Subtle launcher for the Cappy Run easter egg (tap-friendly on mobile,
       // since the Konami code isn't reachable from a touchscreen). The bar is
       // appended last so it sits at the bottom of the menu panel.
@@ -121,6 +224,7 @@
     }
 
     updateThemeUI();
+    updateAccessibilityUI(getStoredAccessibility());
 
     // Sync when OS preference changes and no manual override is stored
     window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function (e) {
