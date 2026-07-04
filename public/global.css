@@ -209,6 +209,7 @@ html[data-theme="dark"] {
   --theme-toggle-icon: '☀️';
   --card-bg: rgba(20, 32, 48, 0.95);
   --card-border: 1px solid rgba(255, 255, 255, 0.08);
+  --ink-900: #f1f5f9;
 
   --text-primary:   #f1f5f9;
   --text-secondary: #e2e8f0;
@@ -342,6 +343,7 @@ html[data-theme="dark"] {
     --theme-toggle-icon: '☀️';
     --card-bg: rgba(20, 32, 48, 0.95);
     --card-border: 1px solid rgba(255, 255, 255, 0.08);
+    --ink-900: #f1f5f9;
 
     --text-primary:   #f1f5f9;
     --text-secondary: #e2e8f0;
