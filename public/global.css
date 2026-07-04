@@ -329,6 +329,28 @@ html[data-theme="dark"] {
   --cdcalc-result-disabled-opacity: 0.85;
 }
 
+html[data-theme="dark"] .cross-link-card {
+  color: #e2e8f0 !important;
+}
+html[data-theme="dark"] .cross-link-card__title {
+  color: #ffffff !important;
+}
+html[data-theme="dark"] .info-card {
+  color: #e2e8f0 !important;
+}
+html[data-theme="dark"] .info-card-title {
+  color: #ffffff !important;
+}
+html[data-theme="dark"] .info-list li {
+  color: #e2e8f0 !important;
+}
+html[data-theme="dark"] .donate-card {
+  color: #e2e8f0 !important;
+}
+html[data-theme="dark"] .donate-heading {
+  color: #ffffff !important;
+}
+
 @media (prefers-color-scheme: dark) {
   html:not([data-theme="light"]) {
     --page-bg: #111827;
@@ -464,6 +486,28 @@ html[data-theme="dark"] {
     --cdcalc-result-weight-strong-color: #ffffff;
     --cdcalc-result-disabled-bg: rgba(31, 41, 55, 0.3);
     --cdcalc-result-disabled-opacity: 0.85;
+  }
+
+  html:not([data-theme="light"]) .cross-link-card {
+    color: #e2e8f0 !important;
+  }
+  html:not([data-theme="light"]) .cross-link-card__title {
+    color: #ffffff !important;
+  }
+  html:not([data-theme="light"]) .info-card {
+    color: #e2e8f0 !important;
+  }
+  html:not([data-theme="light"]) .info-card-title {
+    color: #ffffff !important;
+  }
+  html:not([data-theme="light"]) .info-list li {
+    color: #e2e8f0 !important;
+  }
+  html:not([data-theme="light"]) .donate-card {
+    color: #e2e8f0 !important;
+  }
+  html:not([data-theme="light"]) .donate-heading {
+    color: #ffffff !important;
   }
 }
 @keyframes slam-in {
