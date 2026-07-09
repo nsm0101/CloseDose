@@ -74,16 +74,28 @@
   --duration-slow: 0.4s;
 
   /* Semantic Theme Variables - Light defaults */
-  --page-bg: #f6f5f0;
+  --page-bg: #fbfaf6;
   --page-bg-image: 
-    linear-gradient(to bottom, rgba(246, 245, 240, 0.55), rgba(246, 245, 240, 0.65)),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.84), rgba(255, 255, 255, 0.9)),
     url('images/crayon_doodles.webp');
-  --page-bg-size: cover, 750px;
+  --page-bg-size: cover, 520px;
   --page-bg-repeat: no-repeat, repeat;
-  --page-bg-blend: multiply, normal;
+  --page-bg-blend: normal, normal;
   --text-shadow-glow: none;
   --card-border-img: url('images/crayon-border.svg');
-  --shadow-card-crisp: 6px 6px 0px rgba(33, 166, 145, 0.25);
+  --tool-layer-image: url('images/crayon-tools.svg');
+  --tool-layer-opacity: 0.68;
+  --drawn-line-color: rgba(31, 143, 123, 0.9);
+  --drawn-line-soft: rgba(31, 143, 123, 0.22);
+  --drawn-surface: rgba(255, 255, 255, 0.9);
+  --drawn-surface-strong: rgba(255, 255, 255, 0.97);
+  --drawn-surface-wash:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.68), rgba(225, 248, 240, 0.66)),
+    repeating-linear-gradient(-8deg, rgba(31, 143, 123, 0.035) 0 2px, transparent 2px 9px);
+  --drawn-button-fill:
+    linear-gradient(160deg, rgba(36, 166, 135, 0.98), rgba(31, 143, 123, 0.94)),
+    repeating-linear-gradient(-12deg, rgba(255, 255, 255, 0.14) 0 2px, transparent 2px 7px);
+  --shadow-card-crisp: 7px 7px 0px rgba(31, 143, 123, 0.2), 0 18px 38px rgba(15, 44, 42, 0.08);
   --hero-color: var(--ink-900);
   --hero-eyebrow-color: rgba(15, 44, 42, 0.72);
   --hero-sub-color: rgba(15, 44, 42, 0.78);
@@ -212,16 +224,29 @@
 }
 
 html[data-theme="dark"] {
-  --page-bg: #2e2e2e;
+  --page-bg: #242424;
   --page-bg-image: 
-    linear-gradient(to bottom, rgba(46, 46, 46, 0.6), rgba(46, 46, 46, 0.7)),
+    radial-gradient(circle at 50% 14%, rgba(255, 255, 255, 0.1), transparent 34%),
+    linear-gradient(to bottom, rgba(36, 36, 36, 0.68), rgba(36, 36, 36, 0.86)),
     url('images/chalk_doodles.webp');
-  --page-bg-size: cover, 750px;
-  --page-bg-repeat: no-repeat, repeat;
-  --page-bg-blend: color-dodge, normal;
-  --text-shadow-glow: 0px 0px 2px rgba(255, 255, 255, 0.4);
+  --page-bg-size: cover, cover, 560px;
+  --page-bg-repeat: no-repeat, no-repeat, repeat;
+  --page-bg-blend: screen, normal, screen;
+  --text-shadow-glow: 0 0 1px rgba(255, 255, 255, 0.45);
   --card-border-img: url('images/chalk-border.svg');
-  --shadow-card-crisp: 6px 6px 0px rgba(0, 0, 0, 0.6);
+  --tool-layer-image: url('images/chalk-tools.svg');
+  --tool-layer-opacity: 0.74;
+  --drawn-line-color: rgba(232, 245, 241, 0.82);
+  --drawn-line-soft: rgba(232, 245, 241, 0.24);
+  --drawn-surface: rgba(38, 38, 38, 0.88);
+  --drawn-surface-strong: rgba(34, 34, 34, 0.95);
+  --drawn-surface-wash:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.09), rgba(36, 166, 135, 0.1)),
+    repeating-linear-gradient(-8deg, rgba(255, 255, 255, 0.035) 0 2px, transparent 2px 10px);
+  --drawn-button-fill:
+    linear-gradient(160deg, rgba(36, 166, 135, 0.98), rgba(31, 111, 101, 0.96)),
+    repeating-linear-gradient(-12deg, rgba(255, 255, 255, 0.18) 0 2px, transparent 2px 7px);
+  --shadow-card-crisp: 7px 7px 0 rgba(0, 0, 0, 0.5), 0 20px 44px rgba(0, 0, 0, 0.36);
   --hero-color: #ffffff;
   --hero-eyebrow-color: var(--teal-400);
   --shadow-btn: 0 4px 12px rgba(0, 0, 0, 0.25), 0 1px 3px rgba(0, 0, 0, 0.15);
@@ -232,7 +257,7 @@ html[data-theme="dark"] {
   --menu-overlay-bg: rgba(13, 18, 30, 0.98);
   --menu-link-color: #e2e8f0;
   --theme-toggle-icon: '☀️';
-  --card-bg: #2e2e2e;
+  --card-bg: rgba(38, 38, 38, 0.92);
   --card-border: 12px solid transparent;
   --font-default: 'Gochi Hand', 'Nunito', system-ui, -apple-system, sans-serif;
   --ink-900: #f1f5f9;
@@ -399,8 +424,11 @@ h6,
   background-clip: padding-box !important;
   border-radius: var(--card-radius) !important;
   box-shadow: var(--shadow-card) !important;
-  background-color: var(--card-bg) !important;
-  filter: url('#hand-drawn-filter');
+  background:
+    var(--drawn-surface-wash),
+    var(--drawn-surface-strong) !important;
+  color: var(--card-color, var(--ink-900));
+  outline: 1px solid transparent;
 }
 
 /* Form Elements & Buttons Overrides */
@@ -428,7 +456,6 @@ textarea {
   border-image-repeat: stretch !important;
   background-clip: padding-box !important;
   border-radius: 8px !important;
-  filter: url('#hand-drawn-filter');
   transition: transform 0.12s ease, box-shadow 0.12s ease;
 }
 
@@ -456,7 +483,7 @@ button:active {
 /* Option Buttons Active/Inactive Coloring & Borders */
 .cdcalc-age-option.is-active,
 .cdcalc-unit-option.is-active {
-  background: var(--brand-teal, #21A691) !important;
+  background: var(--drawn-button-fill) !important;
   color: #ffffff !important;
   box-shadow: none !important;
 }
@@ -464,19 +491,23 @@ button:active {
 .cdcalc-age-option:not(.is-active),
 .cdcalc-unit-option:not(.is-active) {
   color: var(--text-muted) !important;
-  background: var(--card-bg) !important;
+  background:
+    repeating-linear-gradient(-12deg, rgba(255, 255, 255, 0.05) 0 2px, transparent 2px 8px),
+    var(--drawn-surface) !important;
 }
 
 /* Card Header Stylings to match whiteboard/chalkboard style */
 .cdcalc-header {
-  background: var(--cdcalc-header-bg, linear-gradient(135deg, #21A691, #1a8b78)) !important;
-  color: #ffffff !important;
-  border-bottom: 3px solid var(--cdcalc-header-border-bottom, #21A691) !important;
+  background:
+    var(--drawn-surface-wash),
+    var(--cdcalc-header-bg, linear-gradient(135deg, #dff7ed, #c4eadc)) !important;
+  color: var(--cdcalc-title-color, var(--ink-900)) !important;
+  border-bottom: 4px solid var(--drawn-line-color) !important;
   border-radius: 12px 12px 0 0 !important;
 }
 
 .cdcalc-title {
-  color: #ffffff !important;
+  color: var(--cdcalc-title-color, var(--ink-900)) !important;
 }
 
 .cdcalc-header-eyebrow {
@@ -521,18 +552,35 @@ html[data-theme="dark"] .disclaimer-header h2 {
   color: var(--teal-400) !important;
 }
 
+html[data-theme="dark"] .cdcalc-title {
+  color: #f8fafc !important;
+}
+
 @media (prefers-color-scheme: dark) {
   html:not([data-theme="light"]) {
-    --page-bg: #2e2e2e;
+    --page-bg: #242424;
     --page-bg-image: 
-      linear-gradient(to bottom, rgba(46, 46, 46, 0.6), rgba(46, 46, 46, 0.7)),
+      radial-gradient(circle at 50% 14%, rgba(255, 255, 255, 0.1), transparent 34%),
+      linear-gradient(to bottom, rgba(36, 36, 36, 0.68), rgba(36, 36, 36, 0.86)),
       url('images/chalk_doodles.webp');
-    --page-bg-size: cover, 750px;
-    --page-bg-repeat: no-repeat, repeat;
-    --page-bg-blend: color-dodge, normal;
-    --text-shadow-glow: 0px 0px 2px rgba(255, 255, 255, 0.4);
+    --page-bg-size: cover, cover, 560px;
+    --page-bg-repeat: no-repeat, no-repeat, repeat;
+    --page-bg-blend: screen, normal, screen;
+    --text-shadow-glow: 0 0 1px rgba(255, 255, 255, 0.45);
     --card-border-img: url('images/chalk-border.svg');
-    --shadow-card-crisp: 6px 6px 0px rgba(0, 0, 0, 0.6);
+    --tool-layer-image: url('images/chalk-tools.svg');
+    --tool-layer-opacity: 0.74;
+    --drawn-line-color: rgba(232, 245, 241, 0.82);
+    --drawn-line-soft: rgba(232, 245, 241, 0.24);
+    --drawn-surface: rgba(38, 38, 38, 0.88);
+    --drawn-surface-strong: rgba(34, 34, 34, 0.95);
+    --drawn-surface-wash:
+      linear-gradient(135deg, rgba(255, 255, 255, 0.09), rgba(36, 166, 135, 0.1)),
+      repeating-linear-gradient(-8deg, rgba(255, 255, 255, 0.035) 0 2px, transparent 2px 10px);
+    --drawn-button-fill:
+      linear-gradient(160deg, rgba(36, 166, 135, 0.98), rgba(31, 111, 101, 0.96)),
+      repeating-linear-gradient(-12deg, rgba(255, 255, 255, 0.18) 0 2px, transparent 2px 7px);
+    --shadow-card-crisp: 7px 7px 0 rgba(0, 0, 0, 0.5), 0 20px 44px rgba(0, 0, 0, 0.36);
     --hero-color: #ffffff;
     --hero-eyebrow-color: var(--teal-400);
     --shadow-btn: 0 4px 12px rgba(0, 0, 0, 0.25), 0 1px 3px rgba(0, 0, 0, 0.15);
@@ -543,7 +591,7 @@ html[data-theme="dark"] .disclaimer-header h2 {
     --menu-overlay-bg: rgba(13, 18, 30, 0.98);
     --menu-link-color: #e2e8f0;
     --theme-toggle-icon: '☀️';
-    --card-bg: #2e2e2e;
+    --card-bg: rgba(38, 38, 38, 0.92);
     --card-border: 12px solid transparent;
     --font-default: 'Gochi Hand', 'Nunito', system-ui, -apple-system, sans-serif;
     --ink-900: #f1f5f9;
@@ -648,10 +696,6 @@ html[data-theme="dark"] .disclaimer-header h2 {
     --cdcalc-accordion-summary-bg: rgba(31, 41, 55, 0.6);
     --cdcalc-accordion-summary-color: #ffffff;
     --cdcalc-accordion-summary-after-color: #24a687;
-    --cdcalc-accordion[open] > summary {
-      background: rgba(36, 166, 135, 0.15) !important;
-      border-bottom-color: rgba(255, 255, 255, 0.15) !important;
-    }
     --cdcalc-accordion-body-color: #cbd5e1;
     --cdcalc-accordion-disabled-border-color: rgba(239, 68, 68, 0.4);
     --cdcalc-accordion-disabled-summary-bg: rgba(220, 38, 38, 0.2);
@@ -702,10 +746,25 @@ html[data-theme="dark"] .disclaimer-header h2 {
   html:not([data-theme="light"]) .disclaimer-header h2 {
     color: var(--teal-400) !important;
   }
+
+  html:not([data-theme="light"]) .cdcalc-title {
+    color: #f8fafc !important;
+  }
 }
 @keyframes slam-in {
   0% { transform: translateY(40px) scale(0.95); opacity: 0; }
   100% { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001s !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001s !important;
+    scroll-behavior: auto !important;
+  }
 }
 
 *,
@@ -729,6 +788,56 @@ body {
   display: flex;
   flex-direction: column;
   text-shadow: var(--text-shadow-glow);
+}
+
+body::before,
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+}
+
+body::before {
+  z-index: 0;
+  background: var(--tool-layer-image) center top / min(1440px, 118vw) auto no-repeat;
+  opacity: var(--tool-layer-opacity);
+}
+
+body::after {
+  z-index: 0;
+  background:
+    radial-gradient(circle at 18% 16%, rgba(255, 255, 255, 0.42), transparent 24%),
+    repeating-linear-gradient(0deg, rgba(15, 44, 42, 0.035) 0 1px, transparent 1px 7px),
+    repeating-linear-gradient(90deg, rgba(15, 44, 42, 0.025) 0 1px, transparent 1px 9px);
+  opacity: 0.2;
+  mix-blend-mode: multiply;
+}
+
+html[data-theme="dark"] body::after {
+  background:
+    radial-gradient(circle at 50% 14%, rgba(255, 255, 255, 0.16), transparent 26%),
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.045) 0 1px, transparent 1px 8px),
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.035) 0 1px, transparent 1px 11px);
+  opacity: 0.34;
+  mix-blend-mode: screen;
+}
+
+@media (prefers-color-scheme: dark) {
+  html:not([data-theme="light"]) body::after {
+    background:
+      radial-gradient(circle at 50% 14%, rgba(255, 255, 255, 0.16), transparent 26%),
+      repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.045) 0 1px, transparent 1px 8px),
+      repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.035) 0 1px, transparent 1px 11px);
+    opacity: 0.34;
+    mix-blend-mode: screen;
+  }
+}
+
+.wrap,
+.cd-footer {
+  position: relative;
+  z-index: 1;
 }
 
 .visually-hidden {
@@ -958,12 +1067,12 @@ main {
 
 @media (prefers-color-scheme: dark) {
   .brand-hero__wordmark {
-    filter: drop-shadow(0 6px 24px rgba(0, 0, 0, 0.55));
+    filter: grayscale(0.18) brightness(1.08) contrast(0.92) drop-shadow(0 6px 24px rgba(0, 0, 0, 0.55));
   }
 }
 
 html[data-theme="dark"] .brand-hero__wordmark {
-  filter: drop-shadow(0 6px 24px rgba(0, 0, 0, 0.55));
+  filter: grayscale(0.18) brightness(1.08) contrast(0.92) drop-shadow(0 6px 24px rgba(0, 0, 0, 0.55));
 }
 
 @media (max-width: 640px) {
@@ -1053,7 +1162,7 @@ html[data-theme="dark"] .brand-hero__wordmark {
   cursor: pointer;
   overflow: hidden;
   border: 2px solid rgba(255, 255, 255, 0.78);
-  background: url("Donations/WC_bg.webp") center / cover no-repeat;
+  background: url("Donations/WC_bg.webp") center / cover no-repeat !important;
   background-color: #f7f0e3;
   transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
 }
@@ -1467,10 +1576,10 @@ html[data-theme="dark"] .donate-link--givebutter {
 
 /* Collapsed: strip the card chrome so only the pill shows. */
 .card--disclaimer:not(.is-expanded) {
-  background: transparent;
-  border-color: transparent;
-  box-shadow: none;
-  backdrop-filter: none;
+  background: transparent !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
   padding: 6px;
 }
 
@@ -4119,3 +4228,12 @@ input, select, button {
   font-family: "Atkinson Hyperlegible", "Nunito", sans-serif !important;
 }
 
+html[data-theme="dark"] .cdcalc-card .cdcalc-title {
+  color: #f8fafc !important;
+}
+
+@media (prefers-color-scheme: dark) {
+  html:not([data-theme="light"]) .cdcalc-card .cdcalc-title {
+    color: #f8fafc !important;
+  }
+}
