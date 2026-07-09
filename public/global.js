@@ -498,7 +498,7 @@
       <svg xmlns="http://www.w3.org/2000/svg" style="display: block; width: 0; height: 0;">
         <filter id="hand-drawn-filter">
           <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="3" result="noise" />
-          <feDisplacementMap in="SourceGraphic" in2="noise" scale="2.5" xChannelSelector="R" yChannelSelector="G" />
+          <feDisplacementMap in="SourceGraphic" in2="noise" scale="4" xChannelSelector="R" yChannelSelector="G" />
         </filter>
       </svg>
     `;

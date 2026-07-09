@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Architects+Daughter&family=Cabin+Sketch:wght@400;700&family=Atkinson+Hyperlegible:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Architects+Daughter&family=Cabin+Sketch:wght@400;700&family=Gochi+Hand&family=Atkinson+Hyperlegible:wght@400;700&display=swap');
 
 :root {
   --canvas-doodles-light: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300' viewBox='0 0 300 300'%3E%3Cg stroke='%2321A691' stroke-width='1.5' stroke-opacity='0.08' fill='none' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M120,40 C110,60 140,90 150,90 C160,90 190,60 180,40 M150,90 L150,120 C150,130 170,140 170,150 C170,155 165,160 160,160 C155,160 150,155 150,150'/%3E%3Cpath d='M220,120 C210,100 180,110 195,130 L220,155 L245,130 C260,110 230,100 220,120 Z'/%3E%3Cpath d='M180,135 H195 L200,125 L205,145 L210,130 L215,138 L220,135 H260'/%3E%3Crect x='35' y='145' width='50' height='20' rx='10' transform='rotate(45, 60, 155)'/%3E%3Ccircle cx='57' cy='152' r='1' fill='%2321A691' fill-opacity='0.08'/%3E%3Ccircle cx='63' cy='158' r='1' fill='%2321A691' fill-opacity='0.08'/%3E%3Crect x='230' y='30' width='40' height='18' rx='9' transform='rotate(-30, 250, 39)'/%3E%3Cpath d='M240,43 L250,37'/%3E%3Cpath d='M40,230 L80,190' stroke-width='3'/%3E%3Cpath d='M35,235 C25,245 25,255 35,265 C45,275 55,275 65,265 L105,225'/%3E%3Cpath d='M140,20 L140,30 M135,25 L145,25'/%3E%3Cpath d='M280,220 L280,230 M275,225 L285,225'/%3E%3C/g%3E%3C/svg%3E");
@@ -76,12 +76,11 @@
   /* Semantic Theme Variables - Light defaults */
   --page-bg: #f6f5f0;
   --page-bg-image: 
-    linear-gradient(to bottom, rgba(246, 245, 240, 0.82), rgba(246, 245, 240, 0.87)),
-    url('images/crayon_doodles.webp'),
-    url('images/crayon_texture.webp');
-  --page-bg-size: cover, auto, cover;
-  --page-bg-repeat: repeat, repeat, no-repeat;
-  --page-bg-blend: multiply, normal, normal;
+    linear-gradient(to bottom, rgba(246, 245, 240, 0.55), rgba(246, 245, 240, 0.65)),
+    url('images/crayon_doodles.webp');
+  --page-bg-size: cover, 750px;
+  --page-bg-repeat: no-repeat, repeat;
+  --page-bg-blend: multiply, normal;
   --text-shadow-glow: none;
   --card-border-img: url('images/crayon-border.svg');
   --shadow-card-crisp: 6px 6px 0px rgba(33, 166, 145, 0.25);
@@ -215,12 +214,11 @@
 html[data-theme="dark"] {
   --page-bg: #2e2e2e;
   --page-bg-image: 
-    linear-gradient(to bottom, rgba(46, 46, 46, 0.85), rgba(46, 46, 46, 0.9)),
-    url('images/chalk_doodles.webp'),
-    url('images/chalkboard_texture.webp');
-  --page-bg-size: cover, auto, cover;
-  --page-bg-repeat: repeat, repeat, no-repeat;
-  --page-bg-blend: color-dodge, normal, normal;
+    linear-gradient(to bottom, rgba(46, 46, 46, 0.6), rgba(46, 46, 46, 0.7)),
+    url('images/chalk_doodles.webp');
+  --page-bg-size: cover, 750px;
+  --page-bg-repeat: no-repeat, repeat;
+  --page-bg-blend: color-dodge, normal;
   --text-shadow-glow: 0px 0px 2px rgba(255, 255, 255, 0.4);
   --card-border-img: url('images/chalk-border.svg');
   --shadow-card-crisp: 6px 6px 0px rgba(0, 0, 0, 0.6);
@@ -285,7 +283,7 @@ html[data-theme="dark"] {
   --subtraction-calc-screen-color: #34d399;
   --subtraction-calc-screen-border: #064e3b;
   
-  --cdcalc-bg: rgba(20, 32, 48, 0.95);
+  --cdcalc-bg: rgba(46, 46, 46, 0.95);
   --cdcalc-border-color: rgba(255, 255, 255, 0.2);
   --cdcalc-color: #f1f5f9;
   --cdcalc-shadow: 0 6px 0 rgba(0, 0, 0, 0.6);
@@ -471,9 +469,9 @@ button:active {
 
 /* Card Header Stylings to match whiteboard/chalkboard style */
 .cdcalc-header {
-  background: var(--brand-teal, #21A691) !important;
+  background: var(--cdcalc-header-bg, linear-gradient(135deg, #21A691, #1a8b78)) !important;
   color: #ffffff !important;
-  border-bottom: 3px solid var(--brand-teal, #21A691) !important;
+  border-bottom: 3px solid var(--cdcalc-header-border-bottom, #21A691) !important;
   border-radius: 12px 12px 0 0 !important;
 }
 
@@ -527,12 +525,11 @@ html[data-theme="dark"] .disclaimer-header h2 {
   html:not([data-theme="light"]) {
     --page-bg: #2e2e2e;
     --page-bg-image: 
-      linear-gradient(to bottom, rgba(46, 46, 46, 0.85), rgba(46, 46, 46, 0.9)),
-      url('images/chalk_doodles.webp'),
-      url('images/chalkboard_texture.webp');
-    --page-bg-size: cover, auto, cover;
-    --page-bg-repeat: repeat, repeat, no-repeat;
-    --page-bg-blend: color-dodge, normal, normal;
+      linear-gradient(to bottom, rgba(46, 46, 46, 0.6), rgba(46, 46, 46, 0.7)),
+      url('images/chalk_doodles.webp');
+    --page-bg-size: cover, 750px;
+    --page-bg-repeat: no-repeat, repeat;
+    --page-bg-blend: color-dodge, normal;
     --text-shadow-glow: 0px 0px 2px rgba(255, 255, 255, 0.4);
     --card-border-img: url('images/chalk-border.svg');
     --shadow-card-crisp: 6px 6px 0px rgba(0, 0, 0, 0.6);
@@ -597,7 +594,7 @@ html[data-theme="dark"] .disclaimer-header h2 {
     --subtraction-calc-screen-color: #34d399;
     --subtraction-calc-screen-border: #064e3b;
     
-    --cdcalc-bg: rgba(20, 32, 48, 0.95);
+    --cdcalc-bg: rgba(46, 46, 46, 0.95);
     --cdcalc-border-color: rgba(255, 255, 255, 0.2);
     --cdcalc-color: #f1f5f9;
     --cdcalc-shadow: 0 6px 0 rgba(0, 0, 0, 0.6);
@@ -1157,6 +1154,13 @@ html[data-theme="dark"] .brand-hero__wordmark {
   gap: 6px;
 }
 
+.calculator-expansion-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 10px;
+}
+
 /* On desktop, expose a sidebar layout so the blurb + helper cards
    live next to the calculator column. On mobile/tablet the same
    sidebar collapses below the calculator. */
@@ -1305,6 +1309,24 @@ html[data-theme="dark"] .brand-hero__wordmark {
 .info-urgent-line { font-size: 0.95rem; color: #3a1a1a; }
 .info-urgent-line a { color: #8b1111; font-weight: 800; text-decoration: none; }
 .info-urgent-line a:hover { text-decoration: underline; }
+
+html[data-theme="dark"] .info-card--urgent {
+  background: rgba(139, 17, 17, 0.15) !important;
+  border-color: rgba(239, 68, 68, 0.3) !important;
+}
+html[data-theme="dark"] .info-card--urgent .info-card-title { color: #fca5a5 !important; }
+html[data-theme="dark"] .info-urgent-line { color: #e2e8f0 !important; }
+html[data-theme="dark"] .info-urgent-line a { color: #fca5a5 !important; }
+
+@media (prefers-color-scheme: dark) {
+  html:not([data-theme="light"]) .info-card--urgent {
+    background: rgba(139, 17, 17, 0.15) !important;
+    border-color: rgba(239, 68, 68, 0.3) !important;
+  }
+  html:not([data-theme="light"]) .info-card--urgent .info-card-title { color: #fca5a5 !important; }
+  html:not([data-theme="light"]) .info-urgent-line { color: #e2e8f0 !important; }
+  html:not([data-theme="light"]) .info-urgent-line a { color: #fca5a5 !important; }
+}
 
 /* --- Donate Card --- */
 .donate-card { color: var(--ink-900); }
