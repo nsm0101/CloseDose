@@ -1,15 +1,21 @@
-@import url('https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Architects+Daughter&family=Cabin+Sketch:wght@400;700&family=Atkinson+Hyperlegible:wght@400;700&display=swap');
 
 :root {
+  --canvas-doodles-light: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300' viewBox='0 0 300 300'%3E%3Cg stroke='%2321A691' stroke-width='1.5' stroke-opacity='0.08' fill='none' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M120,40 C110,60 140,90 150,90 C160,90 190,60 180,40 M150,90 L150,120 C150,130 170,140 170,150 C170,155 165,160 160,160 C155,160 150,155 150,150'/%3E%3Cpath d='M220,120 C210,100 180,110 195,130 L220,155 L245,130 C260,110 230,100 220,120 Z'/%3E%3Cpath d='M180,135 H195 L200,125 L205,145 L210,130 L215,138 L220,135 H260'/%3E%3Crect x='35' y='145' width='50' height='20' rx='10' transform='rotate(45, 60, 155)'/%3E%3Ccircle cx='57' cy='152' r='1' fill='%2321A691' fill-opacity='0.08'/%3E%3Ccircle cx='63' cy='158' r='1' fill='%2321A691' fill-opacity='0.08'/%3E%3Crect x='230' y='30' width='40' height='18' rx='9' transform='rotate(-30, 250, 39)'/%3E%3Cpath d='M240,43 L250,37'/%3E%3Cpath d='M40,230 L80,190' stroke-width='3'/%3E%3Cpath d='M35,235 C25,245 25,255 35,265 C45,275 55,275 65,265 L105,225'/%3E%3Cpath d='M140,20 L140,30 M135,25 L145,25'/%3E%3Cpath d='M280,220 L280,230 M275,225 L285,225'/%3E%3C/g%3E%3C/svg%3E");
+  --canvas-doodles-dark: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300' viewBox='0 0 300 300'%3E%3Cg stroke='%23ffffff' stroke-width='1.5' stroke-opacity='0.05' fill='none' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M120,40 C110,60 140,90 150,90 C160,90 190,60 180,40 M150,90 L150,120 C150,130 170,140 170,150 C170,155 165,160 160,160 C155,160 150,155 150,150'/%3E%3Cpath d='M220,120 C210,100 180,110 195,130 L220,155 L245,130 C260,110 230,100 220,120 Z'/%3E%3Cpath d='M180,135 H195 L200,125 L205,145 L210,130 L215,138 L220,135 H260'/%3E%3Crect x='35' y='145' width='50' height='20' rx='10' transform='rotate(45, 60, 155)'/%3E%3Ccircle cx='57' cy='152' r='1' fill='%23ffffff' fill-opacity='0.05'/%3E%3Ccircle cx='63' cy='158' r='1' fill='%23ffffff' fill-opacity='0.05'/%3E%3Crect x='230' y='30' width='40' height='18' rx='9' transform='rotate(-30, 250, 39)'/%3E%3Cpath d='M240,43 L250,37'/%3E%3Cpath d='M40,230 L80,190' stroke-width='3'/%3E%3Cpath d='M35,235 C25,245 25,255 35,265 C45,275 55,275 65,265 L105,225'/%3E%3Cpath d='M140,20 L140,30 M135,25 L145,25'/%3E%3Cpath d='M280,220 L280,230 M275,225 L285,225'/%3E%3C/g%3E%3C/svg%3E");
+
+  --font-handwritten: 'Architects Daughter', 'Atkinson Hyperlegible', sans-serif;
+  --font-display: 'Cabin Sketch', 'Atkinson Hyperlegible', sans-serif;
+  --font-default: var(--font-handwritten);
   --teal-400: #24a687;
   --teal-500: #1f8f7b;
   --teal-600: #123a37;
   --ink-900: #0f2c2a;
   --ink-700: #124643;
   --white: #ffffff;
-  --card-bg: rgba(255, 255, 255, 0.98);
-  --card-border: 1px solid rgba(15, 44, 42, 0.14);
-  --card-radius: var(--radius-lg);
+  --card-bg: rgba(255, 255, 255, 0.95);
+  --card-border: 12px solid transparent;
+  --card-radius: 8px;
   
   --footer-bg: #0d1b2a;
   --footer-fg: #eaeaea;
@@ -46,7 +52,7 @@
   --shadow-lg:    0 22px 45px rgba(13, 52, 82, 0.18);
   --shadow-xl:    0 32px 64px rgba(13, 52, 82, 0.22);
   --shadow-press: 0 6px 0 rgba(15, 44, 42, 0.22);
-  --shadow-card:  0 12px 30px rgba(15, 44, 42, 0.08), 0 2px 8px rgba(15, 44, 42, 0.04);
+  --shadow-card:  var(--shadow-card-crisp);
   --shadow-btn:   0 4px 12px rgba(15, 44, 42, 0.08), 0 1px 3px rgba(15, 44, 42, 0.04);
 
   /* Border Radii */
@@ -68,9 +74,17 @@
   --duration-slow: 0.4s;
 
   /* Semantic Theme Variables - Light defaults */
-  --page-bg: #e8f5f0;
-  --page-overlay-start: rgba(230, 246, 241, 0.72);
-  --page-overlay-end: rgba(210, 238, 230, 0.78);
+  --page-bg: #f6f5f0;
+  --page-bg-image: 
+    linear-gradient(to bottom, rgba(246, 245, 240, 0.82), rgba(246, 245, 240, 0.87)),
+    url('images/crayon_doodles.webp'),
+    url('images/crayon_texture.webp');
+  --page-bg-size: cover, auto, cover;
+  --page-bg-repeat: repeat, repeat, no-repeat;
+  --page-bg-blend: multiply, normal, normal;
+  --text-shadow-glow: none;
+  --card-border-img: url('images/crayon-border.svg');
+  --shadow-card-crisp: 6px 6px 0px rgba(33, 166, 145, 0.25);
   --hero-color: var(--ink-900);
   --hero-eyebrow-color: rgba(15, 44, 42, 0.72);
   --hero-sub-color: rgba(15, 44, 42, 0.78);
@@ -199,12 +213,19 @@
 }
 
 html[data-theme="dark"] {
-  --page-bg: #111827;
-  --page-overlay-start: rgba(10, 15, 25, 0.78);
-  --page-overlay-end: rgba(17, 24, 39, 0.88);
+  --page-bg: #2e2e2e;
+  --page-bg-image: 
+    linear-gradient(to bottom, rgba(46, 46, 46, 0.85), rgba(46, 46, 46, 0.9)),
+    url('images/chalk_doodles.webp'),
+    url('images/chalkboard_texture.webp');
+  --page-bg-size: cover, auto, cover;
+  --page-bg-repeat: repeat, repeat, no-repeat;
+  --page-bg-blend: color-dodge, normal, normal;
+  --text-shadow-glow: 0px 0px 2px rgba(255, 255, 255, 0.4);
+  --card-border-img: url('images/chalk-border.svg');
+  --shadow-card-crisp: 6px 6px 0px rgba(0, 0, 0, 0.6);
   --hero-color: #ffffff;
   --hero-eyebrow-color: var(--teal-400);
-  --shadow-card: 0 12px 30px rgba(0, 0, 0, 0.35), 0 2px 8px rgba(0, 0, 0, 0.2);
   --shadow-btn: 0 4px 12px rgba(0, 0, 0, 0.25), 0 1px 3px rgba(0, 0, 0, 0.15);
   --hero-sub-color: rgba(255, 255, 255, 0.86);
   --hero-shadow: 0 2px 18px rgba(0, 0, 0, 0.35);
@@ -213,8 +234,9 @@ html[data-theme="dark"] {
   --menu-overlay-bg: rgba(13, 18, 30, 0.98);
   --menu-link-color: #e2e8f0;
   --theme-toggle-icon: '☀️';
-  --card-bg: rgba(20, 32, 48, 0.95);
-  --card-border: 1px solid rgba(255, 255, 255, 0.08);
+  --card-bg: #2e2e2e;
+  --card-border: 12px solid transparent;
+  --font-default: 'Gochi Hand', 'Nunito', system-ui, -apple-system, sans-serif;
   --ink-900: #f1f5f9;
 
   --text-primary:   #f1f5f9;
@@ -333,6 +355,138 @@ html[data-theme="dark"] {
   --cdcalc-result-disabled-opacity: 0.85;
 }
 
+/* =========================================================================
+   Hand-Drawn Chalkboard & Whiteboard Crayon Theme Overhaul Overrides
+   ========================================================================= */
+
+/* Typography Overrides */
+body,
+input,
+select,
+textarea,
+button,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.brand-title,
+.cdcalc-title,
+.info-card-title,
+.cdcalc-step-text,
+.cdcalc-dose-ml,
+.cdcalc-dose-mg,
+.disclaimer-body {
+  font-family: var(--font-default) !important;
+  text-shadow: var(--text-shadow-glow);
+}
+
+/* Card Elements Border Image Overrides */
+.card,
+.cross-link-card,
+.editorial-card,
+.dose-unit-card,
+.story-card,
+.values-card,
+.trust-card,
+.contact-grid-card,
+.cdcalc-card,
+.cdcalc-result-card,
+.disclaimer-card {
+  border: var(--card-border) !important;
+  border-image-source: var(--card-border-img) !important;
+  border-image-slice: 16 !important;
+  border-image-repeat: stretch !important;
+  background-clip: padding-box !important;
+  border-radius: var(--card-radius) !important;
+  box-shadow: var(--shadow-card) !important;
+  background-color: var(--card-bg) !important;
+  filter: url('#hand-drawn-filter');
+}
+
+/* Form Elements & Buttons Overrides */
+.cdcalc-age-option,
+.cdcalc-unit-option,
+.cdcalc-button,
+.cdcalc-input,
+.menu-btn,
+.close-menu,
+.menu-access-btn,
+.menu-theme-btn,
+button.btn,
+.btn,
+input[type="number"],
+input[type="text"],
+input[type="tel"],
+input[type="email"],
+select,
+textarea {
+  border-width: 6px !important;
+  border-style: solid !important;
+  border-color: transparent !important;
+  border-image-source: var(--card-border-img) !important;
+  border-image-slice: 16 !important;
+  border-image-repeat: stretch !important;
+  background-clip: padding-box !important;
+  border-radius: 8px !important;
+  filter: url('#hand-drawn-filter');
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+
+/* Micro-animations and hover effects for hand-drawn interactive elements */
+.cdcalc-age-option:hover,
+.cdcalc-unit-option:hover,
+.cdcalc-button:hover,
+.menu-btn:hover,
+.close-menu:hover,
+.donate-link--givebutter:hover,
+.donate-link--kofi:hover,
+button:hover {
+  transform: scale(1.02) rotate(-0.5deg) !important;
+}
+
+.cdcalc-age-option:active,
+.cdcalc-unit-option:active,
+.cdcalc-button:active,
+.menu-btn:active,
+.close-menu:active,
+button:active {
+  transform: scale(0.98) rotate(0.5deg) !important;
+}
+
+/* Option Buttons Active/Inactive Coloring & Borders */
+.cdcalc-age-option.is-active,
+.cdcalc-unit-option.is-active {
+  background: var(--brand-teal, #21A691) !important;
+  color: #ffffff !important;
+  box-shadow: none !important;
+}
+
+.cdcalc-age-option:not(.is-active),
+.cdcalc-unit-option:not(.is-active) {
+  color: var(--text-muted) !important;
+  background: var(--card-bg) !important;
+}
+
+/* Card Header Stylings to match whiteboard/chalkboard style */
+.cdcalc-header {
+  background: var(--brand-teal, #21A691) !important;
+  color: #ffffff !important;
+  border-bottom: 3px solid var(--brand-teal, #21A691) !important;
+  border-radius: 12px 12px 0 0 !important;
+}
+
+.cdcalc-title {
+  color: #ffffff !important;
+}
+
+.cdcalc-header-eyebrow {
+  background: rgba(255, 255, 255, 0.2) !important;
+  color: #ffffff !important;
+}
+
+
 html[data-theme="dark"] .cross-link-card {
   color: #e2e8f0 !important;
 }
@@ -371,12 +525,19 @@ html[data-theme="dark"] .disclaimer-header h2 {
 
 @media (prefers-color-scheme: dark) {
   html:not([data-theme="light"]) {
-    --page-bg: #111827;
-    --page-overlay-start: rgba(10, 15, 25, 0.78);
-    --page-overlay-end: rgba(17, 24, 39, 0.88);
+    --page-bg: #2e2e2e;
+    --page-bg-image: 
+      linear-gradient(to bottom, rgba(46, 46, 46, 0.85), rgba(46, 46, 46, 0.9)),
+      url('images/chalk_doodles.webp'),
+      url('images/chalkboard_texture.webp');
+    --page-bg-size: cover, auto, cover;
+    --page-bg-repeat: repeat, repeat, no-repeat;
+    --page-bg-blend: color-dodge, normal, normal;
+    --text-shadow-glow: 0px 0px 2px rgba(255, 255, 255, 0.4);
+    --card-border-img: url('images/chalk-border.svg');
+    --shadow-card-crisp: 6px 6px 0px rgba(0, 0, 0, 0.6);
     --hero-color: #ffffff;
     --hero-eyebrow-color: var(--teal-400);
-    --shadow-card: 0 12px 30px rgba(0, 0, 0, 0.35), 0 2px 8px rgba(0, 0, 0, 0.2);
     --shadow-btn: 0 4px 12px rgba(0, 0, 0, 0.25), 0 1px 3px rgba(0, 0, 0, 0.15);
     --hero-sub-color: rgba(255, 255, 255, 0.86);
     --hero-shadow: 0 2px 18px rgba(0, 0, 0, 0.35);
@@ -385,8 +546,9 @@ html[data-theme="dark"] .disclaimer-header h2 {
     --menu-overlay-bg: rgba(13, 18, 30, 0.98);
     --menu-link-color: #e2e8f0;
     --theme-toggle-icon: '☀️';
-    --card-bg: rgba(20, 32, 48, 0.95);
-    --card-border: 1px solid rgba(255, 255, 255, 0.08);
+    --card-bg: #2e2e2e;
+    --card-border: 12px solid transparent;
+    --font-default: 'Gochi Hand', 'Nunito', system-ui, -apple-system, sans-serif;
     --ink-900: #f1f5f9;
 
     --text-primary:   #f1f5f9;
@@ -557,19 +719,19 @@ html[data-theme="dark"] .disclaimer-header h2 {
 
 body {
   margin: 0;
-  font-family: 'Nunito', system-ui, -apple-system, sans-serif;
+  font-family: var(--font-default);
   background-color: var(--page-bg);
-  background-image:
-    linear-gradient(160deg, var(--page-overlay-start), var(--page-overlay-end)),
-    url('images/bg4k.png');
-  background-size: auto, cover;
-  background-repeat: no-repeat, no-repeat;
-  background-position: center, center;
+  background-image: var(--page-bg-image);
+  background-size: var(--page-bg-size);
+  background-repeat: var(--page-bg-repeat);
+  background-blend-mode: var(--page-bg-blend);
+  background-position: center, center, center;
   background-attachment: fixed;
   color: var(--ink-900);
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  text-shadow: var(--text-shadow-glow);
 }
 
 .visually-hidden {
@@ -1065,12 +1227,16 @@ html[data-theme="dark"] .brand-hero__wordmark {
 .card {
   background: var(--card-bg);
   border: var(--card-border);
+  border-image-source: var(--card-border-img);
+  border-image-slice: 25;
+  border-image-repeat: repeat;
   border-radius: var(--card-radius);
   box-shadow: var(--shadow-card);
   padding: clamp(20px, 3vw, 30px);
   width: 100%;
   margin: 0;
   backdrop-filter: blur(18px);
+  background-clip: padding-box;
   animation: slam-in 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
 }
 
@@ -3904,5 +4070,30 @@ html[data-theme="dark"] .editorial-sponsor {
 
 .status.success {
   color: #22c55e;
+}
+
+/* --- Hand-drawn Chalk Style overrides --- */
+h1, h2, h3, h4, h5, h6,
+.editorial-h2,
+.info-card-title,
+.cross-link-card__title,
+.support-care-card__title,
+.cappy-modal-dialog h2,
+.contact-emergency h2,
+.med-guide__header-text h2,
+.weighing-intro h2,
+.impact-card h2,
+.menu-theme-label {
+  font-family: var(--font-display) !important;
+  font-weight: 700;
+}
+
+/* Ensure safety-critical text (calculator widgets, inputs, outputs, etc.) retains low-vision legibility */
+.calculator-widget-host,
+.calculator-widget-host *,
+.cd-calc-value,
+.cd-calc-unit,
+input, select, button {
+  font-family: "Atkinson Hyperlegible", "Nunito", sans-serif !important;
 }
 

@@ -483,9 +483,36 @@
       window.dispatchEvent(new Event('cappyrun:launch'));
     });
   });
+
+  function initializeHandDrawnFilter() {
+    if (document.getElementById('hand-drawn-filter-container')) return;
+    const container = document.createElement('div');
+    container.id = 'hand-drawn-filter-container';
+    container.style.position = 'absolute';
+    container.style.width = '0';
+    container.style.height = '0';
+    container.style.overflow = 'hidden';
+    container.style.pointerEvents = 'none';
+    container.setAttribute('aria-hidden', 'true');
+    container.innerHTML = `
+      <svg xmlns="http://www.w3.org/2000/svg" style="display: block; width: 0; height: 0;">
+        <filter id="hand-drawn-filter">
+          <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="3" result="noise" />
+          <feDisplacementMap in="SourceGraphic" in2="noise" scale="2.5" xChannelSelector="R" yChannelSelector="G" />
+        </filter>
+      </svg>
+    `;
+    document.body.appendChild(container);
+  }
+
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', loadCappyRun);
+    document.addEventListener('DOMContentLoaded', function () {
+      loadCappyRun();
+      initializeHandDrawnFilter();
+    });
   } else {
     loadCappyRun();
+    initializeHandDrawnFilter();
   }
 })();
+
