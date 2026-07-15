@@ -1,0 +1,6 @@
+{
+  "visual_qa": "pass",
+  "qa_note": "All standard rows preserve Cappy identity and state semantics without forbidden effects, clipping, overlap, static idle, wrong travel, reversed cadence, or conspicuous popping; deterministic v2, chroma, and hard-cardinal gates pass.",
+  "repair_rows": [],
+  "repair_notes": []
+}

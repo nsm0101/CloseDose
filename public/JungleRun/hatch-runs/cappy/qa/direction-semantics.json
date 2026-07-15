@@ -1,0 +1,27 @@
+{
+  "ok": true,
+  "reviewed_by": "independent-final-visual-qa-worker",
+  "directions": [
+    {"direction":"000","expected":"up","verdict":"pass","observed":{"horizontal":"centered","vertical":"up"},"reason":"Centered muzzle and pupils with lifted head clearly aim up."},
+    {"direction":"022.5","expected":"up-right","verdict":"warning","observed":{"horizontal":"screen-right subtle","vertical":"up"},"reason":"Muzzle and pupils shift right while nose and gaze lift; blind horizontal cue was ambiguous but labeled quadrant is correct."},
+    {"direction":"045","expected":"up-right","verdict":"pass","observed":{"horizontal":"screen-right","vertical":"up"},"reason":"Nose and eyes sit right of center with raised muzzle and pupils."},
+    {"direction":"067.5","expected":"up-right","verdict":"pass","observed":{"horizontal":"screen-right","vertical":"up"},"reason":"Head and muzzle turn right while elevated gaze and nose retain the up axis."},
+    {"direction":"090","expected":"right","verdict":"pass","observed":{"horizontal":"screen-right","vertical":"level"},"reason":"Unmistakable right-facing side profile."},
+    {"direction":"112.5","expected":"down-right","verdict":"pass","observed":{"horizontal":"screen-right","vertical":"down"},"reason":"Muzzle and eye remain right of center while head pitch and gaze descend."},
+    {"direction":"135","expected":"down-right","verdict":"pass","observed":{"horizontal":"screen-right","vertical":"down"},"reason":"Nose projects right and the lowered muzzle and pupil read down."},
+    {"direction":"157.5","expected":"down-right","verdict":"warning","observed":{"horizontal":"screen-right subtle","vertical":"down"},"reason":"Rightward nose offset is subtle and blind-ambiguous, while nose and pupils clearly aim down in the labeled loop."},
+    {"direction":"180","expected":"down","verdict":"pass","observed":{"horizontal":"centered","vertical":"down"},"reason":"Centered top-down pose with muzzle and pupils clearly directed down."},
+    {"direction":"202.5","expected":"down-left","verdict":"pass","observed":{"horizontal":"screen-left","vertical":"down"},"reason":"Nose and pupils shift left while lowered head and gaze read down."},
+    {"direction":"225","expected":"down-left","verdict":"pass","observed":{"horizontal":"screen-left","vertical":"down"},"reason":"Muzzle sits left of center while nose and eyes remain downward."},
+    {"direction":"247.5","expected":"down-left","verdict":"pass","observed":{"horizontal":"screen-left","vertical":"down"},"reason":"Nose clearly projects left and the crouched head and lowered gaze retain the down axis."},
+    {"direction":"270","expected":"left","verdict":"pass","observed":{"horizontal":"screen-left","vertical":"level"},"reason":"Unmistakable left-facing side profile."},
+    {"direction":"292.5","expected":"up-left","verdict":"pass","observed":{"horizontal":"screen-left","vertical":"up"},"reason":"Muzzle and pupils face left while lifted head and high gaze read up."},
+    {"direction":"315","expected":"up-left","verdict":"pass","observed":{"horizontal":"screen-left","vertical":"up"},"reason":"Nose remains left of center while raised muzzle and pupils read up."},
+    {"direction":"337.5","expected":"up-left","verdict":"warning","observed":{"horizontal":"screen-left subtle","vertical":"up"},"reason":"Leftward facial offset is subtle and blind-ambiguous, while centered lifted muzzle and pupils clearly read up in the labeled loop."}
+  ],
+  "review_warnings": [
+    "Blind horizontal ambiguity at 157.5 and 337.5 is accepted because labeled poses remain in their intended quadrants.",
+    "Continuity metric outliers, especially 247.5 to 270 and 337.5 to 000, are accepted because the labeled loop has no conspicuous snap, identity change, or semantic reversal."
+  ],
+  "failures": []
+}
