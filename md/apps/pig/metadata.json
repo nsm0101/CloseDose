@@ -1,0 +1,6 @@
+{
+  "name": "Pediatric Airway Reference",
+  "description": "An interactive emergency pediatric airway equipment calculator and checklist based on the Hasbro Children's Hospital Critical Care airway reference card.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

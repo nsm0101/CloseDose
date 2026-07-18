@@ -12,6 +12,9 @@
     "apps/rsi"
   ],
   "scripts": {
+    "build:pig": "npm run build --workspace @closedose-md/pig",
+    "typecheck:pig": "npm run typecheck --workspace @closedose-md/pig",
+    "test:pig": "npm run test --workspace @closedose-md/pig",
     "test:contract": "node --test tests/workspace-contract.test.mjs"
   }
 }

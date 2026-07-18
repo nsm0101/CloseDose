@@ -1,0 +1,3 @@
+# Pinned PIG source snapshots are preserved byte-for-byte from upstream.
+md/apps/pig/index.html -whitespace
+md/apps/pig/src/App.tsx -whitespace
