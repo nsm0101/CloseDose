@@ -89,11 +89,11 @@
           <h1 id="game-title"><span>CAPPY</span><em>JUNGLE</em><span>RUN</span></h1>
           <p class="title-deck">Three lanes. Wild turns. One very determined capybara.</p>
 
-          <div class="mascot-stage" aria-hidden="true">
-            <span class="burst-word burst-one">ZIP!</span>
-            <span class="burst-word burst-two">GO!</span>
-            <img src="assets/cappy-full-body.png" alt="" draggable="false">
-            <span class="mascot-shadow"></span>
+          <div class="mascot-stage">
+            <span class="burst-word burst-one" aria-hidden="true">ZIP!</span>
+            <span class="burst-word burst-two" aria-hidden="true">GO!</span>
+            <img id="landing-mascot" src="assets/cappy-full-body.png" alt="Cappy in the Classic skin" draggable="false">
+            <span class="mascot-shadow" aria-hidden="true"></span>
           </div>
 
           <div class="start-footer">
@@ -118,7 +118,8 @@
               <h2 class="sidebar-title">SKINS</h2>
               <div class="skin-picker" role="radiogroup" aria-label="Choose Cappy's look">
                 <button class="skin-option" type="button" data-skin="classic" role="radio" aria-checked="true">CLASSIC</button>
-                <button class="skin-option" type="button" data-skin="ink" role="radio" aria-checked="false">COMIC INK</button>
+                <button class="skin-option" type="button" data-skin="mono" role="radio" aria-checked="false">MONO</button>
+                <button class="skin-option" type="button" data-skin="river" role="radio" aria-checked="false">RIVER</button>
               </div>
             </div>
           </section>
@@ -130,12 +131,14 @@
               <b aria-hidden="true">+</b>
             </button>
             <div id="mission-menu-panel" class="sidebar-panel mission-menu-panel">
-              <h2 class="sidebar-title mission-board-title">MISSIONS</h2>
+              <button id="mission-menu-close" class="mission-menu-close" type="button" aria-label="Close missions">×</button>
+              <h2 id="mission-menu-title" class="sidebar-title mission-board-title">MISSIONS</h2>
               <ul id="mission-list"></ul>
             </div>
           </section>
         </aside>
       </div>
+      <button id="mission-modal-backdrop" class="mission-modal-backdrop hidden" type="button" aria-label="Close missions"></button>
     </section>
 
     <section id="controls-screen" class="overlay controls-overlay hidden" aria-labelledby="controls-title" aria-modal="true" role="dialog">
@@ -206,6 +209,6 @@
     <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
   </main>
 
-  <script src="cappy-3d.js?v=20260718-continuous-turns"></script>
+  <script src="cappy-3d.js?v=20260718-mobile-skins"></script>
 </body>
 </html>
