@@ -14,6 +14,8 @@ environment, analytics, persistence, and remote-font surfaces removed.
 - Pinned commit: `a309bdaa7b7736051753a852b274b295ae00c67d`
 - Implementation commit:
   `3a53d0441052609a38725b3fff5a9811c4f4a99f`
+- Review-fix commit:
+  `e2bade73f0db07216848e4b846679c89b346150c`
 
 The GitHub App was used to enumerate all 19 files at the pinned commit before
 import:
@@ -106,8 +108,12 @@ Fresh checks from `md/`:
   --workspace @closedose-md/rsi --all`: empty tree.
 - Lockfile inspection: no forbidden RSI direct edge and no Google GenAI,
   Express, dotenv, tsx, Express types, or Motion package entry.
-- Forbidden AI/server/env and network/analytics/persistence source scans:
-  no matches.
+- Forbidden AI/server/env and network/analytics/persistence scans across
+  `index.html` and the existing `src/**` coverage: no matches.
+- Remote-asset regression negative check: injecting
+  `https://example.com/remote.css` into a temporary `index.html` copy
+  produced the expected targeted test failure (5 pass, 1 fail); the untouched
+  workspace then passed 6 of 6 tests.
 - Built HTML references only
   `/RSI/assets/index-BmwLbh8t.js` and
   `/RSI/assets/index-DIxTnHfF.css`.
@@ -127,7 +133,8 @@ Fresh checks from `md/`:
   API-key plumbing, analytics, persistence, patient-identifier capture, or
   new outbound request.
 - The regression suite prevents the removed package declarations, files,
-  metadata, strings, environment exposure, network calls, and persistence
-  surfaces from returning.
+  metadata, strings, environment exposure, network calls, remote HTML assets,
+  and persistence surfaces from returning across both the entry document and
+  application source.
 - Existing parent-facing `public/` content and SDD progress tracking were
   not modified.
