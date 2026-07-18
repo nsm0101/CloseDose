@@ -114,6 +114,11 @@
     missionList: document.getElementById('mission-list'),
     musicButton: document.getElementById('music-button'),
     skinOptions: Array.prototype.slice.call(document.querySelectorAll('.skin-option')),
+    skinMenuToggle: document.getElementById('skin-menu-toggle'),
+    skinMenuPanel: document.getElementById('skin-menu-panel'),
+    selectedSkinName: document.getElementById('selected-skin-name'),
+    missionMenuToggle: document.getElementById('mission-menu-toggle'),
+    missionMenuPanel: document.getElementById('mission-menu-panel'),
     boostMeter: document.getElementById('boost-meter'),
     boostFill: document.getElementById('boost-fill'),
     boostValue: document.getElementById('boost-value'),
@@ -626,7 +631,7 @@
       texture.magFilter = THREE.LinearFilter;
       return texture;
     } catch (error) {
-      // Canvas may be tainted when served from file:// — fall back to classic.
+      // Canvas may be tainted when served from file://, so fall back to classic.
       return sourceTexture;
     }
   }
@@ -640,7 +645,27 @@
       button.setAttribute('aria-checked', String(button.dataset.skin === skin));
       button.classList.toggle('selected', button.dataset.skin === skin);
     });
+    dom.selectedSkinName.textContent = skin === 'ink' ? 'Comic Ink' : 'Classic';
     if (player.art) setPlayerPose(player.currentPose, true);
+  }
+
+  function setStartMenu(toggle, panel, expanded) {
+    toggle.setAttribute('aria-expanded', String(expanded));
+    panel.classList.toggle('is-expanded', expanded);
+  }
+
+  function closeStartMenus() {
+    const hadOpenMenu = dom.skinMenuToggle.getAttribute('aria-expanded') === 'true'
+      || dom.missionMenuToggle.getAttribute('aria-expanded') === 'true';
+    setStartMenu(dom.skinMenuToggle, dom.skinMenuPanel, false);
+    setStartMenu(dom.missionMenuToggle, dom.missionMenuPanel, false);
+    return hadOpenMenu;
+  }
+
+  function toggleStartMenu(toggle, panel, otherToggle, otherPanel) {
+    const shouldOpen = toggle.getAttribute('aria-expanded') !== 'true';
+    setStartMenu(otherToggle, otherPanel, false);
+    setStartMenu(toggle, panel, shouldOpen);
   }
 
   function resetSegments(safeStart) {
@@ -2438,6 +2463,7 @@
         }
         return;
       }
+      if (key === 'escape' && state.mode === GAME.START && closeStartMenus()) return;
       if (key === '?') {
         openControls();
         return;
@@ -2640,8 +2666,17 @@
       initAudio();
       toggleMusic();
     });
+    dom.skinMenuToggle.addEventListener('click', function () {
+      toggleStartMenu(dom.skinMenuToggle, dom.skinMenuPanel, dom.missionMenuToggle, dom.missionMenuPanel);
+    });
+    dom.missionMenuToggle.addEventListener('click', function () {
+      toggleStartMenu(dom.missionMenuToggle, dom.missionMenuPanel, dom.skinMenuToggle, dom.skinMenuPanel);
+    });
     dom.skinOptions.forEach(function (button) {
-      button.addEventListener('click', function () { applySkin(button.dataset.skin); });
+      button.addEventListener('click', function () {
+        applySkin(button.dataset.skin);
+        if (window.matchMedia('(max-width: 979px)').matches) setStartMenu(dom.skinMenuToggle, dom.skinMenuPanel, false);
+      });
     });
   }
 

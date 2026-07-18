@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#102a22">
-  <meta name="description" content="Cappy Jungle Run — a comic-book 3D endless runner. Sprint from jungle to hot springs, crystal caves and a neon city with the CloseDose capybara mascot.">
+  <meta name="description" content="Cappy Jungle Run, a comic-book 3D endless runner. Sprint from jungle to hot springs, crystal caves and a neon city with the CloseDose capybara mascot.">
   <title>Cappy Jungle Run</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -83,34 +83,57 @@
     <button id="close-game-btn" class="icon-button close-button" type="button" aria-label="Exit game">×</button>
 
     <section id="start-screen" class="overlay start-overlay" aria-labelledby="game-title">
-      <div class="title-panel">
-        <p class="issue-label">Cappy No. 01 · Amazon Run</p>
-        <h1 id="game-title"><span>CAPPY</span><em>JUNGLE</em><span>RUN</span></h1>
-        <p class="title-deck">Three lanes. Wild turns. One very determined capybara.</p>
+      <div class="start-layout">
+        <div class="title-panel">
+          <p class="issue-label">Cappy No. 01 · Amazon Run</p>
+          <h1 id="game-title"><span>CAPPY</span><em>JUNGLE</em><span>RUN</span></h1>
+          <p class="title-deck">Three lanes. Wild turns. One very determined capybara.</p>
 
-        <div class="mascot-stage" aria-hidden="true">
-          <span class="burst-word burst-one">ZIP!</span>
-          <span class="burst-word burst-two">GO!</span>
-          <img src="assets/cappy-full-body.png" alt="" draggable="false">
-          <span class="mascot-shadow"></span>
-        </div>
-
-        <div class="start-footer">
-          <div class="skin-picker" role="radiogroup" aria-label="Choose Cappy's look">
-            <span class="skin-label">SKIN</span>
-            <button class="skin-option" type="button" data-skin="classic" role="radio" aria-checked="true">CLASSIC</button>
-            <button class="skin-option" type="button" data-skin="ink" role="radio" aria-checked="false">COMIC INK</button>
+          <div class="mascot-stage" aria-hidden="true">
+            <span class="burst-word burst-one">ZIP!</span>
+            <span class="burst-word burst-two">GO!</span>
+            <img src="assets/cappy-full-body.png" alt="" draggable="false">
+            <span class="mascot-shadow"></span>
           </div>
-          <button id="start-button" class="comic-button" type="button">
-            <span>START RUN</span><b>→</b>
-          </button>
-          <button id="start-help-button" class="text-button help-text-button" type="button">How to run</button>
-          <div class="best-line">Best score <strong id="start-highscore">00000</strong></div>
+
+          <div class="start-footer">
+            <button id="start-button" class="comic-button" type="button">
+              <span>START RUN</span><b>→</b>
+            </button>
+            <div class="start-secondary-row">
+              <button id="start-help-button" class="text-button help-text-button" type="button">How to run</button>
+              <div class="best-line">Best score <strong id="start-highscore">00000</strong></div>
+            </div>
+          </div>
         </div>
 
-        <aside class="mission-board" aria-label="Missions">
-          <span class="mission-board-title">MISSIONS</span>
-          <ul id="mission-list"></ul>
+        <aside class="start-sidebar" aria-label="Customize your run">
+          <section class="sidebar-card skin-sidebar">
+            <button id="skin-menu-toggle" class="sidebar-toggle" type="button" aria-expanded="false" aria-controls="skin-menu-panel">
+              <span>Choose skin</span>
+              <strong id="selected-skin-name">Classic</strong>
+              <b aria-hidden="true">+</b>
+            </button>
+            <div id="skin-menu-panel" class="sidebar-panel skin-menu-panel">
+              <h2 class="sidebar-title">SKINS</h2>
+              <div class="skin-picker" role="radiogroup" aria-label="Choose Cappy's look">
+                <button class="skin-option" type="button" data-skin="classic" role="radio" aria-checked="true">CLASSIC</button>
+                <button class="skin-option" type="button" data-skin="ink" role="radio" aria-checked="false">COMIC INK</button>
+              </div>
+            </div>
+          </section>
+
+          <section class="sidebar-card mission-board" aria-label="Missions">
+            <button id="mission-menu-toggle" class="sidebar-toggle" type="button" aria-expanded="false" aria-controls="mission-menu-panel">
+              <span>Missions</span>
+              <strong>View progress</strong>
+              <b aria-hidden="true">+</b>
+            </button>
+            <div id="mission-menu-panel" class="sidebar-panel mission-menu-panel">
+              <h2 class="sidebar-title mission-board-title">MISSIONS</h2>
+              <ul id="mission-list"></ul>
+            </div>
+          </section>
         </aside>
       </div>
     </section>
@@ -131,7 +154,7 @@
             <span class="guide-number">02</span>
             <div class="guide-keys"><kbd>↑</kbd><kbd>↓</kbd><b>or swipe</b></div>
             <strong>Jump / slide</strong>
-            <p>Jump logs, pits and gorge gaps. Slide beneath vines, low branches and temple bars. Watch for ↑ and ↓ signs — they call the move.</p>
+            <p>Jump logs, pits and gorge gaps. Slide beneath vines, low branches and temple bars. The ↑ and ↓ signs call the move.</p>
           </article>
           <article class="boost-guide">
             <span class="guide-number">03</span>
