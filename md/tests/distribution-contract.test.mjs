@@ -163,7 +163,7 @@ test('security headers keep runtime capabilities local and HTML revalidated', as
   assert.match(rootHeaders.get('permissions-policy'), /microphone=\(\)/);
   assert.match(rootHeaders.get('permissions-policy'), /geolocation=\(\)/);
 
-  for (const route of ['/', '/PIG/', '/RSI/', '/404.html']) {
+  for (const route of ['/', '/PIG/', '/RSI/', '/404.html', '/404.css']) {
     assert.equal(
       rules.get(route).get('cache-control'),
       'public, max-age=0, must-revalidate',

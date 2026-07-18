@@ -150,10 +150,10 @@ exit status: 0
 
 ## Commit
 
-Implementation commit: `e9be4c71399272ff6b037920493a3102356bab18`
+Implementation commit: `7303d0beaaf800148c5e1b5fdcd295d31da53d2e`
 (`feat(md): add PIG provider tool`)
 
-Review fix commit: `83d6e5989b0d7184ee517d062e395b04322de4df`
+Review fix commit: `4433594b2219c4137120adbfb45d21bd6831e6e9`
 (`fix(md): remove PIG AI Studio metadata`)
 
 ## Self-review

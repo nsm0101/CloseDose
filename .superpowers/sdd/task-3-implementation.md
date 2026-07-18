@@ -13,9 +13,9 @@ environment, analytics, persistence, and remote-font surfaces removed.
 - Source: `nsm0101/CC-RSI`
 - Pinned commit: `a309bdaa7b7736051753a852b274b295ae00c67d`
 - Implementation commit:
-  `3a53d0441052609a38725b3fff5a9811c4f4a99f`
+  `c5b42845ebe923d6abed9b345623135fbddd45a9`
 - Review-fix commit:
-  `e2bade73f0db07216848e4b846679c89b346150c`
+  `fe5db4eee3aa6f193abc744c558a2f669e6eb9f6`
 
 The GitHub App was used to enumerate all 19 files at the pinned commit before
 import:

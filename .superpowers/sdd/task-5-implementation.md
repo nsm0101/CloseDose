@@ -10,11 +10,11 @@ after all three application builds complete, then fails the build unless the
 whole artifact passes its distribution contract.
 
 Implementation commit:
-`3e72d741026b0af3c8d79931bae61240e613388a`
+`8c661ea9ba706ea09288a41b8b3cbac7de123f0b`
 (`feat(md): assemble provider production artifact`)
 
 Review remediation commit:
-`bd029569d76a3a5a24ab3ab5446f947d422824ac`
+`f46307da34181b4a5e8fd67ca7207595c81ccbf0`
 (`fix(md): narrow CSP and audit popup pages`)
 
 ## Files

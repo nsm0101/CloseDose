@@ -7,9 +7,11 @@ Vite workspace at `/`. The landing page presents the PIG and RSI applications
 through ordinary links generated from a typed catalog, states the current
 clinical and privacy boundaries, and keeps every runtime asset local.
 
-Implementation commit: `16f5ced` (`feat(md): add clinician provider portal`)
+Implementation commit: `5bc23fba678f7f836b29ecb8eb42a98e49be1567`
+(`feat(md): add clinician provider portal`)
 
-Review remediation commit: `b5911e1` (`fix(md): optimize portal hero delivery`)
+Review remediation commit: `8f56c3ad9c1eacf81d3547b4f10a459dc4b92c88`
+(`fix(md): optimize portal hero delivery`)
 
 ## Design decisions
 

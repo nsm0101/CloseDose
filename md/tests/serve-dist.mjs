@@ -1,5 +1,5 @@
 import { createServer } from 'node:http';
-import { readFile, stat } from 'node:fs/promises';
+import { readFile, readdir, stat } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -59,6 +59,18 @@ function matches(pattern, pathname) {
   return pattern === pathname;
 }
 
+async function resolveCaseSensitive(relativePath) {
+  let currentPath = distRoot;
+
+  for (const segment of relativePath.split('/').filter(Boolean)) {
+    const entries = await readdir(currentPath);
+    if (!entries.includes(segment)) throw new Error('path casing does not match');
+    currentPath = path.join(currentPath, segment);
+  }
+
+  return currentPath;
+}
+
 const [redirects, headerRules] = await Promise.all([
   readFile(path.join(distRoot, '_redirects'), 'utf8').then(parseRedirects),
   readFile(path.join(distRoot, '_headers'), 'utf8').then(parseHeaders)
@@ -84,14 +96,16 @@ const server = createServer(async (request, response) => {
   let relativePath = pathname.slice(1);
   if (!relativePath || pathname.endsWith('/')) relativePath += 'index.html';
 
-  let filePath = path.resolve(distRoot, relativePath);
+  const resolvedRequestPath = path.resolve(distRoot, relativePath);
+  let filePath;
   let statusCode = 200;
 
-  if (!filePath.startsWith(`${distRoot}${path.sep}`)) {
+  if (!resolvedRequestPath.startsWith(`${distRoot}${path.sep}`)) {
     filePath = path.join(distRoot, '404.html');
     statusCode = 404;
   } else {
     try {
+      filePath = await resolveCaseSensitive(relativePath);
       if (!(await stat(filePath)).isFile()) throw new Error('not a file');
     } catch {
       filePath = path.join(distRoot, '404.html');

@@ -6,6 +6,8 @@ import vm from 'node:vm';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
 
+import { scanApplicationPrivacy } from './helpers/privacy-scan.mjs';
+
 const read = (relativePath) =>
   readFile(new URL(`../${relativePath}`, import.meta.url), 'utf8');
 
@@ -78,15 +80,15 @@ test('PIG uses its canonical base and repaired browser entrypoint', async () => 
   assert.match(main, /import ['"]\.\/index\.css['"]/);
 });
 
-test('PIG preserves the pinned clinical source without network or persistence calls', async () => {
+test('PIG preserves the pinned clinical source', async () => {
   const source = await read('apps/pig/src/App.tsx');
   const actualSha256 = createHash('sha256').update(source).digest('hex');
 
   assert.equal(actualSha256, expectedAppSha256);
-  assert.doesNotMatch(
-    source,
-    /fetch\s*\(|XMLHttpRequest|axios|localStorage|sessionStorage|process\.env|GEMINI|https?:\/\//
-  );
+});
+
+test('PIG passes the shared source and privacy boundary scan', async () => {
+  assert.deepEqual(await scanApplicationPrivacy(pigRoot), []);
 });
 
 test('PIG workspace omits legacy AI Studio and Gemini declarations', async () => {

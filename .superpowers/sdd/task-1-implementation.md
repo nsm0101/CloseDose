@@ -53,7 +53,7 @@ and the exact provenance records.
 
 ## Commit
 
-Implementation commit: `b3f15ee1374ebb1d9aa5ff52071795b1c521133d`
+Implementation commit: `1267822208beed6f2fd9a5b2e52e5580f797554e`
 (`feat(md): establish provider workspace contracts`)
 
 ## Self-review

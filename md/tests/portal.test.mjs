@@ -1,27 +1,17 @@
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
-import { readFile, readdir, stat } from 'node:fs/promises';
+import { readFile, stat } from 'node:fs/promises';
 import path from 'node:path';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
+
+import { scanApplicationPrivacy } from './helpers/privacy-scan.mjs';
 
 const mdRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const portalRoot = path.join(mdRoot, 'apps/portal');
 
 const read = (relativePath) =>
   readFile(path.join(mdRoot, relativePath), 'utf8');
-
-async function listFiles(directory) {
-  const entries = await readdir(directory, { withFileTypes: true });
-  const nestedFiles = await Promise.all(
-    entries.map((entry) => {
-      const entryPath = path.join(directory, entry.name);
-      return entry.isDirectory() ? listFiles(entryPath) : [entryPath];
-    })
-  );
-
-  return nestedFiles.flat();
-}
 
 function relativeLuminance(hex) {
   const channels = hex
@@ -194,18 +184,8 @@ test('portal has local fonts, system theme parity, focus, and reduced motion', a
   assert.ok(contrastRatio('#eff5f2', '#111917') >= 4.5);
 });
 
-test('portal source contains no remote requests, remote font imports, or forbidden visible dashes', async () => {
-  const files = (await listFiles(portalRoot)).filter((file) =>
-    /\.(?:css|html|json|ts|tsx)$/.test(file)
-  );
-  const sourceByFile = await Promise.all(
-    files.map(async (file) => [file, await readFile(file, 'utf8')])
-  );
-
-  for (const [file, source] of sourceByFile) {
-    assert.doesNotMatch(source, /https?:\/\//i, file);
-    assert.doesNotMatch(source, /@import\s+url|fonts\.googleapis|fonts\.gstatic/i, file);
-  }
+test('portal passes the shared privacy scan without rejecting its explanatory copy', async () => {
+  assert.deepEqual(await scanApplicationPrivacy(portalRoot), []);
 
   for (const relativePath of [
     'apps/portal/index.html',

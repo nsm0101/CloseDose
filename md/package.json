@@ -23,7 +23,7 @@
     "test:portal": "npm run test --workspace @closedose-md/portal",
     "test:pig": "npm run test --workspace @closedose-md/pig",
     "test:rsi": "npm run test --workspace @closedose-md/rsi",
-    "test:unit": "node --test tests/workspace-contract.test.mjs tests/portal.test.mjs tests/pig.test.mjs tests/rsi.test.mjs",
+    "test:unit": "node --test tests/workspace-contract.test.mjs tests/portal.test.mjs tests/pig.test.mjs tests/rsi.test.mjs tests/privacy-scanner.test.mjs tests/release-hardening.test.mjs",
     "test:contract": "node --test tests/distribution-contract.test.mjs",
     "test:smoke": "playwright test"
   },

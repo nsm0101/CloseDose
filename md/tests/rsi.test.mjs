@@ -6,6 +6,8 @@ import test from 'node:test';
 import vm from 'node:vm';
 import { fileURLToPath } from 'node:url';
 
+import { scanApplicationPrivacy } from './helpers/privacy-scan.mjs';
+
 const mdRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const rsiRoot = path.join(mdRoot, 'apps/rsi');
 
@@ -138,29 +140,8 @@ test('RSI omits the AI Studio, API-key, server, and environment scaffold', async
   );
 });
 
-test('RSI HTML and source have no network, analytics, persistence, or patient-identifier plumbing', async () => {
-  const sourceFiles = [
-    path.join(rsiRoot, 'index.html'),
-    ...(await listFiles(path.join(rsiRoot, 'src'))).filter((file) =>
-      /\.(?:css|ts|tsx)$/.test(file)
-    )
-  ];
-  const applicationText = (
-    await Promise.all(sourceFiles.map((file) => readFile(file, 'utf8')))
-  ).join('\n');
-
-  assert.doesNotMatch(
-    applicationText,
-    /fetch\s*\(|XMLHttpRequest|WebSocket|EventSource|sendBeacon|axios|https?:\/\//i
-  );
-  assert.doesNotMatch(
-    applicationText,
-    /localStorage|sessionStorage|indexedDB|document\.cookie|\banalytics\b|\bgtag\b|\bmixpanel\b|\bsentry\b/i
-  );
-  assert.doesNotMatch(
-    applicationText,
-    /patient\s+(?:name|identifier)|date\s+of\s+birth|medical\s+record|\bMRN\b/i
-  );
+test('RSI passes the shared source and privacy boundary scan', async () => {
+  assert.deepEqual(await scanApplicationPrivacy(rsiRoot), []);
 });
 
 test('RSI imported calculation returns 20.0 mg rocuronium for 20 kg', async () => {
