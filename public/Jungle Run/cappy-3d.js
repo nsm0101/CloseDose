@@ -111,7 +111,6 @@
     slowmoChip: document.getElementById('slowmo-chip'),
     slowmoTime: document.getElementById('slowmo-time'),
     powWord: document.getElementById('pow-word'),
-    panelWipe: document.getElementById('panel-wipe'),
     missionList: document.getElementById('mission-list'),
     musicButton: document.getElementById('music-button'),
     skinOptions: Array.prototype.slice.call(document.querySelectorAll('.skin-option')),
@@ -224,6 +223,7 @@
   let renderer;
   let world;
   let segments = [];
+  let retiredCourses = [];
   let particles = [];
   let audioContext = null;
   let materials;
@@ -644,6 +644,7 @@
   }
 
   function resetSegments(safeStart) {
+    clearRetiredCourses();
     segments.forEach(function (segment) {
       disposeSegmentContent(segment);
       world.remove(segment.root);
@@ -661,26 +662,11 @@
     }
   }
 
-  function rebuildAfterTurn() {
-    segments.forEach(function (segment) {
-      disposeSegmentContent(segment);
-      world.remove(segment.root);
-    });
-    segments = [];
-    for (let i = 0; i < CONFIG.segmentCount; i += 1) {
-      const segment = makeSegment();
-      buildSegment(segment, state.serial, -i * CONFIG.segmentLength, i < 3);
-      state.serial += 1;
-      world.add(segment.root);
-      segments.push(segment);
-    }
-  }
-
   function makeSegment() {
     return { root: new THREE.Group(), obstacles: [], pickups: [], turn: null, qte: null };
   }
 
-  function buildSegment(segment, serial, zPosition, safe) {
+  function buildSegment(segment, serial, zPosition, safe, allowTurns) {
     disposeSegmentContent(segment);
     segment.obstacles = [];
     segment.pickups = [];
@@ -711,7 +697,7 @@
     const powerSegment = !safe && serial >= 6 && serial % 8 === 4;
     const powerType = ['FRUIT', 'MAGNET', 'STAR', 'SLOWMO'][Math.floor(serial / 8) % 4];
     const superchargeSegment = !safe && serial >= 10 && serial % 14 === 9;
-    const shouldTurn = !safe && !needsRecovery && serial >= 7 && serial - state.lastTurnSerial >= stage.turnGap;
+    const shouldEvent = !safe && !needsRecovery && serial >= 7 && serial - state.lastTurnSerial >= stage.turnGap;
     if (superchargeSegment) {
       const superchargeLane = Math.floor(seeded(serial * 53) * 3);
       addCoinTrail(segment, superchargeLane, -8, 7, 0.82);
@@ -720,13 +706,13 @@
       const powerLane = Math.floor(seeded(serial * 31) * 3);
       addCoinTrail(segment, powerLane, -8, 7, 0.82);
       addPickup(segment, powerType, powerLane, 3.1, 1.05);
-    } else if (shouldTurn) {
+    } else if (shouldEvent) {
       const eventRoll = seeded(serial * 71);
-      if (eventRoll < 0.55) {
+      if (eventRoll < 0.55 && allowTurns !== false) {
         const direction = seeded(serial * 17) > 0.5 ? 1 : -1;
         addTurnGate(segment, direction);
       } else {
-        addQteGate(segment, eventRoll < 0.78 ? 'leap' : 'duck');
+        addQteGate(segment, seeded(serial * 83) > 0.5 ? 'leap' : 'duck');
       }
       state.lastTurnSerial = serial;
       state.lastHazardSerial = serial;
@@ -1240,16 +1226,6 @@
     gate.position.z = -1;
     segment.root.add(gate);
 
-    const branch = inkedMesh(new THREE.BoxGeometry(19, 0.16, 7.05), materials.pathLight);
-    branch.position.set(direction * 9.4, -0.09, 0);
-    gate.add(branch);
-    for (let i = 0; i < 4; i += 1) {
-      const tree = createTree(direction * (6 + i * 3.4), -4.4, seeded(i * 5 + 2));
-      gate.add(tree);
-      const treeNear = createTree(direction * (7.5 + i * 3.4), 4.3, seeded(i * 9 + 4));
-      gate.add(treeNear);
-    }
-
     addSignBoard(gate, direction < 0 ? '←' : '→');
 
     const deadEnd = new THREE.Group();
@@ -1264,8 +1240,56 @@
       deadEnd.add(vine);
     }
 
-    segment.turn = { direction: direction, root: segment.root, deadEnd: deadEnd, resolved: false, prompted: false };
+    segment.turn = {
+      direction: direction,
+      root: segment.root,
+      deadEnd: deadEnd,
+      firstExitSerial: segment.root.userData.serial + 1,
+      previewStageIndex: -1,
+      outgoingSegments: [],
+      resolved: false,
+      prompted: false,
+    };
     addCoinTrail(segment, 1, -9, -4, 0.82);
+  }
+
+  function ensureTurnExit(segment, turn) {
+    if (turn.outgoingSegments.length && turn.previewStageIndex === state.stageIndex) return;
+    turn.outgoingSegments.forEach(function (outgoing) {
+      disposeSegmentContent(outgoing);
+      if (outgoing.root.parent) outgoing.root.parent.remove(outgoing.root);
+    });
+    turn.outgoingSegments = createTurnExit(segment, turn.direction, turn.firstExitSerial);
+    turn.previewLastEventSerial = turn.outgoingSegments.reduce(function (lastSerial, outgoing) {
+      return outgoing.qte ? Math.max(lastSerial, outgoing.root.userData.serial) : lastSerial;
+    }, turn.firstExitSerial - 1);
+    turn.previewStageIndex = state.stageIndex;
+  }
+
+  function createTurnExit(segment, direction, firstSerial) {
+    const outgoingSegments = [];
+    const previousLastHazardSerial = state.lastHazardSerial;
+    const previousLastTurnSerial = state.lastTurnSerial;
+
+    for (let index = 0; index < CONFIG.segmentCount; index += 1) {
+      const outgoing = makeSegment();
+      const serial = firstSerial + index;
+      buildSegment(outgoing, serial, 0, index < 3, false);
+      outgoing.root.position.set(
+        direction * (CONFIG.segmentLength / 2 + index * CONFIG.segmentLength),
+        0,
+        -1
+      );
+      outgoing.root.rotation.y = -direction * Math.PI / 2;
+      outgoing.root.userData.turnExit = true;
+      segment.root.add(outgoing.root);
+      outgoingSegments.push(outgoing);
+    }
+
+    // Preview generation must not alter the live straight-course scheduler.
+    state.lastHazardSerial = previousLastHazardSerial;
+    state.lastTurnSerial = previousLastTurnSerial;
+    return outgoingSegments;
   }
 
   function addSignBoard(gate, glyph) {
@@ -1439,6 +1463,7 @@
   }
 
   function moveSegments(distance) {
+    moveRetiredCourses(distance);
     segments.forEach(function (segment) { segment.root.position.z += distance; });
     const first = segments[0];
     if (first && first.root.position.z > CONFIG.removeZ) {
@@ -1448,6 +1473,45 @@
       state.serial += 1;
       segments.push(first);
     }
+  }
+
+  function retireIncomingCourse(incomingSegments) {
+    if (!incomingSegments.length) return;
+    const retiredRoot = new THREE.Group();
+    scene.add(retiredRoot);
+    world.updateMatrixWorld(true);
+    incomingSegments.forEach(function (segment) {
+      retiredRoot.attach(segment.root);
+    });
+    retiredCourses.push({ root: retiredRoot, segments: incomingSegments, distance: 0 });
+  }
+
+  function moveRetiredCourses(distance) {
+    for (let index = retiredCourses.length - 1; index >= 0; index -= 1) {
+      const course = retiredCourses[index];
+      course.distance += distance;
+      course.root.position.z += distance;
+      if (course.distance < CONFIG.segmentLength * 1.35) continue;
+      course.segments.forEach(function (segment) { disposeSegmentContent(segment); });
+      scene.remove(course.root);
+      retiredCourses.splice(index, 1);
+    }
+  }
+
+  function clearRetiredCourses() {
+    retiredCourses.forEach(function (course) {
+      course.segments.forEach(function (segment) { disposeSegmentContent(segment); });
+      if (scene) scene.remove(course.root);
+    });
+    retiredCourses = [];
+  }
+
+  function discardTurnExit(animation) {
+    if (!animation || !animation.outgoingSegments) return;
+    animation.outgoingSegments.forEach(function (segment) {
+      disposeSegmentContent(segment);
+      world.remove(segment.root);
+    });
   }
 
   function updatePlayer(dt, timestamp) {
@@ -1678,6 +1742,7 @@
       const turn = segment.turn;
       if (turn && !turn.resolved) {
         const z = turn.root.position.z - 1;
+        if (z > CONFIG.turnPromptZ - CONFIG.segmentLength) ensureTurnExit(segment, turn);
         if (!turn.prompted && z > CONFIG.turnPromptZ) {
           turn.prompted = true;
           state.activeTurn = turn;
@@ -1740,6 +1805,8 @@
 
   function beginTurn(turn) {
     if (!turn || turn.resolved) return;
+    const turnSegment = segments.find(function (segment) { return segment.root === turn.root; });
+    if (turnSegment) ensureTurnExit(turnSegment, turn);
     turn.resolved = true;
     state.activeTurn = null;
     hideTurnPrompt();
@@ -1749,12 +1816,21 @@
     state.streak += 4;
     state.combo = Math.min(5, 1 + Math.floor(state.streak / 8));
     const pivotZ = turn.root ? turn.root.position.z - 1 : CONFIG.turnBeginZ;
+    const outgoingSegments = turn.outgoingSegments || [];
+    world.updateMatrixWorld(true);
+    outgoingSegments.forEach(function (segment) {
+      world.attach(segment.root);
+    });
     const arcDuration = (Math.abs(pivotZ) * Math.PI / 2) / Math.max(10, state.speed);
     state.turnAnimation = {
       direction: turn.direction,
       time: 0,
       duration: THREE.MathUtils.clamp(arcDuration, 0.55, 1.1),
       pivotZ: pivotZ,
+      turnSerial: turn.root ? turn.root.userData.serial : state.serial,
+      lastEventSerial: turn.previewLastEventSerial,
+      outgoingSegments: outgoingSegments,
+      incomingSegments: segments.slice(),
     };
     dom.shell.classList.add('turning');
     playSound('turn');
@@ -1770,12 +1846,12 @@
     const arc = Math.sin(progress * Math.PI);
     const yaw = animation.direction * (Math.PI / 2) * eased;
     const pivotZ = animation.pivotZ;
+    const runnerZ = pivotZ * eased;
 
-    // Rotate the whole course around the corner so the camera sweeps
-    // continuously through the turn instead of cutting.
+    // Advance the corner to the player while the prebuilt exit rotates forward.
     world.rotation.y = yaw;
-    world.position.x = -pivotZ * Math.sin(yaw);
-    world.position.z = pivotZ * (1 - Math.cos(yaw));
+    world.position.x = -runnerZ * Math.sin(yaw);
+    world.position.z = -runnerZ * Math.cos(yaw);
 
     camera.position.set(
       player.x * 0.4 + animation.direction * arc * 1.5,
@@ -1788,12 +1864,8 @@
     player.rig.rotation.z = -animation.direction * arc * 0.16;
 
     if (progress >= 1) {
-      // Panel-wipe masks the course re-anchor onto a straight axis.
-      flashPanel();
-      state.lastTurnSerial = state.serial;
-      rebuildAfterTurn();
-      world.rotation.y = 0;
-      world.position.set(0, 0, 0);
+      promoteTurnExit(animation);
+      state.lastTurnSerial = Math.max(animation.turnSerial, animation.lastEventSerial || animation.turnSerial);
       camera.rotation.z = 0;
       camera.position.set(0, 5, 8.6);
       camera.lookAt(0, 0.9, -10.5);
@@ -1804,6 +1876,33 @@
       popWord(animation.direction < 0 ? 'SKRRT!' : 'ZOOM!');
       applyBiome(state.heading);
       bumpStat('turns', 1);
+    }
+  }
+
+  function promoteTurnExit(animation) {
+    const outgoingSegments = animation.outgoingSegments;
+    if (!outgoingSegments.length) return;
+
+    world.updateMatrixWorld(true);
+    outgoingSegments.forEach(function (segment) {
+      scene.attach(segment.root);
+    });
+    retireIncomingCourse(animation.incomingSegments);
+
+    world.rotation.set(0, 0, 0);
+    world.position.set(0, 0, 0);
+    world.updateMatrixWorld(true);
+    outgoingSegments.forEach(function (segment) {
+      world.attach(segment.root);
+      delete segment.root.userData.turnExit;
+    });
+    segments = outgoingSegments;
+
+    const finalSerial = outgoingSegments[outgoingSegments.length - 1].root.userData.serial;
+    state.serial = Math.max(state.serial, finalSerial + 1);
+    const hazardSegments = outgoingSegments.filter(function (segment) { return segment.obstacles.length > 0 || segment.qte; });
+    if (hazardSegments.length) {
+      state.lastHazardSerial = hazardSegments[hazardSegments.length - 1].root.userData.serial;
     }
   }
 
@@ -1999,6 +2098,7 @@
     dom.superchargeTime.classList.toggle('hidden', !superchargeActive);
     dom.shell.classList.toggle('supercharged', superchargeActive);
     dom.shell.dataset.gameState = state.mode;
+    dom.shell.dataset.distance = state.distance.toFixed(2);
     dom.shell.dataset.lane = String(player.lane);
     dom.shell.dataset.jumping = String(player.jumping);
     dom.shell.dataset.sliding = String(player.sliding);
@@ -2019,6 +2119,11 @@
     dom.shell.dataset.turnGap = String(STAGES[state.stageIndex].turnGap);
     dom.shell.dataset.activeSegments = String(segments.length);
     dom.shell.dataset.activeTurn = state.activeTurn ? String(state.activeTurn.direction) : '';
+    const visibleTurn = state.turnAnimation || state.activeTurn;
+    dom.shell.dataset.turnPreviewSegments = String(visibleTurn && visibleTurn.outgoingSegments ? visibleTurn.outgoingSegments.length : 0);
+    dom.shell.dataset.retiredCourses = String(retiredCourses.length);
+    dom.shell.dataset.worldX = world ? world.position.x.toFixed(3) : '0.000';
+    dom.shell.dataset.worldZ = world ? world.position.z.toFixed(3) : '0.000';
     if (renderer) {
       dom.shell.dataset.geometries = String(renderer.info.memory.geometries);
       dom.shell.dataset.textures = String(renderer.info.memory.textures);
@@ -2114,6 +2219,7 @@
       : (collision && Number.isFinite(collision.worldZ) ? Math.max(0.68, collision.worldZ + 0.58) : 0);
     state.streak = 0;
     state.superchargeTimer = 0;
+    discardTurnExit(state.turnAnimation);
     state.turnAnimation = null;
     world.rotation.y = 0;
     world.position.set(0, 0, 0);
@@ -2191,6 +2297,7 @@
     state.combo = 1;
     state.shield = 0;
     state.activeTurn = null;
+    discardTurnExit(state.turnAnimation);
     state.turnAnimation = null;
     state.threatCooldown = STAGES[0].threatMin;
     state.crashTimer = 0;
@@ -2349,6 +2456,12 @@
         updateHud();
         return;
       }
+      if (localTest && (key === '8' || key === '9') && state.mode === GAME.RUNNING) {
+        const direction = key === '8' ? 1 : -1;
+        forceTurnForTest(direction, 1);
+        acceptTurn(direction);
+        return;
+      }
       if (localTest && key === 'f' && state.mode === GAME.RUNNING) {
         collectPickup({ type: 'FRUIT', collected: false, mesh: { visible: true } }, new THREE.Vector3(player.x, 0.9, 0));
         updateHud();
@@ -2380,8 +2493,11 @@
         return;
       }
       if (localTest && key === 't' && state.mode === GAME.RUNNING) {
-        state.activeTurn = { direction: 1, resolved: false, prompted: true, root: null };
-        showEventPrompt("↱", "RIGHT TURN");
+        forceTurnForTest(1, 1);
+        return;
+      }
+      if (localTest && key === 'y' && state.mode === GAME.RUNNING) {
+        forceTurnForTest(-1, 0);
         return;
       }
       if (localTest && key === 'v' && state.mode === GAME.RUNNING && !state.threat) {
@@ -2389,17 +2505,11 @@
         return;
       }
       if (localTest && key === 'n' && state.mode === GAME.RUNNING && segments.length) {
-        const testTurn = { direction: 1, resolved: false, prompted: true, root: segments[0].root };
-        segments[0].turn = testTurn;
-        state.activeTurn = testTurn;
-        showEventPrompt("↱", "RIGHT TURN");
+        forceTurnForTest(1, 0);
         return;
       }
       if (localTest && key === 'u' && state.mode === GAME.RUNNING && segments.length > 1) {
-        const bufferedTurn = { direction: 1, resolved: false, prompted: true, root: segments[1].root };
-        segments[1].turn = bufferedTurn;
-        state.activeTurn = bufferedTurn;
-        showEventPrompt("↱", "RIGHT TURN");
+        forceTurnForTest(1, 1);
         return;
       }
       if (localTest && key === 'g' && state.mode === GAME.RUNNING) {
@@ -2566,14 +2676,26 @@
     focusAfterClose();
   }
 
+  function forceTurnForTest(direction, segmentIndex) {
+    if (state.mode !== GAME.RUNNING || !segments.length || state.turnAnimation) return;
+    const targetIndex = Math.min(Math.max(segmentIndex || 0, 0), segments.length - 1);
+    const segment = segments[targetIndex];
+    const serial = segment.root.userData.serial;
+    const zPosition = segment.root.position.z;
+    buildSegment(segment, serial, zPosition, true, false);
+    addTurnGate(segment, direction < 0 ? -1 : 1);
+    segment.turn.prompted = true;
+    state.activeTurn = segment.turn;
+    showEventPrompt(segment.turn.direction < 0 ? '↰' : '↱', segment.turn.direction < 0 ? 'LEFT TURN' : 'RIGHT TURN');
+  }
+
   function setupLocalTestBridge() {
     if (!['localhost', '127.0.0.1', '::1'].includes(window.location.hostname)) return;
     document.addEventListener('cappy:test', function () {
       const action = dom.shell.dataset.testAction;
       if (action === 'force-turn-left' || action === 'force-turn-right') {
         const direction = action.endsWith('left') ? -1 : 1;
-        state.activeTurn = { direction: direction, resolved: false, prompted: true, root: null };
-        showEventPrompt(direction < 0 ? "↰" : "↱", direction < 0 ? "LEFT TURN" : "RIGHT TURN");
+        forceTurnForTest(direction, 1);
       } else if (action === 'left') handleLateral(-1);
       else if (action === 'right') handleLateral(1);
       else if (action === 'jump') jump();
@@ -2670,13 +2792,6 @@
     void dom.powWord.offsetWidth;
     dom.powWord.classList.add('pop');
     state.powTimer = 0.85;
-  }
-
-  function flashPanel() {
-    if (!dom.panelWipe) return;
-    dom.panelWipe.classList.remove('wipe');
-    void dom.panelWipe.offsetWidth;
-    dom.panelWipe.classList.add('wipe');
   }
 
   function syncBestScore() {
@@ -3105,6 +3220,12 @@
           activeSegments: segments.length,
           activeTurn: state.activeTurn ? state.activeTurn.direction : null,
           turning: Boolean(state.turnAnimation),
+          turnPreviewSegments: (state.turnAnimation || state.activeTurn) && (state.turnAnimation || state.activeTurn).outgoingSegments
+            ? (state.turnAnimation || state.activeTurn).outgoingSegments.length
+            : 0,
+          retiredCourses: retiredCourses.length,
+          worldX: Number(world.position.x.toFixed(3)),
+          worldZ: Number(world.position.z.toFixed(3)),
           crashReason: state.crashReason,
           crashStartZ: Number(state.crashStartZ.toFixed(2)),
           lastTurnSerial: state.lastTurnSerial,
@@ -3146,9 +3267,7 @@
         pause: pauseGame,
         resume: resumeGame,
         forceTurn: function (direction) {
-          if (state.mode !== GAME.RUNNING) return;
-          state.activeTurn = { direction: direction < 0 ? -1 : 1, resolved: false, prompted: true, root: null };
-          showEventPrompt(state.activeTurn.direction < 0 ? "↰" : "↱", state.activeTurn.direction < 0 ? "LEFT TURN" : "RIGHT TURN");
+          forceTurnForTest(direction, 1);
         },
         forceThreat: function () {
           if (state.mode === GAME.RUNNING && !state.threat) spawnThreat();

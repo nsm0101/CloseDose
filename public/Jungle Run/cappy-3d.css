@@ -99,8 +99,7 @@ a:focus-visible {
 }
 
 .comic-grain,
-.speed-lines,
-.panel-wipe {
+.speed-lines {
   position: fixed;
   inset: 0;
   pointer-events: none;
@@ -1206,28 +1205,6 @@ h1 em {
   30% { transform: translate(-50%, -50%) scale(1) rotate(-1.5deg); }
   78% { opacity: 1; }
   100% { opacity: 0; transform: translate(-50%, -56%) scale(.92) rotate(-1.5deg); }
-}
-
-.panel-wipe {
-  position: fixed;
-  z-index: 48;
-  inset: -12% -30%;
-  pointer-events: none;
-  opacity: 0;
-  transform: translateX(-115%) skewX(-14deg);
-  background:
-    radial-gradient(circle, rgba(20,37,31,.4) 1.6px, transparent 1.7px) 0 0 / 14px 14px,
-    linear-gradient(90deg, var(--cream), var(--paper));
-  border-left: 10px solid var(--ink);
-  border-right: 10px solid var(--ink);
-}
-
-.panel-wipe.wipe { animation: panelWipe .34s cubic-bezier(.6, 0, .3, 1) both; }
-
-@keyframes panelWipe {
-  0% { opacity: 1; transform: translateX(-115%) skewX(-14deg); }
-  45% { opacity: 1; transform: translateX(0) skewX(-14deg); }
-  100% { opacity: 1; transform: translateX(115%) skewX(-14deg); }
 }
 
 .slowmo #game-container { filter: saturate(1.35) contrast(1.06) hue-rotate(-10deg); }

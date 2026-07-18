@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#102a22">
-  <meta name="description" content="Cappy Jungle Run — a comic-book 3D endless runner starring the CloseDose capybara mascot.">
+  <meta name="description" content="Cappy Jungle Run — a comic-book 3D endless runner. Sprint from jungle to hot springs, crystal caves and a neon city with the CloseDose capybara mascot.">
   <title>Cappy Jungle Run</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -44,6 +44,9 @@
         </div>
         <div id="combo-chip" class="combo-chip hidden">FLOW <strong id="hud-combo">x1</strong></div>
         <div id="shield-chip" class="shield-chip hidden">LEAF SHIELD <span id="shield-time">0</span>s</div>
+        <div id="magnet-chip" class="shield-chip power-chip magnet-chip hidden">MAGNET <span id="magnet-time">0</span>s</div>
+        <div id="star-chip" class="shield-chip power-chip star-chip hidden">2&times; SCORE <span id="star-time">0</span>s</div>
+        <div id="slowmo-chip" class="shield-chip power-chip slowmo-chip hidden">SLOW-MO <span id="slowmo-time">0</span>s</div>
       </div>
 
       <div class="hud-cluster hud-best-card">
@@ -76,6 +79,7 @@
 
     <button id="pause-button" class="icon-button pause-button hidden" type="button" aria-label="Pause game">Ⅱ</button>
     <button id="help-button" class="icon-button help-button" type="button" aria-label="Show game controls">?</button>
+    <button id="music-button" class="icon-button music-button" type="button" aria-label="Toggle music" aria-pressed="true">♪</button>
     <button id="close-game-btn" class="icon-button close-button" type="button" aria-label="Exit game">×</button>
 
     <section id="start-screen" class="overlay start-overlay" aria-labelledby="game-title">
@@ -92,12 +96,22 @@
         </div>
 
         <div class="start-footer">
+          <div class="skin-picker" role="radiogroup" aria-label="Choose Cappy's look">
+            <span class="skin-label">SKIN</span>
+            <button class="skin-option" type="button" data-skin="classic" role="radio" aria-checked="true">CLASSIC</button>
+            <button class="skin-option" type="button" data-skin="ink" role="radio" aria-checked="false">COMIC INK</button>
+          </div>
           <button id="start-button" class="comic-button" type="button">
             <span>START RUN</span><b>→</b>
           </button>
           <button id="start-help-button" class="text-button help-text-button" type="button">How to run</button>
           <div class="best-line">Best score <strong id="start-highscore">00000</strong></div>
         </div>
+
+        <aside class="mission-board" aria-label="Missions">
+          <span class="mission-board-title">MISSIONS</span>
+          <ul id="mission-list"></ul>
+        </aside>
       </div>
     </section>
 
@@ -111,13 +125,13 @@
             <span class="guide-number">01</span>
             <div class="guide-keys"><kbd>←</kbd><kbd>→</kbd><b>or swipe</b></div>
             <strong>Dodge / pivot</strong>
-            <p>Move across three lanes. At a corner, swipe toward the giant path arrow and keep running straight into the next stretch.</p>
+            <p>Move across three lanes. At a corner, swipe toward the giant path arrow and the camera carries you around the bend.</p>
           </article>
           <article>
             <span class="guide-number">02</span>
             <div class="guide-keys"><kbd>↑</kbd><kbd>↓</kbd><b>or swipe</b></div>
             <strong>Jump / slide</strong>
-            <p>Jump logs, marked pits and broken paths. Slide beneath vines and temple bars.</p>
+            <p>Jump logs, pits and gorge gaps. Slide beneath vines, low branches and temple bars. Watch for ↑ and ↓ signs — they call the move.</p>
           </article>
           <article class="boost-guide">
             <span class="guide-number">03</span>
@@ -165,9 +179,10 @@
       </div>
     </section>
 
+    <div id="pow-word" class="pow-word hidden" aria-hidden="true"></div>
     <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
   </main>
 
-  <script src="cappy-3d.js"></script>
+  <script src="cappy-3d.js?v=20260718-continuous-turns"></script>
 </body>
 </html>
