@@ -1,0 +1,9 @@
+{
+  "name": "@closedose-md/portal",
+  "version": "0.1.0",
+  "private": true,
+  "description": "CloseDose MD provider portal",
+  "closedoseMd": {
+    "routeBase": "/"
+  }
+}

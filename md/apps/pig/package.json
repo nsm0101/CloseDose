@@ -1,0 +1,9 @@
+{
+  "name": "@closedose-md/pig",
+  "version": "0.1.0",
+  "private": true,
+  "description": "CloseDose MD PIG application import boundary",
+  "closedoseMd": {
+    "routeBase": "/PIG/"
+  }
+}

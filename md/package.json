@@ -1,0 +1,17 @@
+{
+  "name": "@closedose-md/platform",
+  "version": "0.1.0",
+  "private": true,
+  "description": "CloseDose MD provider platform workspace",
+  "engines": {
+    "node": ">=22"
+  },
+  "workspaces": [
+    "apps/portal",
+    "apps/pig",
+    "apps/rsi"
+  ],
+  "scripts": {
+    "test:contract": "node --test tests/workspace-contract.test.mjs"
+  }
+}

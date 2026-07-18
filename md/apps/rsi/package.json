@@ -1,0 +1,9 @@
+{
+  "name": "@closedose-md/rsi",
+  "version": "0.1.0",
+  "private": true,
+  "description": "CloseDose MD RSI application import boundary",
+  "closedoseMd": {
+    "routeBase": "/RSI/"
+  }
+}
