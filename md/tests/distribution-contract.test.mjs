@@ -135,7 +135,15 @@ test('security headers keep runtime capabilities local and HTML revalidated', as
     assert.deepEqual(csp.get(directive), ["'self'"], directive);
   }
 
-  assert.deepEqual(csp.get('style-src'), ["'self'", "'unsafe-inline'"]);
+  assert.deepEqual(csp.get('style-src'), ["'self'"]);
+  assert.deepEqual(csp.get('style-src-elem'), ["'self'"]);
+  assert.deepEqual(csp.get('style-src-attr'), ["'unsafe-inline'"]);
+  assert.deepEqual(
+    [...csp]
+      .filter(([, values]) => values.includes("'unsafe-inline'"))
+      .map(([directive]) => directive),
+    ['style-src-attr']
+  );
   assert.deepEqual(csp.get('frame-src'), ["'none'"]);
   assert.deepEqual(csp.get('frame-ancestors'), ["'none'"]);
   assert.deepEqual(csp.get('object-src'), ["'none'"]);
@@ -188,5 +196,6 @@ test('static 404 is standalone, local-only, and links to canonical destinations'
   assert.doesNotMatch(`${notFound}\n${styles}`, /https?:\/\//i);
   assert.match(deployment, /ProgressionTracker/);
   assert.match(deployment, /style=\{\{ width:/);
-  assert.match(deployment, /single exception is `style-src 'unsafe-inline'`/);
+  assert.match(deployment, /single exception is `style-src-attr 'unsafe-inline'`/);
+  assert.match(deployment, /style-src-elem 'self'/);
 });

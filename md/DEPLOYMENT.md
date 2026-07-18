@@ -13,12 +13,13 @@ artifact. Scripts, fonts, images, connections, manifests, and workers are local
 only. Inline scripts, external hosts, frames, objects, base overrides, and form
 submissions are blocked.
 
-The single exception is `style-src 'unsafe-inline'`. The imported RSI
-`ProgressionTracker` uses React's `style={{ width: `${progress}%` }}` to render
+The single exception is `style-src-attr 'unsafe-inline'`. The imported RSI
+`ProgressionTracker` uses a React `style={{ width: ... }}` attribute to render
 the live timer progress width. React emits that value as an element style at
 runtime, so removing this exception would break the preserved tracker under
-CSP. No application contains inline script, and this exception must not be
-expanded to `script-src` or any other directive.
+CSP. `style-src 'self'` and `style-src-elem 'self'` still block inline style
+elements. No application contains inline script, and this exception must not be
+expanded to `style-src`, `script-src`, or any other directive.
 
 Canonical HTML is revalidated on every request. Vite's content-hashed assets
 under `/assets/`, `/PIG/assets/`, and `/RSI/assets/` are immutable for one year.
