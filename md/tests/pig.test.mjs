@@ -1,11 +1,27 @@
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
-import { readFile } from 'node:fs/promises';
+import { readFile, readdir } from 'node:fs/promises';
+import path from 'node:path';
 import vm from 'node:vm';
 import test from 'node:test';
+import { fileURLToPath } from 'node:url';
 
 const read = (relativePath) =>
   readFile(new URL(`../${relativePath}`, import.meta.url), 'utf8');
+
+const pigRoot = fileURLToPath(new URL('../apps/pig/', import.meta.url));
+
+async function listFiles(directory) {
+  const entries = await readdir(directory, { withFileTypes: true });
+  const nestedFiles = await Promise.all(
+    entries.map((entry) => {
+      const entryPath = path.join(directory, entry.name);
+      return entry.isDirectory() ? listFiles(entryPath) : [entryPath];
+    })
+  );
+
+  return nestedFiles.flat();
+}
 
 const expectedAppSha256 =
   '279effee8f08517cdf5d46405b29d7512601dddde5ada3f8ac376fb47c07523c';
@@ -70,6 +86,20 @@ test('PIG preserves the pinned clinical source without network or persistence ca
   assert.doesNotMatch(
     source,
     /fetch\s*\(|XMLHttpRequest|axios|localStorage|sessionStorage|process\.env|GEMINI|https?:\/\//
+  );
+});
+
+test('PIG workspace omits legacy AI Studio and Gemini declarations', async () => {
+  const files = await listFiles(pigRoot);
+  const relativeFiles = files.map((file) => path.relative(pigRoot, file));
+  const sourceText = (
+    await Promise.all(files.map((file) => readFile(file, 'utf8')))
+  ).join('\n');
+
+  assert.equal(relativeFiles.includes('metadata.json'), false);
+  assert.doesNotMatch(
+    sourceText,
+    /AI Studio|GEMINI(?:_API_KEY)?|MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API|process\.env\.API_KEY/i
   );
 });
 
