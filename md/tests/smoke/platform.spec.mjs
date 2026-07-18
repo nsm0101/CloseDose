@@ -1,3 +1,7 @@
+import { readdir } from 'node:fs/promises';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+
 import { expect, test } from '@playwright/test';
 
 import { resolveCloseDoseMdTarget } from '../helpers/target.mjs';
@@ -5,24 +9,62 @@ import { resolveCloseDoseMdTarget } from '../helpers/target.mjs';
 const target = resolveCloseDoseMdTarget();
 const expectedUrl = (pathname) => new URL(pathname, target.baseURL).href;
 
-const documentPaths = new Set(['/', '/PIG/', '/RSI/']);
-const resourceTypes = new Map([
-  ['css', 'stylesheet'],
-  ['js', 'script'],
-  ['png', 'image'],
-  ['webp', 'image'],
-  ['woff2', 'font']
+const distRoot = fileURLToPath(new URL('../../dist/', import.meta.url));
+const canonicalDocuments = new Map([
+  ['/', 'document'],
+  ['/PIG/', 'document'],
+  ['/RSI/', 'document']
+]);
+const physicalEntryDocuments = new Set([
+  'index.html',
+  'PIG/index.html',
+  'RSI/index.html'
+]);
+const controlFiles = new Set(['_headers', '_redirects']);
+const resourceTypesByExtension = new Map([
+  ['.css', 'stylesheet'],
+  ['.html', 'document'],
+  ['.js', 'script'],
+  ['.png', 'image'],
+  ['.webp', 'image'],
+  ['.woff2', 'font']
 ]);
 
-function isExpectedRequestPath(pathname, resourceType) {
-  if (documentPaths.has(pathname)) return resourceType === 'document';
-  if (pathname === '/404.css') return resourceType === 'stylesheet';
-
-  const asset = pathname.match(
-    /^\/(?:PIG\/|RSI\/)?assets\/[A-Za-z0-9_.-]+-[A-Za-z0-9_-]{8,}\.(css|js|png|webp|woff2)$/
+async function listArtifactFiles(directory = distRoot) {
+  const entries = await readdir(directory, { withFileTypes: true });
+  const nestedFiles = await Promise.all(
+    entries.map((entry) => {
+      const entryPath = path.join(directory, entry.name);
+      return entry.isDirectory() ? listArtifactFiles(entryPath) : [entryPath];
+    })
   );
 
-  return Boolean(asset && resourceTypes.get(asset[1]) === resourceType);
+  return nestedFiles.flat();
+}
+
+async function buildExactRequestAllowlist() {
+  const allowlist = new Map(canonicalDocuments);
+
+  for (const file of (await listArtifactFiles()).sort()) {
+    const relativePath = path.relative(distRoot, file).split(path.sep).join('/');
+    if (physicalEntryDocuments.has(relativePath) || controlFiles.has(relativePath)) continue;
+
+    const resourceType = resourceTypesByExtension.get(path.extname(relativePath));
+    if (!resourceType) throw new Error(`unclassified distribution file: ${relativePath}`);
+    allowlist.set(`/${relativePath}`, resourceType);
+  }
+
+  return allowlist;
+}
+
+const exactRequestAllowlist = await buildExactRequestAllowlist();
+const knownAllowedScriptPath = [...exactRequestAllowlist]
+  .find(([, resourceType]) => resourceType === 'script')?.[0];
+
+if (!knownAllowedScriptPath) throw new Error('assembled artifact has no allowlisted script');
+
+function isExpectedRequestPath(pathname, resourceType) {
+  return exactRequestAllowlist.get(pathname) === resourceType;
 }
 
 function auditRuntime(context) {
@@ -260,11 +302,75 @@ test('browser-context audit rejects same-origin query and body requests', async 
     ]);
   });
 
-  await expect.poll(() => runtimeAudit.snapshot().sameOriginRequestViolations.length).toBe(2);
-  const violations = runtimeAudit.snapshot().sameOriginRequestViolations.join('\n');
-  expect(violations).toContain('query=?audit-probe=query');
-  expect(violations).toContain('method=POST');
-  expect(violations).toContain('request-body');
+  await expect.poll(() =>
+    runtimeAudit.snapshot().sameOriginRequestViolations.some((violation) =>
+      violation.includes('query=?audit-probe=query')
+    )
+  ).toBe(true);
+  await expect.poll(() =>
+    runtimeAudit.snapshot().sameOriginRequestViolations.some((violation) =>
+      violation.includes('method=POST')
+    )
+  ).toBe(true);
+  await expect.poll(() =>
+    runtimeAudit.snapshot().sameOriginRequestViolations.some((violation) =>
+      violation.includes('request-body')
+    )
+  ).toBe(true);
+  expect(() => runtimeAudit.assertClean()).toThrow();
+});
+
+test('browser-context audit rejects an unexpected same-origin GET path', async ({
+  page,
+  context
+}) => {
+  const runtimeAudit = auditRuntime(context);
+  await page.goto('/');
+
+  await page.evaluate(() => fetch('/runtime-audit-unexpected-path'));
+
+  await expect.poll(() =>
+    runtimeAudit.snapshot().sameOriginRequestViolations.some((violation) =>
+      violation.includes('unexpected-path-or-type=/runtime-audit-unexpected-path:fetch')
+    )
+  ).toBe(true);
+  expect(() => runtimeAudit.assertClean()).toThrow();
+});
+
+test('browser-context audit rejects an exact allowed asset with the wrong resource type', async ({
+  page,
+  context
+}) => {
+  const runtimeAudit = auditRuntime(context);
+  await page.goto('/');
+
+  await page.evaluate((assetPath) => fetch(assetPath), knownAllowedScriptPath);
+
+  await expect.poll(() =>
+    runtimeAudit.snapshot().sameOriginRequestViolations.some((violation) =>
+      violation.includes(`unexpected-path-or-type=${knownAllowedScriptPath}:fetch`)
+    )
+  ).toBe(true);
+  expect(() => runtimeAudit.assertClean()).toThrow();
+});
+
+test('browser-context audit classifies a deterministically fulfilled external request', async ({
+  page,
+  context
+}) => {
+  const runtimeAudit = auditRuntime(context);
+  const externalProbeUrl = 'https://runtime-audit.invalid/external-probe';
+  await context.route(externalProbeUrl, (route) =>
+    route.fulfill({
+      status: 200,
+      contentType: 'text/html',
+      body: '<!doctype html><title>External runtime audit probe</title>'
+    })
+  );
+
+  await page.goto(externalProbeUrl);
+
+  await expect.poll(() => runtimeAudit.snapshot().externalRequests).toContain(externalProbeUrl);
   expect(() => runtimeAudit.assertClean()).toThrow();
 });
 
@@ -282,17 +388,24 @@ test('browser-context audit detects popup navigation and popup requests', async 
       throw new Error('popup-audit-page-probe');
     }, 0);
   });
-  await expect.poll(() => runtimeAudit.snapshot().pageErrors.length).toBe(1);
-
-  const audit = runtimeAudit.snapshot();
-  expect(audit.unexpectedPages).toEqual([expectedUrl('/?popup-audit=1')]);
-  expect(
-    audit.sameOriginRequestViolations.some((violation) =>
+  await expect.poll(() => runtimeAudit.snapshot().unexpectedPages).toEqual([
+    expectedUrl('/?popup-audit=1')
+  ]);
+  await expect.poll(() =>
+    runtimeAudit.snapshot().sameOriginRequestViolations.some((violation) =>
       violation.includes('query=?popup-audit=1')
     )
   ).toBe(true);
-  expect(audit.consoleErrors.some((error) => error.includes('popup-audit-console-probe'))).toBe(true);
-  expect(audit.pageErrors.some((error) => error.includes('popup-audit-page-probe'))).toBe(true);
+  await expect.poll(() =>
+    runtimeAudit.snapshot().consoleErrors.some((error) =>
+      error.includes('popup-audit-console-probe')
+    )
+  ).toBe(true);
+  await expect.poll(() =>
+    runtimeAudit.snapshot().pageErrors.some((error) =>
+      error.includes('popup-audit-page-probe')
+    )
+  ).toBe(true);
   expect(() => runtimeAudit.assertClean()).toThrow();
   await popup.close();
 });
