@@ -1,3 +1,14 @@
 # Pinned PIG source snapshots are preserved byte-for-byte from upstream.
 md/apps/pig/index.html -whitespace
 md/apps/pig/src/App.tsx -whitespace
+
+# Pinned RSI clinical source snapshots are preserved byte-for-byte from upstream.
+md/apps/rsi/index.html -whitespace
+md/apps/rsi/src/App.tsx -whitespace
+md/apps/rsi/src/components/DosingCalculator.tsx -whitespace
+md/apps/rsi/src/components/ProgressionTracker.tsx -whitespace
+md/apps/rsi/src/components/ScenarioGuide.tsx -whitespace
+md/apps/rsi/src/components/SedationReference.tsx -whitespace
+md/apps/rsi/src/components/TransportKit.tsx -whitespace
+md/apps/rsi/src/data/rsiData.ts -whitespace
+md/apps/rsi/src/types.ts -whitespace
