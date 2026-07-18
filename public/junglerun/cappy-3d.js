@@ -114,11 +114,14 @@
     missionList: document.getElementById('mission-list'),
     musicButton: document.getElementById('music-button'),
     skinOptions: Array.prototype.slice.call(document.querySelectorAll('.skin-option')),
+    landingMascot: document.getElementById('landing-mascot'),
     skinMenuToggle: document.getElementById('skin-menu-toggle'),
     skinMenuPanel: document.getElementById('skin-menu-panel'),
     selectedSkinName: document.getElementById('selected-skin-name'),
     missionMenuToggle: document.getElementById('mission-menu-toggle'),
     missionMenuPanel: document.getElementById('mission-menu-panel'),
+    missionMenuClose: document.getElementById('mission-menu-close'),
+    missionModalBackdrop: document.getElementById('mission-modal-backdrop'),
     boostMeter: document.getElementById('boost-meter'),
     boostFill: document.getElementById('boost-fill'),
     boostValue: document.getElementById('boost-value'),
@@ -216,7 +219,8 @@
     coral: null,
     afterimages: [],
     poseTextures: {},
-    inkTextures: {},
+    monoTextures: {},
+    riverTextures: {},
     skin: 'classic',
     currentPose: 'runA',
     shadow: null,
@@ -277,9 +281,11 @@
     renderMissions();
     applySkin(safeReadString('cappy_skin', 'classic'));
     syncMusicButton();
+    resize();
 
     window.addEventListener('resize', resize, { passive: true });
     window.addEventListener('orientationchange', resize, { passive: true });
+    if (window.visualViewport) window.visualViewport.addEventListener('resize', resize, { passive: true });
     document.addEventListener('visibilitychange', function () {
       if (document.hidden && state.mode === GAME.RUNNING) pauseGame();
     });
@@ -594,17 +600,23 @@
   }
 
   function getSkinTexture(name) {
-    if (player.skin === 'ink') {
-      if (!player.inkTextures[name] && player.poseTextures[name]) {
-        player.inkTextures[name] = makeInkTexture(player.poseTextures[name]);
+    if (player.skin === 'mono') {
+      if (!player.monoTextures[name] && player.poseTextures[name]) {
+        player.monoTextures[name] = makeMonoTexture(player.poseTextures[name]);
       }
-      return player.inkTextures[name] || player.poseTextures[name];
+      return player.monoTextures[name] || player.poseTextures[name];
+    }
+    if (player.skin === 'river') {
+      if (!player.riverTextures[name] && player.poseTextures[name]) {
+        player.riverTextures[name] = makeRiverTexture(player.poseTextures[name]);
+      }
+      return player.riverTextures[name] || player.poseTextures[name];
     }
     return player.poseTextures[name];
   }
 
   // Newsprint b&w with a screentone dot pattern, generated from the classic art.
-  function makeInkTexture(sourceTexture) {
+  function makeMonoTexture(sourceTexture) {
     try {
       const image = sourceTexture.image;
       const canvas = document.createElement('canvas');
@@ -636,29 +648,92 @@
     }
   }
 
+  // Recolors Cappy's warm fur into the cool river palette while preserving neutral facial details.
+  function makeRiverTexture(sourceTexture) {
+    try {
+      const image = sourceTexture.image;
+      const canvas = document.createElement('canvas');
+      canvas.width = image.width;
+      canvas.height = image.height;
+      const context = canvas.getContext('2d');
+      context.drawImage(image, 0, 0);
+      const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+      const px = imageData.data;
+      for (let i = 0; i < px.length; i += 4) {
+        if (px[i + 3] < 8) continue;
+        const red = px[i];
+        const green = px[i + 1];
+        const blue = px[i + 2];
+        const warm = red > blue * 1.12 && green > blue * .82 && red > green * 1.02;
+        if (!warm) continue;
+        const light = Math.max(0, Math.min(1, (red * .3 + green * .59 + blue * .11) / 255));
+        const riverRed = 24 + 114 * light;
+        const riverGreen = 75 + 138 * light;
+        const riverBlue = 72 + 137 * light;
+        px[i] = red * .18 + riverRed * .82;
+        px[i + 1] = green * .18 + riverGreen * .82;
+        px[i + 2] = blue * .18 + riverBlue * .82;
+      }
+      context.putImageData(imageData, 0, 0);
+      const texture = new THREE.CanvasTexture(canvas);
+      texture.encoding = THREE.sRGBEncoding;
+      texture.minFilter = THREE.LinearFilter;
+      texture.magFilter = THREE.LinearFilter;
+      return texture;
+    } catch (error) {
+      return sourceTexture;
+    }
+  }
+
   function applySkin(name) {
-    const skin = name === 'ink' ? 'ink' : 'classic';
+    const skin = name === 'river' ? 'river' : ((name === 'mono' || name === 'ink') ? 'mono' : 'classic');
+    const skinLabels = { classic: 'Classic', mono: 'Mono', river: 'River' };
     player.skin = skin;
     safeWriteString('cappy_skin', skin);
-    dom.shell.classList.toggle('skin-ink', skin === 'ink');
+    dom.shell.classList.toggle('skin-mono', skin === 'mono');
+    dom.shell.classList.toggle('skin-river', skin === 'river');
     dom.skinOptions.forEach(function (button) {
       button.setAttribute('aria-checked', String(button.dataset.skin === skin));
       button.classList.toggle('selected', button.dataset.skin === skin);
     });
-    dom.selectedSkinName.textContent = skin === 'ink' ? 'Comic Ink' : 'Classic';
+    dom.selectedSkinName.textContent = skinLabels[skin];
+    if (dom.landingMascot) dom.landingMascot.alt = 'Cappy in the ' + skinLabels[skin] + ' skin';
     if (player.art) setPlayerPose(player.currentPose, true);
+  }
+
+  function usesMobileStartMenus() {
+    return window.matchMedia('(max-width: 979px)').matches;
+  }
+
+  function syncMissionModalPresentation(expanded) {
+    const modalOpen = expanded && usesMobileStartMenus();
+    dom.missionModalBackdrop.classList.toggle('hidden', !modalOpen);
+    dom.shell.classList.toggle('mission-modal-open', modalOpen);
+    if (modalOpen) {
+      dom.missionMenuPanel.setAttribute('role', 'dialog');
+      dom.missionMenuPanel.setAttribute('aria-modal', 'true');
+      dom.missionMenuPanel.setAttribute('aria-labelledby', 'mission-menu-title');
+    } else {
+      dom.missionMenuPanel.removeAttribute('role');
+      dom.missionMenuPanel.removeAttribute('aria-modal');
+      dom.missionMenuPanel.removeAttribute('aria-labelledby');
+    }
   }
 
   function setStartMenu(toggle, panel, expanded) {
     toggle.setAttribute('aria-expanded', String(expanded));
     panel.classList.toggle('is-expanded', expanded);
+    if (panel === dom.missionMenuPanel) syncMissionModalPresentation(expanded);
   }
 
   function closeStartMenus() {
-    const hadOpenMenu = dom.skinMenuToggle.getAttribute('aria-expanded') === 'true'
-      || dom.missionMenuToggle.getAttribute('aria-expanded') === 'true';
+    const skinWasOpen = dom.skinMenuToggle.getAttribute('aria-expanded') === 'true';
+    const missionWasOpen = dom.missionMenuToggle.getAttribute('aria-expanded') === 'true';
+    const hadOpenMenu = skinWasOpen || missionWasOpen;
     setStartMenu(dom.skinMenuToggle, dom.skinMenuPanel, false);
     setStartMenu(dom.missionMenuToggle, dom.missionMenuPanel, false);
+    const focusTarget = missionWasOpen ? dom.missionMenuToggle : (skinWasOpen ? dom.skinMenuToggle : null);
+    if (focusTarget) window.setTimeout(function () { focusTarget.focus(); }, 0);
     return hadOpenMenu;
   }
 
@@ -666,6 +741,7 @@
     const shouldOpen = toggle.getAttribute('aria-expanded') !== 'true';
     setStartMenu(otherToggle, otherPanel, false);
     setStartMenu(toggle, panel, shouldOpen);
+    return shouldOpen;
   }
 
   function resetSegments(safeStart) {
@@ -2455,6 +2531,16 @@
     document.addEventListener('keydown', function (event) {
       const key = event.key.toLowerCase();
       if (['arrowleft', 'arrowright', 'arrowup', 'arrowdown', ' ', 'a', 'b', 'd', 'w', 's', 'x', 'shift', '?'].includes(key)) event.preventDefault();
+      const missionModalOpen = usesMobileStartMenus()
+        && dom.missionMenuToggle.getAttribute('aria-expanded') === 'true';
+      if (missionModalOpen) {
+        if (key === 'escape') closeStartMenus();
+        else if (key === 'tab') {
+          event.preventDefault();
+          dom.missionMenuClose.focus();
+        }
+        return;
+      }
       if (!dom.controlsScreen.classList.contains('hidden')) {
         if (key === 'escape') closeControls();
         else if (key === 'tab') {
@@ -2670,12 +2756,15 @@
       toggleStartMenu(dom.skinMenuToggle, dom.skinMenuPanel, dom.missionMenuToggle, dom.missionMenuPanel);
     });
     dom.missionMenuToggle.addEventListener('click', function () {
-      toggleStartMenu(dom.missionMenuToggle, dom.missionMenuPanel, dom.skinMenuToggle, dom.skinMenuPanel);
+      const opened = toggleStartMenu(dom.missionMenuToggle, dom.missionMenuPanel, dom.skinMenuToggle, dom.skinMenuPanel);
+      if (opened && usesMobileStartMenus()) window.setTimeout(function () { dom.missionMenuClose.focus(); }, 0);
     });
+    dom.missionMenuClose.addEventListener('click', closeStartMenus);
+    dom.missionModalBackdrop.addEventListener('click', closeStartMenus);
     dom.skinOptions.forEach(function (button) {
       button.addEventListener('click', function () {
         applySkin(button.dataset.skin);
-        if (window.matchMedia('(max-width: 979px)').matches) setStartMenu(dom.skinMenuToggle, dom.skinMenuPanel, false);
+        if (usesMobileStartMenus()) setStartMenu(dom.skinMenuToggle, dom.skinMenuPanel, false);
       });
     });
   }
@@ -3195,6 +3284,9 @@
   }
 
   function resize() {
+    const viewportHeight = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+    document.documentElement.style.setProperty('--app-height', Math.round(viewportHeight) + 'px');
+    if (dom.missionMenuToggle.getAttribute('aria-expanded') === 'true') syncMissionModalPresentation(true);
     if (!camera || !renderer) return;
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.fov = window.innerWidth < 600 ? 67 : 58;

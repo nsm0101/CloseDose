@@ -13,6 +13,7 @@
   --shadow: #081a15;
   --display: "Archivo Black", Impact, sans-serif;
   --body: "DM Sans", system-ui, sans-serif;
+  --app-height: 100vh;
   --safe-top: max(18px, env(safe-area-inset-top));
   --safe-right: max(18px, env(safe-area-inset-right));
   --safe-bottom: max(18px, env(safe-area-inset-bottom));
@@ -644,6 +645,7 @@ a:focus-visible {
 
 .start-overlay {
   padding: clamp(1rem, 3vw, 2.5rem);
+  overscroll-behavior: contain;
 }
 
 .start-layout {
@@ -760,6 +762,7 @@ h1 em {
   object-fit: contain;
   filter: drop-shadow(5px 6px 0 var(--ink));
   transform-origin: center bottom;
+  transition: filter .28s cubic-bezier(.16, 1, .3, 1);
   animation: mascotBounce 1s steps(2) infinite;
 }
 
@@ -1100,13 +1103,13 @@ h1 em {
 
 .skin-picker {
   display: grid;
-  grid-template-columns: 1fr;
-  gap: .65rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: .45rem;
 }
 
 .skin-option {
   min-height: 3rem;
-  padding: .65rem .8rem;
+  padding: .65rem .35rem;
   border: 3px solid var(--ink);
   background: var(--paper);
   box-shadow: 3px 3px 0 var(--ink);
@@ -1126,14 +1129,30 @@ h1 em {
   box-shadow: 3px 3px 0 var(--coral);
 }
 
-.skin-option[data-skin="ink"] {
+.skin-option[data-skin="mono"] {
   background-image: radial-gradient(rgba(20,37,31,.32) 1px, transparent 1.2px);
   background-size: 6px 6px;
 }
 
-.skin-option[data-skin="ink"].selected { background-image: radial-gradient(rgba(245,234,213,.4) 1px, transparent 1.2px); }
+.skin-option[data-skin="mono"].selected { background-image: radial-gradient(rgba(245,234,213,.4) 1px, transparent 1.2px); }
 
-.skin-ink .mascot-stage img { filter: grayscale(1) contrast(1.45) brightness(1.06); }
+.skin-option[data-skin="river"] {
+  background: var(--river);
+}
+
+.skin-option[data-skin="river"].selected {
+  color: var(--cream);
+  background: var(--leaf);
+  box-shadow: 3px 3px 0 var(--river);
+}
+
+.skin-mono .mascot-stage img {
+  filter: grayscale(1) contrast(1.45) brightness(1.06) drop-shadow(5px 6px 0 var(--ink));
+}
+
+.skin-river .mascot-stage img {
+  filter: sepia(.85) saturate(1.35) hue-rotate(118deg) brightness(1.04) contrast(1.08) drop-shadow(5px 6px 0 var(--ink));
+}
 
 .start-sidebar {
   position: relative;
@@ -1219,6 +1238,11 @@ h1 em {
 
 .mission-complete-all { font-family: var(--display); font-size: .64rem; }
 
+.mission-menu-close,
+.mission-modal-backdrop {
+  display: none;
+}
+
 .power-chip { font-size: .72rem; letter-spacing: .05em; }
 .magnet-chip { background: var(--coral); }
 .star-chip { background: var(--sun); color: var(--ink); }
@@ -1278,25 +1302,30 @@ h1 em {
     display: flex;
     justify-content: flex-start;
     align-items: center;
+    height: var(--app-height);
+    min-height: 0;
     padding: 0;
+    overflow: hidden;
   }
 
   .start-layout {
     display: block;
     width: 100%;
-    min-height: 100dvh;
+    height: var(--app-height);
+    min-height: 0;
   }
 
   .title-panel {
     width: 100%;
-    min-height: 100dvh;
+    height: 100%;
+    min-height: 0;
     padding: max(1.25rem, var(--safe-top)) max(1.25rem, var(--safe-right)) max(1.25rem, var(--safe-bottom)) max(1.25rem, var(--safe-left));
     border-width: 0;
     box-shadow: none;
     transform: none;
   }
 
-  .mascot-stage { right: -8%; bottom: 13%; width: min(70%, 500px); }
+  .mascot-stage { right: -4%; bottom: 14%; width: min(64%, 440px); }
 
   .start-footer {
     left: max(1.25rem, var(--safe-left));
@@ -1312,7 +1341,7 @@ h1 em {
 
   .start-sidebar {
     position: absolute;
-    z-index: 6;
+    z-index: auto;
     left: max(1.25rem, var(--safe-left));
     right: max(1.25rem, var(--safe-right));
     bottom: var(--safe-bottom);
@@ -1400,14 +1429,79 @@ h1 em {
     box-shadow: 7px 7px 0 var(--ink), -4px 4px 0 var(--stage-accent);
   }
 
+  .skin-menu-panel {
+    z-index: 7;
+  }
+
   .sidebar-panel.is-expanded {
     display: block;
     animation: sidebarPanelIn .2s cubic-bezier(.16, 1, .3, 1) both;
   }
 
   .sidebar-title { margin-bottom: .75rem; }
-  .skin-picker { grid-template-columns: 1fr 1fr; }
+  .skin-picker { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .mission-board-title { margin-top: 0; }
+
+  .mission-modal-backdrop {
+    position: fixed;
+    z-index: 8;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: var(--app-height);
+    border: 0;
+    background: rgba(8, 26, 21, .68);
+    backdrop-filter: blur(5px) saturate(.72);
+    -webkit-backdrop-filter: blur(5px) saturate(.72);
+    cursor: pointer;
+  }
+
+  .mission-menu-panel {
+    position: fixed;
+    z-index: 9;
+    top: 50%;
+    right: max(1rem, var(--safe-right));
+    bottom: auto;
+    left: max(1rem, var(--safe-left));
+    width: auto;
+    max-height: calc(var(--app-height) - var(--safe-top) - var(--safe-bottom) - 2rem);
+    overflow: hidden;
+    padding: 1.15rem;
+    transform: translateY(-50%);
+    box-shadow: 9px 9px 0 var(--ink), -5px 5px 0 var(--river);
+  }
+
+  .mission-menu-panel.is-expanded {
+    display: block;
+    animation: missionModalIn .24s cubic-bezier(.16, 1, .3, 1) both;
+  }
+
+  .mission-menu-close {
+    position: absolute;
+    top: .7rem;
+    right: .7rem;
+    display: grid;
+    place-items: center;
+    width: 2.55rem;
+    aspect-ratio: 1;
+    border: 3px solid var(--ink);
+    color: var(--cream);
+    background: var(--leaf);
+    box-shadow: 3px 3px 0 var(--ink);
+    font-family: var(--display);
+    font-size: 1.15rem;
+    line-height: 1;
+    cursor: pointer;
+  }
+
+  .mission-menu-close:active {
+    transform: translate(2px, 2px);
+    box-shadow: 1px 1px 0 var(--ink);
+  }
+
+  .mission-menu-panel .mission-board-title {
+    margin-right: 3.25rem;
+  }
 
   #game-shell:not(.running) .close-button {
     top: var(--safe-top);
@@ -1427,6 +1521,11 @@ h1 em {
   .controls-card { max-height: 100dvh; overflow: auto; }
   .control-guide { grid-template-columns: 1fr; }
   .control-guide article { min-height: auto; }
+}
+
+@keyframes missionModalIn {
+  from { opacity: 0; transform: translateY(calc(-50% + 12px)) scale(.97); }
+  to { opacity: 1; transform: translateY(-50%) scale(1); }
 }
 
 @keyframes sidebarPanelIn {
@@ -1466,9 +1565,9 @@ h1 em {
   .icon-button { width: 2.45rem; border-width: 2px; box-shadow: 3px 3px 0 var(--ink); }
   .turn-prompt { top: 20%; min-width: 80vw; }
   .threat-warning { top: 30%; }
-  h1 { font-size: clamp(3.35rem, 17vw, 4.8rem); }
-  .title-deck { max-width: 24ch; }
-  .mascot-stage { right: -16%; bottom: 14%; width: 82%; }
+  h1 { font-size: clamp(3rem, 14.2vw, 4.35rem); }
+  .title-deck { max-width: 25ch; font-size: .9rem; }
+  .mascot-stage { right: -7%; bottom: 16%; width: 76%; }
   .burst-one { display: none; }
   .comic-button span { padding: .88rem 1rem; }
   .comic-button b { min-width: 3rem; }
@@ -1482,11 +1581,43 @@ h1 em {
   .controls-card h2 { font-size: 3.7rem; }
 }
 
+@media (max-width: 430px) and (max-height: 720px) {
+  .title-panel {
+    padding-top: max(.85rem, var(--safe-top));
+  }
+
+  .issue-label { font-size: .64rem; }
+  h1 { margin-top: .45rem; font-size: clamp(2.8rem, 13.6vw, 3.7rem); }
+  .title-deck { margin-top: .7rem; font-size: .82rem; }
+  .mascot-stage { right: -4%; bottom: 16%; width: 70%; }
+  .start-footer { bottom: calc(var(--safe-bottom) + 4.65rem); gap: .5rem; }
+  .start-secondary-row { gap: .65rem; }
+  .burst-two { display: none; }
+}
+
+@media (max-width: 979px) and (max-height: 520px) {
+  .title-panel {
+    padding-top: max(.75rem, var(--safe-top));
+  }
+
+  .issue-label { max-width: 42%; font-size: .58rem; }
+  h1 { margin-top: .35rem; font-size: clamp(2.25rem, 8vw, 3.4rem); }
+  .title-deck { display: none; }
+  .mascot-stage { right: 1%; bottom: 17%; width: min(46%, 280px); }
+  .start-footer { left: 43%; bottom: calc(var(--safe-bottom) + 4.35rem); gap: .42rem; }
+  .start-secondary-row { gap: .55rem; }
+  .comic-button span { padding: .72rem .85rem; font-size: .82rem; }
+  .comic-button b { min-width: 2.7rem; }
+  .best-line { font-size: .6rem; }
+  .help-text-button { font-size: .68rem; }
+  .burst-word { display: none; }
+}
+
 @keyframes superchargePulseMobile {
   50% { transform: rotate(-1deg) scale(1.035); box-shadow: 6px 6px 0 var(--stage-accent), -4px 4px 0 var(--coral); }
 }
 
-@media (max-height: 690px) and (min-width: 700px) {
+@media (max-height: 690px) and (min-width: 980px) {
   .title-panel { min-height: 90vh; }
   h1 { font-size: clamp(3.6rem, 9vw, 6.2rem); }
   .mascot-stage { width: 55%; }
