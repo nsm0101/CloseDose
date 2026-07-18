@@ -8,12 +8,15 @@ the byte-pinned RSI clinical/workflow source, or
 `.superpowers/sdd/progress.md`. No deployment, push, pull request, DNS, or
 Cloudflare mutation was performed.
 
-Implementation commit:
-`4413344978f1cf0e65e783d17d3fbbd0d7e4ff39`
-(`fix(md): harden provider release gate`)
+Implementation commits:
+
+- `4413344978f1cf0e65e783d17d3fbbd0d7e4ff39`
+  (`fix(md): harden provider release gate`)
+- `2229abd80f72170af5042ea70353da336371d43b`
+  (`test(md): enforce exact runtime request allowlist`)
 
 Current branch range after implementation:
-`19b4a454fa66a5a1acd42f85c8773c9bc74a51cf..4413344978f1cf0e65e783d17d3fbbd0d7e4ff39`
+`19b4a454fa66a5a1acd42f85c8773c9bc74a51cf..2229abd80f72170af5042ea70353da336371d43b`
 
 ## Review findings and resolutions
 
@@ -33,10 +36,9 @@ Current branch range after implementation:
    APIs, external URLs/assets, environment/API-key plumbing, and identifier
    fields/plumbing. A focused test proves the portal's explanatory privacy copy
    is not a false positive. The BrowserContext audit now allows only GET
-   canonical documents and content-hashed static assets with matching resource
+   canonical documents and exact emitted artifact paths with matching resource
    types. It rejects external origins, same-origin query strings, bodies,
-   non-GET traffic, and unexpected paths/types. Synthetic GET-query and POST
-   body probes prove rejection.
+   non-GET traffic, and unexpected paths/types.
 
 ### Minor
 
@@ -46,7 +48,8 @@ Current branch range after implementation:
 2. `md/README.md` now describes the assembled release, full clean CI sequence,
    boundaries, casing, and deployment-runbook link.
 3. Task 1 through 5 tracked implementation reports now cite reachable
-   post-rebase commits.
+   post-rebase commits. Ignored local review reports label old ranges as
+   pre-rebase and list current equivalents; they remain uncommitted by policy.
 4. `/404.css` has explicit revalidation in `_headers`; both the distribution
    contract and served Chromium checks enforce it.
 
@@ -130,3 +133,26 @@ passing.
 Final scope checks found no diff in `public/**`,
 `md/apps/pig/src/App.tsx`, `md/apps/rsi/src/**`, or
 `.superpowers/sdd/progress.md`.
+
+## Final re-review remediation
+
+The follow-up replaced the hash-shaped asset matcher with an exact allowlist
+derived deterministically from the current assembled `md/dist`: canonical
+documents plus actual emitted non-control files mapped to Playwright resource
+types. Physical entry aliases and Cloudflare control files are excluded, and
+an unknown emitted extension fails suite startup. Polled negative probes now
+cover unexpected same-origin GET paths, a known exact script fetched with the
+wrong `fetch` resource type, and an external request fulfilled through
+Playwright routing without a failed navigation. Query, method, body, popup,
+console-error, and page-error probes remain.
+
+Final evidence:
+
+```text
+focused auditor repeat: 25/25 passed; post-format repeat: 15/15 passed
+full local smoke: 10/10 passed
+external-target smoke with separately managed server: 10/10 passed
+Node 22.23.1 clean gate: 3 typechecks, 26/26 unit, 3 builds,
+  5/5 contract, Chromium install, and 10/10 smoke passed
+git diff --check: exit 0
+```
