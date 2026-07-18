@@ -13,6 +13,10 @@ Implementation commit:
 `3e72d741026b0af3c8d79931bae61240e613388a`
 (`feat(md): assemble provider production artifact`)
 
+Review remediation commit:
+`bd029569d76a3a5a24ab3ab5446f947d422824ac`
+(`fix(md): narrow CSP and audit popup pages`)
+
 ## Files
 
 - `md/scripts/build.mjs`: explicit clean, ordered application builds, static
@@ -81,7 +85,7 @@ mark, and the three responsive local clinical-image variants under `/assets/`.
 The deployed policy is:
 
 ```text
-default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self'; connect-src 'self'; frame-src 'none'; frame-ancestors 'none'; object-src 'none'; base-uri 'none'; form-action 'none'; manifest-src 'self'; worker-src 'self'
+default-src 'self'; script-src 'self'; style-src 'self'; style-src-elem 'self'; style-src-attr 'unsafe-inline'; font-src 'self'; img-src 'self'; connect-src 'self'; frame-src 'none'; frame-ancestors 'none'; object-src 'none'; base-uri 'none'; form-action 'none'; manifest-src 'self'; worker-src 'self'
 ```
 
 Scripts do not allow inline execution or evaluation. Default, script, font,
@@ -89,11 +93,13 @@ image, and connection sources are same-origin only. No Google Fonts, Google
 hosts, Gemini endpoints, arbitrary origins, data URLs, or blob URLs are allowed.
 Frames, embedding, objects, base overrides, and form submission are disabled.
 
-The only inline allowance is `style-src 'unsafe-inline'`. The byte-pinned RSI
-`ProgressionTracker` renders its timer progress bar with React
-`style={{ width: `${progress}%` }}` at runtime. A browser CSP without the style
-exception blocks that existing visible timer behavior. No inline script exists,
-and the exception is not present in `script-src` or any other directive.
+The only inline allowance is `style-src-attr 'unsafe-inline'`. The byte-pinned
+RSI `ProgressionTracker` renders its timer progress bar with a React
+`style={{ width: ... }}` attribute at runtime. `style-src 'self'` and
+`style-src-elem 'self'` continue to block inline style elements. Browser probes
+confirmed the real tracker width advances while an injected inline `<style>`
+rule does not apply. No inline script exists, and no other directive contains
+`'unsafe-inline'`.
 
 Global response controls also include `nosniff`, `DENY` framing,
 `strict-origin-when-cross-origin`, same-origin opener/resource policies, and a
@@ -129,9 +135,12 @@ clinical application change was added.
   post-intubation sedation renders, the airway clock reaches a non-zero value
   and pauses, and the transport reference plus vasopressor category render.
 
-Every browser page records console errors, uncaught page errors, failed
-requests, and HTTP(S) requests outside `http://127.0.0.1:4173`. Every category
-must remain empty at the end of the interaction.
+The auditor records requests and failures on `BrowserContext`, attaches console
+and uncaught-page-error listeners to every existing and newly created page, and
+fails any unexpected popup. Every HTTP(S) request outside
+`http://127.0.0.1:4173` must remain absent. A focused negative probe opens a
+`localhost` popup and proves its navigation, assets, console error, and page
+error all reach the context audit before `assertClean` rejects the popup.
 
 ## Exact local CI sequence
 
@@ -149,7 +158,7 @@ RSI tsc --noEmit: exit 0
 aggregate exit 0
 
 $ npm run test:unit
-tests 20; pass 20; fail 0; duration 302.925184 ms; exit 0
+tests 20; pass 20; fail 0; duration 296.430754 ms; exit 0
 
 $ npm run build
 portal: Vite 6.4.3, 35 modules, root HTML/assets emitted
@@ -159,14 +168,17 @@ embedded distribution contract: tests 5; pass 5; fail 0
 exit 0
 
 $ npm run test:contract
-tests 5; pass 5; fail 0; duration 230.29093 ms; exit 0
+tests 5; pass 5; fail 0; duration 227.280882 ms; exit 0
 
 $ npx playwright install --with-deps chromium
 Chromium 149.0.7827.55 and headless shell installed on the first run;
 final cached run exit 0
 
 $ npm run test:smoke
-tests 4; pass 4; fail 0; duration 8.6 s; exit 0
+tests 6; pass 6; fail 0; duration 11.4 s; exit 0
+
+$ npx playwright test -g "CSP blocks|browser-context audit"
+targeted negative probes 2; pass 2; fail 0; exit 0
 ```
 
 The smoke tests served `md/dist/` through `node tests/serve-dist.mjs`. A separate
@@ -203,8 +215,11 @@ workflow and ref.
 - The 404 uses local CSS and contains no inline style or script.
 - The production CSP ran in Chromium while the PIG timer and RSI progress/timer
   workflows were visible and interactive.
-- Browser audit totals were zero console errors, zero page errors, zero failed
-  requests, and zero external requests.
+- Normal-flow context audit totals were zero console errors, zero page errors,
+  zero failed requests, zero external requests, and zero unexpected pages.
+- Negative probes prove inline style elements remain blocked and popup requests,
+  console errors, page errors, and unexpected-page creation cannot escape the
+  auditor.
 - `public/**`, byte-pinned clinical source, and
   `.superpowers/sdd/progress.md` remain unchanged.
 - Generated `dist/`, Playwright reports, and test results remain ignored and are
