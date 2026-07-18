@@ -9,6 +9,8 @@ clinical and privacy boundaries, and keeps every runtime asset local.
 
 Implementation commit: `16f5ced` (`feat(md): add clinician provider portal`)
 
+Review remediation commit: `b5911e1` (`fix(md): optimize portal hero delivery`)
+
 ## Design decisions
 
 - Design read: greenfield clinician landing hub for time-pressed providers,
@@ -16,7 +18,8 @@ Implementation commit: `16f5ced` (`feat(md): add clinician provider portal`)
   UI design system.
 - Dials: `DESIGN_VARIANCE 4`, `MOTION_INTENSITY 3`, and `VISUAL_DENSITY 4`.
 - The split hero uses one clinical photograph as editorial context. It is not
-  presented as an interface or product screenshot.
+  presented as an interface or product screenshot. A responsive `picture`
+  prevents mobile layouts from requesting the full-resolution image.
 - The verified CloseDose teal family is the only accent. `#18a78d` appears as
   the quiet brand thread, while darker and lighter tonal variants provide
   accessible action contrast in light and dark mode.
@@ -25,7 +28,8 @@ Implementation commit: `16f5ced` (`feat(md): add clinician provider portal`)
   stylesheet, analytics, or API requests.
 - Light mode uses warm clinical paper tokens. Dark mode uses one deep,
   desaturated surface family through `prefers-color-scheme` with matching
-  hierarchy and contrast.
+  hierarchy and contrast. Browser theme colors use matching light and dark
+  media-qualified metadata.
 - Media and interactive surfaces use a consistent 10 px radius. Structural
   catalog and boundary rows stay square because their borders organize content
   rather than imply elevated cards.
@@ -44,13 +48,19 @@ Implementation commit: `16f5ced` (`feat(md): add clinician provider portal`)
   `a9736e0d0ddfaaa81731e7bcfa36f8c2575bf0a0462f30f5c75f13a86a657d86`
 - Generated hero source:
   `/Users/nsm/.codex/generated_images/019f7629-bb8d-7a60-8ba3-3e2f6934b00a/exec-ea1253f6-c34f-48b7-a5c5-a53236e0440d.png`
-- Portal hero:
-  `md/apps/portal/src/assets/clinical-preparation-room.webp`
-- Conversion: lossless WebP at the original 1586 by 992 dimensions using
-  `cwebp -lossless -z 6 -metadata none`.
-- Hero SHA-256:
-  `77842d6b709d4595601b45e7581685fdd8f44165616a224f6a3b20331866863d`
-- Size changed from 1.9 MB PNG to 1.3 MB lossless WebP.
+- Responsive hero assets:
+  - `clinical-preparation-room-640.webp`: 640 by 401, quality 78, 18,886
+    bytes, SHA-256
+    `9e053a4c5aba5d2d76bfbc84bd477f8ef0fb230c92179ef097245f41cb8df282`
+  - `clinical-preparation-room-960.webp`: 960 by 601, quality 80, 35,218
+    bytes, SHA-256
+    `31e46d23e8edc3b08d27abb8fd062a657d45df55fe499f8c3acde022f8129ffb`
+  - `clinical-preparation-room.webp`: 1586 by 992, quality 82, 90,794 bytes,
+    SHA-256
+    `e1c522f434e28bfb605f42f834f536d3b639df9157f497055b38cf6a6742be4e`
+- Each variant was encoded from the original PNG with `cwebp`, `-sharp_yuv`,
+  maximum method and pass settings, and metadata removal. The `picture`
+  element restricts viewports below 768 px to the 640w and 960w sources.
 
 ## Files
 
@@ -93,10 +103,13 @@ exit status: 0
 
 $ npm run build:portal
 Vite 6.4.3
-modules transformed: 33
-dist/index.html: 0.69 kB
-dist/assets/index-CZpuvm5g.css: 8.28 kB
-dist/assets/index-6N9PXvSh.js: 198.45 kB
+modules transformed: 35
+dist/index.html: 0.86 kB
+dist/assets/clinical-preparation-room-640-HaRG9kBS.webp: 18.89 kB
+dist/assets/clinical-preparation-room-960-CxeMpPgQ.webp: 35.22 kB
+dist/assets/clinical-preparation-room-Cuk-_Ytp.webp: 90.79 kB
+dist/assets/index-DenmGnEu.css: 8.33 kB
+dist/assets/index-CkLp0srg.js: 198.87 kB
 exit status: 0
 
 $ npm run test:contract
@@ -108,13 +121,13 @@ $ git diff --check
 exit status: 0
 ```
 
-Production preview checks at `http://127.0.0.1:4174/`:
+Review remediation preview checks at `http://127.0.0.1:4177/`:
 
 ```text
 GET / -> 200 text/html
-GET built logo -> 200 image/png
-GET built JavaScript -> 200 text/javascript
-GET built CSS -> 200 text/css
+GET built 640w hero -> 200 image/webp, 18,886 bytes
+GET built 960w hero -> 200 image/webp, 35,218 bytes
+GET built 1586w hero -> 200 image/webp, 90,794 bytes
 ```
 
 The browser rendered the generated WebP hero, listed only same-origin page
