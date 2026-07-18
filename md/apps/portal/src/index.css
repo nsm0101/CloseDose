@@ -215,6 +215,11 @@ a:focus-visible {
   object-position: center;
 }
 
+.hero-media picture {
+  display: block;
+  height: 100%;
+}
+
 .content-section {
   width: min(100% - 2.5rem, var(--content-width));
   margin-inline: auto;

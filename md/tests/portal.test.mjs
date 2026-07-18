@@ -50,6 +50,22 @@ function contrastRatio(foreground, background) {
   return (lighter + 0.05) / (darker + 0.05);
 }
 
+function webpDimensions(buffer) {
+  assert.equal(buffer.subarray(0, 4).toString('ascii'), 'RIFF');
+  assert.equal(buffer.subarray(8, 12).toString('ascii'), 'WEBP');
+
+  const vp8Chunk = buffer.indexOf(Buffer.from('VP8 '));
+  assert.ok(vp8Chunk >= 0, 'expected a lossy VP8 WebP image');
+
+  const frame = vp8Chunk + 8;
+  assert.equal(buffer.subarray(frame + 3, frame + 6).toString('hex'), '9d012a');
+
+  return {
+    width: buffer.readUInt16LE(frame + 6) & 0x3fff,
+    height: buffer.readUInt16LE(frame + 8) & 0x3fff
+  };
+}
+
 test('portal package is a typed static React and Vite application', async () => {
   const packageJson = JSON.parse(await read('apps/portal/package.json'));
 
@@ -110,23 +126,38 @@ test('portal includes the required provider copy and release boundaries', async 
   );
 });
 
-test('portal owns the verified CloseDose mark and lossless editorial image', async () => {
-  const [app, logo, hero, heroStats] = await Promise.all([
+test('portal owns the verified mark and responsive editorial images', async () => {
+  const [app, logo, hero640, hero960, heroFull, stats640, stats960, statsFull] = await Promise.all([
     read('apps/portal/src/App.tsx'),
     readFile(path.join(portalRoot, 'src/assets/closedose-mark-teal.png')),
+    readFile(path.join(portalRoot, 'src/assets/clinical-preparation-room-640.webp')),
+    readFile(path.join(portalRoot, 'src/assets/clinical-preparation-room-960.webp')),
     readFile(path.join(portalRoot, 'src/assets/clinical-preparation-room.webp')),
+    stat(path.join(portalRoot, 'src/assets/clinical-preparation-room-640.webp')),
+    stat(path.join(portalRoot, 'src/assets/clinical-preparation-room-960.webp')),
     stat(path.join(portalRoot, 'src/assets/clinical-preparation-room.webp'))
   ]);
 
   assert.match(app, /\.\/assets\/closedose-mark-teal\.png/);
+  assert.match(app, /\.\/assets\/clinical-preparation-room-640\.webp/);
+  assert.match(app, /\.\/assets\/clinical-preparation-room-960\.webp/);
   assert.match(app, /\.\/assets\/clinical-preparation-room\.webp/);
+  assert.match(app, /<picture>/);
+  assert.match(app, /srcSet=\{`\$\{clinicalPreparationRoom640\} 640w, \$\{clinicalPreparationRoom960\} 960w`\}/);
+  assert.match(app, /media="\(max-width: 767px\)"/);
+  assert.match(app, /sizes="calc\(100vw - 1\.5rem\)"/);
+  assert.match(app, /width="1586"/);
+  assert.match(app, /height="992"/);
   assert.equal(
     createHash('sha256').update(logo).digest('hex'),
     'a9736e0d0ddfaaa81731e7bcfa36f8c2575bf0a0462f30f5c75f13a86a657d86'
   );
-  assert.equal(hero.subarray(0, 4).toString('ascii'), 'RIFF');
-  assert.equal(hero.subarray(8, 12).toString('ascii'), 'WEBP');
-  assert.ok(heroStats.size > 100_000);
+  assert.deepEqual(webpDimensions(hero640), { width: 640, height: 401 });
+  assert.deepEqual(webpDimensions(hero960), { width: 960, height: 601 });
+  assert.deepEqual(webpDimensions(heroFull), { width: 1586, height: 992 });
+  assert.ok(stats640.size > 10_000 && stats640.size < 30_000);
+  assert.ok(stats960.size > 20_000 && stats960.size < 50_000);
+  assert.ok(statsFull.size > 50_000 && statsFull.size < 110_000);
   assert.match(app, /alt=""/);
   assert.doesNotMatch(app, /dashboard|interface preview|product screen/i);
 });
@@ -148,6 +179,14 @@ test('portal has local fonts, system theme parity, focus, and reduced motion', a
   assert.match(styles, /@media \(prefers-reduced-motion:\s*reduce\)/);
   assert.match(styles, /@media \(max-width:\s*767px\)/);
   assert.match(indexHtml, /width=device-width, initial-scale=1\.0/);
+  assert.match(
+    indexHtml,
+    /name="theme-color"[\s\S]*?content="#f6f5f0"[\s\S]*?media="\(prefers-color-scheme: light\)"/
+  );
+  assert.match(
+    indexHtml,
+    /name="theme-color"[\s\S]*?content="#111917"[\s\S]*?media="\(prefers-color-scheme: dark\)"/
+  );
 
   assert.ok(contrastRatio('#f8fbfa', '#0c6c5d') >= 4.5);
   assert.ok(contrastRatio('#10201c', '#70d6c0') >= 4.5);

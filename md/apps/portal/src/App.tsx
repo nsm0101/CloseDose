@@ -1,4 +1,6 @@
 import closeDoseMark from './assets/closedose-mark-teal.png';
+import clinicalPreparationRoom640 from './assets/clinical-preparation-room-640.webp';
+import clinicalPreparationRoom960 from './assets/clinical-preparation-room-960.webp';
 import clinicalPreparationRoom from './assets/clinical-preparation-room.webp';
 import { toolCatalog } from './toolCatalog.ts';
 
@@ -57,13 +59,27 @@ function App() {
           </div>
 
           <figure className="hero-media">
-            <img
-              src={clinicalPreparationRoom}
-              alt=""
-              width="1586"
-              height="992"
-              fetchPriority="high"
-            />
+            <picture>
+              <source
+                media="(max-width: 767px)"
+                srcSet={`${clinicalPreparationRoom640} 640w, ${clinicalPreparationRoom960} 960w`}
+                sizes="calc(100vw - 1.5rem)"
+              />
+              <source
+                media="(max-width: 959px)"
+                srcSet={`${clinicalPreparationRoom960} 960w`}
+                sizes="calc(100vw - 2.5rem)"
+              />
+              <img
+                src={clinicalPreparationRoom}
+                srcSet={`${clinicalPreparationRoom960} 960w, ${clinicalPreparationRoom} 1586w`}
+                sizes="(max-width: 1320px) 42vw, 575px"
+                alt=""
+                width="1586"
+                height="992"
+                fetchPriority="high"
+              />
+            </picture>
           </figure>
         </section>
 
