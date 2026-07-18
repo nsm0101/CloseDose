@@ -138,24 +138,27 @@ test('RSI omits the AI Studio, API-key, server, and environment scaffold', async
   );
 });
 
-test('RSI application has no network, analytics, persistence, or patient-identifier plumbing', async () => {
-  const sourceFiles = (await listFiles(path.join(rsiRoot, 'src'))).filter(
-    (file) => /\.(?:css|ts|tsx)$/.test(file)
-  );
-  const sourceText = (
+test('RSI HTML and source have no network, analytics, persistence, or patient-identifier plumbing', async () => {
+  const sourceFiles = [
+    path.join(rsiRoot, 'index.html'),
+    ...(await listFiles(path.join(rsiRoot, 'src'))).filter((file) =>
+      /\.(?:css|ts|tsx)$/.test(file)
+    )
+  ];
+  const applicationText = (
     await Promise.all(sourceFiles.map((file) => readFile(file, 'utf8')))
   ).join('\n');
 
   assert.doesNotMatch(
-    sourceText,
+    applicationText,
     /fetch\s*\(|XMLHttpRequest|WebSocket|EventSource|sendBeacon|axios|https?:\/\//i
   );
   assert.doesNotMatch(
-    sourceText,
+    applicationText,
     /localStorage|sessionStorage|indexedDB|document\.cookie|\banalytics\b|\bgtag\b|\bmixpanel\b|\bsentry\b/i
   );
   assert.doesNotMatch(
-    sourceText,
+    applicationText,
     /patient\s+(?:name|identifier)|date\s+of\s+birth|medical\s+record|\bMRN\b/i
   );
 });
