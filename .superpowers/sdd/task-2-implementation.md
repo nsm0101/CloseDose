@@ -7,6 +7,8 @@ private `PIG-CAR` source and repaired its incomplete browser scaffold. The PIG
 workspace now has a deterministic static React, TypeScript, Tailwind, and Vite
 build at the canonical `/PIG/` base without changing the imported clinical
 application source or mixing in the alternate `PIGCAR` equipment presentation.
+Unused AI Studio metadata was intentionally omitted from the repaired static
+workspace.
 
 ## Provenance
 
@@ -19,12 +21,15 @@ application source or mixing in the alternate `PIGCAR` equipment presentation.
 - Imported `src/App.tsx` SHA-256:
   `279effee8f08517cdf5d46405b29d7512601dddde5ada3f8ac376fb47c07523c`
 
-The Git blob for `md/apps/pig/src/App.tsx` matches the connector-fetched blob
-exactly, so the clinical application is byte-for-byte identical to the pinned
-primary source. The pinned `.gitignore`, `README.md`, `package.json`, and
-`vite.config.ts` were also inspected. The upstream package lacked React and
-Lucide dependencies, and its Vite config exposed unused Gemini environment
-variables, so those broken scaffold files were not copied into the runtime.
+The Git blobs for `md/apps/pig/src/App.tsx` and `md/apps/pig/index.html` match
+the connector-fetched blobs exactly. These are the only byte-pinned application
+snapshots. The upstream `.gitignore`, `README.md`, `metadata.json`,
+`package.json`, `tsconfig.json`, and `vite.config.ts` were also inspected. The
+upstream package lacked React and Lucide dependencies, its Vite config exposed
+unused Gemini environment variables, and its metadata falsely declared a
+server-side Gemini capability. Those AI Studio scaffold files and declarations
+were intentionally omitted. The local `tsconfig.json` is semantically identical
+to upstream but retains a harmless final newline and is not byte-pinned.
 
 ## Changed files
 
@@ -33,9 +38,10 @@ variables, so those broken scaffold files were not copied into the runtime.
 - `md/package.json`: adds focused PIG build, typecheck, and test commands.
 - `md/package-lock.json`: records the installed workspace dependency graph.
 - `md/apps/pig/index.html`: exact pinned HTML entry document.
-- `md/apps/pig/metadata.json`: exact pinned source metadata; it is not imported
-  by application code or emitted into the Vite build.
-- `md/apps/pig/tsconfig.json`: pinned TypeScript compiler configuration.
+- `md/apps/pig/metadata.json`: intentionally omitted because its unused AI
+  Studio capability declaration misrepresented the static application.
+- `md/apps/pig/tsconfig.json`: semantically pinned TypeScript configuration;
+  the local final newline is not clinically or operationally significant.
 - `md/apps/pig/src/App.tsx`: exact pinned primary clinical application source.
 - `md/apps/pig/src/main.tsx`: missing React DOM entrypoint.
 - `md/apps/pig/src/index.css`: local Tailwind entry and existing animation
@@ -44,7 +50,8 @@ variables, so those broken scaffold files were not copied into the runtime.
 - `md/apps/pig/vite.config.ts`: React and Tailwind plugins, `/PIG/` base, and
   `md/dist/PIG/` output.
 - `md/tests/pig.test.mjs`: package, route/base, source-integrity,
-  no-network/persistence, and representative ranged-ETT calculation tests.
+  no-network/persistence, AI Studio cleanup, and representative ranged-ETT
+  calculation tests.
 
 ## Verification
 
@@ -85,8 +92,8 @@ tsc --noEmit
 exit status: 0
 
 $ npm run test:pig
-tests: 4
-pass: 4
+tests: 5
+pass: 5
 fail: 0
 exit status: 0
 
@@ -118,15 +125,36 @@ Local static preview:
 /PIG/assets/index-F-kfgR_d.css: HTTP 200
 
 Forbidden runtime/package scan: no matches
+Forbidden PIG source-tree AI Studio/Gemini scan: no matches
 git diff --check: exit status 0
 public/ diff: none
 .superpowers/sdd/progress.md diff: none
+```
+
+Review-fix regression cycle:
+
+```text
+$ node --test tests/pig.test.mjs  # before metadata removal
+tests: 5
+pass: 4
+fail: 1
+failure: metadata.json remained in the PIG workspace
+exit status: 1
+
+$ node --test tests/pig.test.mjs  # after metadata removal
+tests: 5
+pass: 5
+fail: 0
+exit status: 0
 ```
 
 ## Commit
 
 Implementation commit: `e9be4c71399272ff6b037920493a3102356bab18`
 (`feat(md): add PIG provider tool`)
+
+Review fix commit: `83d6e5989b0d7184ee517d062e395b04322de4df`
+(`fix(md): remove PIG AI Studio metadata`)
 
 ## Self-review
 
@@ -142,8 +170,11 @@ Implementation commit: `e9be4c71399272ff6b037920493a3102356bab18`
 - The runtime package, Vite config, entrypoint, and clinical source contain no
   server, Gemini/API-key plumbing, analytics, persistence, remote font import,
   or application-level outbound request.
-- The exact upstream metadata still contains its legacy AI Studio capability
-  label, but it is inert source metadata and is not referenced or emitted by
-  the static application build.
+- The unused upstream `metadata.json` was removed, and the PIG test suite now
+  recursively rejects that file plus AI Studio, Gemini, and API-key capability
+  declarations anywhere in the PIG workspace.
+- Only `App.tsx` and `index.html` are byte-pinned. The TypeScript configuration
+  is semantically equivalent to upstream and intentionally keeps its trailing
+  newline.
 - Existing `public/` content and `.superpowers/sdd/progress.md` were not
   modified.
