@@ -3,6 +3,25 @@
   "version": "0.1.0",
   "private": true,
   "description": "CloseDose MD provider portal",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "typecheck": "tsc --noEmit",
+    "test": "node --test ../../tests/portal.test.mjs"
+  },
+  "dependencies": {
+    "@fontsource-variable/public-sans": "^5.2.7",
+    "react": "^19.0.1",
+    "react-dom": "^19.0.1"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^5.0.4",
+    "typescript": "~5.8.2",
+    "vite": "^6.2.3"
+  },
   "closedoseMd": {
     "routeBase": "/"
   }
