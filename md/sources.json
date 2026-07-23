@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "sources": [
+    {
+      "tool": "PIG",
+      "repository": "nsm0101/PIG-CAR",
+      "commit": "ef67724eccc4e0cfb8b291871147fdd22b9fa811",
+      "role": "primary"
+    },
+    {
+      "tool": "PIG",
+      "repository": "nsm0101/PIGCAR",
+      "commit": "c02d529d63d69798d081178b5537913392304541",
+      "role": "comparison-only"
+    },
+    {
+      "tool": "RSI",
+      "repository": "nsm0101/CC-RSI",
+      "commit": "a309bdaa7b7736051753a852b274b295ae00c67d",
+      "role": "primary"
+    }
+  ]
+}

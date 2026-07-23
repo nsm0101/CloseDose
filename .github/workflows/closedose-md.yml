@@ -1,0 +1,62 @@
+name: CloseDose MD
+
+on:
+  pull_request:
+    paths:
+      - 'md/**'
+      - '.github/workflows/closedose-md.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'md/**'
+      - '.github/workflows/closedose-md.yml'
+
+concurrency:
+  group: closedose-md-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: md
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+        with:
+          persist-credentials: false
+
+      - name: Use Node.js 22
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: md/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Typecheck all applications
+        run: npm run typecheck
+
+      - name: Run source and workspace tests
+        run: npm run test:unit
+
+      - name: Assemble and validate production artifact
+        run: npm run build
+
+      - name: Re-run distribution contract
+        run: npm run test:contract
+
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Run assembled browser smoke tests
+        run: npm run test:smoke
