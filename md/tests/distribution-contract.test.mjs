@@ -24,6 +24,12 @@ function parseHeaderRules(source) {
     }
 
     assert.ok(activePath, `header without a route: ${rawLine}`);
+    if (rawLine.trim().startsWith('! ')) {
+      rules
+        .get(activePath)
+        .set(`! ${rawLine.trim().slice(2).toLowerCase()}`, '');
+      continue;
+    }
     const separator = rawLine.indexOf(':');
     assert.ok(separator > 0, `invalid header declaration: ${rawLine}`);
     rules
@@ -151,39 +157,50 @@ test('security headers keep runtime capabilities local and HTML revalidated', as
   const headerSource = await readDist('_headers');
   const rules = parseHeaderRules(headerSource);
   const rootHeaders = rules.get('/*');
-  const cspSource = rootHeaders.get('content-security-policy');
-  const csp = parseCsp(cspSource);
+  const rootCspSource = rootHeaders.get('content-security-policy');
+  const rootCsp = parseCsp(rootCspSource);
 
   for (const directive of ['default-src', 'script-src', 'font-src']) {
-    assert.deepEqual(csp.get(directive), ["'self'"], directive);
+    assert.deepEqual(rootCsp.get(directive), ["'self'"], directive);
   }
 
-  assert.deepEqual(csp.get('img-src'), ["'self'", 'data:']);
-  assert.deepEqual(csp.get('connect-src'), [
+  assert.deepEqual(rootCsp.get('img-src'), ["'self'", 'data:']);
+  assert.deepEqual(rootCsp.get('connect-src'), ["'self'"]);
+  assert.deepEqual(rootCsp.get('frame-src'), ["'none'"]);
+  assert.deepEqual(rootCsp.get('style-src'), ["'self'"]);
+  assert.deepEqual(rootCsp.get('style-src-elem'), ["'self'"]);
+  assert.deepEqual(rootCsp.get('style-src-attr'), ["'unsafe-inline'"]);
+  assert.deepEqual(
+    [...rootCsp]
+      .filter(([, values]) => values.includes("'unsafe-inline'"))
+      .map(([directive]) => directive),
+    ['style-src-attr']
+  );
+  assert.deepEqual(rootCsp.get('frame-ancestors'), ["'none'"]);
+  assert.deepEqual(rootCsp.get('object-src'), ["'none'"]);
+  assert.deepEqual(rootCsp.get('base-uri'), ["'none'"]);
+  assert.deepEqual(rootCsp.get('form-action'), ["'none'"]);
+  assert.doesNotMatch(
+    rootCspSource,
+    /googletagmanager|google-analytics|gstatic|gemini|unsafe-eval|script-src[^;]*unsafe-inline/i
+  );
+
+  const pmdHeaders = rules.get('/PMD/*');
+  assert.ok(pmdHeaders.has('! content-security-policy'));
+  assert.ok(pmdHeaders.has('! cross-origin-opener-policy'));
+  const pmdCsp = parseCsp(pmdHeaders.get('content-security-policy'));
+  assert.deepEqual(pmdCsp.get('connect-src'), [
     "'self'",
     'https://identitytoolkit.googleapis.com',
     'https://securetoken.googleapis.com',
     'https://firestore.googleapis.com'
   ]);
-  assert.deepEqual(csp.get('style-src'), ["'self'"]);
-  assert.deepEqual(csp.get('style-src-elem'), ["'self'"]);
-  assert.deepEqual(csp.get('style-src-attr'), ["'unsafe-inline'"]);
-  assert.deepEqual(
-    [...csp]
-      .filter(([, values]) => values.includes("'unsafe-inline'"))
-      .map(([directive]) => directive),
-    ['style-src-attr']
-  );
-  assert.deepEqual(csp.get('frame-src'), [
+  assert.deepEqual(pmdCsp.get('frame-src'), [
     'https://gen-lang-client-0217325418.firebaseapp.com'
   ]);
-  assert.deepEqual(csp.get('frame-ancestors'), ["'none'"]);
-  assert.deepEqual(csp.get('object-src'), ["'none'"]);
-  assert.deepEqual(csp.get('base-uri'), ["'none'"]);
-  assert.deepEqual(csp.get('form-action'), ["'none'"]);
-  assert.doesNotMatch(
-    cspSource,
-    /googletagmanager|google-analytics|gstatic|gemini|unsafe-eval|script-src[^;]*unsafe-inline/i
+  assert.equal(
+    pmdHeaders.get('cross-origin-opener-policy'),
+    'same-origin-allow-popups'
   );
 
   assert.equal(rootHeaders.get('x-content-type-options'), 'nosniff');

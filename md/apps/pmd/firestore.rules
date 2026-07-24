@@ -1,165 +1,315 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // ===============================================================
-    // Assumed Data Model
-    // ===============================================================
-    //
-    // Collection: shifts
-    // Fields:
-    //   - name: string (1-100)
-    //   - startTime: timestamp
-    //   - endTime: timestamp (optional)
-    //   - isActive: bool
-    //   - createdBy: string (UID)
-    //
-    // Collection: shifts/{shiftId}/patients
-    // Fields:
-    //   - initials: string (1-10)
-    //   - firstName: string (0-30, optional — limited identifier)
-    //   - lastInitial: string (0-1, optional — last initial only, never surname)
-    //   - age: string (1-20)
-    //   - room: string (1-20)
-    //   - status: string (enum)
-    //   - seenState: string (enum)
-    //   - assignedTeam: list (strings)
-    //   - tasks: map
-    //   - workflowFlags: map
-    //   - lastAssessmentAt: timestamp
-    //   - createdAt: timestamp
-    //   - updatedAt: timestamp
-    //
-    // Collection: users
-    // Fields:
-    //   - email: string
-    //   - role: string ('admin' | 'user')
-    //   - lastLogin: timestamp
-    //
-    // ===============================================================
-
-    // ===============================================================
-    // Helper Functions
-    // ===============================================================
-    function isAuthenticated() {
-      return request.auth != null;
+    function isVerifiedIdentity() {
+      return request.auth != null &&
+        request.auth.token.email is string &&
+        request.auth.token.email_verified == true &&
+        request.auth.token.firebase.sign_in_provider != 'anonymous';
     }
-    
+
+    function isPrimaryAdmin() {
+      return isVerifiedIdentity() &&
+        request.auth.token.email.lower() == 'nickolas.mancini@gmail.com';
+    }
+
+    function hasApprovedProfile() {
+      let profile = get(
+        /databases/$(database)/documents/users/$(request.auth.uid)
+      ).data;
+      return isVerifiedIdentity() &&
+        profile.approved == true &&
+        profile.email is string &&
+        profile.email.lower() == request.auth.token.email.lower() &&
+        profile.role in ['admin', 'user'];
+    }
+
     function isAdmin() {
-      return isAuthenticated() && 
+      return isPrimaryAdmin();
+    }
+
+    function hasWorkspaceAccess() {
+      return isPrimaryAdmin() || hasApprovedProfile();
+    }
+
+    function shiftData(shiftId) {
+      return get(/databases/$(database)/documents/shifts/$(shiftId)).data;
+    }
+
+    function isShiftMember(shiftId) {
+      let shift = shiftData(shiftId);
+      return isPrimaryAdmin() ||
         (
-          ('email' in request.auth.token && request.auth.token.email.lower() == "nickolas.mancini@gmail.com" && 'email_verified' in request.auth.token && request.auth.token.email_verified == true) ||
-          (exists(/databases/$(database)/documents/users/$(request.auth.uid)) && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin')
+          hasWorkspaceAccess() &&
+          shift.memberUids is list &&
+          request.auth.uid in shift.memberUids
         );
     }
-    
-    function isOwner(userId) {
-      return isAuthenticated() && request.auth.uid == userId;
-    }
 
-    function hasOnlyAllowedFields(fields) {
-      return request.resource.data.keys().hasOnly(fields);
+    function isValidSessionId(sessionId) {
+      return sessionId is string &&
+        sessionId.matches('^[A-Z0-9]{6,12}$');
     }
-
-    function isValidEmail(email) {
-      return email is string && email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$");
-    }
-
-    function isRecent(time) {
-      return time > request.time - duration.value(5, 'm') && time < request.time + duration.value(5, 'm');
-    }
-
-    // ===============================================================
-    // Domain Validators
-    // ===============================================================
 
     function isValidShift(data) {
-      return data.name is string && data.name.size() >= 1 && data.name.size() <= 100 &&
-             data.startTime is timestamp &&
-             data.isActive is bool &&
-             data.createdBy is string;
+      return data.name is string &&
+        data.name.size() >= 1 &&
+        data.name.size() <= 100 &&
+        isValidSessionId(data.sessionId) &&
+        data.startTime is timestamp &&
+        data.isActive is bool &&
+        data.createdBy is string &&
+        data.memberUids is list &&
+        data.memberUids.size() >= 1 &&
+        data.memberUids.size() <= 100;
+    }
+
+    function preservesShiftSecurityFields() {
+      return request.resource.data.createdBy == resource.data.createdBy &&
+        request.resource.data.sessionId == resource.data.sessionId;
+    }
+
+    function isInviteJoin(shiftId) {
+      let oldMembers = resource.data.memberUids;
+      let newMembers = request.resource.data.memberUids;
+      let invite = get(
+        /databases/$(database)/documents/shiftInvites/$(resource.data.sessionId)
+      );
+      return hasWorkspaceAccess() &&
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly(['memberUids']) &&
+        oldMembers is list &&
+        newMembers is list &&
+        !(request.auth.uid in oldMembers) &&
+        request.auth.uid in newMembers &&
+        newMembers.hasAll(oldMembers) &&
+        newMembers.size() == oldMembers.size() + 1 &&
+        invite.data.shiftId == shiftId &&
+        invite.data.revoked == false &&
+        invite.data.expiresAt is timestamp &&
+        request.time < invite.data.expiresAt;
+    }
+
+    function isValidInvite(data, sessionId) {
+      return isValidSessionId(sessionId) &&
+        data.keys().hasOnly([
+          'shiftId',
+          'createdBy',
+          'createdAt',
+          'expiresAt',
+          'revoked'
+        ]) &&
+        data.shiftId is string &&
+        data.createdBy is string &&
+        data.createdAt is timestamp &&
+        data.expiresAt is timestamp &&
+        data.expiresAt > data.createdAt &&
+        data.revoked is bool;
     }
 
     function isValidPatient(data) {
-      return data.initials is string && data.initials.size() >= 1 && data.initials.size() <= 10 &&
-             (!('firstName' in data) || (data.firstName is string && data.firstName.size() <= 30)) &&
-             (!('lastInitial' in data) || (data.lastInitial is string && data.lastInitial.size() <= 1)) &&
-             data.age is string && data.age.size() >= 1 && data.age.size() <= 20 &&
-             data.room is string && data.room.size() >= 1 && data.room.size() <= 20 &&
-             data.status in ["New", "Staff", "Work-up", "ED Observation", "Likely Discharge", "Likely Admit", "Discharge", "Admit"] &&
-             data.seenState in ["To Be Seen", "Seen by Fellow", "Seen by Attending"] &&
-             data.lastAssessmentAt is timestamp &&
-             data.createdAt is timestamp &&
-             data.updatedAt is timestamp;
+      return data.initials is string &&
+        data.initials.size() >= 1 &&
+        data.initials.size() <= 10 &&
+        (!('firstName' in data) ||
+          (data.firstName is string && data.firstName.size() <= 30)) &&
+        (!('lastInitial' in data) ||
+          (data.lastInitial is string && data.lastInitial.size() <= 1)) &&
+        data.age is string &&
+        data.age.size() >= 1 &&
+        data.age.size() <= 20 &&
+        data.room is string &&
+        data.room.size() >= 1 &&
+        data.room.size() <= 20 &&
+        data.status in [
+          'New',
+          'Staff',
+          'Work-up',
+          'ED Observation',
+          'Likely Discharge',
+          'Likely Admit',
+          'Discharge',
+          'Admit'
+        ] &&
+        data.seenState in [
+          'To Be Seen',
+          'Seen by Fellow',
+          'Seen by Attending'
+        ] &&
+        data.lastAssessmentAt is timestamp &&
+        data.createdAt is timestamp &&
+        data.updatedAt is timestamp;
     }
 
     function isValidTeamMember(data) {
-      return data.firstName is string && data.firstName.size() >= 1 && data.firstName.size() <= 50 &&
-             data.lastName is string && data.lastName.size() >= 1 && data.lastName.size() <= 50 &&
-             data.initials is string && data.initials.size() >= 1 && data.initials.size() <= 10 &&
-             data.role in ["attending", "fellow", "resident", "student", "nurse", "other"];
+      return data.firstName is string &&
+        data.firstName.size() >= 1 &&
+        data.firstName.size() <= 50 &&
+        data.lastName is string &&
+        data.lastName.size() >= 1 &&
+        data.lastName.size() <= 50 &&
+        data.initials is string &&
+        data.initials.size() >= 1 &&
+        data.initials.size() <= 10 &&
+        data.role in [
+          'attending',
+          'fellow',
+          'resident',
+          'student',
+          'nurse',
+          'other'
+        ];
     }
 
     function isValidMedCommCall(data) {
-      return data.initials is string && data.initials.size() >= 1 && data.initials.size() <= 10 &&
-             data.age is string && data.age.size() >= 1 && data.age.size() <= 20 &&
-             data.status in ["pending", "accepted", "arrived", "canceled"] &&
-             data.callTime is timestamp;
+      return data.initials is string &&
+        data.initials.size() >= 1 &&
+        data.initials.size() <= 10 &&
+        data.age is string &&
+        data.age.size() >= 1 &&
+        data.age.size() <= 20 &&
+        data.status in ['pending', 'accepted', 'arrived', 'canceled'] &&
+        data.callTime is timestamp;
     }
 
     function isValidUser(data) {
-      return data.email is string && isValidEmail(data.email) &&
-             data.role in ["admin", "user"] &&
-             data.lastLogin is timestamp;
+      return data.keys().hasOnly([
+          'email',
+          'displayName',
+          'photoURL',
+          'approved',
+          'role',
+          'lastLogin',
+          'updatedAt'
+        ]) &&
+        data.email is string &&
+        data.email.size() >= 3 &&
+        data.email.size() <= 254 &&
+        data.approved is bool &&
+        data.role in ['admin', 'user'] &&
+        data.lastLogin is timestamp &&
+        (!('displayName' in data) ||
+          (data.displayName is string && data.displayName.size() <= 100)) &&
+        (!('photoURL' in data) ||
+          (data.photoURL is string && data.photoURL.size() <= 2048)) &&
+        (!('updatedAt' in data) || data.updatedAt is timestamp);
     }
 
-    // ===============================================================
-    // Rules
-    // ===============================================================
-    
-    // Shifts
-    match /shifts/{shiftId} {
-      allow read: if isAuthenticated();
-      allow create: if isAuthenticated() && isValidShift(request.resource.data);
-      allow update: if isAuthenticated() && isValidShift(request.resource.data);
-      allow delete: if isAdmin();
-
-      // Patients
-      match /patients/{patientId} {
-        allow read: if isAuthenticated();
-        allow create: if isAuthenticated() && isValidPatient(request.resource.data);
-        allow update: if isAuthenticated() && isValidPatient(request.resource.data);
-        allow delete: if isAuthenticated(); // Collaborative deletion allowed for now
-      }
-      
-      // Team Members
-      match /teamMembers/{memberId} {
-        allow read: if isAuthenticated();
-        allow create: if isAuthenticated() && isValidTeamMember(request.resource.data);
-        allow update: if isAuthenticated() && isValidTeamMember(request.resource.data);
-        allow delete: if isAuthenticated();
-      }
-      
-      // MedComm Calls
-      match /medCommCalls/{callId} {
-        allow read: if isAuthenticated();
-        allow create: if isAuthenticated() && isValidMedCommCall(request.resource.data);
-        allow update: if isAuthenticated() && isValidMedCommCall(request.resource.data);
-        allow delete: if isAuthenticated();
-      }
-    }
-    
-    // User Profiles
     match /users/{userId} {
-      allow read: if isAuthenticated();
-      allow create: if isOwner(userId) && isValidUser(request.resource.data) && (
-        request.resource.data.role == 'user' ||
-        (request.resource.data.role == 'admin' && 'email' in request.auth.token && request.auth.token.email.lower() == 'nickolas.mancini@gmail.com' && 'email_verified' in request.auth.token && request.auth.token.email_verified == true)
-      );
-      allow update: if (isOwner(userId) && isValidUser(request.resource.data) && (
-        request.resource.data.role == resource.data.role ||
-        (request.resource.data.role == 'admin' && 'email' in request.auth.token && request.auth.token.email.lower() == 'nickolas.mancini@gmail.com' && 'email_verified' in request.auth.token && request.auth.token.email_verified == true)
-      )) || isAdmin();
+      allow get: if isPrimaryAdmin() ||
+        (isVerifiedIdentity() && request.auth.uid == userId);
+      allow list: if isAdmin();
+      allow create: if isVerifiedIdentity() &&
+        request.auth.uid == userId &&
+        isValidUser(request.resource.data) &&
+        request.resource.data.email.lower() == request.auth.token.email.lower() &&
+        (
+          (
+            isPrimaryAdmin() &&
+            request.resource.data.approved == true &&
+            request.resource.data.role == 'admin'
+          ) ||
+          (
+            !isPrimaryAdmin() &&
+            request.resource.data.approved == false &&
+            request.resource.data.role == 'user'
+          )
+        );
+      allow update: if isAdmin() && isValidUser(request.resource.data);
+      allow update: if hasWorkspaceAccess() &&
+        request.auth.uid == userId &&
+        isValidUser(request.resource.data) &&
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+          'displayName',
+          'photoURL',
+          'lastLogin',
+          'updatedAt'
+        ]);
       allow delete: if isAdmin();
+    }
+
+    match /shiftInvites/{sessionId} {
+      allow get: if hasWorkspaceAccess();
+      allow list: if false;
+      allow create, update: if isAdmin() &&
+        isValidInvite(request.resource.data, sessionId) &&
+        getAfter(
+          /databases/$(database)/documents/shifts/$(request.resource.data.shiftId)
+        ).data.sessionId == sessionId;
+      allow create: if hasWorkspaceAccess() &&
+        isValidInvite(request.resource.data, sessionId) &&
+        request.resource.data.createdBy == request.auth.uid &&
+        request.resource.data.revoked == false &&
+        request.resource.data.expiresAt <= request.time + duration.value(12, 'h') &&
+        getAfter(
+          /databases/$(database)/documents/shifts/$(request.resource.data.shiftId)
+        ).data.sessionId == sessionId &&
+        getAfter(
+          /databases/$(database)/documents/shifts/$(request.resource.data.shiftId)
+        ).data.createdBy == request.auth.uid;
+      allow delete: if isAdmin() ||
+        (
+          hasWorkspaceAccess() &&
+          resource.data.createdBy == request.auth.uid &&
+          isShiftMember(resource.data.shiftId)
+        );
+    }
+
+    match /shifts/{shiftId} {
+      allow get: if isAdmin() ||
+        (
+          hasWorkspaceAccess() &&
+          resource.data.memberUids is list &&
+          request.auth.uid in resource.data.memberUids
+        );
+      allow list: if isAdmin() ||
+        (
+          hasApprovedProfile() &&
+          request.auth.uid in resource.data.memberUids
+        );
+      allow create: if hasWorkspaceAccess() &&
+        isValidShift(request.resource.data) &&
+        request.resource.data.createdBy == request.auth.uid &&
+        request.resource.data.memberUids == [request.auth.uid];
+      allow update: if isInviteJoin(shiftId) &&
+        isValidShift(request.resource.data) &&
+        preservesShiftSecurityFields();
+      allow update: if isValidShift(request.resource.data) &&
+        preservesShiftSecurityFields() &&
+        (
+          isAdmin() ||
+          (
+            isShiftMember(shiftId) &&
+            request.resource.data.memberUids.toSet() ==
+              resource.data.memberUids.toSet()
+          )
+        );
+      allow delete: if isAdmin() ||
+        (
+          hasWorkspaceAccess() &&
+          resource.data.createdBy == request.auth.uid &&
+          isShiftMember(shiftId)
+        );
+
+      match /patients/{patientId} {
+        allow read: if isShiftMember(shiftId);
+        allow create, update: if isShiftMember(shiftId) &&
+          isValidPatient(request.resource.data);
+        allow delete: if isShiftMember(shiftId);
+      }
+
+      match /teamMembers/{memberId} {
+        allow read: if isShiftMember(shiftId);
+        allow create, update: if isShiftMember(shiftId) &&
+          isValidTeamMember(request.resource.data);
+        allow delete: if isShiftMember(shiftId);
+      }
+
+      match /medCommCalls/{callId} {
+        allow read: if isShiftMember(shiftId);
+        allow create, update: if isShiftMember(shiftId) &&
+          isValidMedCommCall(request.resource.data);
+        allow delete: if isShiftMember(shiftId);
+      }
     }
   }
 }

@@ -107,7 +107,8 @@ test('portal includes the required provider copy and release boundaries', async 
     'View provider tools',
     'PIG and RSI: local calculation',
     'No patient identifiers',
-    'PREtendingMD: authenticated sync',
+    'PREtendingMD: approved Firebase workspace',
+    'Administrator-approved users synchronize patient first name and last initial',
     'No AI runtime',
     'institutional protocols',
     'Decision support only'
@@ -117,7 +118,7 @@ test('portal includes the required provider copy and release boundaries', async 
 
   assert.doesNotMatch(
     app,
-    /FDA|approved|certified|guaranteed|more accurate|better outcomes|trusted by|testimonial/i
+    /FDA|certified|guaranteed|more accurate|better outcomes|trusted by|testimonial/i
   );
 });
 

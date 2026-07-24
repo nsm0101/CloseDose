@@ -34,10 +34,18 @@ test('PMD is an isolated static workspace at its canonical provider route', asyn
 });
 
 test('PMD keeps its Firebase workflow while omitting analytics and AI scaffolding', async () => {
-  const [app, firebase, login, indexHtml, packageJson] = await Promise.all([
+  const [app, firebase, login, landing, joinSession, layout, settings, patientBoard, authorizedShift, sessionInvite, rules, indexHtml, packageJson] = await Promise.all([
     read('src/App.tsx'),
     read('src/firebase.ts'),
     read('src/components/Login.tsx'),
+    read('src/components/LandingScreen.tsx'),
+    read('src/components/JoinSession.tsx'),
+    read('src/components/Layout.tsx'),
+    read('src/components/Settings.tsx'),
+    read('src/components/PatientBoard.tsx'),
+    read('src/lib/authorizedShift.ts'),
+    read('src/lib/sessionInvite.ts'),
+    read('firestore.rules'),
     read('index.html'),
     read('package.json').then(JSON.parse)
   ]);
@@ -49,7 +57,30 @@ test('PMD keeps its Firebase workflow while omitting analytics and AI scaffoldin
   assert.match(firebase, /getFirestore/);
   assert.match(firebase, /GoogleAuthProvider/);
   assert.match(login, /signInWithPopup/);
-  assert.doesNotMatch(login, /signInWithRedirect|getRedirectResult/);
+  assert.doesNotMatch(
+    `${app}\n${login}\n${landing}`,
+    /signInAnonymously|signInWithRedirect|getRedirectResult|createUserWithEmailAndPassword/
+  );
+  assert.match(authorizedShift, /profile\?\.approved === true/);
+  assert.match(app, /Revoke access immediately/);
+  assert.match(app, /memberUids:\s*arrayUnion\(user\.uid\)/);
+  assert.match(sessionInvite, /crypto\.getRandomValues/);
+  assert.match(joinSession, /maxLength=\{12\}/);
+  assert.match(app, /expiresAt:/);
+  assert.match(app, /params\.get\('shiftId'\)/);
+  assert.match(app, /selectAuthorizedShiftId/);
+  assert.match(app, /useLayoutEffect\(\(\) => \{\s*setPatients\(\[\]\);\s*setTeamMembers\(\[\]\);\s*setMedCommCalls\(\[\]\);/);
+  assert.doesNotMatch(app, /legacyMigrationStarted|Could not secure legacy shift memberships/);
+  assert.match(rules, /sign_in_provider != 'anonymous'/);
+  assert.match(rules, /function hasApprovedProfile\(\)/);
+  assert.match(rules, /function isShiftMember\(shiftId\)/);
+  assert.match(rules, /request\.time < invite\.data\.expiresAt/);
+  assert.match(rules, /invite\.data\.revoked == false/);
+  assert.match(rules, /allow list: if false/);
+  assert.doesNotMatch(
+    `${layout}\n${settings}\n${patientBoard}`,
+    /<img\s+src=\{(?:user\.photoURL|member\.avatarUrl|activeMember\.avatarUrl)\}/
+  );
   assert.doesNotMatch(`${app}\n${firebase}\n${indexHtml}`, /gtag|googletagmanager|google-analytics|firebase\/analytics/i);
   assert.doesNotMatch(
     JSON.stringify(packageJson),

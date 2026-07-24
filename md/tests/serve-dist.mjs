@@ -44,6 +44,10 @@ function parseHeaders(source) {
       continue;
     }
 
+    if (rawLine.trim().startsWith('! ')) {
+      activeRule.headers.set(rawLine.trim().slice(2), null);
+      continue;
+    }
     const separator = rawLine.indexOf(':');
     activeRule.headers.set(
       rawLine.slice(0, separator).trim(),
@@ -116,7 +120,10 @@ const server = createServer(async (request, response) => {
   const headers = new Map();
   for (const rule of headerRules) {
     if (!matches(rule.pattern, pathname)) continue;
-    for (const [name, value] of rule.headers) headers.set(name, value);
+    for (const [name, value] of rule.headers) {
+      if (value === null) headers.delete(name);
+      else headers.set(name, value);
+    }
   }
 
   headers.set(

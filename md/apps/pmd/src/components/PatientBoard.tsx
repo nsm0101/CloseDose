@@ -59,18 +59,14 @@ const DraggableTeamMember = ({ member, onFilter }: { member: TeamMember, onFilte
       )}
       title={`${member.firstName} ${member.lastName} (${member.role})`}
     >
-      {member.avatarUrl || member.emoji ? (
+      {member.emoji ? (
         <div className="w-full h-full flex items-center justify-center bg-white dark:bg-gray-800">
-          {member.avatarUrl ? (
-            <img src={member.avatarUrl} alt={member.initials} className="w-full h-full object-cover" />
-          ) : (
-            <span className="text-xl">{member.emoji}</span>
-          )}
+          <span className="text-xl">{member.emoji}</span>
         </div>
       ) : (
         member.initials
       )}
-      {(member.avatarUrl || member.emoji) && (
+      {member.emoji && (
         <div className="absolute bottom-0 left-0 right-0 bg-black/60 text-[6px] text-white font-black py-0.5 opacity-0 group-hover:opacity-100 transition-opacity text-center">
           {member.initials}
         </div>
@@ -807,13 +803,9 @@ export const PatientBoard: React.FC<PatientBoardProps> = ({
             "w-12 h-12 rounded-full border-2 flex flex-col items-center justify-center text-xs font-black shadow-2xl scale-110 opacity-90",
             getRoleColor(activeMember.role)
           )}>
-            {activeMember.avatarUrl || activeMember.emoji ? (
+            {activeMember.emoji ? (
               <div className="w-full h-full flex items-center justify-center bg-white dark:bg-gray-800 rounded-full overflow-hidden">
-                {activeMember.avatarUrl ? (
-                  <img src={activeMember.avatarUrl} alt={activeMember.initials} className="w-full h-full object-cover" />
-                ) : (
-                  <span className="text-2xl">{activeMember.emoji}</span>
-                )}
+                <span className="text-2xl">{activeMember.emoji}</span>
               </div>
             ) : (
               activeMember.initials

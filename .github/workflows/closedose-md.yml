@@ -40,6 +40,12 @@ jobs:
           cache: npm
           cache-dependency-path: md/package-lock.json
 
+      - name: Use Java 21 for the Firestore emulator
+        uses: actions/setup-java@be666c2fcd27ec809703dec50e508c2fdc7f6654 # v5.2.0
+        with:
+          distribution: temurin
+          java-version: 21
+
       - name: Install dependencies
         run: npm ci
 
@@ -48,6 +54,9 @@ jobs:
 
       - name: Run source and workspace tests
         run: npm run test:unit
+
+      - name: Test Firestore authorization rules
+        run: npm run test:rules
 
       - name: Assemble and validate production artifact
         run: npm run build

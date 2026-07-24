@@ -66,10 +66,10 @@ export const JoinSession: React.FC<JoinSessionProps> = ({ onJoin, onCreate, shif
                 <input 
                   autoFocus
                   className="w-full pl-4 pr-12 py-4 bg-gray-50 dark:bg-gray-800 border-2 border-transparent focus:border-blue-500 focus:bg-white dark:focus:bg-gray-900 rounded-2xl text-lg font-black tracking-widest uppercase outline-none transition-all"
-                  placeholder="ABCDEF"
+                  placeholder="ABCD234567"
                   value={sessionId}
                   onChange={(e) => setSessionId(e.target.value.toUpperCase())}
-                  maxLength={6}
+                  maxLength={12}
                 />
                 <button 
                   type="submit"

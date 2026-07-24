@@ -25,11 +25,14 @@ applications, Cloudflare Pages redirects and headers, and the static provider
 PIG and RSI remain local-only calculators with no patient-identifier fields,
 persistence, analytics, AI runtime, API keys, backend, or unneeded network
 transport. Their clinical sources remain byte-pinned to reviewed imports.
-PREtendingMD is an authenticated workflow board and intentionally uses the
-existing Firebase project for real-time shift data plus browser storage for
-user preferences. Its migrated build removes the old analytics and unused AI
-server scaffolding. Provider output is decision support and must be checked
-against current institutional protocols.
+PREtendingMD is restricted to verified, administrator-approved identities.
+Within that workspace, access to patient and operational data is further
+limited to shift members. PREtendingMD intentionally persists patient first
+name and last initial, room, complaint, workflow notes, vitals, provider
+contact details, labs, imaging, and shift-team data in the existing Firebase
+project; browser storage holds user preferences. Its migrated build removes
+the old analytics and unused AI server scaffolding. Provider output is
+decision support and must be checked against current institutional protocols.
 
 ## Local verification
 
@@ -39,6 +42,7 @@ Use Node 22 and run the same clean sequence as CI from this directory:
 npm ci
 npm run typecheck
 npm run test:unit
+npm run test:rules
 npm run build
 npm run test:contract
 npx playwright install --with-deps chromium

@@ -20,12 +20,13 @@ provider 404.
 
 ## Security and caching
 
-`static/_headers` applies one Content Security Policy to the whole artifact.
-Scripts, fonts, manifests, and workers are local. The only external connection
-origins are the exact Firebase Authentication, token, and Firestore endpoints
-used by PREtendingMD, plus its exact Firebase Auth frame origin. Inline scripts,
-external analytics, arbitrary frames, objects, base overrides, and form
-submissions are blocked.
+`static/_headers` applies a strict local-only Content Security Policy to the
+portal, PIG, and RSI. Only `/PMD/*` detaches that policy and applies the exact
+Firebase Authentication, token, Firestore, and Auth-frame origins required by
+PREtendingMD. The PMD route also changes COOP to
+`same-origin-allow-popups` for Google sign-in; the other routes retain
+`same-origin`. Inline scripts, external analytics, arbitrary frames, objects,
+base overrides, and form submissions are blocked.
 
 The single exception is `style-src-attr 'unsafe-inline'`. The imported RSI
 `ProgressionTracker` uses a React `style={{ width: ... }}` attribute for its
@@ -39,6 +40,66 @@ cross-origin storage. Before release, the Firebase Authentication project
 `gen-lang-client-0217325418` must list both `md.closedose.com` and
 `closedose-md.pages.dev` under Authentication > Settings > Authorized domains.
 Keep the existing `firebaseapp.com` auth domain in the app configuration.
+
+The Firestore rules in `apps/pmd/firestore.rules` reject anonymous and
+unverified identities, require an administrator-approved user profile, and
+limit patient and operational records to shift members. `firebase.json`
+targets only the existing named PMD database.
+
+### Legacy PMD data cutover
+
+Do not let the browser migrate production records on sign-in. Before changing
+rules or Authentication, schedule a maintenance window and complete this
+versioned migration:
+
+1. Stop creating or editing shifts in the legacy client.
+2. Complete a managed export of the entire named database. Record the finished
+   export URI and operation ID. The Firebase project must have billing enabled
+   for managed exports.
+3. Authenticate Application Default Credentials, then run the migration in
+   dry-run mode. It validates required fields, duplicate session IDs, invite
+   conflicts, and the exact record count without writing.
+4. Apply only after the dry-run count matches the export. The apply command
+   writes a new mode-`0600` JSON metadata backup, preserves each legacy
+   `createdBy`, assigns the primary administrator as the initial member, creates
+   expiring/revocable invites, and commits at most 200 shifts per batch.
+5. Re-run dry-run mode. It must report zero legacy shifts before the rules
+   deploy.
+
+```sh
+gcloud firestore export gs://BUCKET/PREFIX \
+  --project=gen-lang-client-0217325418 \
+  --database=ai-studio-2f1b1ed6-35b2-4162-bac6-1fbc2d599b35
+
+gcloud auth application-default login
+
+npm run migrate:pmd -- --admin-uid=PRIMARY_ADMIN_UID
+
+npm run migrate:pmd -- \
+  --apply \
+  --admin-uid=PRIMARY_ADMIN_UID \
+  --backup=/absolute/new/pmd-shift-membership-v1.json \
+  --export-operation=EXPORT_OPERATION_ID \
+  --export-uri=gs://BUCKET/PREFIX \
+  --confirm=pmd-shift-membership-v1
+```
+
+After the migration and its zero-legacy verification, deploy the rules:
+
+```sh
+npx firebase-tools@15.24.0 deploy \
+  --project gen-lang-client-0217325418 \
+  --only firestore
+```
+
+Then authorize both provider hostnames and disable Anonymous under
+Authentication > Sign-in method. Existing
+anonymous accounts may be removed only after reviewing ownership and retention
+requirements; the new rules deny them regardless.
+
+New share codes use Web Crypto, expire after 12 hours, and can be revoked by an
+administrator when removing a member. A revoked or expired invite cannot add a
+member back to a shift.
 
 Canonical HTML, `404.html`, and the stable `/404.css` URL use
 `public, max-age=0, must-revalidate`. Vite content-hashed assets under
@@ -54,6 +115,7 @@ From `md/` on Node 22, run the exact CI sequence before publishing a preview:
 npm ci
 npm run typecheck
 npm run test:unit
+npm run test:rules
 npm run build
 npm run test:contract
 npx playwright install --with-deps chromium
@@ -95,6 +157,13 @@ pull request:
   unexpected popup audit are clean during normal flows;
 - both provider hostnames are present in Firebase Authentication's authorized
   domains, and Google sign-in opens from each hostname;
+- the managed Firestore export completed, the versioned PMD migration dry-run
+  matched the reviewed count, apply created its local metadata backup, and the
+  post-migration dry-run reported zero legacy shifts;
+- the exact rules commit passed the Firestore emulator suite and was deployed
+  to the named PMD database before the portal link became available;
+- Anonymous sign-in is disabled, the primary administrator can sign in, and an
+  unapproved verified account cannot read a shift;
 - a named clinical owner approved the preview formulas, reference values,
   warnings, and representative outputs.
 
@@ -130,3 +199,10 @@ If production verification fails, roll `closedose-md` back to its prior
 successful Pages deployment. If no provider deployment is safe, remove only
 `md.closedose.com` from the `closedose-md` custom domains. Do not alter the
 existing `closedose.com` Pages project or its DNS records.
+
+Do not restore the former anonymous/global-access rules. For a data-cutover
+failure, stop the client, retain the local migration backup, and import the
+recorded managed export into a recovery database for comparison before making
+targeted repairs. A full import overwrites documents captured in the export
+but does not remove documents created afterward, so it requires a reviewed
+recovery plan rather than an automatic rollback.

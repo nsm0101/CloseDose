@@ -18,9 +18,9 @@ const boundaries = [
       'The reference calculators do not request names, dates of birth, medical record numbers, or other patient identifiers.'
   },
   {
-    title: 'PREtendingMD: authenticated sync',
+    title: 'PREtendingMD: approved Firebase workspace',
     description:
-      'PREtendingMD signs users in and synchronizes its operational shift board through the existing Firebase service.'
+      'Administrator-approved users synchronize patient first name and last initial, room, complaint, workflow notes, vitals, provider contact details, labs, imaging, and shift-team data through Firebase.'
   },
   {
     title: 'No AI runtime',
@@ -142,9 +142,9 @@ function App() {
         <div>
           <p className="footer-lead">For provider use. Decision support only.</p>
           <p>
-            PIG and RSI calculate locally. PREtendingMD uses authenticated
-            Firebase sync. No tool in this release uses an AI runtime or
-            analytics.
+            PIG and RSI calculate locally. PREtendingMD persists patient and
+            operational shift data in an access-controlled Firebase workspace.
+            No tool in this release uses an AI runtime or analytics.
           </p>
         </div>
         <p className="footer-brand">CloseDose MD</p>

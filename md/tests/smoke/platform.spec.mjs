@@ -177,7 +177,9 @@ test('portal fits exactly 320 px and all ordinary tool links navigate', async ({
   await page.waitForLoadState('networkidle');
   await page.getByRole('link', { name: /PREtendingMD: PEM FlowMaster/ }).click();
   await expect(page).toHaveURL(expectedUrl('/PMD/'));
-  await expect(page.getByRole('heading', { name: 'Introduce Yourself' })).toBeVisible();
+  await expect(
+    page.getByRole('heading', { name: 'Authorized clinical team access' })
+  ).toBeVisible();
   runtimeAudit.assertClean();
 });
 
@@ -223,12 +225,19 @@ test('canonical redirects and unknown-route 404 are explicit', async ({ request 
 test('PMD loads its signed-out workflow shell without remote analytics', async ({ page, context }) => {
   const runtimeAudit = auditRuntime(context);
   await page.setViewportSize({ width: 320, height: 800 });
-  await page.goto('/PMD/');
+  const response = await page.goto('/PMD/');
   await expect(page).toHaveTitle('PREtendingMD — PEM FlowMaster');
-  await expect(page.getByRole('heading', { name: 'Introduce Yourself' })).toBeVisible();
-  await expect(page.getByPlaceholder('e.g. Sarah')).toBeVisible();
-  await expect(page.getByPlaceholder('e.g. Miller')).toBeVisible();
-  await expect(page.getByRole('button', { name: /Enter shift board/i })).toBeVisible();
+  await expect(
+    page.getByRole('heading', { name: 'Authorized clinical team access' })
+  ).toBeVisible();
+  await expect(
+    page.getByRole('button', { name: 'Continue with Google' })
+  ).toBeVisible();
+  await expect(page.getByText(/Patient and operational data sync/)).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Create Account' })).toHaveCount(0);
+  expect(response?.headers()['cross-origin-opener-policy']).toBe(
+    'same-origin-allow-popups'
+  );
 
   const horizontalMetrics = await page.evaluate(() => ({
     body: document.body.scrollWidth - document.body.clientWidth,

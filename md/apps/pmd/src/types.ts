@@ -136,4 +136,5 @@ export interface Shift {
   endTime?: Timestamp;
   isActive: boolean;
   createdBy: string;
+  memberUids: string[];
 }

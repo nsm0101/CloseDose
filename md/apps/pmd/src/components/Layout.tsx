@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import { LogOut, User, LayoutDashboard, PhoneCall, Settings, Users, Clock, UserPlus, X, Share2, Check } from 'lucide-react';
+import { LogOut, LayoutDashboard, PhoneCall, Settings, Users, Clock, UserPlus, X, Share2, Check } from 'lucide-react';
 import { cn, getTimerColor } from '../lib/utils';
 import { TeamMember, Role } from '../types';
 import { BRAND } from '../lib/brand';
@@ -19,13 +19,19 @@ interface LayoutProps {
   onLogout: () => void;
   onAddTeamMember?: (member: Partial<TeamMember>) => void;
   activeShiftId?: string | null;
+  activeSessionId?: string;
   syncState?: SyncState;
 }
 
 import { motion } from 'framer-motion';
 
-export const Layout: React.FC<LayoutProps> = ({ children, activeTab, setActiveTab, user, onLogout, onAddTeamMember, activeShiftId, syncState = 'connecting' }) => {
+export const Layout: React.FC<LayoutProps> = ({ children, activeTab, setActiveTab, user, onLogout, onAddTeamMember, activeShiftId, activeSessionId, syncState = 'connecting' }) => {
   const pmdTheme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
+  const avatarEmoji =
+    typeof user?.photoURL === 'string' && user.photoURL.length > 0 && user.photoURL.length < 4
+      ? user.photoURL
+      : null;
+  const avatarInitial = (user?.displayName || user?.email || '?').trim().charAt(0).toUpperCase();
   const tabs = [
     { id: 'board', label: 'Board', icon: <LayoutDashboard size={20} /> },
     { id: 'handoff', label: 'Handoff', icon: <Users size={20} /> },
@@ -80,9 +86,11 @@ export const Layout: React.FC<LayoutProps> = ({ children, activeTab, setActiveTa
   const [isCopied, setIsCopied] = React.useState(false);
 
   const handleShare = () => {
-    if (!activeShiftId) return;
+    if (!activeShiftId || !activeSessionId) return;
     const url = new URL(window.location.href);
-    url.searchParams.set('shiftId', activeShiftId);
+    url.search = '';
+    url.searchParams.set('sessionId', activeSessionId);
+    url.hash = '';
     navigator.clipboard.writeText(url.toString());
     setIsCopied(true);
     setTimeout(() => setIsCopied(false), 2000);
@@ -138,11 +146,9 @@ export const Layout: React.FC<LayoutProps> = ({ children, activeTab, setActiveTa
               onClick={() => setActiveTab('settings')}
             >
               <div className="w-5 h-5 md:w-6 md:h-6 rounded-full bg-[var(--pmd-family-soft)] flex items-center justify-center text-[var(--pmd-family-ink)] overflow-hidden">
-                {user?.photoURL ? (
-                  <img src={user.photoURL} alt="Avatar" className="w-full h-full object-cover" />
-                ) : (
-                  <User size={12} />
-                )}
+                <span aria-hidden="true" className="text-[10px] font-black">
+                  {avatarEmoji || avatarInitial}
+                </span>
               </div>
               <span className="text-[10px] md:text-xs font-bold text-gray-700 dark:text-gray-300 hidden sm:block">{user?.displayName || user?.email?.split('@')[0]}</span>
             </div>

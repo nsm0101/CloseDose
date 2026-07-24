@@ -24,6 +24,8 @@ test('CI uses least privilege and reviewed immutable action pins', async () => {
     /uses: actions\/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020\s+# v4\.4\.0/
   );
   assert.doesNotMatch(workflow, /uses:\s*actions\/(?:checkout|setup-node)@v4/);
+  assert.match(workflow, /name: Test Firestore authorization rules/);
+  assert.match(workflow, /run: npm run test:rules/);
 });
 
 test('target resolver preserves local mode and normalizes an external origin', () => {

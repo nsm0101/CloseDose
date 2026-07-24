@@ -31,13 +31,25 @@ npm run dev --workspace @closedose-md/pmd
 
 ## Runtime boundary
 
-PREtendingMD intentionally uses Firebase Authentication, Firestore real-time
-sync, and browser storage for user settings. The provider portal distinguishes
-this behavior from the local-only PIG and RSI calculators. The migrated app
-does not load Google Analytics or any AI runtime.
+PREtendingMD uses verified Google identities, an administrator-managed
+workspace allowlist, per-shift membership, Firestore real-time sync, and
+browser storage for user settings. Patient and operational fields are
+persisted in Firestore; they are not local-only. The provider portal
+distinguishes this behavior from the local-only PIG and RSI calculators. The
+migrated app does not load Google Analytics or any AI runtime.
 
 `firebase-applet-config.json` contains the public Firebase web configuration.
-Access is governed by `firestore.rules`.
+Access is governed by `firestore.rules`. Anonymous identities are rejected.
+New verified users create an unapproved profile and remain signed out until an
+administrator marks that profile approved. Session codes create explicit shift
+membership rather than exposing all shifts to every authenticated identity.
+New codes are generated with Web Crypto, expire after 12 hours, and support
+administrator revocation.
+Run `npm run test:rules` from `md/` to exercise these guarantees against the
+Firestore emulator. Deploy the rules to the named database before publishing a
+new PMD client. The explicit, export-gated legacy migration is documented in
+the shared `DEPLOYMENT.md`; the browser never rewrites legacy shifts
+automatically.
 
 ## Brand assets
 

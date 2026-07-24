@@ -6,8 +6,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { ShieldCheck, ArrowRight, Loader2, Star, Award, Plus, Sparkles } from 'lucide-react';
-import { auth } from '../firebase';
-import { signInAnonymously } from 'firebase/auth';
 import { cn } from '../lib/utils';
 import { BRAND } from '../lib/brand';
 
@@ -37,17 +35,7 @@ export const LandingScreen: React.FC<LandingScreenProps> = ({ onComplete, loadin
     setIsSubmitting(true);
     setError(null);
 
-    try {
-      // Bypasses login complexity by signing in anonymously in the background
-      if (!auth.currentUser) {
-        await signInAnonymously(auth);
-      }
-      onComplete(firstName.trim(), lastName.trim(), role);
-    } catch (err: any) {
-      console.error('Anonymous sign in failed:', err);
-      setError('Connection failed. Please check your internet connection.');
-      setIsSubmitting(false);
-    }
+    onComplete(firstName.trim(), lastName.trim(), role);
   };
 
   return (
@@ -201,7 +189,7 @@ export const LandingScreen: React.FC<LandingScreenProps> = ({ onComplete, loadin
         {/* Bottom PII Notice */}
         <div className="p-6 bg-slate-50/50 dark:bg-slate-900/50 border-t border-slate-100 dark:border-slate-800/55 text-center">
           <div className="inline-flex items-center gap-1 text-slate-400 dark:text-slate-500 text-[9px] font-bold uppercase tracking-widest leading-none text-center">
-            <ShieldCheck size={12} className="text-emerald-500 shrink-0" /> Authenticated workspace · shift data sync enabled
+            <ShieldCheck size={12} className="text-emerald-500 shrink-0" /> Approved account · patient and shift data sync enabled
           </div>
         </div>
       </motion.div>

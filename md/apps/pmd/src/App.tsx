@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useLayoutEffect } from 'react';
 import { auth, db } from './firebase';
 import { onAuthStateChanged, signOut, User } from 'firebase/auth';
 import { 
@@ -18,8 +18,10 @@ import {
   where, 
   Timestamp, 
   setDoc,
+  getDoc,
   getDocs,
-  writeBatch
+  writeBatch,
+  arrayUnion
 } from 'firebase/firestore';
 import { handleFirestoreError, OperationType } from './lib/firebaseUtils';
 import { Patient, TeamMember, MedCommCall, Shift } from './types';
@@ -36,9 +38,18 @@ import { LandingScreen } from './components/LandingScreen';
 import { Plus, Loader2, AlertCircle } from 'lucide-react';
 import { updateProfile } from 'firebase/auth';
 import { BRAND } from './lib/brand';
+import {
+  isApprovedWorkspaceProfile,
+  selectAuthorizedShiftId
+} from './lib/authorizedShift';
+import { createSessionId, INVITE_TTL_MS } from './lib/sessionInvite';
+
+const PRIMARY_ADMIN_EMAIL = 'nickolas.mancini@gmail.com';
 
 export default function App() {
   const [user, setUser] = useState<User | null>(null);
+  const [isAdminUser, setIsAdminUser] = useState(false);
+  const [authError, setAuthError] = useState<string | null>(null);
   const [userProfile, setUserProfile] = useState<{ firstName: string; lastName: string; role: 'attending' | 'fellow' } | null>(() => {
     const firstName = localStorage.getItem('userFirstName');
     const lastName = localStorage.getItem('userLastName');
@@ -52,10 +63,16 @@ export default function App() {
   const [activeTab, setActiveTab] = useState<'board' | 'medcomm' | 'team' | 'settings' | 'handoff'>('board');
   
   const [shifts, setShifts] = useState<Shift[]>([]);
-  const [activeShiftId, setActiveShiftId] = useState<string | null>(() => {
-    const saved = localStorage.getItem('activeShiftId');
-    return saved === 'null' ? null : saved;
+  const [activeShiftId, setActiveShiftId] = useState<string | null>(null);
+  const [pendingSessionId, setPendingSessionId] = useState<string | null>(() => {
+    const sessionId = new URLSearchParams(window.location.search).get('sessionId');
+    return sessionId ? sessionId.toUpperCase() : null;
   });
+  const [pendingLegacyShiftId, setPendingLegacyShiftId] = useState<string | null>(() => {
+    const params = new URLSearchParams(window.location.search);
+    return params.has('sessionId') ? null : params.get('shiftId');
+  });
+  const [sharedLinkError, setSharedLinkError] = useState<string | null>(null);
   
   const [patients, setPatients] = useState<Patient[]>([]);
   const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
@@ -83,6 +100,15 @@ export default function App() {
   // is live. Driven by Firestore snapshot metadata + the browser online state.
   const [syncState, setSyncState] = useState<'connecting' | 'live' | 'offline'>('connecting');
 
+  const clearAuthorizedData = () => {
+    setActiveShiftId(null);
+    setShifts([]);
+    setPatients([]);
+    setTeamMembers([]);
+    setMedCommCalls([]);
+    localStorage.removeItem('activeShiftId');
+  };
+
   // Track the browser's online/offline state.
   useEffect(() => {
     const goOffline = () => setSyncState('offline');
@@ -94,19 +120,6 @@ export default function App() {
       window.removeEventListener('offline', goOffline);
       window.removeEventListener('online', goOnline);
     };
-  }, []);
-
-  // Handle URL shiftId parameter
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const shiftIdFromUrl = params.get('shiftId');
-
-    if (shiftIdFromUrl) {
-      setActiveShiftId(shiftIdFromUrl);
-      localStorage.setItem('activeShiftId', shiftIdFromUrl);
-      // Clean up URL
-      window.history.replaceState({}, document.title, window.location.pathname);
-    }
   }, []);
 
   useEffect(() => {
@@ -152,23 +165,82 @@ export default function App() {
 
     const unsubscribe = onAuthStateChanged(auth, async (u) => {
       clearTimeout(safetyTimeout);
-      setUser(u);
-      setLoading(false);
-      
-      if (u) {
-        // Ensure user document exists
+      if (!u) {
+        setUser(null);
+        setIsAdminUser(false);
+        setUserProfile(null);
+        localStorage.removeItem('userFirstName');
+        localStorage.removeItem('userLastName');
+        localStorage.removeItem('userRole');
+        clearAuthorizedData();
+        setLoading(false);
+      } else {
+        const email = u.email?.trim().toLowerCase() ?? '';
+        const isPrimaryAdmin = email === PRIMARY_ADMIN_EMAIL;
+
+        if (u.isAnonymous || !u.emailVerified || !email) {
+          setAuthError('A verified, administrator-approved Google account is required.');
+          setUser(null);
+          setIsAdminUser(false);
+          setLoading(false);
+          await signOut(auth);
+          return;
+        }
+
         const userRef = doc(db, 'users', u.uid);
         try {
-          await setDoc(userRef, {
-            email: u.email || `${u.uid.toLowerCase()}@temp-pretendingmd.com`,
-            lastLogin: Timestamp.now(),
-            role: (u.email || '').toLowerCase() === 'nickolas.mancini@gmail.com' ? 'admin' : 'user'
-          }, { merge: true });
+          const profile = await getDoc(userRef);
+          const profileData = profile.data();
+          const approved =
+            isPrimaryAdmin ||
+            (
+              profile.exists() &&
+              isApprovedWorkspaceProfile(profileData, email)
+            );
+
+          if (!profile.exists()) {
+            await setDoc(userRef, {
+              email,
+              displayName: u.displayName ?? '',
+              lastLogin: Timestamp.now(),
+              approved: isPrimaryAdmin,
+              role: isPrimaryAdmin ? 'admin' : 'user'
+            });
+          } else if (isPrimaryAdmin) {
+            await setDoc(userRef, {
+              email,
+              displayName: u.displayName ?? profileData?.displayName ?? '',
+              lastLogin: Timestamp.now(),
+              approved: true,
+              role: 'admin'
+            }, { merge: true });
+          }
+
+          if (!approved) {
+            setAuthError('This verified account is not approved for the PREtendingMD workspace. Contact the administrator for access.');
+            setUser(null);
+            setIsAdminUser(false);
+            setLoading(false);
+            await signOut(auth);
+            return;
+          }
+
+          if (!isPrimaryAdmin) {
+            await updateDoc(userRef, { lastLogin: Timestamp.now() });
+          }
+
+          setAuthError(null);
+          setUser(u);
+          setIsAdminUser(isPrimaryAdmin);
+          setLoading(false);
         } catch (error) {
-          console.error("Failed to update user document:", error);
-          // We don't throw handleFirestoreError here because we want the app to 
-          // continue loading even if the user document update fails 
-          // (e.g. due to missing Firestore rules on a new project)
+          console.error('Failed to verify workspace access:', error);
+          setAuthError('Workspace access could not be verified. Please try again or contact the administrator.');
+          setUser(null);
+          setIsAdminUser(false);
+          setLoading(false);
+          await signOut(auth);
+          return;
         }
       }
       
@@ -185,31 +257,99 @@ export default function App() {
     };
   }, []);
 
+  // Revoke access immediately when an administrator disables this profile.
+  useEffect(() => {
+    if (!user || isAdminUser) return;
+    const email = user.email?.trim().toLowerCase() ?? '';
+    const profileRef = doc(db, 'users', user.uid);
+    let revocationHandled = false;
+
+    const revokeSession = (message: string) => {
+      if (revocationHandled) return;
+      revocationHandled = true;
+      setAuthError(message);
+      clearAuthorizedData();
+      setUser(null);
+      setIsAdminUser(false);
+      void signOut(auth);
+    };
+
+    const unsubscribe = onSnapshot(profileRef, (snapshot) => {
+      if (
+        !snapshot.exists() ||
+        !isApprovedWorkspaceProfile(snapshot.data(), email)
+      ) {
+        revokeSession(
+          'This account is no longer approved for the PREtendingMD workspace.'
+        );
+      }
+    }, () => {
+      revokeSession(
+        'Workspace access could not be revalidated. Sign in again or contact the administrator.'
+      );
+    });
+
+    return () => unsubscribe();
+  }, [user?.uid, user?.email, isAdminUser]);
+
   // Shifts Listener
   useEffect(() => {
     if (!user) return;
-    const q = query(collection(db, 'shifts'), orderBy('startTime', 'desc'));
+    const q = isAdminUser
+      ? query(collection(db, 'shifts'), orderBy('startTime', 'desc'))
+      : query(collection(db, 'shifts'), where('memberUids', 'array-contains', user.uid));
     const unsubscribe = onSnapshot(q, { includeMetadataChanges: true }, (snapshot) => {
-      const s = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Shift));
+      const s = snapshot.docs
+        .map(doc => ({ id: doc.id, ...doc.data() } as Shift))
+        .sort((a, b) => b.startTime.toMillis() - a.startTime.toMillis());
       setShifts(s);
+      const linkedLegacyShift = pendingLegacyShiftId
+        ? s.find(shift => shift.id === pendingLegacyShiftId)
+        : undefined;
+      const shouldResolveLegacyLink =
+        Boolean(pendingLegacyShiftId) &&
+        (Boolean(linkedLegacyShift) || !snapshot.metadata.fromCache);
+      if (shouldResolveLegacyLink) {
+        setPendingLegacyShiftId(null);
+        window.history.replaceState({}, document.title, window.location.pathname);
+        setSharedLinkError(
+          linkedLegacyShift
+            ? null
+            : 'This legacy shift link is not available to this account. Ask a current shift member for a new session link.'
+        );
+      }
       setActiveShiftId(current => {
-        if (!current && s.length > 0) return s[0].id;
-        return current;
+        const next = selectAuthorizedShiftId({
+          authorizedShiftIds: s.map(shift => shift.id),
+          currentShiftId: current,
+          savedShiftId: localStorage.getItem('activeShiftId'),
+          requestedLegacyShiftId: linkedLegacyShift?.id ?? null
+        });
+        if (next) {
+          localStorage.setItem('activeShiftId', next);
+        } else {
+          localStorage.removeItem('activeShiftId');
+        }
+        return next;
       });
       setSyncState(snapshot.metadata.fromCache ? (navigator.onLine ? 'connecting' : 'offline') : 'live');
     }, (error) => {
       setSyncState(navigator.onLine ? 'connecting' : 'offline');
+      if (error.code === 'permission-denied') {
+        clearAuthorizedData();
+      }
       handleFirestoreError(error, OperationType.LIST, 'shifts');
     });
     return () => unsubscribe();
-  }, [user]);
+  }, [user, isAdminUser, pendingLegacyShiftId]);
 
   // Active Shift Data Listeners
-  useEffect(() => {
+  useLayoutEffect(() => {
+    setPatients([]);
+    setTeamMembers([]);
+    setMedCommCalls([]);
+
     if (!user || !activeShiftId) {
-      setPatients([]);
-      setTeamMembers([]);
-      setMedCommCalls([]);
       return;
     }
 
@@ -240,13 +380,16 @@ export default function App() {
       unsubTeam();
       unsubMedComm();
     };
-  }, [user, activeShiftId]);
+  }, [user?.uid, activeShiftId]);
 
   const handleLogout = async () => {
     localStorage.removeItem('userFirstName');
     localStorage.removeItem('userLastName');
     localStorage.removeItem('userRole');
+    localStorage.removeItem('activeShiftId');
     setUserProfile(null);
+    setActiveShiftId(null);
+    setShifts([]);
     await signOut(auth);
   };
 
@@ -285,17 +428,29 @@ export default function App() {
 
   const createShift = async (name: string) => {
     if (!user) return;
-    const sessionId = Math.random().toString(36).substring(2, 8).toUpperCase();
+    const sessionId = createSessionId();
+    const shiftRef = doc(collection(db, 'shifts'));
+    const createdAt = Timestamp.now();
     const newShift = {
       name,
       sessionId,
-      startTime: Timestamp.now(),
+      startTime: createdAt,
       isActive: true,
-      createdBy: user.uid
+      createdBy: user.uid,
+      memberUids: [user.uid]
     };
     try {
-      const docRef = await addDoc(collection(db, 'shifts'), newShift);
-      setActiveShiftId(docRef.id);
+      const batch = writeBatch(db);
+      batch.set(shiftRef, newShift);
+      batch.set(doc(db, 'shiftInvites', sessionId), {
+        shiftId: shiftRef.id,
+        createdBy: user.uid,
+        createdAt,
+        expiresAt: Timestamp.fromMillis(createdAt.toMillis() + INVITE_TTL_MS),
+        revoked: false
+      });
+      await batch.commit();
+      setActiveShiftId(shiftRef.id);
     } catch (error) {
       handleFirestoreError(error, OperationType.CREATE, 'shifts');
     }
@@ -303,16 +458,31 @@ export default function App() {
 
   const joinSession = async (sessionId: string): Promise<boolean> => {
     if (!user) return false;
-    const q = query(collection(db, 'shifts'), where('sessionId', '==', sessionId.toUpperCase()));
-    const snapshot = await getDocs(q);
-    if (!snapshot.empty) {
-      const shiftId = snapshot.docs[0].id;
-      setActiveShiftId(shiftId);
-      localStorage.setItem('activeShiftId', shiftId);
-      return true;
-    }
-    return false;
+    const normalizedSessionId = sessionId.trim().toUpperCase();
+    const invite = await getDoc(doc(db, 'shiftInvites', normalizedSessionId));
+    if (!invite.exists()) return false;
+
+    const shiftId = invite.data().shiftId;
+    if (typeof shiftId !== 'string' || !shiftId) return false;
+
+    await updateDoc(doc(db, 'shifts', shiftId), {
+      memberUids: arrayUnion(user.uid)
+    });
+    setActiveShiftId(shiftId);
+    localStorage.setItem('activeShiftId', shiftId);
+    setPendingSessionId(null);
+    window.history.replaceState({}, document.title, window.location.pathname);
+    return true;
   };
+
+  useEffect(() => {
+    if (!user || !pendingSessionId) return;
+    joinSession(pendingSessionId).catch((error) => {
+      console.error('Could not join shared shift:', error);
+      setPendingSessionId(null);
+      window.history.replaceState({}, document.title, window.location.pathname);
+    });
+  }, [user, pendingSessionId]);
 
   const handleUpdateProfile = async (updates: { displayName?: string, photoURL?: string }) => {
     if (!user) return;
@@ -334,7 +504,13 @@ export default function App() {
 
   const deleteShift = async (id: string) => {
     try {
-      await deleteDoc(doc(db, 'shifts', id));
+      const shift = shifts.find(candidate => candidate.id === id);
+      const batch = writeBatch(db);
+      batch.delete(doc(db, 'shifts', id));
+      if (shift?.sessionId) {
+        batch.delete(doc(db, 'shiftInvites', shift.sessionId));
+      }
+      await batch.commit();
       if (activeShiftId === id) {
         setActiveShiftId(null);
         localStorage.removeItem('activeShiftId');
@@ -633,12 +809,12 @@ export default function App() {
     );
   }
 
-  if (!userProfile) {
-    return <LandingScreen onComplete={handleLandingComplete} />;
+  if (!user) {
+    return <Login initialError={authError} />;
   }
 
-  if (!user) {
-    return <Login />;
+  if (!userProfile) {
+    return <LandingScreen onComplete={handleLandingComplete} />;
   }
 
   return (
@@ -649,9 +825,15 @@ export default function App() {
       onLogout={handleLogout}
       onAddTeamMember={addTeamMember}
       activeShiftId={activeShiftId}
+      activeSessionId={shifts.find(shift => shift.id === activeShiftId)?.sessionId}
       syncState={syncState}
     >
       <div className="space-y-6">
+        {sharedLinkError && (
+          <div role="alert" className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-semibold text-amber-900 dark:border-amber-900/60 dark:bg-amber-950/30 dark:text-amber-200">
+            {sharedLinkError}
+          </div>
+        )}
         {/* Shift Selector visible if no shift active */}
         {!activeShiftId && (
           <ShiftSelector 

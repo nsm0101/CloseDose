@@ -30,7 +30,7 @@ export const toolCatalog = [
     id: 'pmd',
     shortTitle: 'PMD',
     title: 'PREtendingMD: PEM FlowMaster',
-    scope: 'Authenticated, real-time pediatric emergency medicine shift workflow and handoff support.',
+    scope: 'Administrator-approved, real-time pediatric emergency medicine shift workflow and handoff support.',
     status: 'Available',
     route: '/PMD/'
   }

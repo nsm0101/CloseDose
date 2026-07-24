@@ -5,45 +5,19 @@
 
 import React, { useState } from 'react';
 import { auth, googleProvider } from '../firebase';
-import { 
-  signInWithEmailAndPassword, 
-  signInWithPopup, 
-  createUserWithEmailAndPassword
-} from 'firebase/auth';
+import { signInWithPopup } from 'firebase/auth';
 import { motion } from 'framer-motion';
-import { LogIn, UserPlus, Mail, Lock, ShieldCheck, AlertCircle, Plus, Sparkles } from 'lucide-react';
-import { cn } from '../lib/utils';
+import { ShieldCheck, AlertCircle, Plus, Sparkles } from 'lucide-react';
 import { BRAND } from '../lib/brand';
 
-export const Login: React.FC = () => {
-  const [isLogin, setIsLogin] = useState(true);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+interface LoginProps {
+  initialError?: string | null;
+}
+
+export const Login: React.FC<LoginProps> = ({ initialError }) => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-
-  const handleAuth = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setError('');
-    try {
-      if (isLogin) {
-        await signInWithEmailAndPassword(auth, email, password);
-      } else {
-        await createUserWithEmailAndPassword(auth, email, password);
-      }
-    } catch (err: any) {
-      if (err.code === 'auth/internal-error') {
-        setError('Firebase Internal Error: This usually means the "Email/Password" sign-in provider is not enabled in your Firebase Console. Please enable it or use Google Login.');
-      } else if (err.code === 'auth/operation-not-allowed') {
-        setError('Sign-in provider is not enabled. Please enable it in the Firebase Console.');
-      } else {
-        setError(err.message);
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
+  const displayedError = error || initialError;
 
   const handleGoogleLogin = async () => {
     setLoading(true);
@@ -117,92 +91,35 @@ export const Login: React.FC = () => {
         </div>
 
         <div className="p-8 space-y-6">
-          <div className="flex bg-slate-100 dark:bg-slate-800 p-1 rounded-xl">
-            <button 
-              onClick={() => setIsLogin(true)}
-              className={cn(
-                "flex-1 py-2 rounded-lg text-sm font-bold transition-all",
-                isLogin ? "bg-white dark:bg-slate-900 text-blue-600 dark:text-blue-400 shadow-sm" : "text-slate-500 dark:text-slate-400"
-              )}
-            >
-              Login
-            </button>
-            <button 
-              onClick={() => setIsLogin(false)}
-              className={cn(
-                "flex-1 py-2 rounded-lg text-sm font-bold transition-all",
-                !isLogin ? "bg-white dark:bg-slate-900 text-blue-600 dark:text-blue-400 shadow-sm" : "text-slate-500 dark:text-slate-400"
-              )}
-            >
-              Sign Up
-            </button>
+          <div className="text-center space-y-2">
+            <h2 className="text-lg font-black text-slate-800 dark:text-slate-100 tracking-tight">
+              Authorized clinical team access
+            </h2>
+            <p className="text-xs text-slate-500 dark:text-slate-400 font-medium leading-relaxed">
+              Sign in with a verified Google account approved by the PREtendingMD administrator.
+            </p>
           </div>
 
-          {error && (
+          {displayedError && (
             <div className="p-3 bg-rose-50 dark:bg-rose-950/20 border border-rose-100 dark:border-rose-900/30 rounded-lg flex items-start gap-2 text-rose-600 dark:text-rose-400 text-xs font-medium">
               <AlertCircle size={14} className="mt-0.5 shrink-0" />
-              <span>{error}</span>
+              <span>{displayedError}</span>
             </div>
           )}
-
-          <form onSubmit={handleAuth} className="space-y-4">
-            <div className="space-y-1">
-              <label className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase px-1">Email Address</label>
-              <div className="relative">
-                <Mail size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500" />
-                <input 
-                  type="email"
-                  required
-                  className="w-full pl-10 pr-4 py-3 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-semibold text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none transition-all"
-                  placeholder="name@hospital.org"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-              </div>
-            </div>
-
-            <div className="space-y-1">
-              <label className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase px-1">Password</label>
-              <div className="relative">
-                <Lock size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500" />
-                <input 
-                  type="password"
-                  required
-                  className="w-full pl-10 pr-4 py-3 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-semibold text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none transition-all"
-                  placeholder="••••••••"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                />
-              </div>
-            </div>
-
-            <button 
-              type="submit"
-              disabled={loading}
-              className="w-full py-3 bg-blue-600 text-white rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-blue-700 transition-all shadow-md disabled:opacity-50"
-            >
-              {loading ? "Processing..." : isLogin ? <><LogIn size={18} /> Login</> : <><UserPlus size={18} /> Create Account</>}
-            </button>
-          </form>
-
-          <div className="relative py-4">
-            <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-slate-100 dark:border-slate-800"></div></div>
-            <div className="relative flex justify-center text-xs uppercase font-bold text-slate-400 dark:text-slate-500"><span className="bg-white dark:bg-slate-900 px-2">Or continue with</span></div>
-          </div>
 
           <button 
             onClick={handleGoogleLogin}
             disabled={loading}
             className="w-full py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-slate-50 dark:hover:bg-slate-700 transition-all shadow-sm disabled:opacity-50"
           >
-            <img src="https://www.gstatic.com/firebase/anonymous-scan.png" alt="Google" className="w-5 h-5 grayscale" />
-            Sign in with Google
+            <span aria-hidden="true" className="w-5 h-5 rounded-full border border-slate-300 dark:border-slate-600 grid place-items-center text-xs font-black">G</span>
+            {loading ? 'Opening Google sign-in…' : 'Continue with Google'}
           </button>
         </div>
 
         <div className="p-6 bg-slate-50/50 dark:bg-slate-900/50 border-t border-slate-100 dark:border-slate-800/55">
-          <div className="flex items-center gap-2 text-slate-400 dark:text-slate-500 text-[10px] font-bold uppercase tracking-widest justify-center">
-            <ShieldCheck size={12} /> Secure HIPAA-Compliant Environment (No PHI)
+          <div className="flex items-center gap-2 text-slate-400 dark:text-slate-500 text-[10px] font-bold uppercase tracking-widest justify-center text-center">
+            <ShieldCheck size={12} className="shrink-0" /> Patient and operational data sync to the authorized Firebase workspace
           </div>
         </div>
       </div>
