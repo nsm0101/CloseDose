@@ -34,9 +34,10 @@ test('PMD is an isolated static workspace at its canonical provider route', asyn
 });
 
 test('PMD keeps its Firebase workflow while omitting analytics and AI scaffolding', async () => {
-  const [app, firebase, indexHtml, packageJson] = await Promise.all([
+  const [app, firebase, login, indexHtml, packageJson] = await Promise.all([
     read('src/App.tsx'),
     read('src/firebase.ts'),
+    read('src/components/Login.tsx'),
     read('index.html'),
     read('package.json').then(JSON.parse)
   ]);
@@ -47,6 +48,8 @@ test('PMD keeps its Firebase workflow while omitting analytics and AI scaffoldin
   assert.match(firebase, /getAuth/);
   assert.match(firebase, /getFirestore/);
   assert.match(firebase, /GoogleAuthProvider/);
+  assert.match(login, /signInWithPopup/);
+  assert.doesNotMatch(login, /signInWithRedirect|getRedirectResult/);
   assert.doesNotMatch(`${app}\n${firebase}\n${indexHtml}`, /gtag|googletagmanager|google-analytics|firebase\/analytics/i);
   assert.doesNotMatch(
     JSON.stringify(packageJson),

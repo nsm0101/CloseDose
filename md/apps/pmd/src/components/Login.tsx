@@ -3,14 +3,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { auth, googleProvider } from '../firebase';
 import { 
   signInWithEmailAndPassword, 
   signInWithPopup, 
-  createUserWithEmailAndPassword,
-  signInWithRedirect,
-  getRedirectResult
+  createUserWithEmailAndPassword
 } from 'firebase/auth';
 import { motion } from 'framer-motion';
 import { LogIn, UserPlus, Mail, Lock, ShieldCheck, AlertCircle, Plus, Sparkles } from 'lucide-react';
@@ -23,23 +21,6 @@ export const Login: React.FC = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    // Handle the result of a redirect login
-    const handleRedirectResult = async () => {
-      try {
-        const result = await getRedirectResult(auth);
-        if (result) {
-          // User is signed in
-          console.log('Redirect login success');
-        }
-      } catch (err: any) {
-        console.error('Redirect login error:', err);
-        setError(`Redirect Error: ${err.message}`);
-      }
-    };
-    handleRedirectResult();
-  }, []);
 
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -68,18 +49,11 @@ export const Login: React.FC = () => {
     setLoading(true);
     setError('');
     
-    // Detect if we should use redirect instead of popup
-    // Safari in-app browsers and some mobile environments block popups
-    const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
-    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-    const useRedirect = isSafari || isMobile;
-
     try {
-      if (useRedirect) {
-        await signInWithRedirect(auth, googleProvider);
-      } else {
-        await signInWithPopup(auth, googleProvider);
-      }
+      // Redirect sign-in relies on cross-origin storage when Auth is hosted on
+      // firebaseapp.com. Popup sign-in keeps this custom Pages origin working
+      // in browsers that block that storage, including Safari.
+      await signInWithPopup(auth, googleProvider);
     } catch (err: any) {
       console.error("Google Login Error:", err);
       if (err.code === 'auth/internal-error') {
@@ -91,6 +65,10 @@ export const Login: React.FC = () => {
         }
       } else if (err.code === 'auth/operation-not-allowed') {
         setError('Sign-in provider is not enabled. Please enable it in the Firebase Console.');
+      } else if (err.code === 'auth/unauthorized-domain') {
+        setError('This provider website is not authorized for Google sign-in. Please contact the PREtendingMD administrator.');
+      } else if (err.code === 'auth/popup-blocked') {
+        setError('Google sign-in was blocked by the browser. Allow popups for this site and try again.');
       } else {
         setError(err.message);
       }

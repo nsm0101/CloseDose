@@ -33,6 +33,13 @@ live timer progress width. `style-src 'self'` and `style-src-elem 'self'` still
 block inline style elements. This exception must not expand to another
 directive.
 
+PREtendingMD uses popup-based Google sign-in because Firebase redirect sign-in
+cannot reliably complete from a custom Pages origin in browsers that block
+cross-origin storage. Before release, the Firebase Authentication project
+`gen-lang-client-0217325418` must list both `md.closedose.com` and
+`closedose-md.pages.dev` under Authentication > Settings > Authorized domains.
+Keep the existing `firebaseapp.com` auth domain in the app configuration.
+
 Canonical HTML, `404.html`, and the stable `/404.css` URL use
 `public, max-age=0, must-revalidate`. Vite content-hashed assets under
 `/assets/`, `/PIG/assets/`, `/RSI/assets/`, and `/PMD/assets/` are immutable
@@ -86,6 +93,8 @@ pull request:
 - lowercase variants return the provider 404;
 - the browser console, page errors, request failures, unexpected requests, and
   unexpected popup audit are clean during normal flows;
+- both provider hostnames are present in Firebase Authentication's authorized
+  domains, and Google sign-in opens from each hostname;
 - a named clinical owner approved the preview formulas, reference values,
   warnings, and representative outputs.
 
