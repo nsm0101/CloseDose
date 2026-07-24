@@ -6,7 +6,7 @@ A design system for **PREtendingMD** — an emergency department clinical workfl
 
 ## Product context
 
-**PREtendingMD** lives at **closedose.com/PMD**.
+**PREtendingMD** lives at **md.closedose.com/PMD/**.
 
 ## Design influences
 

@@ -1,6 +1,6 @@
 # CloseDose MD Provider Platform Architecture
 
-**Status:** Proposed for implementation
+**Status:** Implemented; extended with PREtendingMD on 2026-07-24
 
 **Production hostname:** `md.closedose.com`
 
@@ -9,8 +9,33 @@
 - `https://md.closedose.com/` — provider tool landing page
 - `https://md.closedose.com/PIG/` — Pediatric Airway Reference Calculator
 - `https://md.closedose.com/RSI/` — Pediatric Emergency RSI Reference & Calculator
+- `https://md.closedose.com/PMD/` — PREtendingMD PEM FlowMaster
 
-Requests to `/PIG` and `/RSI` permanently redirect to their trailing-slash canonical routes. Route casing is intentional and must remain uppercase.
+Requests to `/PIG`, `/RSI`, and `/PMD` permanently redirect to their
+trailing-slash canonical routes. Route casing is intentional and must remain
+uppercase.
+
+## PREtendingMD extension
+
+The original architecture below records the first PIG/RSI release. The
+PREtendingMD migration extends the same workspace and deployment pattern:
+
+- `md/apps/pmd/` is the fourth isolated application workspace and builds to
+  `md/dist/PMD/`.
+- The root build runs portal, PIG, RSI, and PREtendingMD and requires all four
+  entry documents before release.
+- The portal describes data handling per tool. PIG and RSI remain local-only.
+  PREtendingMD intentionally uses Firebase Authentication, Firestore real-time
+  sync, and browser storage for workflow settings.
+- The shared CSP keeps scripts and fonts local while allowlisting only the
+  exact Firebase Authentication, token, Firestore, and Auth-frame origins
+  required by PREtendingMD.
+- The migrated build removes Google Analytics and unused AI/server scaffolding.
+- The former `closedose.com/PMD/` document redirects to
+  `md.closedose.com/PMD/` and preserves its query string and fragment.
+
+Where the historical sections below refer to two tools, three entry documents,
+or a fully local-only platform, this extension is the governing architecture.
 
 ## Decision
 

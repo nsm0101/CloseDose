@@ -26,7 +26,7 @@ function runNpm(script) {
 await rm(distRoot, { force: true, recursive: true });
 await mkdir(distRoot, { recursive: true });
 
-for (const workspace of ['build:portal', 'build:pig', 'build:rsi']) {
+for (const workspace of ['build:portal', 'build:pig', 'build:rsi', 'build:pmd']) {
   runNpm(workspace);
 }
 

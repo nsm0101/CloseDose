@@ -4,18 +4,23 @@ import clinicalPreparationRoom960 from './assets/clinical-preparation-room-960.w
 import clinicalPreparationRoom from './assets/clinical-preparation-room.webp';
 import { toolCatalog } from './toolCatalog.ts';
 
-const HERO_LEDE = 'Pediatric airway and emergency RSI tools for focused, point-of-care reference.';
+const HERO_LEDE = 'Pediatric airway, RSI, and emergency workflow tools for focused point-of-care support.';
 
 const boundaries = [
   {
-    title: 'Local browser calculation',
+    title: 'PIG and RSI: local calculation',
     description:
-      'Calculations run in the current browser tab. No backend service is used.'
+      'Calculator inputs and outputs stay in the current browser tab. No backend service is used.'
   },
   {
-    title: 'No patient identifiers',
+    title: 'PIG and RSI: No patient identifiers',
     description:
-      'The tools do not request names, dates of birth, medical record numbers, or other patient identifiers.'
+      'The reference calculators do not request names, dates of birth, medical record numbers, or other patient identifiers.'
+  },
+  {
+    title: 'PREtendingMD: authenticated sync',
+    description:
+      'PREtendingMD signs users in and synchronizes its operational shift board through the existing Firebase service.'
   },
   {
     title: 'No AI runtime',
@@ -117,8 +122,8 @@ function App() {
           <div className="boundary-intro">
             <h2 id="boundaries-heading">A clear clinical boundary</h2>
             <p>
-              This release stays in the browser and keeps responsibility with
-              the provider and institution.
+              Data handling is explicit for each tool, while clinical
+              responsibility stays with the provider and institution.
             </p>
           </div>
 
@@ -137,8 +142,9 @@ function App() {
         <div>
           <p className="footer-lead">For provider use. Decision support only.</p>
           <p>
-            Current release: local calculation with no patient identifiers, AI
-            runtime, analytics, or persistence.
+            PIG and RSI calculate locally. PREtendingMD uses authenticated
+            Firebase sync. No tool in this release uses an AI runtime or
+            analytics.
           </p>
         </div>
         <p className="footer-brand">CloseDose MD</p>

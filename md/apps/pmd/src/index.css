@@ -1,6 +1,62 @@
-@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=DM+Mono:wght@400;500&family=Gochi+Hand&family=Inter:wght@400;500;600;700;800;900&family=Nunito+Sans:wght@600;700;800;900&display=swap');
 @import './pretendingmd.css';
 @import "tailwindcss";
+
+#splash {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  background: #f9fafb;
+  transition: opacity 0.5s ease-out;
+}
+
+#splash .splash-mascot {
+  width: 104px;
+  height: 104px;
+  object-fit: contain;
+  animation: splash-pulse 2s infinite ease-in-out;
+  filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.12));
+}
+
+#splash .splash-wordmark {
+  width: 200px;
+  max-width: 60vw;
+  height: auto;
+}
+
+#splash .splash-label {
+  color: #003c71;
+  font-family: system-ui, -apple-system, sans-serif;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.dark #splash {
+  background: #030712;
+}
+
+.dark #splash .splash-label {
+  color: #93c5fd;
+}
+
+@keyframes splash-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+
+  50% {
+    transform: scale(1.08);
+    opacity: 0.85;
+  }
+}
 
 @layer base {
   html, body {

@@ -15,14 +15,22 @@ assets from those masters:
 
 Run from the repo with Pillow installed:
 
-    python3 pmd/scripts/optimize-brand-assets.py
+    python3 md/apps/pmd/scripts/optimize-brand-assets.py
 
-Outputs are written next to the masters in pmd/public/images/.
+Outputs are written to md/apps/pmd/public/images/.
 """
 import os
 from PIL import Image
 
-IMAGES_DIR = os.path.join(os.path.dirname(__file__), "..", "public", "images")
+APP_DIR = os.path.join(os.path.dirname(__file__), "..")
+ARTWORK_DIR = os.path.join(APP_DIR, "artwork", "images")
+IMAGES_DIR = os.path.join(APP_DIR, "public", "images")
+WORDMARK_MASTER = os.path.join(
+    APP_DIR,
+    "PREtendingMD Design System",
+    "brand",
+    "pretendingmd-wordmark.png",
+)
 LANCZOS = Image.LANCZOS
 
 
@@ -46,7 +54,7 @@ def fit(im, max_side):
 
 
 def open_master(name):
-    return Image.open(os.path.join(IMAGES_DIR, name)).convert("RGBA")
+    return Image.open(os.path.join(ARTWORK_DIR, name)).convert("RGBA")
 
 
 def main():
@@ -62,7 +70,7 @@ def main():
     save_png(fit(open_master("Bearhead.png"), 512), "bear-head.png", 256)
 
     # Wordmark: crop to text, fix width to 900 for crisp retina display.
-    wm = open_master("Wordmark.png")
+    wm = Image.open(WORDMARK_MASTER).convert("RGBA")
     wm = wm.crop(wm.split()[3].getbbox())
     w, h = wm.size
     wm = wm.resize((900, round(h * 900 / w)), LANCZOS)

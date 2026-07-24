@@ -36,7 +36,6 @@ import { LandingScreen } from './components/LandingScreen';
 import { Plus, Loader2, AlertCircle } from 'lucide-react';
 import { updateProfile } from 'firebase/auth';
 import { BRAND } from './lib/brand';
-import { track, trackView } from './lib/analytics';
 
 export default function App() {
   const [user, setUser] = useState<User | null>(null);
@@ -96,11 +95,6 @@ export default function App() {
       window.removeEventListener('online', goOnline);
     };
   }, []);
-
-  // Report which tab the user is viewing (best-effort analytics).
-  useEffect(() => {
-    trackView(activeTab);
-  }, [activeTab]);
 
   // Handle URL shiftId parameter
   useEffect(() => {
@@ -261,8 +255,6 @@ export default function App() {
     localStorage.setItem('userLastName', lastName);
     localStorage.setItem('userRole', role);
     setUserProfile({ firstName, lastName, role });
-    track('onboard_complete', { role });
-
     if (auth.currentUser) {
       try {
         await updateProfile(auth.currentUser, {
@@ -304,7 +296,6 @@ export default function App() {
     try {
       const docRef = await addDoc(collection(db, 'shifts'), newShift);
       setActiveShiftId(docRef.id);
-      track('create_session');
     } catch (error) {
       handleFirestoreError(error, OperationType.CREATE, 'shifts');
     }
@@ -318,7 +309,6 @@ export default function App() {
       const shiftId = snapshot.docs[0].id;
       setActiveShiftId(shiftId);
       localStorage.setItem('activeShiftId', shiftId);
-      track('join_session');
       return true;
     }
     return false;
@@ -393,7 +383,6 @@ export default function App() {
     try {
       const ref = await addDoc(collection(db, `shifts/${activeShiftId}/patients`), newPatient);
       setLastAddedId(ref.id);
-      track('add_patient');
     } catch (error) {
       handleFirestoreError(error, OperationType.CREATE, `shifts/${activeShiftId}/patients`);
     }

@@ -13,10 +13,11 @@ async function readJson(relativePath) {
 const workspaces = [
   { directory: 'apps/portal', name: '@closedose-md/portal', routeBase: '/' },
   { directory: 'apps/pig', name: '@closedose-md/pig', routeBase: '/PIG/' },
-  { directory: 'apps/rsi', name: '@closedose-md/rsi', routeBase: '/RSI/' }
+  { directory: 'apps/rsi', name: '@closedose-md/rsi', routeBase: '/RSI/' },
+  { directory: 'apps/pmd', name: '@closedose-md/pmd', routeBase: '/PMD/' }
 ];
 
-test('declares the three isolated MD npm workspaces', async () => {
+test('declares the four isolated MD npm workspaces', async () => {
   const manifest = await readJson('package.json');
 
   assert.deepEqual(manifest.workspaces, workspaces.map(({ directory }) => directory));

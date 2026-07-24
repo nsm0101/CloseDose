@@ -13,18 +13,21 @@ const distRoot = fileURLToPath(new URL('../../dist/', import.meta.url));
 const canonicalDocuments = new Map([
   ['/', 'document'],
   ['/PIG/', 'document'],
-  ['/RSI/', 'document']
+  ['/RSI/', 'document'],
+  ['/PMD/', 'document']
 ]);
 const physicalEntryDocuments = new Set([
   'index.html',
   'PIG/index.html',
-  'RSI/index.html'
+  'RSI/index.html',
+  'PMD/index.html'
 ]);
 const controlFiles = new Set(['_headers', '_redirects']);
 const resourceTypesByExtension = new Map([
   ['.css', 'stylesheet'],
   ['.html', 'document'],
   ['.js', 'script'],
+  ['.webmanifest', 'other'],
   ['.png', 'image'],
   ['.webp', 'image'],
   ['.woff2', 'font']
@@ -140,7 +143,7 @@ function auditRuntime(context) {
   };
 }
 
-test('portal fits exactly 320 px and both ordinary tool links navigate', async ({ page, context }) => {
+test('portal fits exactly 320 px and all ordinary tool links navigate', async ({ page, context }) => {
   const runtimeAudit = auditRuntime(context);
   await page.setViewportSize({ width: 320, height: 800 });
   await page.goto('/');
@@ -149,8 +152,10 @@ test('portal fits exactly 320 px and both ordinary tool links navigate', async (
   await expect(page.getByRole('heading', { name: 'Clinical tools. Ready when needed.' })).toBeVisible();
   const pigLink = page.getByRole('link', { name: /Pediatric Airway Reference Calculator/ });
   const rsiLink = page.getByRole('link', { name: /Pediatric Emergency RSI Reference and Calculator/ });
+  const pmdLink = page.getByRole('link', { name: /PREtendingMD: PEM FlowMaster/ });
   await expect(pigLink).toHaveAttribute('href', '/PIG/');
   await expect(rsiLink).toHaveAttribute('href', '/RSI/');
+  await expect(pmdLink).toHaveAttribute('href', '/PMD/');
 
   const horizontalMetrics = await page.evaluate(() => ({
     body: document.body.scrollWidth - document.body.clientWidth,
@@ -167,11 +172,21 @@ test('portal fits exactly 320 px and both ordinary tool links navigate', async (
   await page.getByRole('link', { name: /Pediatric Emergency RSI Reference and Calculator/ }).click();
   await expect(page).toHaveURL(expectedUrl('/RSI/'));
   await expect(page.getByRole('heading', { name: 'Critical Airway Utility' })).toBeVisible();
+
+  await page.goBack();
+  await page.waitForLoadState('networkidle');
+  await page.getByRole('link', { name: /PREtendingMD: PEM FlowMaster/ }).click();
+  await expect(page).toHaveURL(expectedUrl('/PMD/'));
+  await expect(page.getByRole('heading', { name: 'Introduce Yourself' })).toBeVisible();
   runtimeAudit.assertClean();
 });
 
 test('canonical redirects and unknown-route 404 are explicit', async ({ request }) => {
-  for (const [route, location] of [['/PIG', '/PIG/'], ['/RSI', '/RSI/']]) {
+  for (const [route, location] of [
+    ['/PIG', '/PIG/'],
+    ['/RSI', '/RSI/'],
+    ['/PMD', '/PMD/']
+  ]) {
     const response = await request.get(route, { maxRedirects: 0 });
     expect(response.status()).toBe(301);
     expect(response.headers().location).toBe(location);
@@ -181,7 +196,7 @@ test('canonical redirects and unknown-route 404 are explicit', async ({ request 
   expect(missing.status()).toBe(404);
   expect(await missing.text()).toContain('That provider page was not found.');
 
-  for (const route of ['/pig', '/pig/', '/rsi', '/rsi/']) {
+  for (const route of ['/pig', '/pig/', '/rsi', '/rsi/', '/pmd', '/pmd/']) {
     const response = await request.get(route, { maxRedirects: 0 });
     expect(response.status(), route).toBe(404);
     expect(await response.text(), route).toContain('That provider page was not found.');
@@ -203,6 +218,24 @@ test('canonical redirects and unknown-route 404 are explicit', async ({ request 
   expect(notFoundStyles.headers()['cache-control']).toBe(
     'public, max-age=0, must-revalidate'
   );
+});
+
+test('PMD loads its signed-out workflow shell without remote analytics', async ({ page, context }) => {
+  const runtimeAudit = auditRuntime(context);
+  await page.setViewportSize({ width: 320, height: 800 });
+  await page.goto('/PMD/');
+  await expect(page).toHaveTitle('PREtendingMD — PEM FlowMaster');
+  await expect(page.getByRole('heading', { name: 'Introduce Yourself' })).toBeVisible();
+  await expect(page.getByPlaceholder('e.g. Sarah')).toBeVisible();
+  await expect(page.getByPlaceholder('e.g. Miller')).toBeVisible();
+  await expect(page.getByRole('button', { name: /Enter shift board/i })).toBeVisible();
+
+  const horizontalMetrics = await page.evaluate(() => ({
+    body: document.body.scrollWidth - document.body.clientWidth,
+    document: document.documentElement.scrollWidth - document.documentElement.clientWidth
+  }));
+  expect(horizontalMetrics).toEqual({ body: 0, document: 0 });
+  runtimeAudit.assertClean();
 });
 
 test('PIG age selection updates sizing and its procedure timer runs', async ({ page, context }) => {
