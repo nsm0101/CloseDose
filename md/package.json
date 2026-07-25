@@ -37,5 +37,10 @@
     "@firebase/rules-unit-testing": "5.0.1",
     "@google-cloud/firestore": "8.7.0",
     "@playwright/test": "^1.61.1"
+  },
+  "overrides": {
+    "google-gax": {
+      "rimraf": "6.1.3"
+    }
   }
 }
