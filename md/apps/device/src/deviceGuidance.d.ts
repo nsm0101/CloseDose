@@ -1,6 +1,6 @@
 export type UpperAirwayPatency = 'patent' | 'obstructed' | 'unknown';
-export type Breathing = 'present' | 'absent';
-export type SuctionPassage = 'passable' | 'not-passable';
+export type Breathing = 'not-assessed' | 'present' | 'absent';
+export type SuctionPassage = 'not-assessed' | 'passable' | 'not-passable';
 export type Cuff = 'present' | 'absent' | 'unknown';
 export type InnerCannula = 'present' | 'absent' | 'unknown';
 export type TracheostomyMaturity = 'established' | 'fresh' | 'uncertain';
@@ -31,7 +31,7 @@ export interface DeviceRescueContext {
 export interface RescueGuidance {
   source: typeof DEVICE_GUIDANCE_SOURCE;
   immediateActions: string[];
-  tubeStatus: 'patent' | 'not-confirmed-patent';
+  tubeStatus: 'not-assessed' | 'patent' | 'not-confirmed-patent';
   troubleshooting: string[];
   breathingSupport: string[];
   ventilationRoutes: string[];
@@ -42,7 +42,7 @@ export const DEVICE_GUIDANCE_SOURCE: Readonly<{
   organization: 'National Tracheostomy Safety Project';
   title: 'Pediatric emergency tracheostomy algorithm';
   reviewDate: 'January 2024';
-  status: 'Review required before clinical use';
+  status: 'Clinical review / not approved for clinical use';
 }>;
 
 export const DEVICE_ENUMERATIONS: Readonly<{

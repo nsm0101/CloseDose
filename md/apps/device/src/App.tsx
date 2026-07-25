@@ -19,8 +19,8 @@ const steps = ['Act now', 'Identify', 'Troubleshoot', 'Equipment', 'Handoff'];
 
 const initialContext: DeviceRescueContext = {
   upperAirwayPatency: 'unknown',
-  breathing: 'present',
-  suctionPassage: 'passable',
+  breathing: 'not-assessed',
+  suctionPassage: 'not-assessed',
   cuff: 'unknown',
   innerCannula: 'unknown',
   tracheostomyMaturity: 'uncertain',
@@ -44,11 +44,13 @@ type Choice<T extends string> = {
 
 function ChoiceGroup<T extends string>({
   legend,
+  name,
   value,
   choices,
   onChange
 }: {
   legend: string;
+  name: string;
   value: T;
   choices: Choice<T>[];
   onChange: (value: T) => void;
@@ -64,6 +66,7 @@ function ChoiceGroup<T extends string>({
           >
             <input
               checked={value === choice.value}
+              name={name}
               onChange={() => onChange(choice.value)}
               type="radio"
             />
@@ -140,8 +143,14 @@ export default function App() {
   };
 
   const copyHandoff = async () => {
-    await navigator.clipboard.writeText(handoff);
-    setCopyStatus('Handoff copied');
+    try {
+      await navigator.clipboard.writeText(handoff);
+      setCopyStatus('Handoff copied');
+    } catch {
+      setCopyStatus(
+        'Copy failed. Select and copy the handoff preview manually.'
+      );
+    }
   };
 
   return (
@@ -159,8 +168,11 @@ export default function App() {
           <h1>Peds Device Rescue</h1>
         </div>
         <div className="review-badge" role="status">
-          <span aria-hidden="true" />
-          Review required
+          <span className="status-dot" aria-hidden="true" />
+          <span>
+            <strong>Clinical review</strong>
+            <small>Not approved for clinical use</small>
+          </span>
         </div>
       </header>
 
@@ -225,6 +237,7 @@ export default function App() {
                   </ol>
                   <ChoiceGroup<Breathing>
                     legend="Is the child breathing?"
+                    name="breathing"
                     value={context.breathing}
                     choices={[
                       { value: 'present', label: 'Breathing present' },
@@ -308,6 +321,7 @@ export default function App() {
                   </label>
                   <ChoiceGroup<VentilatorDependence>
                     legend="Ventilator dependence"
+                    name="ventilator-dependence"
                     value={context.ventilatorDependence}
                     choices={[
                       { value: 'dependent', label: 'Dependent' },
@@ -320,6 +334,7 @@ export default function App() {
                   />
                   <ChoiceGroup<TracheostomyMaturity>
                     legend="Tracheostomy state"
+                    name="tracheostomy-maturity"
                     value={context.tracheostomyMaturity}
                     choices={[
                       { value: 'established', label: 'Established' },
@@ -339,6 +354,7 @@ export default function App() {
                   <h2>Check patency without inferring a diagnosis</h2>
                   <ChoiceGroup<SuctionPassage>
                     legend="Can a suction catheter pass?"
+                    name="suction-passage"
                     value={context.suctionPassage}
                     choices={[
                       { value: 'passable', label: 'Passes' },
@@ -348,6 +364,7 @@ export default function App() {
                   />
                   <ChoiceGroup<InnerCannula>
                     legend="Inner cannula"
+                    name="inner-cannula"
                     value={context.innerCannula}
                     choices={[
                       { value: 'present', label: 'Present' },
@@ -358,6 +375,7 @@ export default function App() {
                   />
                   <ChoiceGroup<Cuff>
                     legend="Cuff"
+                    name="cuff"
                     value={context.cuff}
                     choices={[
                       { value: 'present', label: 'Present' },
@@ -368,6 +386,7 @@ export default function App() {
                   />
                   <ChoiceGroup<UpperAirwayPatency>
                     legend="Upper-airway patency"
+                    name="upper-airway-patency"
                     value={context.upperAirwayPatency}
                     choices={[
                       { value: 'patent', label: 'Patent' },
@@ -379,29 +398,36 @@ export default function App() {
                     }
                   />
 
-                  <div className="guidance-grid" aria-live="polite">
-                    <article className="guidance-card">
-                      <p className="card-label">Tube status</p>
-                      <h3>
-                        {guidance.tubeStatus === 'patent'
-                          ? 'Tube patent'
-                          : 'Patency not confirmed'}
-                      </h3>
-                      <ol>
-                        {guidance.troubleshooting.map((action) => (
-                          <li key={action}>{action}</li>
-                        ))}
-                      </ol>
-                    </article>
-                    <article className="guidance-card">
-                      <p className="card-label">Ventilation route</p>
-                      <ul>
-                        {guidance.ventilationRoutes.map((route) => (
-                          <li key={route}>{route}</li>
-                        ))}
-                      </ul>
-                    </article>
-                  </div>
+                  {guidance.tubeStatus !== 'not-assessed' ? (
+                    <div className="guidance-grid" aria-live="polite">
+                      <article className="guidance-card">
+                        <p className="card-label">Tube status</p>
+                        <h3>
+                          {guidance.tubeStatus === 'patent'
+                            ? 'Tube patent'
+                            : 'Patency not confirmed'}
+                        </h3>
+                        <ol>
+                          {guidance.troubleshooting.map((action) => (
+                            <li key={action}>{action}</li>
+                          ))}
+                        </ol>
+                      </article>
+                      <article className="guidance-card">
+                        <p className="card-label">Ventilation route</p>
+                        <ul>
+                          {guidance.ventilationRoutes.map((route) => (
+                            <li key={route}>{route}</li>
+                          ))}
+                        </ul>
+                      </article>
+                    </div>
+                  ) : (
+                    <div className="observation-prompt" role="status">
+                      Record whether a suction catheter passes before viewing
+                      tube-patency guidance.
+                    </div>
+                  )}
 
                   {guidance.warnings.length > 0 && (
                     <div className="danger-card" role="alert">
@@ -500,7 +526,9 @@ export default function App() {
                       <p className="card-label">Transfer handoff preview</p>
                       <p>No identifiers. No saved data.</p>
                     </div>
-                    <pre>{handoff}</pre>
+                    <pre aria-label="Selectable handoff preview" tabIndex={0}>
+                      {handoff}
+                    </pre>
                     <button
                       className="secondary-action"
                       onClick={copyHandoff}

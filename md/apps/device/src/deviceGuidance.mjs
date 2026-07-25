@@ -2,13 +2,17 @@ export const DEVICE_GUIDANCE_SOURCE = Object.freeze({
   organization: 'National Tracheostomy Safety Project',
   title: 'Pediatric emergency tracheostomy algorithm',
   reviewDate: 'January 2024',
-  status: 'Review required before clinical use'
+  status: 'Clinical review / not approved for clinical use'
 });
 
 export const DEVICE_ENUMERATIONS = Object.freeze({
   upperAirwayPatency: Object.freeze(['patent', 'obstructed', 'unknown']),
-  breathing: Object.freeze(['present', 'absent']),
-  suctionPassage: Object.freeze(['passable', 'not-passable']),
+  breathing: Object.freeze(['not-assessed', 'present', 'absent']),
+  suctionPassage: Object.freeze([
+    'not-assessed',
+    'passable',
+    'not-passable'
+  ]),
   cuff: Object.freeze(['present', 'absent', 'unknown']),
   innerCannula: Object.freeze(['present', 'absent', 'unknown']),
   tracheostomyMaturity: Object.freeze([
@@ -72,12 +76,30 @@ export function getRescueGuidance(context) {
   ];
   const warnings = maturityWarnings(context.tracheostomyMaturity);
   const breathingSupport =
-    context.breathing === 'absent'
+    context.breathing === 'not-assessed'
       ? [
-          'Give five rescue breaths',
-          'Start CPR if there are no signs of life'
+          'Record whether breathing is present before showing breathing support guidance'
         ]
-      : ['Continue assessment of breathing'];
+      : context.breathing === 'absent'
+        ? [
+            'Give five rescue breaths',
+            'Start CPR if there are no signs of life'
+          ]
+        : ['Continue assessment of breathing'];
+
+  if (context.suctionPassage === 'not-assessed') {
+    return {
+      source: DEVICE_GUIDANCE_SOURCE,
+      immediateActions,
+      tubeStatus: 'not-assessed',
+      troubleshooting: [
+        'Record whether a suction catheter passes before assessing tube patency'
+      ],
+      breathingSupport,
+      ventilationRoutes: ventilationGuidance(context.upperAirwayPatency),
+      warnings
+    };
+  }
 
   if (context.suctionPassage === 'passable') {
     return {

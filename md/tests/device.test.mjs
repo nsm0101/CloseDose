@@ -68,11 +68,32 @@ test('a passable suction catheter reports a patent tube and continues ABCDE asse
     organization: 'National Tracheostomy Safety Project',
     title: 'Pediatric emergency tracheostomy algorithm',
     reviewDate: 'January 2024',
-    status: 'Review required before clinical use'
+    status: 'Clinical review / not approved for clinical use'
   });
   assert.equal(guidance.tubeStatus, 'patent');
   assert.match(text, /Continue ABCDE assessment/);
   assert.match(text, /partial obstruction/i);
+});
+
+test('unassessed observations do not report tube patency or a breathing conclusion', () => {
+  const guidance = getRescueGuidance({
+    ...baseContext,
+    breathing: 'not-assessed',
+    suctionPassage: 'not-assessed'
+  });
+  const text = allGuidanceText(guidance);
+
+  assert.equal(guidance.tubeStatus, 'not-assessed');
+  assert.deepEqual(guidance.troubleshooting, [
+    'Record whether a suction catheter passes before assessing tube patency'
+  ]);
+  assert.deepEqual(guidance.breathingSupport, [
+    'Record whether breathing is present before showing breathing support guidance'
+  ]);
+  assert.doesNotMatch(text, /\btube is patent\b/i);
+  assert.doesNotMatch(text, /\bTube patent\b/i);
+  assert.doesNotMatch(text, /Continue assessment of breathing/);
+  assert.doesNotMatch(text, /Give five rescue breaths/);
 });
 
 test('a non-passable catheter follows attachment, cannula, suction, cuff, and trained tube-change boundaries', () => {
@@ -202,12 +223,13 @@ test('invalid enumerated inputs throw descriptive errors', () => {
 });
 
 test('Device app is review-gated, uses the canonical route, and has no privacy boundary violations', async () => {
-  const [packageJsonSource, viteConfig, indexHtml, appSource] =
+  const [packageJsonSource, viteConfig, indexHtml, appSource, styles] =
     await Promise.all([
       readFile(path.join(deviceRoot, 'package.json'), 'utf8'),
       readFile(path.join(deviceRoot, 'vite.config.ts'), 'utf8'),
       readFile(path.join(deviceRoot, 'index.html'), 'utf8'),
-      readFile(path.join(deviceRoot, 'src/App.tsx'), 'utf8')
+      readFile(path.join(deviceRoot, 'src/App.tsx'), 'utf8'),
+      readFile(path.join(deviceRoot, 'src/index.css'), 'utf8')
     ]);
   const packageJson = JSON.parse(packageJsonSource);
 
@@ -224,7 +246,42 @@ test('Device app is review-gated, uses the canonical route, and has no privacy b
   assert.match(appSource, /Troubleshoot/);
   assert.match(appSource, /Equipment/);
   assert.match(appSource, /Handoff/);
-  assert.match(appSource, /Review required/);
+  assert.match(appSource, /Clinical review/);
+  assert.match(appSource, /Not approved for clinical use/);
+  assert.match(appSource, /breathing:\s*'not-assessed'/);
+  assert.match(appSource, /suctionPassage:\s*'not-assessed'/);
+  assert.match(appSource, /tubeStatus !== 'not-assessed'/);
+  assert.match(appSource, /name=\{name\}/);
+  assert.match(appSource, /name="breathing"/);
+  assert.match(appSource, /name="suction-passage"/);
+  assert.match(appSource, /catch\s*\{/);
+  assert.match(
+    appSource,
+    /Copy failed\. Select and copy the handoff preview manually\./
+  );
+  assert.match(styles, /color-scheme:\s*light dark/);
+  assert.match(styles, /--color-accent:\s*#18a78d/i);
+  assert.match(styles, /--radius-control:/);
+  assert.match(styles, /@media\s*\(prefers-color-scheme:\s*dark\)/);
+  assert.match(styles, /@media\s*\(min-width:/);
+  assert.doesNotMatch(styles, /@media\s*\(max-width:/);
+  assert.match(styles, /\.choice:has\(input:focus-visible\)/);
+  assert.doesNotMatch(styles, /#146b64/i);
   assert.doesNotMatch(appSource, /[–—]/);
   assert.deepEqual(await scanApplicationPrivacy(deviceRoot), []);
+});
+
+test('Device clinical specification requires a named mandatory PEM reviewer', async () => {
+  const clinicalSource = await readFile(
+    path.join(mdRoot, '..', 'docs/provider-tools/device/clinical.md'),
+    'utf8'
+  );
+
+  assert.match(
+    clinicalSource,
+    /Named pediatric emergency medicine physician \(mandatory and not interchangeable with pediatric critical care\)/
+  );
+  assert.match(clinicalSource, /Pediatric otolaryngology/);
+  assert.match(clinicalSource, /Pediatric respiratory therapy lead/);
+  assert.match(clinicalSource, /Regulatory and quality-system owner/);
 });

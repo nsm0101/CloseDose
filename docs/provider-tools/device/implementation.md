@@ -13,8 +13,8 @@ The application is a deterministic review surface. It does not diagnose, persist
 | Field | Allowed values |
 | --- | --- |
 | `upperAirwayPatency` | `patent`, `obstructed`, `unknown` |
-| `breathing` | `present`, `absent` |
-| `suctionPassage` | `passable`, `not-passable` |
+| `breathing` | `not-assessed`, `present`, `absent` |
+| `suctionPassage` | `not-assessed`, `passable`, `not-passable` |
 | `cuff` | `present`, `absent`, `unknown` |
 | `innerCannula` | `present`, `absent`, `unknown` |
 | `tracheostomyMaturity` | `established`, `fresh`, `uncertain` |
@@ -25,6 +25,8 @@ Optional handoff state contains device details, caregiver-confirmed baseline, ob
 No state field accepts or represents a child or caregiver identifier.
 
 All state exists only in React memory for the current page lifetime. Refreshing or closing the page clears it.
+
+Breathing and suction passage initialize as `not-assessed`. The interface presents no tube-patency or breathing conclusion until the responder makes the corresponding explicit observation.
 
 ## Function contracts
 
@@ -70,7 +72,7 @@ The first viewport contains:
 
 - Persistent emergency strip with `Call for help` and `Oxygen to face and stoma`.
 - Urgent `Start tracheostomy rescue` action.
-- Visible `Review required` and `Not approved for clinical use` status.
+- Visible paired `Clinical review` and `Not approved for clinical use` status.
 - Return link to `/`.
 
 After starting, the sequence is:
@@ -86,15 +88,19 @@ An evidence and version panel remains available after the workflow and contains 
 ## Accessibility
 
 - Semantic header, main, nav, sections, fieldsets, legends, lists, definition list, and footer.
+- Every radio group has a stable shared `name`.
 - Skip link targets the main rescue content.
 - Emergency strip has an accessible label.
 - Current workflow step uses `aria-current="step"`.
 - Dynamic guidance and copy status use live regions.
 - Dangerous-action warnings use alert semantics.
 - Controls have visible keyboard focus.
+- Visually hidden radio inputs transfer visible focus to the rendered choice control.
 - Each pointer target has a practical minimum height or padded hit area.
 - Color is not the only carrier of review, selection, or warning state.
-- Layout reflows to a single column and the step navigation scrolls horizontally on narrow screens.
+- Phone-first defaults use a single column and horizontally scrolling step navigation, with desktop enhancements applied only at minimum-width breakpoints.
+- Automatic light and dark color tokens follow the operating-system color scheme.
+- The CloseDose MD accent is `#18a78d`, action and focus colors maintain accessible contrast, and one shared radius token controls non-semantic corners.
 - Reduced-motion preference disables smooth scrolling.
 
 Release still requires keyboard-only, screen-reader, contrast, zoom, narrow viewport, and high-stress usability review.
@@ -126,6 +132,7 @@ The shared source privacy scanner enforces browser transport, persistence, analy
 | Test | Evidence |
 | --- | --- |
 | Common first actions | Every representative branch begins with the same three actions in order. |
+| Neutral initial observations | No tube-patency or breathing conclusion before explicit selection. |
 | Passable suction catheter | Patent tube, ABCDE continuation, and partial-obstruction warning. |
 | Non-passable suction catheter | Attachment removal, inner-cannula removal, suction, cuff deflation, and trained established-tracheostomy tube-change boundary. |
 | Absent breathing | Five rescue breaths and CPR if there are no signs of life. |
@@ -135,7 +142,7 @@ The shared source privacy scanner enforces browser transport, persistence, analy
 | Fresh or uncertain tracheostomy | No blind reinsertion and immediate expert airway help. |
 | Handoff | Required categories, explicit unknown values, and no identifier fields. |
 | Validation | Every invalid enumeration throws a descriptive error. |
-| Application contract | Package name, `/DEVICE/` base, review-gate text, workflow labels, visible-copy dash constraint, and privacy scan. |
+| Application contract | Package name, `/DEVICE/` base, exact clinical-review state, workflow labels, grouped radio names, focus transfer, dark-mode tokens, phone-first breakpoints, shared radius and accent tokens, clipboard failure handling, visible-copy dash constraint, and privacy scan. |
 | Type safety | `npm run typecheck --prefix apps/device`. |
 | Static package | `npm run build --prefix apps/device`. |
 
@@ -152,4 +159,4 @@ The application must not be treated as clinically released until:
 7. Exact production route, headers, redirects, catalog registration, and deployment are separately implemented and verified.
 8. The application review status is updated through controlled change after approval.
 
-Until those gates close, `Review required` and `Not approved for clinical use` must remain visible.
+Until those gates close, `Clinical review` and `Not approved for clinical use` must remain visibly paired.
