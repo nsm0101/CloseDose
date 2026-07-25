@@ -1,46 +1,28 @@
 <!doctype html>
 <html lang="en">
   <head>
-  <!-- Site-wide analytics (Google Analytics 4). Single source: /analytics.js -->
-  <script src="/analytics.js"></script>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-    <meta name="apple-mobile-web-app-title" content="PEM Flow" />
-    <meta name="mobile-web-app-capable" content="yes" />
-    <meta name="theme-color" content="#0072CE" />
-    <link rel="icon" type="image/png" sizes="32x32" href="/PMD/images/favicon-32.png" />
-    <link rel="icon" type="image/png" sizes="512x512" href="/PMD/images/icon-512.png" />
-    <link rel="apple-touch-icon" href="/PMD/images/apple-touch-icon.png" />
-    <link rel="manifest" href="/PMD/manifest.webmanifest" />
-    <title>PREtendingMD — PEM FlowMaster</title>
-    <script type="module" crossorigin src="/PMD/assets/index-CvJpLYsP.js"></script>
-    <link rel="stylesheet" crossorigin href="/PMD/assets/index-CUlIhhWV.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      http-equiv="refresh"
+      content="0; url=https://md.closedose.com/PMD/"
+    />
+    <link rel="canonical" href="https://md.closedose.com/PMD/" />
+    <title>PREtendingMD has moved | CloseDose MD</title>
+    <script>
+      const destination = new URL('https://md.closedose.com/PMD/');
+      destination.search = window.location.search;
+      destination.hash = window.location.hash;
+      window.location.replace(destination);
+    </script>
   </head>
   <body>
-    <script>
-      if (localStorage.getItem('darkMode') === 'true') {
-        document.documentElement.classList.add('dark');
-      }
-    </script>
-    <div id="root">
-      <div id="splash" style="position: fixed; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px; background: #f9fafb; z-index: 9999; transition: opacity 0.5s ease-out;">
-        <img src="/PMD/images/bear-mascot.png" style="width: 104px; height: 104px; object-fit: contain; animation: pulse 2s infinite ease-in-out; filter: drop-shadow(0 6px 12px rgba(0,0,0,0.12));" alt="PREtendingMD bear mascot" />
-        <img src="/PMD/images/wordmark.png" style="width: 200px; max-width: 60vw; height: auto;" alt="PREtendingMD" />
-        <div style="font-family: system-ui, -apple-system, sans-serif; font-weight: 800; color: #003C71; font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase;">
-          PEM FlowMaster
-        </div>
-        <style>
-          @keyframes pulse {
-            0%, 100% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.08); opacity: 0.85; }
-          }
-          .dark #splash { background: #030712 !important; }
-          .dark #splash div { color: #93c5fd !important; }
-        </style>
-      </div>
-    </div>
+    <main>
+      <h1>PREtendingMD has moved.</h1>
+      <p>
+        Continue to
+        <a href="https://md.closedose.com/PMD/">PREtendingMD on CloseDose MD</a>.
+      </p>
+    </main>
   </body>
 </html>
-

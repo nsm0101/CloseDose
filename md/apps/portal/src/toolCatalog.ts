@@ -1,8 +1,8 @@
-export type ToolRoute = '/PIG/' | '/RSI/';
+export type ToolRoute = '/PIG/' | '/RSI/' | '/PMD/';
 
 export interface ToolCatalogEntry {
-  id: 'pig' | 'rsi';
-  shortTitle: 'PIG' | 'RSI';
+  id: 'pig' | 'rsi' | 'pmd';
+  shortTitle: 'PIG' | 'RSI' | 'PMD';
   title: string;
   scope: string;
   status: 'Available';
@@ -25,5 +25,13 @@ export const toolCatalog = [
     scope: 'Weight-based medication reference, timed sequence support, and checklists.',
     status: 'Available',
     route: '/RSI/'
+  },
+  {
+    id: 'pmd',
+    shortTitle: 'PMD',
+    title: 'PREtendingMD: PEM FlowMaster',
+    scope: 'Administrator-approved, real-time pediatric emergency medicine shift workflow and handoff support.',
+    status: 'Available',
+    route: '/PMD/'
   }
 ] satisfies readonly ToolCatalogEntry[];

@@ -399,10 +399,10 @@ a:focus-visible {
 
 @media (min-width: 768px) {
   .tool-list {
-    grid-template-columns: 1.08fr 0.92fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .tool-entry + .tool-entry {
+  .tool-entry:nth-child(even) {
     border-left: 1px solid var(--border);
   }
 
@@ -412,6 +412,18 @@ a:focus-visible {
 }
 
 @media (min-width: 960px) {
+  .tool-list {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .tool-entry:nth-child(n) {
+    border-left: 1px solid var(--border);
+  }
+
+  .tool-entry:first-child {
+    border-left: 0;
+  }
+
   .hero {
     grid-template-columns: 1.08fr 0.92fr;
     align-items: center;

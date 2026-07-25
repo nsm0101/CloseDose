@@ -4,3 +4,5 @@ playwright-report/
 test-results/
 coverage/
 .vite/
+firestore-debug.log
+pmd-shift-membership-*.json

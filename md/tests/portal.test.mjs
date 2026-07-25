@@ -82,10 +82,14 @@ test('typed catalog preserves the canonical clinical tool routes', async () => {
     read('apps/portal/src/App.tsx')
   ]);
 
-  assert.match(catalog, /export type ToolRoute = ['"]\/PIG\/['"] \| ['"]\/RSI\/['"]/);
+  assert.match(
+    catalog,
+    /export type ToolRoute = ['"]\/PIG\/['"] \| ['"]\/RSI\/['"] \| ['"]\/PMD\/['"]/
+  );
   assert.match(catalog, /satisfies readonly ToolCatalogEntry\[\]/);
   assert.equal((catalog.match(/route:\s*['"]\/PIG\/['"]/g) ?? []).length, 1);
   assert.equal((catalog.match(/route:\s*['"]\/RSI\/['"]/g) ?? []).length, 1);
+  assert.equal((catalog.match(/route:\s*['"]\/PMD\/['"]/g) ?? []).length, 1);
   assert.match(app, /toolCatalog\.map\(\(tool\) =>/);
   assert.match(app, /href=\{tool\.route\}/);
 });
@@ -101,8 +105,10 @@ test('portal includes the required provider copy and release boundaries', async 
     'CloseDose MD',
     'Provider tools',
     'View provider tools',
-    'Local browser calculation',
+    'PIG and RSI: local calculation',
     'No patient identifiers',
+    'PREtendingMD: approved Firebase workspace',
+    'Administrator-approved users synchronize patient first name and last initial',
     'No AI runtime',
     'institutional protocols',
     'Decision support only'
@@ -112,7 +118,7 @@ test('portal includes the required provider copy and release boundaries', async 
 
   assert.doesNotMatch(
     app,
-    /FDA|approved|certified|guaranteed|more accurate|better outcomes|trusted by|testimonial/i
+    /FDA|certified|guaranteed|more accurate|better outcomes|trusted by|testimonial/i
   );
 });
 

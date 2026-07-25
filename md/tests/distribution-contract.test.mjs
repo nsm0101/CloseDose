@@ -24,6 +24,12 @@ function parseHeaderRules(source) {
     }
 
     assert.ok(activePath, `header without a route: ${rawLine}`);
+    if (rawLine.trim().startsWith('! ')) {
+      rules
+        .get(activePath)
+        .set(`! ${rawLine.trim().slice(2).toLowerCase()}`, '');
+      continue;
+    }
     const separator = rawLine.indexOf(':');
     assert.ok(separator > 0, `invalid header declaration: ${rawLine}`);
     rules
@@ -68,6 +74,7 @@ test('assembled artifact contains all canonical applications and control files',
     '404.css',
     '404.html',
     'PIG',
+    'PMD',
     'RSI',
     '_headers',
     '_redirects',
@@ -78,7 +85,7 @@ test('assembled artifact contains all canonical applications and control files',
 
   assert.deepEqual(actualTopLevel, expectedTopLevel);
 
-  for (const relativePath of ['index.html', 'PIG/index.html', 'RSI/index.html']) {
+  for (const relativePath of ['index.html', 'PIG/index.html', 'RSI/index.html', 'PMD/index.html']) {
     assert.ok((await stat(path.join(distRoot, relativePath))).size > 100, relativePath);
   }
 });
@@ -87,7 +94,19 @@ test('hashed application assets remain rooted at their canonical route', async (
   const applications = [
     { html: 'index.html', assetRoot: '/assets/' },
     { html: 'PIG/index.html', assetRoot: '/PIG/assets/' },
-    { html: 'RSI/index.html', assetRoot: '/RSI/assets/' }
+    { html: 'RSI/index.html', assetRoot: '/RSI/assets/' },
+    {
+      html: 'PMD/index.html',
+      assetRoot: '/PMD/assets/',
+      publicAssets: new Set([
+        '/PMD/images/favicon-32.png',
+        '/PMD/images/icon-512.png',
+        '/PMD/images/apple-touch-icon.png',
+        '/PMD/images/bear-mascot.png',
+        '/PMD/images/wordmark.png',
+        '/PMD/manifest.webmanifest'
+      ])
+    }
   ];
 
   for (const application of applications) {
@@ -98,10 +117,16 @@ test('hashed application assets remain rooted at their canonical route', async (
 
     for (const assetUrl of assetUrls) {
       assert.doesNotMatch(assetUrl, /^(?:https?:)?\/\//, assetUrl);
-      assert.ok(
-        assetUrl.startsWith(application.assetRoot),
-        `${application.html} emitted non-canonical asset URL ${assetUrl}`
-      );
+      const isHashedAsset = assetUrl.startsWith(application.assetRoot);
+      const isPublicAsset = application.publicAssets?.has(assetUrl) ?? false;
+      assert.ok(isHashedAsset || isPublicAsset, `${application.html} emitted non-canonical asset URL ${assetUrl}`);
+      if (!isHashedAsset) {
+        assert.ok(
+          (await stat(path.join(distRoot, assetUrl.slice(1)))).isFile(),
+          `${assetUrl} does not resolve in dist`
+        );
+        continue;
+      }
       assert.match(
         path.basename(assetUrl),
         /-[A-Za-z0-9_-]{8,}\.[A-Za-z0-9]+$/,
@@ -121,37 +146,61 @@ test('Cloudflare redirects enforce uppercase trailing-slash canonical routes', a
     .map((line) => line.trim())
     .filter(Boolean);
 
-  assert.deepEqual(redirects, ['/PIG /PIG/ 301', '/RSI /RSI/ 301']);
+  assert.deepEqual(redirects, [
+    '/PIG /PIG/ 301',
+    '/RSI /RSI/ 301',
+    '/PMD /PMD/ 301'
+  ]);
 });
 
 test('security headers keep runtime capabilities local and HTML revalidated', async () => {
   const headerSource = await readDist('_headers');
   const rules = parseHeaderRules(headerSource);
   const rootHeaders = rules.get('/*');
-  const cspSource = rootHeaders.get('content-security-policy');
-  const csp = parseCsp(cspSource);
+  const rootCspSource = rootHeaders.get('content-security-policy');
+  const rootCsp = parseCsp(rootCspSource);
 
-  for (const directive of ['default-src', 'script-src', 'font-src', 'img-src', 'connect-src']) {
-    assert.deepEqual(csp.get(directive), ["'self'"], directive);
+  for (const directive of ['default-src', 'script-src', 'font-src']) {
+    assert.deepEqual(rootCsp.get(directive), ["'self'"], directive);
   }
 
-  assert.deepEqual(csp.get('style-src'), ["'self'"]);
-  assert.deepEqual(csp.get('style-src-elem'), ["'self'"]);
-  assert.deepEqual(csp.get('style-src-attr'), ["'unsafe-inline'"]);
+  assert.deepEqual(rootCsp.get('img-src'), ["'self'", 'data:']);
+  assert.deepEqual(rootCsp.get('connect-src'), ["'self'"]);
+  assert.deepEqual(rootCsp.get('frame-src'), ["'none'"]);
+  assert.deepEqual(rootCsp.get('style-src'), ["'self'"]);
+  assert.deepEqual(rootCsp.get('style-src-elem'), ["'self'"]);
+  assert.deepEqual(rootCsp.get('style-src-attr'), ["'unsafe-inline'"]);
   assert.deepEqual(
-    [...csp]
+    [...rootCsp]
       .filter(([, values]) => values.includes("'unsafe-inline'"))
       .map(([directive]) => directive),
     ['style-src-attr']
   );
-  assert.deepEqual(csp.get('frame-src'), ["'none'"]);
-  assert.deepEqual(csp.get('frame-ancestors'), ["'none'"]);
-  assert.deepEqual(csp.get('object-src'), ["'none'"]);
-  assert.deepEqual(csp.get('base-uri'), ["'none'"]);
-  assert.deepEqual(csp.get('form-action'), ["'none'"]);
+  assert.deepEqual(rootCsp.get('frame-ancestors'), ["'none'"]);
+  assert.deepEqual(rootCsp.get('object-src'), ["'none'"]);
+  assert.deepEqual(rootCsp.get('base-uri'), ["'none'"]);
+  assert.deepEqual(rootCsp.get('form-action'), ["'none'"]);
   assert.doesNotMatch(
-    cspSource,
-    /https?:|google|gstatic|gemini|unsafe-eval|script-src[^;]*unsafe-inline/i
+    rootCspSource,
+    /googletagmanager|google-analytics|gstatic|gemini|unsafe-eval|script-src[^;]*unsafe-inline/i
+  );
+
+  const pmdHeaders = rules.get('/PMD/*');
+  assert.ok(pmdHeaders.has('! content-security-policy'));
+  assert.ok(pmdHeaders.has('! cross-origin-opener-policy'));
+  const pmdCsp = parseCsp(pmdHeaders.get('content-security-policy'));
+  assert.deepEqual(pmdCsp.get('connect-src'), [
+    "'self'",
+    'https://identitytoolkit.googleapis.com',
+    'https://securetoken.googleapis.com',
+    'https://firestore.googleapis.com'
+  ]);
+  assert.deepEqual(pmdCsp.get('frame-src'), [
+    'https://gen-lang-client-0217325418.firebaseapp.com'
+  ]);
+  assert.equal(
+    pmdHeaders.get('cross-origin-opener-policy'),
+    'same-origin-allow-popups'
   );
 
   assert.equal(rootHeaders.get('x-content-type-options'), 'nosniff');
@@ -163,7 +212,7 @@ test('security headers keep runtime capabilities local and HTML revalidated', as
   assert.match(rootHeaders.get('permissions-policy'), /microphone=\(\)/);
   assert.match(rootHeaders.get('permissions-policy'), /geolocation=\(\)/);
 
-  for (const route of ['/', '/PIG/', '/RSI/', '/404.html', '/404.css']) {
+  for (const route of ['/', '/PIG/', '/RSI/', '/PMD/', '/404.html', '/404.css']) {
     assert.equal(
       rules.get(route).get('cache-control'),
       'public, max-age=0, must-revalidate',
@@ -171,7 +220,13 @@ test('security headers keep runtime capabilities local and HTML revalidated', as
     );
   }
 
-  for (const route of ['/assets/*', '/PIG/assets/*', '/RSI/assets/*']) {
+  for (const route of [
+    '/assets/*',
+    '/PIG/assets/*',
+    '/RSI/assets/*',
+    '/PMD/assets/*',
+    '/PMD/images/*'
+  ]) {
     assert.equal(
       rules.get(route).get('cache-control'),
       'public, max-age=31536000, immutable',
@@ -191,6 +246,7 @@ test('static 404 is standalone, local-only, and links to canonical destinations'
   assert.match(notFound, /href="\/"/);
   assert.match(notFound, /href="\/PIG\/"/);
   assert.match(notFound, /href="\/RSI\/"/);
+  assert.match(notFound, /href="\/PMD\/"/);
   assert.match(notFound, /href="\/404\.css"/);
   assert.doesNotMatch(notFound, /<script\b|<style\b|\sstyle=/i);
   assert.doesNotMatch(`${notFound}\n${styles}`, /https?:\/\//i);
