@@ -189,6 +189,10 @@ test('security headers keep runtime capabilities local and HTML revalidated', as
   assert.ok(pmdHeaders.has('! content-security-policy'));
   assert.ok(pmdHeaders.has('! cross-origin-opener-policy'));
   const pmdCsp = parseCsp(pmdHeaders.get('content-security-policy'));
+  assert.deepEqual(pmdCsp.get('script-src'), [
+    "'self'",
+    'https://apis.google.com'
+  ]);
   assert.deepEqual(pmdCsp.get('connect-src'), [
     "'self'",
     'https://identitytoolkit.googleapis.com',

@@ -22,8 +22,10 @@ provider 404.
 
 `static/_headers` applies a strict local-only Content Security Policy to the
 portal, PIG, and RSI. Only `/PMD/*` detaches that policy and applies the exact
-Firebase Authentication, token, Firestore, and Auth-frame origins required by
-PREtendingMD. The PMD route also changes COOP to
+Firebase Authentication, token, Firestore, Auth-frame, and Google Auth helper
+origins required by PREtendingMD. The Google helper is limited to
+`https://apis.google.com`; analytics and arbitrary Google-hosted scripts remain
+blocked. The PMD route also changes COOP to
 `same-origin-allow-popups` for Google sign-in; the other routes retain
 `same-origin`. Inline scripts, external analytics, arbitrary frames, objects,
 base overrides, and form submissions are blocked.
