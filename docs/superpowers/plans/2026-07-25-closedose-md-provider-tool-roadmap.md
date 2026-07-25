@@ -88,8 +88,8 @@ Run:
 
 ```sh
 node --test tests/device.test.mjs
-npm run typecheck --workspace @closedose-md/device
-npm run build --workspace @closedose-md/device
+npm run typecheck --prefix apps/device
+npm run build --prefix apps/device
 ```
 
 Commit message: `feat(md): add Peds Device Rescue review app`
@@ -154,8 +154,8 @@ Run:
 
 ```sh
 node --test tests/sedation.test.mjs
-npm run typecheck --workspace @closedose-md/sedation
-npm run build --workspace @closedose-md/sedation
+npm run typecheck --prefix apps/sedation
+npm run build --prefix apps/sedation
 ```
 
 Commit message: `feat(md): add pediatric comfort and sedation review app`
