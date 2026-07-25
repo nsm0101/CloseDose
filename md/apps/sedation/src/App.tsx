@@ -25,6 +25,32 @@ const sections = ['Context', 'Compare', 'Prepare', 'Recovery', 'Document'];
 
 type RiskState = '' | 'present' | 'not-present';
 
+type SedationTimerClock = {
+  now: () => number;
+  setInterval: (callback: () => void, delayMs: number) => number;
+  clearInterval: (intervalId: number) => void;
+};
+
+declare global {
+  interface Window {
+    __sedationTimerClock?: SedationTimerClock;
+  }
+}
+
+const timerClock: SedationTimerClock = window.__sedationTimerClock ?? {
+  now: () => Date.now(),
+  setInterval: (callback, delayMs) => window.setInterval(callback, delayMs),
+  clearInterval: (intervalId) => window.clearInterval(intervalId)
+};
+
+const timerOptionLabels: Partial<Record<MedicationOptionId, string>> = {
+  'iv-ketamine': 'IV ketamine',
+  'im-ketamine': 'IM ketamine'
+};
+
+const timerOptionLabel = (optionId: MedicationOptionId) =>
+  timerOptionLabels[optionId] ?? optionId;
+
 type ReviewContext = {
   procedure: string;
   ageMonths: string;
@@ -252,6 +278,14 @@ function MedicationCard({
 
       <dl className="metadata-grid">
         <div>
+          <dt>Calculation basis</dt>
+          <dd>{result.calculationBasis}</dd>
+        </div>
+        <div>
+          <dt>Units</dt>
+          <dd>{result.units}</dd>
+        </div>
+        <div>
           <dt>Population</dt>
           <dd>{result.population}</dd>
         </div>
@@ -299,10 +333,18 @@ export default function App() {
   const [timerExpiries, setTimerExpiries] = useState<
     Partial<Record<MedicationOptionId, number>>
   >({});
-  const [nowMs, setNowMs] = useState(Date.now());
+  const [nowMs, setNowMs] = useState(timerClock.now());
   const [timerAnnouncement, setTimerAnnouncement] = useState('');
   const [copyStatus, setCopyStatus] = useState('');
   const lastTimerTick = useRef(nowMs);
+  const timerAnnouncementSequence = useRef(0);
+
+  const announceTimer = (message: string) => {
+    timerAnnouncementSequence.current += 1;
+    setTimerAnnouncement(
+      `${message} Timer event ${timerAnnouncementSequence.current}.`
+    );
+  };
 
   const parsedWeight = Number(context.weightKg);
   const parsedAge = Number(context.ageMonths);
@@ -335,29 +377,40 @@ export default function App() {
 
   useEffect(() => {
     if (!hasActiveTimer) return undefined;
-    const timerId = window.setInterval(() => {
-      const nextNow = Date.now();
-      const reachedInterval = Object.values(timerExpiries).some(
-        (expiry) =>
-          expiry !== undefined &&
-          expiry > lastTimerTick.current &&
-          expiry <= nextNow
-      );
+    const timerId = timerClock.setInterval(() => {
+      const nextNow = timerClock.now();
+      const reachedOptionIds = Object.entries(timerExpiries)
+        .filter(
+          ([, expiry]) =>
+            expiry !== undefined &&
+            expiry > lastTimerTick.current &&
+            expiry <= nextNow
+        )
+        .map(([optionId]) => optionId as MedicationOptionId);
       lastTimerTick.current = nextNow;
-      if (reachedInterval) {
-        setTimerAnnouncement(
-          'A reference timer reached zero. This does not authorize a repeat dose.'
+      if (reachedOptionIds.length > 0) {
+        const labels = reachedOptionIds.map(timerOptionLabel);
+        announceTimer(
+          `${labels.join(' and ')} reference ${
+            labels.length === 1 ? 'timer' : 'timers'
+          } reached zero. This does not authorize a repeat dose.`
         );
       }
       setNowMs(nextNow);
     }, 1000);
-    return () => window.clearInterval(timerId);
+    return () => timerClock.clearInterval(timerId);
   }, [hasActiveTimer, timerExpiries]);
 
   useEffect(() => {
-    if (Object.keys(timerExpiries).length > 0) {
-      setTimerAnnouncement(
-        'Reference timers cleared because age or weight changed.'
+    const clearedOptionIds = Object.keys(
+      timerExpiries
+    ) as MedicationOptionId[];
+    if (clearedOptionIds.length > 0) {
+      const labels = clearedOptionIds.map(timerOptionLabel);
+      announceTimer(
+        `${labels.join(' and ')} reference ${
+          labels.length === 1 ? 'timer' : 'timers'
+        } cleared because age or weight changed.`
       );
     }
     setTimerExpiries({});
@@ -394,15 +447,15 @@ export default function App() {
     optionId: MedicationOptionId,
     intervalMinutes: number
   ) => {
-    const startedAt = Date.now();
+    const startedAt = timerClock.now();
     setNowMs(startedAt);
     lastTimerTick.current = startedAt;
     setTimerExpiries((current) => ({
       ...current,
       [optionId]: startedAt + intervalMinutes * 60 * 1000
     }));
-    setTimerAnnouncement(
-      `${intervalMinutes} minute reference timer started.`
+    announceTimer(
+      `${timerOptionLabel(optionId)} ${intervalMinutes} minute reference timer started.`
     );
   };
 
@@ -412,7 +465,7 @@ export default function App() {
       delete next[optionId];
       return next;
     });
-    setTimerAnnouncement('Reference timer reset.');
+    announceTimer(`${timerOptionLabel(optionId)} reference timer reset.`);
   };
 
   const documentation = useMemo(() => {
@@ -516,6 +569,10 @@ export default function App() {
                 safety, and accessibility reviews remain open.
               </p>
               <ul>
+                <li>
+                  Named institutional sedation policy and formulary owner approval
+                  required
+                </li>
                 <li>No identifiers or saved data</li>
                 <li>No best-agent output</li>
                 <li>No concentrations or volumes</li>

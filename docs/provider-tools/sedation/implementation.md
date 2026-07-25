@@ -10,6 +10,8 @@ Status: **Clinical review / not approved for clinical use**
 
 This isolated application is not added to the root workspace list, build script, provider catalog, or shared header in this task. Those integrations require a separate release-gated task.
 
+Release also requires approval from a Named institutional sedation policy and formulary owner.
+
 ## State model
 
 All state exists only in React memory for the current page and local tab:
@@ -21,6 +23,7 @@ All state exists only in React memory for the current page and local tab:
 - `soapmeChecks`: user-confirmed preparation items;
 - `recoveryChecks`: user-confirmed recovery observations;
 - `timerExpiries`: local timestamps for manually started source-interval timers;
+- `timerAnnouncement`: route-specific, sequence-distinct timer status for assistive technology;
 - `copyStatus`: accessible clipboard success or fallback message.
 
 Risk fields begin as an empty, unassessed value. Procedure, age, and weight also begin empty. The initial UI does not assert that a risk is absent, that a patient is eligible, or that any option applies.
@@ -52,12 +55,14 @@ Only IV and IM ketamine expose a timer because only those represented options sp
 - Changing age or weight clears every active timer so an interval cannot remain attached to recalculated context.
 - Expired timers display `00:00` and do not authorize a repeat.
 - The interval is cleared when no timer remains active and on component unmount.
+- Start, reset, context-clear, and expiry announcements identify IV or IM ketamine and include a monotonically increasing event number so successive live-region updates remain distinct.
+- Tests inject a deterministic clock to advance an IV ketamine timer to `00:00`, verify its route-specific expiry announcement, and prove interval cleanup without waiting 10 minutes.
 - Timers are local tab aids only. They are not persisted, synchronized, logged, or sent over a network.
 - Refreshing, closing, duplicating, or navigating away from the tab discards the timer.
 
 ## UI sequence
 
-1. **Review gate:** states Clinical review and Not approved for clinical use, identifies excluded capabilities, and does not expose a start-dose action.
+1. **Review gate:** states Clinical review and Not approved for clinical use, identifies excluded capabilities, requires a Named institutional sedation policy and formulary owner approval, and does not expose a start-dose action.
 2. **Context:** captures non-identifying procedure, age, weight, and tri-state risk observations.
 3. **Compare:** shows nonpharmacologic comfort/local anesthesia, nitrous oxide, intranasal midazolam, intranasal fentanyl, IV ketamine, and IM ketamine as parallel options. No best agent is selected.
 4. **Prepare:** records SOAPME checks and displays depth-aware monitoring expectations.
@@ -85,6 +90,7 @@ A present flag appends a transparent review prompt. It never removes a medicatio
 - Focus uses a visible three-pixel outline.
 - Controls meet a minimum touch target near 44 pixels.
 - Light and dark palettes respond automatically to `prefers-color-scheme`.
+- Smooth scrolling is disabled when `prefers-reduced-motion: reduce` is active.
 - The phone-first layout uses base styles for narrow viewports and only `min-width` enhancement queries.
 - Information is not conveyed by color alone.
 - Timer changes and clipboard status are announced with live regions.
@@ -117,6 +123,7 @@ A present flag appends a transparent review prompt. It never removes a medicatio
 - review status and visible workflow content;
 - phone-first light and dark style contract;
 - timer setup and cleanup;
+- injectable-clock timer zero crossing, route-specific expiry announcement, and interval shutdown;
 - clipboard fallback;
 - privacy scanning;
 - required clinical and implementation specification content.
@@ -133,4 +140,4 @@ npm run build --prefix apps/sedation
 
 The Vite base and output target are fixed at `/SEDATION/` and `md/dist/SEDATION`. This task builds the isolated application only. Root workspace, build, provider catalog, shared header, redirect, deployment, and production exposure are outside Task 2.
 
-No route integration or release is authorized until the mandatory clinical reviewers and regulatory owner approve the clinical specification and all release checks pass.
+No route integration or release is authorized until the mandatory clinical reviewers, regulatory owner, and Named institutional sedation policy and formulary owner approve the clinical specification and all release checks pass.

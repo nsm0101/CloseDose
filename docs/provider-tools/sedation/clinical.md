@@ -96,10 +96,11 @@ All of the following approvals are mandatory before the regulatory gate can open
 5. Human factors and accessibility review.
 6. Privacy and security review.
 7. Regulatory and quality-system owner approval.
+8. Named institutional sedation policy and formulary owner approval.
 
 ## Regulatory gate
 
-The route must remain **Clinical review / not approved for clinical use** until reviewers approve medication provenance, age boundaries, formulas, cap application, one-decimal display, risk prompts, monitoring language, recovery criteria, documentation output, and release controls. Passing software tests does not open the regulatory gate.
+The route must remain **Clinical review / not approved for clinical use** until reviewers and the Named institutional sedation policy and formulary owner approve medication provenance, age boundaries, formulas, cap application, one-decimal display, risk prompts, monitoring language, recovery criteria, documentation output, and release controls. Passing software tests does not open the regulatory gate.
 
 ## Open clinical-review questions
 

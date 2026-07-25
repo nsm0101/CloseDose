@@ -262,7 +262,8 @@ test('Sedation app source contract is review-gated, phone-first, and privacy bou
     'Interacting sedative',
     'SOAPME',
     'Recovery criteria',
-    'Copy identifier-free documentation'
+    'Copy identifier-free documentation',
+    'Named institutional sedation policy and formulary owner'
   ]) {
     assert.match(appSource, new RegExp(text));
   }
@@ -282,6 +283,10 @@ test('Sedation app source contract is review-gated, phone-first, and privacy bou
   assert.match(styles, /color-scheme:\s*light dark/);
   assert.match(styles, /--color-accent:\s*#18a78d/i);
   assert.match(styles, /@media\s*\(prefers-color-scheme:\s*dark\)/);
+  assert.match(
+    styles,
+    /@media\s*\(prefers-reduced-motion:\s*reduce\)[\s\S]*scroll-behavior:\s*auto/
+  );
   assert.match(styles, /@media\s*\(min-width:/);
   assert.doesNotMatch(styles, /@media\s*\(max-width:/);
   assert.match(styles, /:focus-visible/);
@@ -405,6 +410,19 @@ test(
         await page.getByText('Outside named source population').count(),
         3
       );
+      const excludedCards = page.locator('.medication-card.excluded');
+      assert.match(
+        await excludedCards.nth(0).innerText(),
+        /Calculation basis\s+1\.5-2 mcg\/kg[\s\S]*Units\s+mcg/i
+      );
+      assert.match(
+        await excludedCards.nth(1).innerText(),
+        /Calculation basis\s+Initial 1-1\.5 mg\/kg[\s\S]*Units\s+mg/i
+      );
+      assert.match(
+        await excludedCards.nth(2).innerText(),
+        /Calculation basis\s+Initial 4 mg\/kg[\s\S]*Units\s+mg/i
+      );
 
       await page.getByRole('button', { name: '4 Recovery' }).click();
       assert.equal(
@@ -423,6 +441,121 @@ test(
       assert.match(documentation, /Interacting sedative: Present/);
       assert.match(documentation, /No agent selected or recommended/);
       assert.deepEqual(pageErrors, []);
+    } finally {
+      await browser?.close();
+      await server.close();
+    }
+  }
+);
+
+test(
+  'IV ketamine timer reaches zero, announces its route, and stops interval activity with an injectable clock',
+  { timeout: 30_000 },
+  async () => {
+    const server = await createServer({
+      configFile: path.join(sedationRoot, 'vite.config.ts'),
+      logLevel: 'silent',
+      root: sedationRoot,
+      server: {
+        host: '127.0.0.1',
+        port: 0
+      }
+    });
+    let browser;
+
+    try {
+      await server.listen();
+      const address = server.httpServer?.address();
+      assert.ok(address && typeof address !== 'string');
+      browser = await chromium.launch({ headless: true });
+      const page = await browser.newPage({
+        viewport: { width: 390, height: 844 }
+      });
+
+      await page.addInitScript(() => {
+        let now = 1_000_000;
+        let nextIntervalId = 1;
+        const intervals = new Map();
+
+        window.__sedationTimerClock = {
+          now: () => now,
+          setInterval: (callback) => {
+            const intervalId = nextIntervalId;
+            nextIntervalId += 1;
+            intervals.set(intervalId, callback);
+            return intervalId;
+          },
+          clearInterval: (intervalId) => {
+            intervals.delete(intervalId);
+          }
+        };
+        window.__sedationTimerTest = {
+          activeCount: () => intervals.size,
+          advance: (milliseconds) => {
+            now += milliseconds;
+            for (const callback of [...intervals.values()]) callback();
+          }
+        };
+      });
+
+      await page.goto(`http://127.0.0.1:${address.port}/SEDATION/`, {
+        waitUntil: 'networkidle'
+      });
+      await page
+        .getByRole('button', { name: 'Enter review workspace' })
+        .click();
+      await page.getByLabel('Age in months').fill('12');
+      await page.getByLabel('Weight in kg').fill('12');
+      await page.getByRole('button', { name: '2 Compare' }).click();
+      await page
+        .getByRole('button', { name: 'Start 10 minute reference timer' })
+        .first()
+        .click();
+
+      const announcement = page.locator('.sr-only[aria-live="polite"]');
+      const firstStartAnnouncement = await announcement.innerText();
+      assert.match(
+        firstStartAnnouncement,
+        /IV ketamine 10 minute reference timer started/
+      );
+      assert.equal(
+        await page.evaluate(() => window.__sedationTimerTest.activeCount()),
+        1
+      );
+
+      await page.evaluate(() =>
+        window.__sedationTimerTest.advance(10 * 60 * 1000)
+      );
+      await page.waitForFunction(
+        () => document.querySelector('[role="timer"]')?.textContent?.includes('00:00'),
+        undefined,
+        { timeout: 2_000 }
+      );
+      assert.match(
+        await announcement.innerText(),
+        /IV ketamine reference timer reached zero/
+      );
+      await page.waitForFunction(
+        () => window.__sedationTimerTest.activeCount() === 0,
+        undefined,
+        { timeout: 2_000 }
+      );
+
+      await page.getByRole('button', { name: 'Reset' }).click();
+      assert.match(
+        await announcement.innerText(),
+        /IV ketamine reference timer reset/
+      );
+      await page
+        .getByRole('button', { name: 'Start 10 minute reference timer' })
+        .first()
+        .click();
+      const secondStartAnnouncement = await announcement.innerText();
+      assert.match(
+        secondStartAnnouncement,
+        /IV ketamine 10 minute reference timer started/
+      );
+      assert.notEqual(secondStartAnnouncement, firstStartAnnouncement);
     } finally {
       await browser?.close();
       await server.close();
@@ -450,6 +583,17 @@ test('clinical and implementation specifications preserve review and release bou
     assert.match(clinicalSource, new RegExp(reviewer));
   }
   assert.match(clinicalSource, /regulatory gate/i);
+  assert.match(
+    clinicalSource,
+    /Named institutional sedation policy and formulary owner/
+  );
+  assert.ok(
+    (
+      clinicalSource.match(
+        /Named institutional sedation policy and formulary owner/g
+      ) ?? []
+    ).length >= 2
+  );
   assert.match(clinicalSource, /December 2025/);
   assert.match(clinicalSource, /December 2021/);
   assert.match(clinicalSource, /February 2023/);
@@ -460,4 +604,15 @@ test('clinical and implementation specifications preserve review and release bou
   assert.match(implementationSource, /No AI/);
   assert.match(implementationSource, /No external runtime calls/);
   assert.match(implementationSource, /\/SEDATION\//);
+  assert.match(
+    implementationSource,
+    /Named institutional sedation policy and formulary owner/
+  );
+  assert.ok(
+    (
+      implementationSource.match(
+        /Named institutional sedation policy and formulary owner/g
+      ) ?? []
+    ).length >= 3
+  );
 });
