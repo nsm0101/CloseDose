@@ -524,8 +524,20 @@ test(
       );
 
       await page.evaluate(() =>
-        window.__sedationTimerTest.advance(10 * 60 * 1000)
+        window.__sedationTimerTest.advance(10 * 60 * 1000 - 1)
       );
+      await page.waitForFunction(
+        () => document.querySelector('[role="timer"]')?.textContent?.includes('00:01'),
+        undefined,
+        { timeout: 2_000 }
+      );
+      assert.equal(await announcement.innerText(), firstStartAnnouncement);
+      assert.equal(
+        await page.evaluate(() => window.__sedationTimerTest.activeCount()),
+        1
+      );
+
+      await page.evaluate(() => window.__sedationTimerTest.advance(1));
       await page.waitForFunction(
         () => document.querySelector('[role="timer"]')?.textContent?.includes('00:00'),
         undefined,
@@ -539,6 +551,15 @@ test(
         () => window.__sedationTimerTest.activeCount() === 0,
         undefined,
         { timeout: 2_000 }
+      );
+      const expiryAnnouncement = await announcement.innerText();
+
+      await page.evaluate(() => window.__sedationTimerTest.advance(1));
+      assert.match(await page.getByRole('timer').innerText(), /00:00/);
+      assert.equal(await announcement.innerText(), expiryAnnouncement);
+      assert.equal(
+        await page.evaluate(() => window.__sedationTimerTest.activeCount()),
+        0
       );
 
       await page.getByRole('button', { name: 'Reset' }).click();
