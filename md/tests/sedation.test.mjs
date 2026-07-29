@@ -468,115 +468,143 @@ test(
       const address = server.httpServer?.address();
       assert.ok(address && typeof address !== 'string');
       browser = await chromium.launch({ headless: true });
-      const page = await browser.newPage({
-        viewport: { width: 390, height: 844 }
-      });
+      const startFreshIvTimer = async () => {
+        const page = await browser.newPage({
+          viewport: { width: 390, height: 844 }
+        });
 
-      await page.addInitScript(() => {
-        let now = 1_000_000;
-        let nextIntervalId = 1;
-        const intervals = new Map();
+        await page.addInitScript(() => {
+          let now = 1_000_000;
+          let nextIntervalId = 1;
+          const intervals = new Map();
 
-        window.__sedationTimerClock = {
-          now: () => now,
-          setInterval: (callback) => {
-            const intervalId = nextIntervalId;
-            nextIntervalId += 1;
-            intervals.set(intervalId, callback);
-            return intervalId;
-          },
-          clearInterval: (intervalId) => {
-            intervals.delete(intervalId);
-          }
-        };
-        window.__sedationTimerTest = {
-          activeCount: () => intervals.size,
-          advance: (milliseconds) => {
-            now += milliseconds;
-            for (const callback of [...intervals.values()]) callback();
-          }
-        };
-      });
+          window.__sedationTimerClock = {
+            now: () => now,
+            setInterval: (callback) => {
+              const intervalId = nextIntervalId;
+              nextIntervalId += 1;
+              intervals.set(intervalId, callback);
+              return intervalId;
+            },
+            clearInterval: (intervalId) => {
+              intervals.delete(intervalId);
+            }
+          };
+          window.__sedationTimerTest = {
+            activeCount: () => intervals.size,
+            advance: (milliseconds) => {
+              now += milliseconds;
+              for (const callback of [...intervals.values()]) callback();
+            }
+          };
+        });
 
-      await page.goto(`http://127.0.0.1:${address.port}/SEDATION/`, {
-        waitUntil: 'networkidle'
-      });
-      await page
-        .getByRole('button', { name: 'Enter review workspace' })
-        .click();
-      await page.getByLabel('Age in months').fill('12');
-      await page.getByLabel('Weight in kg').fill('12');
-      await page.getByRole('button', { name: '2 Compare' }).click();
-      await page
-        .getByRole('button', { name: 'Start 10 minute reference timer' })
-        .first()
-        .click();
+        await page.goto(`http://127.0.0.1:${address.port}/SEDATION/`, {
+          waitUntil: 'networkidle'
+        });
+        await page
+          .getByRole('button', { name: 'Enter review workspace' })
+          .click();
+        await page.getByLabel('Age in months').fill('12');
+        await page.getByLabel('Weight in kg').fill('12');
+        await page.getByRole('button', { name: '2 Compare' }).click();
+        await page
+          .getByRole('button', { name: 'Start 10 minute reference timer' })
+          .first()
+          .click();
 
-      const announcement = page.locator('.sr-only[aria-live="polite"]');
-      const firstStartAnnouncement = await announcement.innerText();
-      assert.match(
-        firstStartAnnouncement,
-        /IV ketamine 10 minute reference timer started/
+        const announcement = page.locator('.sr-only[aria-live="polite"]');
+        const startAnnouncement = await announcement.innerText();
+        assert.match(
+          startAnnouncement,
+          /IV ketamine 10 minute reference timer started/
+        );
+        assert.equal(
+          await page.evaluate(() => window.__sedationTimerTest.activeCount()),
+          1
+        );
+        return { announcement, page, startAnnouncement };
+      };
+
+      const justBefore = await startFreshIvTimer();
+      await justBefore.page.evaluate(() =>
+        window.__sedationTimerTest.advance(599_999)
       );
-      assert.equal(
-        await page.evaluate(() => window.__sedationTimerTest.activeCount()),
-        1
-      );
-
-      await page.evaluate(() =>
-        window.__sedationTimerTest.advance(10 * 60 * 1000 - 1)
-      );
-      await page.waitForFunction(
+      await justBefore.page.waitForFunction(
         () => document.querySelector('[role="timer"]')?.textContent?.includes('00:01'),
         undefined,
         { timeout: 2_000 }
       );
-      assert.equal(await announcement.innerText(), firstStartAnnouncement);
       assert.equal(
-        await page.evaluate(() => window.__sedationTimerTest.activeCount()),
+        await justBefore.announcement.innerText(),
+        justBefore.startAnnouncement
+      );
+      assert.equal(
+        await justBefore.page.evaluate(() =>
+          window.__sedationTimerTest.activeCount()
+        ),
         1
       );
+      await justBefore.page.close();
 
-      await page.evaluate(() => window.__sedationTimerTest.advance(1));
-      await page.waitForFunction(
+      const exactExpiry = await startFreshIvTimer();
+      await exactExpiry.page.evaluate(() =>
+        window.__sedationTimerTest.advance(600_000)
+      );
+      await exactExpiry.page.waitForFunction(
         () => document.querySelector('[role="timer"]')?.textContent?.includes('00:00'),
         undefined,
         { timeout: 2_000 }
       );
       assert.match(
-        await announcement.innerText(),
+        await exactExpiry.announcement.innerText(),
         /IV ketamine reference timer reached zero/
       );
-      await page.waitForFunction(
+      await exactExpiry.page.waitForFunction(
         () => window.__sedationTimerTest.activeCount() === 0,
         undefined,
         { timeout: 2_000 }
       );
-      const expiryAnnouncement = await announcement.innerText();
-
-      await page.evaluate(() => window.__sedationTimerTest.advance(1));
-      assert.match(await page.getByRole('timer').innerText(), /00:00/);
-      assert.equal(await announcement.innerText(), expiryAnnouncement);
-      assert.equal(
-        await page.evaluate(() => window.__sedationTimerTest.activeCount()),
-        0
-      );
-
-      await page.getByRole('button', { name: 'Reset' }).click();
+      await exactExpiry.page.getByRole('button', { name: 'Reset' }).click();
       assert.match(
-        await announcement.innerText(),
+        await exactExpiry.announcement.innerText(),
         /IV ketamine reference timer reset/
       );
-      await page
+      await exactExpiry.page
         .getByRole('button', { name: 'Start 10 minute reference timer' })
         .first()
         .click();
-      const secondStartAnnouncement = await announcement.innerText();
+      const secondStartAnnouncement =
+        await exactExpiry.announcement.innerText();
       assert.match(
         secondStartAnnouncement,
         /IV ketamine 10 minute reference timer started/
       );
-      assert.notEqual(secondStartAnnouncement, firstStartAnnouncement);
+      assert.notEqual(
+        secondStartAnnouncement,
+        exactExpiry.startAnnouncement
+      );
+      await exactExpiry.page.close();
+
+      const justAfter = await startFreshIvTimer();
+      await justAfter.page.evaluate(() =>
+        window.__sedationTimerTest.advance(600_001)
+      );
+      await justAfter.page.waitForFunction(
+        () => document.querySelector('[role="timer"]')?.textContent?.includes('00:00'),
+        undefined,
+        { timeout: 2_000 }
+      );
+      assert.match(
+        await justAfter.announcement.innerText(),
+        /IV ketamine reference timer reached zero/
+      );
+      await justAfter.page.waitForFunction(
+        () => window.__sedationTimerTest.activeCount() === 0,
+        undefined,
+        { timeout: 2_000 }
+      );
+      await justAfter.page.close();
     } finally {
       await browser?.close();
       await server.close();
