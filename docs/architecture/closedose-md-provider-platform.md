@@ -8,18 +8,24 @@
 
 - `https://md.closedose.com/` - provider tool landing page
 - `https://md.closedose.com/PIG/` - Pediatric Airway Reference Calculator
-- `https://md.closedose.com/RSI/` - Pediatric Emergency RSI Reference and Calculator
+- `https://md.closedose.com/RSI/` - Pediatric RSI Medication Calculator
+- `https://md.closedose.com/AIRWAY-SCENARIOS/` - Pediatric Airway Scenario Guide
+- `https://md.closedose.com/POST-INTUBATION/` - Post-Intubation Sedation Reference
+- `https://md.closedose.com/RSI-TIMELINE/` - RSI Progression Timeline
+- `https://md.closedose.com/AIRWAY-TRANSPORT/` - Pediatric Airway Transport Kit
 - `https://md.closedose.com/PMD/` - PREtendingMD PEM FlowMaster
 - `https://md.closedose.com/DEVICE/` - Peds Device Rescue after approval
 - `https://md.closedose.com/SEDATION/` - Pediatric Comfort and Sedation after approval
 
-Requests to `/PIG`, `/RSI`, and `/PMD` permanently redirect to their
+Requests to every available no-slash application route permanently redirect to its
 trailing-slash canonical routes. Route casing is intentional and must remain
 uppercase.
 
 ## PREtendingMD extension
 
-The original architecture below records the first PIG/RSI release. The
+The original architecture below records the first PIG/RSI release. RSI now
+uses a byte-pinned shared clinical package rendered through five independent
+documents with local state and a common provider shell. The
 PREtendingMD migration extends the same workspace and deployment pattern:
 
 - `md/apps/pmd/` is the fourth isolated application workspace and builds to

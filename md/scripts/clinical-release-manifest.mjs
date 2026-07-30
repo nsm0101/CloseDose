@@ -118,7 +118,16 @@ export function getBuildWorkspaceScripts(mode, manifest) {
     throw new TypeError('build mode must be production or review');
   }
 
-  const scripts = ['build:portal', 'build:pig', 'build:rsi', 'build:pmd'];
+  const scripts = [
+    'build:portal',
+    'build:pig',
+    'build:rsi',
+    'build:airway-scenarios',
+    'build:post-intubation',
+    'build:rsi-timeline',
+    'build:airway-transport',
+    'build:pmd'
+  ];
   for (const tool of tools) {
     if (mode === 'review' || isPublicReleaseApproved(manifest, tool)) {
       scripts.push(`build:${tool}`);

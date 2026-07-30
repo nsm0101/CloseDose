@@ -14,8 +14,8 @@ the existing Pages project or `public/` output that serves `closedose.com`.
 | Node version | `22` |
 | Build watch include path | `md/*` |
 
-The build removes only `md/dist/`, builds the portal first, then PIG, RSI, and
-PREtendingMD, and finally copies and validates the Cloudflare controls and
+The build removes only `md/dist/`, builds the portal first, then PIG, the five
+standalone RSI documents, and PREtendingMD, and finally copies and validates the Cloudflare controls and
 provider 404. Device and Sedation join a production artifact only when the
 checked-in clinical release manifest contains all required named approvals.
 `npm run build:review` assembles both applications for local review while
@@ -108,8 +108,10 @@ member back to a shift.
 
 Canonical HTML, `404.html`, and the stable `/404.css` URL use
 `public, max-age=0, must-revalidate`. Vite content-hashed assets under
-`/assets/`, `/PIG/assets/`, `/RSI/assets/`, `/PMD/assets/`, `/DEVICE/assets/`,
-and `/SEDATION/assets/` are immutable for one year. PREtendingMD's optimized
+`/assets/`, `/PIG/assets/`, `/RSI/assets/`, `/AIRWAY-SCENARIOS/assets/`,
+`/POST-INTUBATION/assets/`, `/RSI-TIMELINE/assets/`,
+`/AIRWAY-TRANSPORT/assets/`, `/PMD/assets/`, `/DEVICE/assets/`, and
+`/SEDATION/assets/` are immutable for one year. PREtendingMD's optimized
 `/PMD/images/` assets are also immutable.
 
 ## Local release gate
@@ -141,6 +143,10 @@ the custom domain. Verify the production Pages hostname first:
 curl -fsSIL https://closedose-md.pages.dev/
 curl -fsSIL https://closedose-md.pages.dev/PIG/
 curl -fsSIL https://closedose-md.pages.dev/RSI/
+curl -fsSIL https://closedose-md.pages.dev/AIRWAY-SCENARIOS/
+curl -fsSIL https://closedose-md.pages.dev/POST-INTUBATION/
+curl -fsSIL https://closedose-md.pages.dev/RSI-TIMELINE/
+curl -fsSIL https://closedose-md.pages.dev/AIRWAY-TRANSPORT/
 curl -fsSIL https://closedose-md.pages.dev/PMD/
 CLOSEDOSE_MD_BASE_URL=https://closedose-md.pages.dev npm run test:smoke
 ```

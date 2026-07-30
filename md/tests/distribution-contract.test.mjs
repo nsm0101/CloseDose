@@ -19,6 +19,13 @@ const reviewApplications = [
   { tool: 'device', directory: 'DEVICE', assetRoot: '/DEVICE/assets/' },
   { tool: 'sedation', directory: 'SEDATION', assetRoot: '/SEDATION/assets/' }
 ];
+const rsiApplications = [
+  { directory: 'RSI', assetRoot: '/RSI/assets/' },
+  { directory: 'AIRWAY-SCENARIOS', assetRoot: '/AIRWAY-SCENARIOS/assets/' },
+  { directory: 'POST-INTUBATION', assetRoot: '/POST-INTUBATION/assets/' },
+  { directory: 'RSI-TIMELINE', assetRoot: '/RSI-TIMELINE/assets/' },
+  { directory: 'AIRWAY-TRANSPORT', assetRoot: '/AIRWAY-TRANSPORT/assets/' }
+];
 const releasedReviewApplications = reviewApplications.filter(
   ({ tool }) => buildMode === 'review' || isPublicReleaseApproved(releaseManifest, tool)
 );
@@ -91,7 +98,7 @@ test('assembled artifact contains all canonical applications and control files',
     '404.html',
     'PIG',
     'PMD',
-    'RSI',
+    ...rsiApplications.map(({ directory }) => directory),
     ...releasedReviewApplications.map(({ directory }) => directory),
     '_headers',
     '_redirects',
@@ -105,7 +112,7 @@ test('assembled artifact contains all canonical applications and control files',
   for (const relativePath of [
     'index.html',
     'PIG/index.html',
-    'RSI/index.html',
+    ...rsiApplications.map(({ directory }) => `${directory}/index.html`),
     'PMD/index.html',
     ...releasedReviewApplications.map(({ directory }) => `${directory}/index.html`)
   ]) {
@@ -165,7 +172,10 @@ test('hashed application assets remain rooted at their canonical route', async (
   const applications = [
     { html: 'index.html', assetRoot: '/assets/' },
     { html: 'PIG/index.html', assetRoot: '/PIG/assets/' },
-    { html: 'RSI/index.html', assetRoot: '/RSI/assets/' },
+    ...rsiApplications.map(({ directory, assetRoot }) => ({
+      html: `${directory}/index.html`,
+      assetRoot
+    })),
     {
       html: 'PMD/index.html',
       assetRoot: '/PMD/assets/',
@@ -224,6 +234,10 @@ test('Cloudflare redirects enforce uppercase trailing-slash canonical routes', a
   assert.deepEqual(redirects, [
     '/PIG /PIG/ 301',
     '/RSI /RSI/ 301',
+    '/AIRWAY-SCENARIOS /AIRWAY-SCENARIOS/ 301',
+    '/POST-INTUBATION /POST-INTUBATION/ 301',
+    '/RSI-TIMELINE /RSI-TIMELINE/ 301',
+    '/AIRWAY-TRANSPORT /AIRWAY-TRANSPORT/ 301',
     '/PMD /PMD/ 301',
     '/DEVICE /DEVICE/ 301',
     '/SEDATION /SEDATION/ 301'
@@ -297,6 +311,10 @@ test('security headers keep runtime capabilities local and HTML revalidated', as
     '/',
     '/PIG/',
     '/RSI/',
+    '/AIRWAY-SCENARIOS/',
+    '/POST-INTUBATION/',
+    '/RSI-TIMELINE/',
+    '/AIRWAY-TRANSPORT/',
     '/PMD/',
     '/DEVICE/',
     '/SEDATION/',
@@ -314,6 +332,10 @@ test('security headers keep runtime capabilities local and HTML revalidated', as
     '/assets/*',
     '/PIG/assets/*',
     '/RSI/assets/*',
+    '/AIRWAY-SCENARIOS/assets/*',
+    '/POST-INTUBATION/assets/*',
+    '/RSI-TIMELINE/assets/*',
+    '/AIRWAY-TRANSPORT/assets/*',
     '/PMD/assets/*',
     '/PMD/images/*',
     '/DEVICE/assets/*',

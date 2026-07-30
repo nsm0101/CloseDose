@@ -66,3 +66,17 @@ test('new review applications stay inside the local identifier-free boundary', a
     assert.deepEqual(await scanApplicationPrivacy(root), [], directory);
   }
 });
+
+test('standalone RSI applications and shared clinical package stay local-only', async () => {
+  for (const directory of [
+    'apps/rsi',
+    'apps/airway-scenarios',
+    'apps/post-intubation',
+    'apps/rsi-timeline',
+    'apps/airway-transport',
+    'packages/rsi-reference'
+  ]) {
+    const root = fileURLToPath(new URL(`../${directory}/`, import.meta.url));
+    assert.deepEqual(await scanApplicationPrivacy(root), [], directory);
+  }
+});

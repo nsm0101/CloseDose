@@ -22,6 +22,18 @@
 /RSI/
   Cache-Control: public, max-age=0, must-revalidate
 
+/AIRWAY-SCENARIOS/
+  Cache-Control: public, max-age=0, must-revalidate
+
+/POST-INTUBATION/
+  Cache-Control: public, max-age=0, must-revalidate
+
+/RSI-TIMELINE/
+  Cache-Control: public, max-age=0, must-revalidate
+
+/AIRWAY-TRANSPORT/
+  Cache-Control: public, max-age=0, must-revalidate
+
 /PMD/
   Cache-Control: public, max-age=0, must-revalidate
 
@@ -44,6 +56,18 @@
   Cache-Control: public, max-age=31536000, immutable
 
 /RSI/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/AIRWAY-SCENARIOS/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/POST-INTUBATION/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/RSI-TIMELINE/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/AIRWAY-TRANSPORT/assets/*
   Cache-Control: public, max-age=31536000, immutable
 
 /PMD/assets/*

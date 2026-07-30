@@ -10,16 +10,20 @@ CloseDose MD is the assembled static provider platform for
 | --- | --- | --- |
 | `/` | `apps/portal` | CloseDose MD provider portal |
 | `/PIG/` | `apps/pig` | Pediatric Airway Reference Calculator |
-| `/RSI/` | `apps/rsi` | Pediatric Emergency RSI Reference and Calculator |
+| `/RSI/` | `apps/rsi` | Pediatric RSI Medication Calculator |
+| `/AIRWAY-SCENARIOS/` | `apps/airway-scenarios` | Pediatric Airway Scenario Guide |
+| `/POST-INTUBATION/` | `apps/post-intubation` | Post-Intubation Sedation Reference |
+| `/RSI-TIMELINE/` | `apps/rsi-timeline` | RSI Progression Timeline |
+| `/AIRWAY-TRANSPORT/` | `apps/airway-transport` | Pediatric Airway Transport Kit |
 | `/PMD/` | `apps/pmd` | PREtendingMD PEM FlowMaster |
 | `/DEVICE/` | `apps/device` | Peds Device Rescue review application |
 | `/SEDATION/` | `apps/sedation` | Pediatric Comfort and Sedation review application |
 
-`/PIG`, `/RSI`, `/PMD`, `/DEVICE`, and `/SEDATION` redirect permanently to the trailing-slash routes.
+Every available no-slash application route redirects permanently to its uppercase trailing-slash route, including `/RSI`, `/AIRWAY-SCENARIOS`, `/POST-INTUBATION`, `/RSI-TIMELINE`, and `/AIRWAY-TRANSPORT`.
 Route casing is intentional; lowercase variants return the provider 404.
 
 The production build writes one ignored `dist/` artifact containing the portal,
-PIG, RSI, PMD, Cloudflare Pages controls, and the static provider 404. Device
+PIG, all five RSI tools, PMD, Cloudflare Pages controls, and the static provider 404. Device
 and Sedation are built into that artifact only when
 [clinical-release-manifest.json](./clinical-release-manifest.json) records every
 required named approval. `npm run build:review` includes both review applications

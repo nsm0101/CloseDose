@@ -14,15 +14,22 @@ const workspaces = [
   { directory: 'apps/portal', name: '@closedose-md/portal', routeBase: '/' },
   { directory: 'apps/pig', name: '@closedose-md/pig', routeBase: '/PIG/' },
   { directory: 'apps/rsi', name: '@closedose-md/rsi', routeBase: '/RSI/' },
+  { directory: 'apps/airway-scenarios', name: '@closedose-md/airway-scenarios', routeBase: '/AIRWAY-SCENARIOS/' },
+  { directory: 'apps/post-intubation', name: '@closedose-md/post-intubation', routeBase: '/POST-INTUBATION/' },
+  { directory: 'apps/rsi-timeline', name: '@closedose-md/rsi-timeline', routeBase: '/RSI-TIMELINE/' },
+  { directory: 'apps/airway-transport', name: '@closedose-md/airway-transport', routeBase: '/AIRWAY-TRANSPORT/' },
   { directory: 'apps/pmd', name: '@closedose-md/pmd', routeBase: '/PMD/' },
   { directory: 'apps/device', name: '@closedose-md/device', routeBase: '/DEVICE/' },
   { directory: 'apps/sedation', name: '@closedose-md/sedation', routeBase: '/SEDATION/' }
 ];
 
-test('declares the six isolated MD npm workspaces', async () => {
+test('declares every isolated application and the shared RSI package', async () => {
   const manifest = await readJson('package.json');
 
-  assert.deepEqual(manifest.workspaces, workspaces.map(({ directory }) => directory));
+  assert.deepEqual(manifest.workspaces, [
+    ...workspaces.map(({ directory }) => directory),
+    'packages/rsi-reference'
+  ]);
 });
 
 test('gives every workspace its package identity and canonical route base', async () => {

@@ -11,7 +11,7 @@
     "test": "node --test ../../tests/rsi.test.mjs"
   },
   "dependencies": {
-    "lucide-react": "^0.546.0",
+    "@closedose-md/rsi-reference": "*",
     "react": "^19.0.1",
     "react-dom": "^19.0.1"
   },

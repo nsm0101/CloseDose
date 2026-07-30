@@ -1,0 +1,102 @@
+:root {
+  color-scheme: light dark;
+  --rsi-canvas: #f4f7f6;
+  --rsi-surface: #ffffff;
+  --rsi-surface-subtle: #eaf1ef;
+  --rsi-text: #13201e;
+  --rsi-muted: #52635f;
+  --rsi-line: #bccbc7;
+  --rsi-accent: #087f70;
+  --rsi-accent-strong: #05695e;
+  --rsi-focus: #0b6bff;
+  --rsi-radius: 14px;
+  font-family: "Public Sans", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: var(--rsi-canvas);
+  color: var(--rsi-text);
+}
+
+* { box-sizing: border-box; }
+html { min-width: 320px; background: var(--rsi-canvas); }
+body { margin: 0; min-width: 320px; min-height: 100vh; background: var(--rsi-canvas); color: var(--rsi-text); }
+button, input, select { font: inherit; }
+button, a, input, select { -webkit-tap-highlight-color: transparent; }
+button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible {
+  outline: 3px solid var(--rsi-focus);
+  outline-offset: 3px;
+}
+
+.rsi-shell { min-height: 100vh; overflow-x: clip; background: var(--rsi-canvas); }
+.rsi-skip-link { position: fixed; left: 12px; top: 8px; z-index: 100; transform: translateY(-160%); background: var(--rsi-text); color: var(--rsi-surface); padding: 10px 14px; border-radius: 8px; }
+.rsi-skip-link:focus { transform: translateY(0); }
+.rsi-site-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 68px; padding: 10px clamp(14px, 4vw, 32px); border-bottom: 1px solid var(--rsi-line); background: color-mix(in srgb, var(--rsi-surface) 94%, transparent); }
+.rsi-home-link { display: inline-flex; align-items: center; gap: 9px; color: var(--rsi-text); font-size: .93rem; font-weight: 800; text-decoration: none; }
+.rsi-brand-mark { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 10px; background: var(--rsi-accent); color: #fff; font-size: .72rem; letter-spacing: .06em; }
+.rsi-header-actions { display: flex; align-items: center; justify-content: flex-end; gap: 8px; }
+.rsi-weight-readout { white-space: nowrap; border: 1px solid var(--rsi-line); border-radius: 8px; background: var(--rsi-surface-subtle); padding: 8px 10px; color: var(--rsi-text); font-weight: 800; font-variant-numeric: tabular-nums; }
+.rsi-reset { min-height: 44px; border: 1px solid var(--rsi-line); border-radius: 8px; background: var(--rsi-surface); color: var(--rsi-text); padding: 8px 12px; font-weight: 750; cursor: pointer; }
+.rsi-reset:hover { border-color: var(--rsi-accent); color: var(--rsi-accent-strong); }
+.rsi-main { width: min(100%, 1180px); margin: 0 auto; padding: clamp(20px, 5vw, 48px) clamp(12px, 4vw, 30px) 48px; }
+.rsi-intro { max-width: 780px; margin-bottom: 20px; }
+.rsi-eyebrow, .rsi-evidence-label { margin: 0 0 7px; color: var(--rsi-accent-strong); font-size: .74rem; font-weight: 850; letter-spacing: .11em; text-transform: uppercase; }
+.rsi-intro h1 { max-width: 18ch; margin: 0; color: var(--rsi-text); font-size: clamp(2rem, 8vw, 4.8rem); line-height: .98; letter-spacing: -.045em; }
+.rsi-intro > p:last-child { max-width: 64ch; margin: 15px 0 0; color: var(--rsi-muted); font-size: clamp(1rem, 2vw, 1.16rem); line-height: 1.55; }
+.rsi-context { margin: 22px 0; padding: clamp(14px, 3vw, 22px); border: 1px solid var(--rsi-line); border-radius: var(--rsi-radius); background: var(--rsi-surface); }
+.rsi-control-grid { display: grid; gap: 14px; }
+.rsi-field { display: grid; gap: 7px; color: var(--rsi-text); font-weight: 780; }
+.rsi-field small { color: var(--rsi-muted); font-size: .76rem; font-weight: 550; line-height: 1.4; }
+.rsi-number-field { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; overflow: hidden; border: 1px solid var(--rsi-line); border-radius: 8px; background: var(--rsi-canvas); }
+.rsi-number-field input, .rsi-field select { width: 100%; min-height: 48px; border: 1px solid var(--rsi-line); border-radius: 8px; background: var(--rsi-canvas); color: var(--rsi-text); padding: 10px 12px; }
+.rsi-number-field input { border: 0; border-radius: 0; font-weight: 800; font-variant-numeric: tabular-nums; }
+.rsi-number-field > span { padding: 0 12px; color: var(--rsi-muted); font-weight: 800; }
+.rsi-workflow { min-width: 0; margin-top: 22px; }
+.rsi-workflow > * { min-width: 0; max-width: 100%; }
+.rsi-evidence { display: grid; gap: 14px; margin-top: 28px; padding: clamp(16px, 4vw, 24px); border: 1px solid var(--rsi-line); border-left: 5px solid var(--rsi-accent); border-radius: var(--rsi-radius); background: var(--rsi-surface); }
+.rsi-evidence h2 { margin: 0; color: var(--rsi-text); font-size: 1.08rem; }
+.rsi-evidence > p { margin: 0; color: var(--rsi-muted); line-height: 1.55; }
+.rsi-footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 20px; padding: 18px clamp(14px, 4vw, 32px); border-top: 1px solid var(--rsi-line); color: var(--rsi-muted); font-size: .76rem; }
+
+@media (min-width: 640px) {
+  .rsi-control-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .rsi-evidence { grid-template-columns: minmax(220px, .8fr) minmax(0, 1.2fr); align-items: start; }
+}
+
+@media (max-width: 520px) {
+  .rsi-site-header { align-items: flex-start; }
+  .rsi-header-actions { flex-direction: column; align-items: stretch; }
+  .rsi-weight-readout { text-align: center; }
+  .rsi-reset { padding-inline: 9px; font-size: .76rem; }
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --rsi-canvas: #0f1716;
+    --rsi-surface: #172321;
+    --rsi-surface-subtle: #20302d;
+    --rsi-text: #edf8f5;
+    --rsi-muted: #b4c8c3;
+    --rsi-line: #3b514d;
+    --rsi-accent: #36c6ad;
+    --rsi-accent-strong: #67dbc7;
+    --rsi-focus: #78aaff;
+  }
+  .rsi-workflow .bg-white,
+  .rsi-workflow .bg-slate-50,
+  .rsi-workflow .bg-slate-100,
+  .rsi-workflow [class*="bg-blue-50"] { background-color: var(--rsi-surface) !important; }
+  .rsi-workflow .text-slate-950,
+  .rsi-workflow .text-slate-900,
+  .rsi-workflow .text-slate-800,
+  .rsi-workflow .text-slate-700 { color: var(--rsi-text) !important; }
+  .rsi-workflow .text-slate-600,
+  .rsi-workflow .text-slate-500,
+  .rsi-workflow .text-slate-400 { color: var(--rsi-muted) !important; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .rsi-shell *, .rsi-shell *::before, .rsi-shell *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+}

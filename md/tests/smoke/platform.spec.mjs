@@ -14,12 +14,20 @@ const canonicalDocuments = new Map([
   ['/', 'document'],
   ['/PIG/', 'document'],
   ['/RSI/', 'document'],
+  ['/AIRWAY-SCENARIOS/', 'document'],
+  ['/POST-INTUBATION/', 'document'],
+  ['/RSI-TIMELINE/', 'document'],
+  ['/AIRWAY-TRANSPORT/', 'document'],
   ['/PMD/', 'document']
 ]);
 const physicalEntryDocuments = new Set([
   'index.html',
   'PIG/index.html',
   'RSI/index.html',
+  'AIRWAY-SCENARIOS/index.html',
+  'POST-INTUBATION/index.html',
+  'RSI-TIMELINE/index.html',
+  'AIRWAY-TRANSPORT/index.html',
   'PMD/index.html'
 ]);
 const controlFiles = new Set(['_headers', '_redirects']);
@@ -171,7 +179,7 @@ test('portal fits exactly 320 px and all ordinary tool links navigate', async ({
   await page.waitForLoadState('networkidle');
   await page.getByRole('link', { name: /Pediatric Emergency RSI Reference and Calculator/ }).click();
   await expect(page).toHaveURL(expectedUrl('/RSI/'));
-  await expect(page.getByRole('heading', { name: 'Critical Airway Utility' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Pediatric RSI Medication Calculator' })).toBeVisible();
 
   await page.goBack();
   await page.waitForLoadState('networkidle');
@@ -187,6 +195,10 @@ test('canonical redirects and unknown-route 404 are explicit', async ({ request 
   for (const [route, location] of [
     ['/PIG', '/PIG/'],
     ['/RSI', '/RSI/'],
+    ['/AIRWAY-SCENARIOS', '/AIRWAY-SCENARIOS/'],
+    ['/POST-INTUBATION', '/POST-INTUBATION/'],
+    ['/RSI-TIMELINE', '/RSI-TIMELINE/'],
+    ['/AIRWAY-TRANSPORT', '/AIRWAY-TRANSPORT/'],
     ['/PMD', '/PMD/']
   ]) {
     const response = await request.get(route, { maxRedirects: 0 });
@@ -198,7 +210,13 @@ test('canonical redirects and unknown-route 404 are explicit', async ({ request 
   expect(missing.status()).toBe(404);
   expect(await missing.text()).toContain('That provider page was not found.');
 
-  for (const route of ['/pig', '/pig/', '/rsi', '/rsi/', '/pmd', '/pmd/']) {
+  for (const route of [
+    '/pig', '/pig/', '/rsi', '/rsi/', '/pmd', '/pmd/',
+    '/airway-scenarios', '/airway-scenarios/',
+    '/post-intubation', '/post-intubation/',
+    '/rsi-timeline', '/rsi-timeline/',
+    '/airway-transport', '/airway-transport/'
+  ]) {
     const response = await request.get(route, { maxRedirects: 0 });
     expect(response.status(), route).toBe(404);
     expect(await response.text(), route).toContain('That provider page was not found.');
@@ -270,25 +288,35 @@ test('PIG age selection updates sizing and its procedure timer runs', async ({ p
   runtimeAudit.assertClean();
 });
 
-test('RSI calculates 20 kg rocuronium and exposes its core tabs and timer', async ({ page, context }) => {
+test('standalone RSI tools keep independent state and expose one workflow per route', async ({ page, context }) => {
   const runtimeAudit = auditRuntime(context);
   await page.goto('/RSI/');
   await expect(page).toHaveURL(expectedUrl('/RSI/'));
+  await expect(page.locator('[data-workflow]')).toHaveCount(1);
+  await expect(page.locator('[data-workflow]')).toHaveAttribute('data-workflow', 'rsi-medications');
+  await expect(page.getByRole('link', { name: 'CloseDose MD provider suite' })).toHaveAttribute('href', '/');
 
   const weightInput = page.getByPlaceholder('Enter kg');
   await weightInput.fill('20');
   await expect(weightInput).toHaveValue('20');
   await expect(page.locator('#med-card-rocuronium')).toContainText(/20\.0\s*mg/);
 
-  await page.getByRole('button', { name: /2\. Scenario Guide/ }).click();
+  await page.goto('/AIRWAY-SCENARIOS/');
+  await expect(page.locator('[data-workflow]')).toHaveAttribute('data-workflow', 'airway-scenarios');
+  await expect(page.getByLabel('Verified weight')).toHaveValue('10');
   await expect(page.getByText('Patient-Specific Contraindications Triage')).toBeVisible();
   await page.getByRole('button', { name: /Hyperkalemia/ }).click();
   await expect(page.getByText('CRITICAL CONTRAINDICATION ALERT:')).toBeVisible();
 
-  await page.getByRole('button', { name: /3\. Post-Sedation/ }).click();
+  await page.goto('/POST-INTUBATION/');
+  await expect(page.locator('[data-workflow]')).toHaveAttribute('data-workflow', 'post-intubation');
   await expect(page.getByRole('heading', { name: 'Post-Intubation Sedation & Analgesia' })).toBeVisible();
+  await page.getByLabel('Verified weight').fill('24');
+  await page.getByRole('button', { name: 'Reset local tool' }).click();
+  await expect(page.getByLabel('Verified weight')).toHaveValue('10');
 
-  await page.getByRole('button', { name: /4\. Progression Tracker/ }).click();
+  await page.goto('/RSI-TIMELINE/');
+  await expect(page.locator('[data-workflow]')).toHaveAttribute('data-workflow', 'rsi-timeline');
   await expect(page.getByText('RSI Procedure Stopwatch')).toBeVisible();
   const cprTimer = page.locator('#interval-timer-cpr-loop');
   const progressBar = cprTimer.locator('[style]');
@@ -300,14 +328,15 @@ test('RSI calculates 20 kg rocuronium and exposes its core tabs and timer', asyn
   await expect(page.locator('#progression-tracker')).toContainText(/00:0[1-9]/, { timeout: 3_000 });
   await page.getByRole('button', { name: 'Pause Clock' }).click();
 
-  await page.getByRole('button', { name: /5\. Transport Kit/ }).click();
+  await page.goto('/AIRWAY-TRANSPORT/');
+  await expect(page.locator('[data-workflow]')).toHaveAttribute('data-workflow', 'airway-transport');
   await expect(page.getByText('Critical PICU Transport Reference')).toBeVisible();
   await expect(page.getByRole('button', { name: 'B. Vasopressors' })).toBeVisible();
   runtimeAudit.assertClean();
 });
 
 test('CSP blocks inline style elements while permitting the RSI style attribute mechanism', async ({ page }) => {
-  await page.goto('/RSI/');
+  await page.goto('/RSI-TIMELINE/');
 
   const result = await page.evaluate(async () => {
     const host = document.createElement('div');

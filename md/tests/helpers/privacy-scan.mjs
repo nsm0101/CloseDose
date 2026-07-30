@@ -54,7 +54,10 @@ async function listSourceFiles(directory) {
   const nestedFiles = await Promise.all(
     entries.map((entry) => {
       const entryPath = path.join(directory, entry.name);
-      if (entry.isDirectory()) return listSourceFiles(entryPath);
+      if (entry.isDirectory()) {
+        if (entry.name === 'node_modules' || entry.name === 'dist') return [];
+        return listSourceFiles(entryPath);
+      }
       return sourceExtensions.has(path.extname(entry.name)) ? [entryPath] : [];
     })
   );

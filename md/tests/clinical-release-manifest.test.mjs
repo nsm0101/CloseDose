@@ -98,7 +98,16 @@ test('public release requires every named role, date, and scope', () => {
 
 test('build order separates review applications from unapproved production', async () => {
   const manifest = JSON.parse(await readFile(manifestUrl, 'utf8'));
-  const core = ['build:portal', 'build:pig', 'build:rsi', 'build:pmd'];
+  const core = [
+    'build:portal',
+    'build:pig',
+    'build:rsi',
+    'build:airway-scenarios',
+    'build:post-intubation',
+    'build:rsi-timeline',
+    'build:airway-transport',
+    'build:pmd'
+  ];
 
   assert.deepEqual(getBuildWorkspaceScripts('production', manifest), core);
   assert.deepEqual(getBuildWorkspaceScripts('review', manifest), [
