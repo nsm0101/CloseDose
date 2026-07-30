@@ -2,7 +2,7 @@
 
 ## Status and scope
 
-This specification covers the isolated `@closedose-md/device` review application. It does not add the application to the provider catalog, root workspace, build orchestration, headers, redirects, or deployment.
+This specification covers the integrated `@closedose-md/device` review application. The root workspace, provider catalog, canonical redirect, cache rules, and review-build orchestration include the application. The production build omits its document and assets until the checked clinical release manifest records every required approval and changes its status to `Available`.
 
 The application is a deterministic review surface. It does not diagnose, persist data, perform analytics, use AI, or make external runtime calls.
 
@@ -113,7 +113,10 @@ Release still requires keyboard-only, screen-reader, contrast, zoom, narrow view
 - Source entry: `md/apps/device/src/main.tsx`.
 - Root return target: `/`.
 
-Root workspace registration and platform integration are intentionally outside Task 1.
+The no-slash route redirects to the canonical route. While approval is pending,
+the provider catalog shows the tool without a link and the production artifact
+does not contain the route. The review artifact contains the route with the
+visible unapproved-use boundary.
 
 ## Privacy, network, and runtime boundaries
 
@@ -156,7 +159,7 @@ The application must not be treated as clinically released until:
 4. Accessibility review passes.
 5. Privacy and security review confirms the source and built output boundaries.
 6. Regulatory and quality-system review authorizes release.
-7. Exact production route, headers, redirects, catalog registration, and deployment are separately implemented and verified.
-8. The application review status is updated through controlled change after approval.
+7. Exact production route, headers, redirects, catalog registration, and review-build assembly remain verified.
+8. The checked release manifest changes atomically to `Available`, records the clinical-review date and named reviewer approvals, and passes the artifact contracts.
 
 Until those gates close, `Clinical review` and `Not approved for clinical use` must remain visibly paired.

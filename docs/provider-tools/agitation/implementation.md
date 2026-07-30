@@ -22,6 +22,8 @@ content remain disabled until their independently reviewed rule sets are added.
 Environment and immediate medical safety appear first. Support low stimulation,
 plain language, screen readers, keyboard-only use, reduced motion, high contrast,
 and 320 px layouts. Timers are local, labeled, pausable, and resettable.
+Community-ED and PEM simulations must place the first urgent action within three
+interactions and 20 seconds on a 320 px phone viewport.
 
 ## Tests
 

@@ -8,7 +8,7 @@ Canonical route base: `/SEDATION/`
 
 Status: **Clinical review / not approved for clinical use**
 
-This isolated application is not added to the root workspace list, build script, provider catalog, or shared header in this task. Those integrations require a separate release-gated task.
+The root workspace, provider catalog, canonical redirect, cache rules, and review-build orchestration include this application. The production build omits its document and assets until the checked clinical release manifest records every required approval and changes its status to `Available`.
 
 Release also requires approval from a Named institutional sedation policy and formulary owner.
 
@@ -138,6 +138,15 @@ npm run build --prefix apps/sedation
 
 ## Route and release gating
 
-The Vite base and output target are fixed at `/SEDATION/` and `md/dist/SEDATION`. This task builds the isolated application only. Root workspace, build, provider catalog, shared header, redirect, deployment, and production exposure are outside Task 2.
+The Vite base and output target are fixed at `/SEDATION/` and `md/dist/SEDATION`.
+The no-slash route redirects to the canonical route. While approval is pending,
+the provider catalog shows the tool without a link, the production artifact does
+not contain the route, and the review artifact visibly states that clinical use
+is not approved.
 
-No route integration or release is authorized until the mandatory clinical reviewers, regulatory owner, and Named institutional sedation policy and formulary owner approve the clinical specification and all release checks pass.
+Public exposure remains unauthorized until the mandatory clinical reviewers,
+regulatory owner, and Named institutional sedation policy and formulary owner
+approve the clinical specification and all release checks pass. The checked
+manifest must then change atomically to `Available`, record the clinical-review
+date and named reviewer approvals, and pass both review and production artifact
+contracts.

@@ -19,6 +19,18 @@ export const REQUIRED_APPROVAL_ROLES = Object.freeze({
 const tools = Object.freeze(['device', 'sedation']);
 const isoDate = /^\d{4}-\d{2}-\d{2}$/;
 
+function isIsoCalendarDate(value) {
+  if (typeof value !== 'string' || !isoDate.test(value)) return false;
+
+  const [year, month, day] = value.split('-').map(Number);
+  const parsed = new Date(Date.UTC(year, month - 1, day));
+  return (
+    parsed.getUTCFullYear() === year &&
+    parsed.getUTCMonth() === month - 1 &&
+    parsed.getUTCDate() === day
+  );
+}
+
 function requireNonEmptyString(value, label) {
   if (typeof value !== 'string' || value.trim() === '') {
     throw new TypeError(`${label} must be a non-empty string`);
@@ -38,17 +50,18 @@ export function validateClinicalReleaseManifest(manifest) {
     if (!record || typeof record !== 'object' || Array.isArray(record)) {
       throw new TypeError(`${tool} release record must be an object`);
     }
-    if (record.status !== 'Clinical review') {
-      throw new TypeError(`${tool} status must be Clinical review`);
-    }
     if (typeof record.publicReleaseApproved !== 'boolean') {
       throw new TypeError(`${tool} publicReleaseApproved must be boolean`);
     }
+    const expectedStatus = record.publicReleaseApproved ? 'Available' : 'Clinical review';
+    if (record.status !== expectedStatus) {
+      throw new TypeError(`${tool} status must be ${expectedStatus}`);
+    }
     if (
       record.clinicalReviewDate !== null &&
-      (typeof record.clinicalReviewDate !== 'string' || !isoDate.test(record.clinicalReviewDate))
+      !isIsoCalendarDate(record.clinicalReviewDate)
     ) {
-      throw new TypeError(`${tool} clinicalReviewDate must be null or YYYY-MM-DD`);
+      throw new TypeError(`${tool} clinicalReviewDate must be null or a valid YYYY-MM-DD date`);
     }
     if (!Array.isArray(record.reviewers)) {
       throw new TypeError(`${tool} reviewers must be an array`);
@@ -62,8 +75,8 @@ export function validateClinicalReleaseManifest(manifest) {
       for (const field of ['name', 'role', 'approvalDate', 'scope']) {
         requireNonEmptyString(reviewer[field], `${tool} reviewer ${field}`);
       }
-      if (!isoDate.test(reviewer.approvalDate)) {
-        throw new TypeError(`${tool} reviewer approvalDate must be YYYY-MM-DD`);
+      if (!isIsoCalendarDate(reviewer.approvalDate)) {
+        throw new TypeError(`${tool} reviewer approvalDate must be a valid YYYY-MM-DD date`);
       }
       if (roles.has(reviewer.role)) {
         throw new TypeError(`${tool} reviewer role must be unique: ${reviewer.role}`);

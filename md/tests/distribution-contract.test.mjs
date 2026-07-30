@@ -24,6 +24,17 @@ const releasedReviewApplications = reviewApplications.filter(
 const readDist = (relativePath) =>
   readFile(path.join(distRoot, relativePath), 'utf8');
 
+async function listArtifactFiles(directory) {
+  const entries = await readdir(directory, { withFileTypes: true });
+  const nested = await Promise.all(
+    entries.map((entry) => {
+      const entryPath = path.join(directory, entry.name);
+      return entry.isDirectory() ? listArtifactFiles(entryPath) : [entryPath];
+    })
+  );
+  return nested.flat();
+}
+
 function parseHeaderRules(source) {
   const rules = new Map();
   let activePath;
@@ -119,6 +130,20 @@ test('assembled artifact contains all canonical applications and control files',
       );
       assert.equal(exists, shouldExist, application.directory);
     });
+  }
+});
+
+test('review artifacts visibly retain the unapproved clinical-use boundary', async () => {
+  if (buildMode !== 'review') return;
+
+  for (const { directory } of reviewApplications) {
+    const files = await listArtifactFiles(path.join(distRoot, directory));
+    const artifactText = (
+      await Promise.all(files.map((file) => readFile(file, 'utf8')))
+    ).join('\n');
+
+    assert.match(artifactText, /Clinical review/, directory);
+    assert.match(artifactText, /Not approved for clinical use/, directory);
   }
 });
 

@@ -68,7 +68,7 @@ test('a passable suction catheter reports a patent tube and continues ABCDE asse
     organization: 'National Tracheostomy Safety Project',
     title: 'Pediatric emergency tracheostomy algorithm',
     reviewDate: 'January 2024',
-    status: 'Clinical review / not approved for clinical use'
+    status: 'See application release status'
   });
   assert.equal(guidance.tubeStatus, 'patent');
   assert.match(text, /Continue ABCDE assessment/);

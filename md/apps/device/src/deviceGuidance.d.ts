@@ -42,7 +42,7 @@ export const DEVICE_GUIDANCE_SOURCE: Readonly<{
   organization: 'National Tracheostomy Safety Project';
   title: 'Pediatric emergency tracheostomy algorithm';
   reviewDate: 'January 2024';
-  status: 'Clinical review / not approved for clinical use';
+  status: 'See application release status';
 }>;
 
 export const DEVICE_ENUMERATIONS: Readonly<{

@@ -24,6 +24,8 @@ Expose the next expected check, elapsed time, pause/reset controls, and manual
 reassessment recording in the first phone view. Use text plus shape for state,
 live-region announcements that do not repeat each second, keyboard access,
 reduced motion, and light/dark parity.
+Community-ED and PEM simulations must place the first urgent action within three
+interactions and 20 seconds on a 320 px phone viewport.
 
 ## Tests
 

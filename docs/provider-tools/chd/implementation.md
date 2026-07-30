@@ -23,6 +23,8 @@ clarification and never borrow another pathway.
 Baseline physiology and do-not-normalize-blindly warnings remain visible while
 branches change. Provide 44 px targets, keyboard and screen-reader support,
 light/dark parity, reduced motion, and 320 px operation.
+Community-ED and PEM simulations must place the first urgent action within three
+interactions and 20 seconds on a 320 px phone viewport.
 
 ## Tests
 

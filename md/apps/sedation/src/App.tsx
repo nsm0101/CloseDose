@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
+import releaseManifest from '../../../clinical-release-manifest.json';
 import {
   calculateMedicationOption,
   MEDICATION_OPTIONS,
@@ -22,6 +23,12 @@ const procedures = [
 ] as const;
 
 const sections = ['Context', 'Compare', 'Prepare', 'Recovery', 'Document'];
+const releaseRecord = releaseManifest.sedation;
+const publicReleaseApproved = releaseRecord.publicReleaseApproved;
+const releaseStatus = publicReleaseApproved ? 'Available' : 'Clinical review';
+const releaseDetail = publicReleaseApproved
+  ? `Clinical review completed ${releaseRecord.clinicalReviewDate}`
+  : 'Not approved for clinical use';
 
 type RiskState = '' | 'present' | 'not-present';
 
@@ -480,7 +487,7 @@ export default function App() {
 
     return [
       'PEDIATRIC COMFORT AND SEDATION REVIEW',
-      'Clinical review / not approved for clinical use',
+      `${releaseStatus} / ${releaseDetail}`,
       '',
       `Procedure category: ${context.procedure || 'Not selected'}`,
       `Age: ${context.ageMonths || 'Not entered'} months`,
@@ -536,8 +543,8 @@ export default function App() {
         <div className="review-badge" role="status">
           <span className="status-dot" aria-hidden="true" />
           <span>
-            <strong>Clinical review</strong>
-            <small>Not approved for clinical use</small>
+            <strong>{releaseStatus}</strong>
+            <small>{releaseDetail}</small>
           </span>
         </div>
       </header>
@@ -562,11 +569,14 @@ export default function App() {
               </button>
             </div>
             <aside className="gate-card" aria-label="Clinical release gate">
-              <p className="gate-label">Clinical release gate</p>
-              <h3>Not approved for clinical use</h3>
+              <p className="gate-label">
+                {publicReleaseApproved ? 'Release scope' : 'Clinical release gate'}
+              </p>
+              <h3>{releaseDetail}</h3>
               <p>
-                Pediatric emergency medicine, pharmacy, anesthesia, regulatory,
-                safety, and accessibility reviews remain open.
+                {publicReleaseApproved
+                  ? 'Use with the approved institutional sedation policy, formulary, monitoring, rescue resources, and credentialed clinical judgment.'
+                  : 'Pediatric emergency medicine, pharmacy, anesthesia, regulatory, safety, and accessibility reviews remain open.'}
               </p>
               <ul>
                 <li>

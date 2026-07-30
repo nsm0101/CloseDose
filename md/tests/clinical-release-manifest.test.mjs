@@ -19,7 +19,7 @@ const approval = (role) => ({
 });
 
 const approvedRecord = (tool) => ({
-  status: 'Clinical review',
+  status: 'Available',
   publicReleaseApproved: true,
   clinicalReviewDate: '2026-07-29',
   reviewers: REQUIRED_APPROVAL_ROLES[tool].map(approval)
@@ -74,6 +74,23 @@ test('public release requires every named role, date, and scope', () => {
     assert.throws(
       () => validateClinicalReleaseManifest(missingRole),
       new RegExp(`${tool}.*required reviewer role`, 'i')
+    );
+
+    for (const field of ['clinicalReviewDate', 'approvalDate']) {
+      const invalidDate = structuredClone(approved);
+      if (field === 'clinicalReviewDate') invalidDate[tool][field] = '2026-99-99';
+      else invalidDate[tool].reviewers[0][field] = '2026-02-30';
+      assert.throws(
+        () => validateClinicalReleaseManifest(invalidDate),
+        new RegExp(`${tool}.*${field}`, 'i')
+      );
+    }
+
+    const inconsistentStatus = structuredClone(approved);
+    inconsistentStatus[tool].status = 'Clinical review';
+    assert.throws(
+      () => validateClinicalReleaseManifest(inconsistentStatus),
+      new RegExp(`${tool}.*status must be Available`, 'i')
     );
   }
 });

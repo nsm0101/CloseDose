@@ -22,6 +22,8 @@ Universal stabilization actions occupy the first phone viewport. Branch detail
 opens progressively, but uncertainty and consultation never collapse. Support
 44 px controls, keyboard use, visible focus, light/dark parity, and reduced
 motion.
+Community-ED and PEM simulations must place the first urgent action within three
+interactions and 20 seconds on a 320 px phone viewport.
 
 ## Tests
 

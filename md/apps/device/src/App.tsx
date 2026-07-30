@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import releaseManifest from '../../../clinical-release-manifest.json';
 import {
   buildTransferHandoff,
   DEVICE_GUIDANCE_SOURCE,
@@ -16,6 +17,12 @@ import type {
 } from './deviceGuidance.d.ts';
 
 const steps = ['Act now', 'Identify', 'Troubleshoot', 'Equipment', 'Handoff'];
+const releaseRecord = releaseManifest.device;
+const publicReleaseApproved = releaseRecord.publicReleaseApproved;
+const releaseStatus = publicReleaseApproved ? 'Available' : 'Clinical review';
+const releaseDetail = publicReleaseApproved
+  ? `Clinical review completed ${releaseRecord.clinicalReviewDate}`
+  : 'Not approved for clinical use';
 
 const initialContext: DeviceRescueContext = {
   upperAirwayPatency: 'unknown',
@@ -170,8 +177,8 @@ export default function App() {
         <div className="review-badge" role="status">
           <span className="status-dot" aria-hidden="true" />
           <span>
-            <strong>Clinical review</strong>
-            <small>Not approved for clinical use</small>
+            <strong>{releaseStatus}</strong>
+            <small>{releaseDetail}</small>
           </span>
         </div>
       </header>
@@ -200,11 +207,14 @@ export default function App() {
               </button>
             </div>
             <aside className="gate-card" aria-label="Release status">
-              <p className="gate-label">Clinical release gate</p>
-              <h3>Not approved for clinical use</h3>
+              <p className="gate-label">
+                {publicReleaseApproved ? 'Release scope' : 'Clinical release gate'}
+              </p>
+              <h3>{releaseDetail}</h3>
               <p>
-                Simulated review only. Required clinical, safety, accessibility,
-                and regulatory reviews remain open.
+                {publicReleaseApproved
+                  ? 'Use with local emergency protocols, trained responders, and the named evidence boundary.'
+                  : 'Simulated review only. Required clinical, safety, accessibility, and regulatory reviews remain open.'}
               </p>
             </aside>
           </section>
