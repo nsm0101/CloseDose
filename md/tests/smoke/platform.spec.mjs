@@ -151,19 +151,67 @@ function auditRuntime(context) {
   };
 }
 
-test('portal fits exactly 320 px and all ordinary tool links navigate', async ({ page, context }) => {
+test('portal fits exactly 320 px and every available tool link navigates', async ({ page, context }) => {
   const runtimeAudit = auditRuntime(context);
   await page.setViewportSize({ width: 320, height: 800 });
   await page.goto('/');
   await page.waitForLoadState('networkidle');
 
   await expect(page.getByRole('heading', { name: 'Clinical tools. Ready when needed.' })).toBeVisible();
-  const pigLink = page.getByRole('link', { name: /Pediatric Airway Reference Calculator/ });
-  const rsiLink = page.getByRole('link', { name: /Pediatric Emergency RSI Reference and Calculator/ });
-  const pmdLink = page.getByRole('link', { name: /PREtendingMD: PEM FlowMaster/ });
-  await expect(pigLink).toHaveAttribute('href', '/PIG/');
-  await expect(rsiLink).toHaveAttribute('href', '/RSI/');
-  await expect(pmdLink).toHaveAttribute('href', '/PMD/');
+  await expect(page.getByText('15 tools shown')).toBeVisible();
+  const availableTools = [
+    {
+      title: 'Pediatric Airway Reference Calculator',
+      route: '/PIG/',
+      heading: /Critical Care Airway Reference/
+    },
+    {
+      title: 'Pediatric RSI Medication Calculator',
+      route: '/RSI/',
+      heading: 'Pediatric RSI Medication Calculator'
+    },
+    {
+      title: 'Pediatric Airway Scenario Guide',
+      route: '/AIRWAY-SCENARIOS/',
+      heading: 'Pediatric Airway Scenario Guide'
+    },
+    {
+      title: 'Post-Intubation Sedation Reference',
+      route: '/POST-INTUBATION/',
+      heading: 'Post-Intubation Sedation Reference'
+    },
+    {
+      title: 'RSI Progression Timeline',
+      route: '/RSI-TIMELINE/',
+      heading: 'RSI Progression Timeline'
+    },
+    {
+      title: 'Pediatric Airway Transport Kit',
+      route: '/AIRWAY-TRANSPORT/',
+      heading: 'Pediatric Airway Transport Kit'
+    },
+    {
+      title: 'PREtendingMD: PEM FlowMaster',
+      route: '/PMD/',
+      heading: 'Authorized clinical team access'
+    }
+  ];
+
+  for (const tool of availableTools) {
+    await expect(page.getByRole('link', { name: new RegExp(tool.title) })).toHaveAttribute(
+      'href',
+      tool.route
+    );
+  }
+  await expect(page.getByLabel('Peds Device Rescue, Clinical review')).toBeVisible();
+  await expect(page.getByLabel('Pediatric Comfort and Sedation Console, Clinical review')).toBeVisible();
+  await expect(page.getByRole('link', { name: /Peds Device Rescue/ })).toHaveCount(0);
+  await expect(page.getByRole('link', { name: /Pediatric Comfort and Sedation Console/ })).toHaveCount(0);
+
+  const firstToolBox = await page
+    .getByRole('link', { name: /Pediatric Airway Reference Calculator/ })
+    .boundingBox();
+  expect(firstToolBox?.y).toBeLessThan(800);
 
   const horizontalMetrics = await page.evaluate(() => ({
     body: document.body.scrollWidth - document.body.clientWidth,
@@ -171,23 +219,74 @@ test('portal fits exactly 320 px and all ordinary tool links navigate', async ({
   }));
   expect(horizontalMetrics).toEqual({ body: 0, document: 0 });
 
-  await pigLink.click();
-  await expect(page).toHaveURL(expectedUrl('/PIG/'));
-  await expect(page.getByRole('heading', { name: /Critical Care Airway Reference/ })).toBeVisible();
+  for (const tool of availableTools) {
+    await page.getByRole('link', { name: new RegExp(tool.title) }).click();
+    await expect(page).toHaveURL(expectedUrl(tool.route));
+    await expect(page.getByRole('heading', { name: tool.heading })).toBeVisible();
+    await page.goto('/');
+    await page.waitForLoadState('networkidle');
+  }
+  runtimeAudit.assertClean();
+});
 
-  await page.goBack();
-  await page.waitForLoadState('networkidle');
-  await page.getByRole('link', { name: /Pediatric Emergency RSI Reference and Calculator/ }).click();
-  await expect(page).toHaveURL(expectedUrl('/RSI/'));
-  await expect(page.getByRole('heading', { name: 'Pediatric RSI Medication Calculator' })).toBeVisible();
+test('provider suite discovery works across phone, tablet, desktop, light, and dark', async ({
+  page,
+  context
+}) => {
+  const runtimeAudit = auditRuntime(context);
+  const viewports = [
+    { width: 320, height: 800 },
+    { width: 768, height: 1024 },
+    { width: 1440, height: 900 }
+  ];
 
-  await page.goBack();
-  await page.waitForLoadState('networkidle');
-  await page.getByRole('link', { name: /PREtendingMD: PEM FlowMaster/ }).click();
-  await expect(page).toHaveURL(expectedUrl('/PMD/'));
-  await expect(
-    page.getByRole('heading', { name: 'Authorized clinical team access' })
-  ).toBeVisible();
+  for (const colorScheme of ['light', 'dark']) {
+    await page.emulateMedia({ colorScheme });
+    for (const viewport of viewports) {
+      await page.setViewportSize(viewport);
+      await page.goto('/');
+      await page.waitForLoadState('networkidle');
+
+      const horizontalMetrics = await page.evaluate(() => ({
+        body: document.body.scrollWidth - document.body.clientWidth,
+        document: document.documentElement.scrollWidth - document.documentElement.clientWidth
+      }));
+      expect(horizontalMetrics).toEqual({ body: 0, document: 0 });
+
+      const search = page.getByRole('searchbox', { name: 'Search provider tools' });
+      await search.fill('newborn');
+      await expect(page.getByText('1 tool shown')).toBeVisible();
+      await expect(page.getByLabel('Sick Newborn: First 15 Minutes, Planned')).toBeVisible();
+
+      if (viewport.width < 768) {
+        await page.getByRole('button', { name: 'Audience and status' }).click();
+      }
+      await page.getByRole('button', { name: 'Clinical review' }).click();
+      await expect(page.getByText('No tools match these filters')).toBeVisible();
+      await page.getByRole('button', { name: 'Reset filters' }).click();
+      await expect(page.getByText('15 tools shown')).toBeVisible();
+
+      await page.getByRole('button', { name: 'Community EM' }).click();
+      await expect(page.getByRole('button', { name: 'Community EM' })).toHaveAttribute(
+        'aria-pressed',
+        'true'
+      );
+      await page.getByRole('button', { name: 'Clinical review' }).click();
+      await expect(page.getByText('2 tools shown')).toBeVisible();
+      await expect(page.getByRole('link', { name: /Peds Device Rescue/ })).toHaveCount(0);
+      await page.getByRole('button', { name: 'Reset filters' }).click();
+
+      await search.focus();
+      await expect(search).toBeFocused();
+      await page.keyboard.press('Tab');
+      if (viewport.width < 768) {
+        await expect(page.getByRole('button', { name: 'Audience and status' })).toBeFocused();
+      } else {
+        await expect(page.getByRole('button', { name: 'All clinicians' })).toBeFocused();
+      }
+    }
+  }
+
   runtimeAudit.assertClean();
 });
 

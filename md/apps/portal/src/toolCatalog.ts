@@ -10,6 +10,10 @@ export type ToolCategory =
 export type ToolRoute =
   | '/PIG/'
   | '/RSI/'
+  | '/AIRWAY-SCENARIOS/'
+  | '/POST-INTUBATION/'
+  | '/RSI-TIMELINE/'
+  | '/AIRWAY-TRANSPORT/'
   | '/PMD/'
   | '/DEVICE/'
   | '/SEDATION/'
@@ -23,7 +27,11 @@ export type ToolRoute =
 export interface ToolCatalogEntry {
   id:
     | 'pig'
-    | 'rsi'
+    | 'rsi-medications'
+    | 'airway-scenarios'
+    | 'post-intubation'
+    | 'rsi-timeline'
+    | 'airway-transport'
     | 'pmd'
     | 'device'
     | 'sedation'
@@ -45,7 +53,7 @@ export interface ToolCatalogEntry {
   publiclyAccessible: boolean;
 }
 
-export const toolCatalog = [
+export const toolCatalog: readonly ToolCatalogEntry[] = [
   {
     id: 'pig',
     shortTitle: 'PIG',
@@ -60,10 +68,10 @@ export const toolCatalog = [
     publiclyAccessible: true
   },
   {
-    id: 'rsi',
-    shortTitle: 'RSI',
-    title: 'Pediatric Emergency RSI Reference and Calculator',
-    task: 'Calculate RSI medication references and run airway checklists.',
+    id: 'rsi-medications',
+    shortTitle: 'RSI MEDS',
+    title: 'Pediatric RSI Medication Calculator',
+    task: 'Calculate induction, paralysis, and rescue medication references.',
     status: 'Available',
     audience: ['Community EM', 'PEM'],
     category: 'Airway and RSI',
@@ -73,30 +81,56 @@ export const toolCatalog = [
     publiclyAccessible: true
   },
   {
-    id: 'pmd',
-    shortTitle: 'PMD',
-    title: 'PREtendingMD: PEM FlowMaster',
-    task: 'Coordinate an administrator-approved PEM shift and handoff.',
+    id: 'airway-scenarios',
+    shortTitle: 'SCENARIOS',
+    title: 'Pediatric Airway Scenario Guide',
+    task: 'Review contraindication prompts and scenario-specific airway considerations.',
     status: 'Available',
-    audience: ['PEM'],
-    category: 'Transfer and workflow',
-    evidenceVersion: 'Production 700958d',
+    audience: ['Community EM', 'PEM'],
+    category: 'Airway and RSI',
+    evidenceVersion: 'CC-RSI a309bda',
     clinicalReviewDate: null,
-    canonicalRoute: '/PMD/',
+    canonicalRoute: '/AIRWAY-SCENARIOS/',
     publiclyAccessible: true
   },
   {
-    id: 'device',
-    shortTitle: 'DEVICE',
-    title: 'Peds Device Rescue',
-    task: 'Troubleshoot a pediatric tracheostomy emergency and prepare handoff.',
-    status: releaseManifest.device.status as ToolStatus,
+    id: 'post-intubation',
+    shortTitle: 'POST INTUBATION',
+    title: 'Post-Intubation Sedation Reference',
+    task: 'Review analgesia and sedation options after airway placement.',
+    status: 'Available',
     audience: ['Community EM', 'PEM'],
-    category: 'Specialty emergencies',
-    evidenceVersion: 'NTSP pediatric algorithm, review January 2024',
-    clinicalReviewDate: releaseManifest.device.clinicalReviewDate,
-    canonicalRoute: '/DEVICE/',
-    publiclyAccessible: releaseManifest.device.publicReleaseApproved
+    category: 'Airway and RSI',
+    evidenceVersion: 'CC-RSI a309bda',
+    clinicalReviewDate: null,
+    canonicalRoute: '/POST-INTUBATION/',
+    publiclyAccessible: true
+  },
+  {
+    id: 'rsi-timeline',
+    shortTitle: 'TIMELINE',
+    title: 'RSI Progression Timeline',
+    task: 'Run local airway, CPR, and medication interval timers.',
+    status: 'Available',
+    audience: ['Community EM', 'PEM'],
+    category: 'Airway and RSI',
+    evidenceVersion: 'CC-RSI a309bda',
+    clinicalReviewDate: null,
+    canonicalRoute: '/RSI-TIMELINE/',
+    publiclyAccessible: true
+  },
+  {
+    id: 'airway-transport',
+    shortTitle: 'TRANSPORT KIT',
+    title: 'Pediatric Airway Transport Kit',
+    task: 'Prepare airway equipment, infusions, and transport contingencies.',
+    status: 'Available',
+    audience: ['Community EM', 'Rural EM', 'PEM'],
+    category: 'Airway and RSI',
+    evidenceVersion: 'CC-RSI a309bda',
+    clinicalReviewDate: null,
+    canonicalRoute: '/AIRWAY-TRANSPORT/',
+    publiclyAccessible: true
   },
   {
     id: 'sedation',
@@ -112,6 +146,19 @@ export const toolCatalog = [
     publiclyAccessible: releaseManifest.sedation.publicReleaseApproved
   },
   {
+    id: 'pmd',
+    shortTitle: 'PMD',
+    title: 'PREtendingMD: PEM FlowMaster',
+    task: 'Coordinate an administrator-approved PEM shift and handoff.',
+    status: 'Available',
+    audience: ['PEM'],
+    category: 'Transfer and workflow',
+    evidenceVersion: 'Production 700958d',
+    clinicalReviewDate: null,
+    canonicalRoute: '/PMD/',
+    publiclyAccessible: true
+  },
+  {
     id: 'transfer',
     shortTitle: 'TRANSFER',
     title: 'Peds Transfer Ready',
@@ -123,6 +170,32 @@ export const toolCatalog = [
     clinicalReviewDate: null,
     canonicalRoute: '/TRANSFER/',
     publiclyAccessible: false
+  },
+  {
+    id: 'clock',
+    shortTitle: 'CLOCK',
+    title: 'PEM Reassessment Clock',
+    task: 'Track local-only treatments and institution-configurable reassessments.',
+    status: 'Planned',
+    audience: ['PEM'],
+    category: 'Transfer and workflow',
+    evidenceVersion: null,
+    clinicalReviewDate: null,
+    canonicalRoute: '/CLOCK/',
+    publiclyAccessible: false
+  },
+  {
+    id: 'device',
+    shortTitle: 'DEVICE',
+    title: 'Peds Device Rescue',
+    task: 'Troubleshoot a pediatric tracheostomy emergency and prepare handoff.',
+    status: releaseManifest.device.status as ToolStatus,
+    audience: ['Community EM', 'PEM'],
+    category: 'Specialty emergencies',
+    evidenceVersion: 'NTSP pediatric algorithm, review January 2024',
+    clinicalReviewDate: releaseManifest.device.clinicalReviewDate,
+    canonicalRoute: '/DEVICE/',
+    publiclyAccessible: releaseManifest.device.publicReleaseApproved
   },
   {
     id: 'agitation',
@@ -174,19 +247,6 @@ export const toolCatalog = [
     evidenceVersion: 'Poison Control button battery guidance',
     clinicalReviewDate: null,
     canonicalRoute: '/INGESTION/',
-    publiclyAccessible: false
-  },
-  {
-    id: 'clock',
-    shortTitle: 'CLOCK',
-    title: 'PEM Reassessment Clock',
-    task: 'Track local-only treatments and institution-configurable reassessments.',
-    status: 'Planned',
-    audience: ['PEM'],
-    category: 'Transfer and workflow',
-    evidenceVersion: null,
-    clinicalReviewDate: null,
-    canonicalRoute: '/CLOCK/',
     publiclyAccessible: false
   }
 ] satisfies readonly ToolCatalogEntry[];
