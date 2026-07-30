@@ -50,13 +50,13 @@ Use Node 22 and run the same clean sequence as CI from this directory:
 
 ```sh
 npm ci
+npx playwright install --with-deps chromium
 npm run typecheck
 npm run test:unit
 npm run test:rules
 npm run build:review
 npm run build
 npm run test:contract
-npx playwright install --with-deps chromium
 npm run test:smoke
 ```
 

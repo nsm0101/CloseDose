@@ -118,13 +118,13 @@ From `md/` on Node 22, run the exact CI sequence before publishing a preview:
 
 ```sh
 npm ci
+npx playwright install --with-deps chromium
 npm run typecheck
 npm run test:unit
 npm run test:rules
 npm run build:review
 npm run build
 npm run test:contract
-npx playwright install --with-deps chromium
 npm run test:smoke
 ```
 

@@ -49,6 +49,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+
       - name: Typecheck all applications
         run: npm run typecheck
 
@@ -63,9 +66,6 @@ jobs:
 
       - name: Re-run distribution contract
         run: npm run test:contract
-
-      - name: Install Playwright Chromium
-        run: npx playwright install --with-deps chromium
 
       - name: Run assembled browser smoke tests
         run: npm run test:smoke
