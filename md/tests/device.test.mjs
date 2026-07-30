@@ -68,7 +68,7 @@ test('a passable suction catheter reports a patent tube and continues ABCDE asse
     organization: 'National Tracheostomy Safety Project',
     title: 'Pediatric emergency tracheostomy algorithm',
     reviewDate: 'January 2024',
-    status: 'See application release status'
+    status: 'Clinical review / not approved for clinical use'
   });
   assert.equal(guidance.tubeStatus, 'patent');
   assert.match(text, /Continue ABCDE assessment/);
@@ -223,13 +223,14 @@ test('invalid enumerated inputs throw descriptive errors', () => {
 });
 
 test('Device app is review-gated, uses the canonical route, and has no privacy boundary violations', async () => {
-  const [packageJsonSource, viteConfig, indexHtml, appSource, styles] =
+  const [packageJsonSource, viteConfig, indexHtml, appSource, styles, releaseStateSource] =
     await Promise.all([
       readFile(path.join(deviceRoot, 'package.json'), 'utf8'),
       readFile(path.join(deviceRoot, 'vite.config.ts'), 'utf8'),
       readFile(path.join(deviceRoot, 'index.html'), 'utf8'),
       readFile(path.join(deviceRoot, 'src/App.tsx'), 'utf8'),
-      readFile(path.join(deviceRoot, 'src/index.css'), 'utf8')
+      readFile(path.join(deviceRoot, 'src/index.css'), 'utf8'),
+      readFile(path.join(mdRoot, 'clinical-release-state.mjs'), 'utf8')
     ]);
   const packageJson = JSON.parse(packageJsonSource);
 
@@ -246,8 +247,8 @@ test('Device app is review-gated, uses the canonical route, and has no privacy b
   assert.match(appSource, /Troubleshoot/);
   assert.match(appSource, /Equipment/);
   assert.match(appSource, /Handoff/);
-  assert.match(appSource, /Clinical review/);
-  assert.match(appSource, /Not approved for clinical use/);
+  assert.match(releaseStateSource, /Clinical review/);
+  assert.match(releaseStateSource, /Not approved for clinical use/);
   assert.match(appSource, /breathing:\s*'not-assessed'/);
   assert.match(appSource, /suctionPassage:\s*'not-assessed'/);
   assert.match(appSource, /tubeStatus !== 'not-assessed'/);

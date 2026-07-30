@@ -1,8 +1,8 @@
 import { useMemo, useState } from 'react';
-import releaseManifest from '../../../clinical-release-manifest.json';
 import {
   buildTransferHandoff,
   DEVICE_GUIDANCE_SOURCE,
+  DEVICE_RELEASE_STATE,
   getRescueGuidance
 } from './deviceGuidance.mjs';
 import type {
@@ -17,12 +17,9 @@ import type {
 } from './deviceGuidance.d.ts';
 
 const steps = ['Act now', 'Identify', 'Troubleshoot', 'Equipment', 'Handoff'];
-const releaseRecord = releaseManifest.device;
-const publicReleaseApproved = releaseRecord.publicReleaseApproved;
-const releaseStatus = publicReleaseApproved ? 'Available' : 'Clinical review';
-const releaseDetail = publicReleaseApproved
-  ? `Clinical review completed ${releaseRecord.clinicalReviewDate}`
-  : 'Not approved for clinical use';
+const publicReleaseApproved = DEVICE_RELEASE_STATE.publicReleaseApproved;
+const releaseStatus = DEVICE_RELEASE_STATE.status;
+const releaseDetail = DEVICE_RELEASE_STATE.detail;
 
 const initialContext: DeviceRescueContext = {
   upperAirwayPatency: 'unknown',

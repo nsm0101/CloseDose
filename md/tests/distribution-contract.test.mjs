@@ -3,6 +3,8 @@ import { readFile, readdir, stat } from 'node:fs/promises';
 import path from 'node:path';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
+import { chromium } from 'playwright';
+import { preview } from 'vite';
 
 import {
   isPublicReleaseApproved,
@@ -23,17 +25,6 @@ const releasedReviewApplications = reviewApplications.filter(
 
 const readDist = (relativePath) =>
   readFile(path.join(distRoot, relativePath), 'utf8');
-
-async function listArtifactFiles(directory) {
-  const entries = await readdir(directory, { withFileTypes: true });
-  const nested = await Promise.all(
-    entries.map((entry) => {
-      const entryPath = path.join(directory, entry.name);
-      return entry.isDirectory() ? listArtifactFiles(entryPath) : [entryPath];
-    })
-  );
-  return nested.flat();
-}
 
 function parseHeaderRules(source) {
   const rules = new Map();
@@ -133,17 +124,40 @@ test('assembled artifact contains all canonical applications and control files',
   }
 });
 
-test('review artifacts visibly retain the unapproved clinical-use boundary', async () => {
+test('review artifacts render the unapproved clinical-use boundary', async () => {
   if (buildMode !== 'review') return;
 
-  for (const { directory } of reviewApplications) {
-    const files = await listArtifactFiles(path.join(distRoot, directory));
-    const artifactText = (
-      await Promise.all(files.map((file) => readFile(file, 'utf8')))
-    ).join('\n');
+  const server = await preview({
+    root: mdRoot,
+    build: { outDir: 'dist' },
+    preview: { host: '127.0.0.1', port: 0 }
+  });
+  const address = server.httpServer.address();
+  assert.ok(address && typeof address !== 'string');
+  const browser = await chromium.launch({ headless: true });
 
-    assert.match(artifactText, /Clinical review/, directory);
-    assert.match(artifactText, /Not approved for clinical use/, directory);
+  try {
+    const page = await browser.newPage({ viewport: { width: 320, height: 800 } });
+    for (const { directory } of reviewApplications) {
+      await page.goto(`http://127.0.0.1:${address.port}/${directory}/`, {
+        waitUntil: 'networkidle'
+      });
+      assert.equal(
+        (await page.locator('.review-badge strong').innerText()).toLowerCase(),
+        'clinical review',
+        directory
+      );
+      assert.equal(
+        (await page.locator('.review-badge small').innerText()).toLowerCase(),
+        'not approved for clinical use',
+        directory
+      );
+    }
+  } finally {
+    await browser.close();
+    await new Promise((resolve, reject) => {
+      server.httpServer.close((error) => (error ? reject(error) : resolve()));
+    });
   }
 });
 

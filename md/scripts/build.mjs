@@ -18,7 +18,14 @@ const manifest = await readClinicalReleaseManifest();
 const workspaceScripts = getBuildWorkspaceScripts(mode, manifest);
 
 function runNpm(script) {
-  const result = spawnSync(npmCommand, ['run', script], {
+  const reviewWorkspace = {
+    'build:device': '@closedose-md/device',
+    'build:sedation': '@closedose-md/sedation'
+  }[script];
+  const args = reviewWorkspace
+    ? ['run', 'build', '--workspace', reviewWorkspace, '--', '--mode', mode]
+    : ['run', script];
+  const result = spawnSync(npmCommand, args, {
     cwd: mdRoot,
     stdio: 'inherit'
   });

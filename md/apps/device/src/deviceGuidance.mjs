@@ -1,8 +1,21 @@
+import releaseManifest from '../../../clinical-release-manifest.json' with { type: 'json' };
+import { resolveClinicalReleaseState } from '../../../clinical-release-state.mjs';
+
+const buildMode =
+  typeof __CLOSEDOSE_MD_BUILD_MODE__ === 'string'
+    ? __CLOSEDOSE_MD_BUILD_MODE__
+    : 'production';
+
+export const DEVICE_RELEASE_STATE = resolveClinicalReleaseState(
+  releaseManifest.device,
+  buildMode
+);
+
 export const DEVICE_GUIDANCE_SOURCE = Object.freeze({
   organization: 'National Tracheostomy Safety Project',
   title: 'Pediatric emergency tracheostomy algorithm',
   reviewDate: 'January 2024',
-  status: 'See application release status'
+  status: DEVICE_RELEASE_STATE.applicationLabel
 });
 
 export const DEVICE_ENUMERATIONS = Object.freeze({

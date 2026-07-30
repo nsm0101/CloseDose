@@ -8,6 +8,7 @@ import {
   isPublicReleaseApproved,
   validateClinicalReleaseManifest
 } from '../scripts/clinical-release-manifest.mjs';
+import { resolveClinicalReleaseState } from '../clinical-release-state.mjs';
 
 const manifestUrl = new URL('../clinical-release-manifest.json', import.meta.url);
 
@@ -106,4 +107,21 @@ test('build order separates review applications from unapproved production', asy
     'build:sedation'
   ]);
   assert.throws(() => getBuildWorkspaceScripts('preview', manifest), /build mode/i);
+});
+
+test('review mode remains visibly unapproved after a production approval', () => {
+  const approved = approvedRecord('device');
+
+  assert.deepEqual(resolveClinicalReleaseState(approved, 'review'), {
+    publicReleaseApproved: false,
+    status: 'Clinical review',
+    detail: 'Not approved for clinical use',
+    applicationLabel: 'Clinical review / not approved for clinical use'
+  });
+  assert.deepEqual(resolveClinicalReleaseState(approved, 'production'), {
+    publicReleaseApproved: true,
+    status: 'Available',
+    detail: 'Clinical review completed 2026-07-29',
+    applicationLabel: 'Available / clinical review completed 2026-07-29'
+  });
 });

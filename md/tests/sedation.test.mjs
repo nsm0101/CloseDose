@@ -216,7 +216,8 @@ test('Sedation app source contract is review-gated, phone-first, and privacy bou
     mainSource,
     calculationSource,
     declarationSource,
-    tsconfigSource
+    tsconfigSource,
+    releaseStateSource
   ] =
     await Promise.all([
       readFile(path.join(sedationRoot, 'package.json'), 'utf8'),
@@ -233,7 +234,8 @@ test('Sedation app source contract is review-gated, phone-first, and privacy bou
         path.join(sedationRoot, 'src/sedationCalculations.d.ts'),
         'utf8'
       ),
-      readFile(path.join(sedationRoot, 'tsconfig.json'), 'utf8')
+      readFile(path.join(sedationRoot, 'tsconfig.json'), 'utf8'),
+      readFile(path.join(mdRoot, 'clinical-release-state.mjs'), 'utf8')
     ]);
   const packageJson = JSON.parse(packageJsonSource);
 
@@ -245,8 +247,6 @@ test('Sedation app source contract is review-gated, phone-first, and privacy bou
 
   for (const text of [
     'Pediatric Comfort and Sedation',
-    'Clinical review',
-    'Not approved for clinical use',
     'Laceration repair',
     'Fracture reduction',
     'Abscess drainage',
@@ -267,6 +267,9 @@ test('Sedation app source contract is review-gated, phone-first, and privacy bou
   ]) {
     assert.match(appSource, new RegExp(text));
   }
+
+  assert.match(releaseStateSource, /Clinical review/);
+  assert.match(releaseStateSource, /Not approved for clinical use/);
 
   assert.match(appSource, /ageMonths:\s*''/);
   assert.match(appSource, /weightKg:\s*''/);

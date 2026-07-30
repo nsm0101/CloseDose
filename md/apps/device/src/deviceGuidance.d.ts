@@ -42,7 +42,14 @@ export const DEVICE_GUIDANCE_SOURCE: Readonly<{
   organization: 'National Tracheostomy Safety Project';
   title: 'Pediatric emergency tracheostomy algorithm';
   reviewDate: 'January 2024';
-  status: 'See application release status';
+  status: string;
+}>;
+
+export const DEVICE_RELEASE_STATE: Readonly<{
+  publicReleaseApproved: boolean;
+  status: string;
+  detail: string;
+  applicationLabel: string;
 }>;
 
 export const DEVICE_ENUMERATIONS: Readonly<{

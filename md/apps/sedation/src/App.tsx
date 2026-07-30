@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import releaseManifest from '../../../clinical-release-manifest.json';
+import { resolveClinicalReleaseState } from '../../../clinical-release-state.mjs';
 import {
   calculateMedicationOption,
   MEDICATION_OPTIONS,
@@ -11,6 +12,8 @@ import type {
   MedicationOptionId,
   MedicationResult
 } from './sedationCalculations.d.ts';
+
+declare const __CLOSEDOSE_MD_BUILD_MODE__: string;
 
 const procedures = [
   'Laceration repair',
@@ -24,11 +27,14 @@ const procedures = [
 
 const sections = ['Context', 'Compare', 'Prepare', 'Recovery', 'Document'];
 const releaseRecord = releaseManifest.sedation;
-const publicReleaseApproved = releaseRecord.publicReleaseApproved;
-const releaseStatus = publicReleaseApproved ? 'Available' : 'Clinical review';
-const releaseDetail = publicReleaseApproved
-  ? `Clinical review completed ${releaseRecord.clinicalReviewDate}`
-  : 'Not approved for clinical use';
+const buildMode =
+  typeof __CLOSEDOSE_MD_BUILD_MODE__ === 'string'
+    ? __CLOSEDOSE_MD_BUILD_MODE__
+    : 'production';
+const releaseState = resolveClinicalReleaseState(releaseRecord, buildMode);
+const publicReleaseApproved = releaseState.publicReleaseApproved;
+const releaseStatus = releaseState.status;
+const releaseDetail = releaseState.detail;
 
 type RiskState = '' | 'present' | 'not-present';
 
