@@ -21,7 +21,7 @@
 - The five RSI tools may share source code and design tokens but may not share browser state. Each opens with a fresh local context.
 - Use one CloseDose teal accent, Public Sans where already present, soft 12-16 px surfaces with 8 px inputs, automatic light/dark parity, visible focus, reduced-motion behavior, and phone-first layouts.
 - The hub is a compact semantic catalog with search and audience/status filters, not a generic equal-card wall.
-- Do not use en dashes or em dashes in application-visible text.
+- Do not add en dashes or em dashes in new interface copy. Existing hash-pinned RSI clinical ranges retain their reviewed punctuation byte-for-byte until a clinical content review authorizes a change.
 - Do not add a new third-party runtime dependency.
 - The production artifact keeps the current strict CSP, exact request allowlist, cache controls, case-sensitive 404 behavior, and PMD-specific Firebase exceptions.
 - No production claim is valid until local, Pages-hostname, and custom-domain browser gates pass for the exact merged commit.

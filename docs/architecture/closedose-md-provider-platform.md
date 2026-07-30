@@ -1,15 +1,17 @@
 # CloseDose MD Provider Platform Architecture
 
-**Status:** Implemented; extended with PREtendingMD on 2026-07-24
+**Status:** Implemented; provider-suite expansion under clinical review on 2026-07-29
 
 **Production hostname:** `md.closedose.com`
 
 **Initial routes:**
 
-- `https://md.closedose.com/` — provider tool landing page
-- `https://md.closedose.com/PIG/` — Pediatric Airway Reference Calculator
-- `https://md.closedose.com/RSI/` — Pediatric Emergency RSI Reference & Calculator
-- `https://md.closedose.com/PMD/` — PREtendingMD PEM FlowMaster
+- `https://md.closedose.com/` - provider tool landing page
+- `https://md.closedose.com/PIG/` - Pediatric Airway Reference Calculator
+- `https://md.closedose.com/RSI/` - Pediatric Emergency RSI Reference and Calculator
+- `https://md.closedose.com/PMD/` - PREtendingMD PEM FlowMaster
+- `https://md.closedose.com/DEVICE/` - Peds Device Rescue after approval
+- `https://md.closedose.com/SEDATION/` - Pediatric Comfort and Sedation after approval
 
 Requests to `/PIG`, `/RSI`, and `/PMD` permanently redirect to their
 trailing-slash canonical routes. Route casing is intentional and must remain
@@ -36,6 +38,24 @@ PREtendingMD migration extends the same workspace and deployment pattern:
 
 Where the historical sections below refer to two tools, three entry documents,
 or a fully local-only platform, this extension is the governing architecture.
+
+## Provider-suite clinical release extension
+
+Device Rescue and Pediatric Comfort and Sedation are independent Vite
+workspaces with their own calculation or guidance tests and clinical and
+implementation specifications. A checked-in manifest is the production
+release switch. Production omits an unapproved route document; review mode
+builds the document with an unmistakable not-approved status. The provider
+catalog may describe review and planned work without implying availability.
+
+The manifest cannot approve itself. Device requires named PEM, pediatric
+airway specialty, institutional, and regulatory review. Sedation also requires
+named pediatric pharmacy and pediatric sedation or anesthesia review. Every
+approval record includes a date and reviewed scope.
+
+The later `/TRANSFER/`, `/AGITATION/`, `/NEWBORN/`, `/CHD/`, `/INGESTION/`, and
+`/CLOCK/` routes remain catalog metadata and governance specifications only.
+They do not produce HTML entry documents.
 
 ## Decision
 

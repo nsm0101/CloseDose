@@ -99,19 +99,54 @@ function App() {
           </div>
 
           <div className="tool-list">
-            {toolCatalog.map((tool) => (
-              <a className="tool-entry" href={tool.route} key={tool.id}>
+            {toolCatalog.map((tool) => {
+              const content = (
+                <>
                 <div className="tool-meta">
                   <span className="tool-code">{tool.shortTitle}</span>
                   <span className="tool-status">{tool.status}</span>
                 </div>
                 <h3>{tool.title}</h3>
-                <p>{tool.scope}</p>
+                <p>{tool.task}</p>
+                <dl className="tool-details">
+                  <div>
+                    <dt>Audience</dt>
+                    <dd>{tool.audience.join(', ')}</dd>
+                  </div>
+                  <div>
+                    <dt>Evidence</dt>
+                    <dd>{tool.evidenceVersion ?? 'Baseline not yet selected'}</dd>
+                  </div>
+                  <div>
+                    <dt>Review date</dt>
+                    <dd>{tool.clinicalReviewDate ?? 'Not recorded'}</dd>
+                  </div>
+                  <div>
+                    <dt>Route</dt>
+                    <dd>{tool.canonicalRoute}</dd>
+                  </div>
+                </dl>
                 <span className="tool-link-label">
-                  Open reference <span aria-hidden="true">→</span>
+                  {tool.publiclyAccessible
+                    ? 'Open reference'
+                    : tool.status === 'Clinical review'
+                      ? 'Awaiting approval'
+                      : 'Planned module'}{' '}
+                  {tool.publiclyAccessible ? <span aria-hidden="true">→</span> : null}
                 </span>
-              </a>
-            ))}
+                </>
+              );
+
+              return tool.publiclyAccessible ? (
+                <a className="tool-entry" href={tool.canonicalRoute} key={tool.id}>
+                  {content}
+                </a>
+              ) : (
+                <article className="tool-entry tool-entry-unavailable" key={tool.id}>
+                  {content}
+                </article>
+              );
+            })}
           </div>
         </section>
 

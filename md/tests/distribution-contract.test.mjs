@@ -4,8 +4,22 @@ import path from 'node:path';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
 
+import {
+  isPublicReleaseApproved,
+  readClinicalReleaseManifest
+} from '../scripts/clinical-release-manifest.mjs';
+
 const mdRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const distRoot = path.join(mdRoot, 'dist');
+const buildMode = (await readFile(path.join(mdRoot, '.build-mode'), 'utf8')).trim();
+const releaseManifest = await readClinicalReleaseManifest();
+const reviewApplications = [
+  { tool: 'device', directory: 'DEVICE', assetRoot: '/DEVICE/assets/' },
+  { tool: 'sedation', directory: 'SEDATION', assetRoot: '/SEDATION/assets/' }
+];
+const releasedReviewApplications = reviewApplications.filter(
+  ({ tool }) => buildMode === 'review' || isPublicReleaseApproved(releaseManifest, tool)
+);
 
 const readDist = (relativePath) =>
   readFile(path.join(distRoot, relativePath), 'utf8');
@@ -76,17 +90,35 @@ test('assembled artifact contains all canonical applications and control files',
     'PIG',
     'PMD',
     'RSI',
+    ...releasedReviewApplications.map(({ directory }) => directory),
     '_headers',
     '_redirects',
     'assets',
     'index.html'
-  ];
+  ].sort();
   const actualTopLevel = (await readdir(distRoot)).sort();
 
   assert.deepEqual(actualTopLevel, expectedTopLevel);
 
-  for (const relativePath of ['index.html', 'PIG/index.html', 'RSI/index.html', 'PMD/index.html']) {
+  for (const relativePath of [
+    'index.html',
+    'PIG/index.html',
+    'RSI/index.html',
+    'PMD/index.html',
+    ...releasedReviewApplications.map(({ directory }) => `${directory}/index.html`)
+  ]) {
     assert.ok((await stat(path.join(distRoot, relativePath))).size > 100, relativePath);
+  }
+
+  for (const application of reviewApplications) {
+    const shouldExist = releasedReviewApplications.includes(application);
+    await assert.doesNotReject(async () => {
+      const exists = await stat(path.join(distRoot, application.directory)).then(
+        () => true,
+        () => false
+      );
+      assert.equal(exists, shouldExist, application.directory);
+    });
   }
 });
 
@@ -106,7 +138,11 @@ test('hashed application assets remain rooted at their canonical route', async (
         '/PMD/images/wordmark.png',
         '/PMD/manifest.webmanifest'
       ])
-    }
+    },
+    ...releasedReviewApplications.map(({ directory, assetRoot }) => ({
+      html: `${directory}/index.html`,
+      assetRoot
+    }))
   ];
 
   for (const application of applications) {
@@ -149,7 +185,9 @@ test('Cloudflare redirects enforce uppercase trailing-slash canonical routes', a
   assert.deepEqual(redirects, [
     '/PIG /PIG/ 301',
     '/RSI /RSI/ 301',
-    '/PMD /PMD/ 301'
+    '/PMD /PMD/ 301',
+    '/DEVICE /DEVICE/ 301',
+    '/SEDATION /SEDATION/ 301'
   ]);
 });
 
@@ -216,7 +254,16 @@ test('security headers keep runtime capabilities local and HTML revalidated', as
   assert.match(rootHeaders.get('permissions-policy'), /microphone=\(\)/);
   assert.match(rootHeaders.get('permissions-policy'), /geolocation=\(\)/);
 
-  for (const route of ['/', '/PIG/', '/RSI/', '/PMD/', '/404.html', '/404.css']) {
+  for (const route of [
+    '/',
+    '/PIG/',
+    '/RSI/',
+    '/PMD/',
+    '/DEVICE/',
+    '/SEDATION/',
+    '/404.html',
+    '/404.css'
+  ]) {
     assert.equal(
       rules.get(route).get('cache-control'),
       'public, max-age=0, must-revalidate',
@@ -229,7 +276,9 @@ test('security headers keep runtime capabilities local and HTML revalidated', as
     '/PIG/assets/*',
     '/RSI/assets/*',
     '/PMD/assets/*',
-    '/PMD/images/*'
+    '/PMD/images/*',
+    '/DEVICE/assets/*',
+    '/SEDATION/assets/*'
   ]) {
     assert.equal(
       rules.get(route).get('cache-control'),

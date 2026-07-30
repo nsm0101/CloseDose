@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "device": {
+    "status": "Clinical review",
+    "publicReleaseApproved": false,
+    "clinicalReviewDate": null,
+    "reviewers": []
+  },
+  "sedation": {
+    "status": "Clinical review",
+    "publicReleaseApproved": false,
+    "clinicalReviewDate": null,
+    "reviewers": []
+  }
+}

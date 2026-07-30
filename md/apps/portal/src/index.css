@@ -277,6 +277,14 @@ a:focus-visible {
   background: var(--surface);
 }
 
+.tool-entry-unavailable {
+  color: var(--ink);
+}
+
+.tool-entry-unavailable:hover {
+  background: transparent;
+}
+
 .tool-meta {
   display: flex;
   align-items: center;
@@ -313,6 +321,35 @@ a:focus-visible {
   color: var(--muted);
   font-size: 0.95rem;
   line-height: 1.6;
+}
+
+.tool-details {
+  display: grid;
+  margin: 1.25rem 0 0;
+  gap: 0.7rem;
+}
+
+.tool-details > div {
+  display: grid;
+  grid-template-columns: 5.5rem minmax(0, 1fr);
+  gap: 0.75rem;
+}
+
+.tool-details dt,
+.tool-details dd {
+  margin: 0;
+  font-size: 0.76rem;
+  line-height: 1.45;
+}
+
+.tool-details dt {
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.tool-details dd {
+  overflow-wrap: anywhere;
+  color: var(--ink);
 }
 
 .tool-link-label {

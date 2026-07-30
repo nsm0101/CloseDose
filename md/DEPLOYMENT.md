@@ -16,7 +16,10 @@ the existing Pages project or `public/` output that serves `closedose.com`.
 
 The build removes only `md/dist/`, builds the portal first, then PIG, RSI, and
 PREtendingMD, and finally copies and validates the Cloudflare controls and
-provider 404.
+provider 404. Device and Sedation join a production artifact only when the
+checked-in clinical release manifest contains all required named approvals.
+`npm run build:review` assembles both applications for local review while
+retaining their visible not-approved status.
 
 ## Security and caching
 
@@ -105,9 +108,9 @@ member back to a shift.
 
 Canonical HTML, `404.html`, and the stable `/404.css` URL use
 `public, max-age=0, must-revalidate`. Vite content-hashed assets under
-`/assets/`, `/PIG/assets/`, `/RSI/assets/`, and `/PMD/assets/` are immutable
-for one year. PREtendingMD's optimized `/PMD/images/` assets are also
-immutable.
+`/assets/`, `/PIG/assets/`, `/RSI/assets/`, `/PMD/assets/`, `/DEVICE/assets/`,
+and `/SEDATION/assets/` are immutable for one year. PREtendingMD's optimized
+`/PMD/images/` assets are also immutable.
 
 ## Local release gate
 
@@ -118,6 +121,7 @@ npm ci
 npm run typecheck
 npm run test:unit
 npm run test:rules
+npm run build:review
 npm run build
 npm run test:contract
 npx playwright install --with-deps chromium
@@ -168,6 +172,17 @@ pull request:
   unapproved verified account cannot read a shift;
 - a named clinical owner approved the preview formulas, reference values,
   warnings, and representative outputs.
+
+### Device and Sedation public release gate
+
+Do not set `publicReleaseApproved` to `true` without recording the required
+named roles, approval dates, and reviewed scope in
+`clinical-release-manifest.json`. Device requires PEM, pediatric airway
+specialty, institutional, and regulatory approvals. Sedation requires PEM,
+pediatric pharmacy, pediatric sedation or anesthesia, institutional, and
+regulatory approvals. The manifest validator fails the build if a required
+role or record field is missing. Until then, production omits both route
+documents and the portal labels them `Awaiting approval`.
 
 ## Custom domain and production gate
 
