@@ -30,8 +30,9 @@ PREtendingMD migration extends the same workspace and deployment pattern:
 
 - `md/apps/pmd/` is the fourth isolated application workspace and builds to
   `md/dist/PMD/`.
-- The root build runs portal, PIG, RSI, and PREtendingMD and requires all four
-  entry documents before release.
+- The root production build runs the portal, PIG, five standalone RSI tools,
+  and PREtendingMD. It requires all eight entry documents before release and
+  omits unapproved Device and Sedation review documents.
 - The portal describes data handling per tool. PIG and RSI remain local-only.
   PREtendingMD intentionally uses Firebase Authentication, Firestore real-time
   sync, and browser storage for workflow settings.

@@ -163,7 +163,7 @@ pull request:
 
 - the exact commit passed the local Node 22 sequence and provider CI;
 - the Pages smoke command passed against `closedose-md.pages.dev`;
-- `/PIG`, `/RSI`, and `/PMD` redirect to the uppercase trailing-slash routes;
+- every available no-slash tool route redirects to its uppercase trailing-slash route;
 - lowercase variants return the provider 404;
 - the browser console, page errors, request failures, unexpected requests, and
   unexpected popup audit are clean during normal flows;
@@ -204,15 +204,23 @@ dig +short md.closedose.com
 curl -fsSIL https://md.closedose.com/
 curl -fsSIL https://md.closedose.com/PIG/
 curl -fsSIL https://md.closedose.com/RSI/
+curl -fsSIL https://md.closedose.com/AIRWAY-SCENARIOS/
+curl -fsSIL https://md.closedose.com/POST-INTUBATION/
+curl -fsSIL https://md.closedose.com/RSI-TIMELINE/
+curl -fsSIL https://md.closedose.com/AIRWAY-TRANSPORT/
 curl -fsSIL https://md.closedose.com/PMD/
 curl -sSI https://md.closedose.com/PIG | sed -n '1,8p'
 curl -sSI https://md.closedose.com/RSI | sed -n '1,8p'
+curl -sSI https://md.closedose.com/AIRWAY-SCENARIOS | sed -n '1,8p'
+curl -sSI https://md.closedose.com/POST-INTUBATION | sed -n '1,8p'
+curl -sSI https://md.closedose.com/RSI-TIMELINE | sed -n '1,8p'
+curl -sSI https://md.closedose.com/AIRWAY-TRANSPORT | sed -n '1,8p'
 curl -sSI https://md.closedose.com/PMD | sed -n '1,8p'
 CLOSEDOSE_MD_BASE_URL=https://md.closedose.com npm run test:smoke
 ```
 
-Production is accepted only when DNS resolves, TLS is valid, all four
-canonical routes return a final HTTP 200, redirect/casing/header checks pass,
+Production is accepted only when DNS resolves, TLS is valid, the portal and all
+seven public tool routes return a final HTTP 200, redirect/casing/header checks pass,
 representative clinical interactions pass, and the normal-flow runtime audit
 is clean.
 

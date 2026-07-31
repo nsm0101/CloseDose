@@ -26,6 +26,12 @@ test('CI uses least privilege and reviewed immutable action pins', async () => {
   assert.doesNotMatch(workflow, /uses:\s*actions\/(?:checkout|setup-node)@v4/);
   assert.match(workflow, /name: Test Firestore authorization rules/);
   assert.match(workflow, /run: npm run test:rules/);
+  assert.match(workflow, /name: Assemble and validate clinical review artifact/);
+  assert.match(workflow, /run: npm run build:review/);
+  assert.ok(
+    workflow.indexOf('run: npm run build:review') < workflow.indexOf('run: npm run build\n'),
+    'review artifact must be validated before production rebuilds dist'
+  );
 });
 
 test('target resolver preserves local mode and normalizes an external origin', () => {
