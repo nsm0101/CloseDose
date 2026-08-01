@@ -5,6 +5,8 @@ export { default as SedationReference } from './components/SedationReference';
 export { default as TransportKit } from './components/TransportKit';
 export { StandaloneToolShell } from './StandaloneToolShell';
 export { WeightControl } from './WeightControl';
+export { INDUCTION_AGENTS, PARALYTICS_COMPARISON, SCENARIOS } from './data/rsiData';
+export type { Medication, ParalyticComparison, Scenario } from './types';
 
 export type AgeGroup = 'infant' | 'toddler' | 'child' | 'adolescent';
 

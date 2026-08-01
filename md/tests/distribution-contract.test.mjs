@@ -33,6 +33,12 @@ const releasedReviewApplications = reviewApplications.filter(
 const readDist = (relativePath) =>
   readFile(path.join(distRoot, relativePath), 'utf8');
 
+async function readApplicationScripts(directory) {
+  const assetDirectory = path.join(distRoot, directory, 'assets');
+  const scriptNames = (await readdir(assetDirectory)).filter((name) => name.endsWith('.js'));
+  return (await Promise.all(scriptNames.map((name) => readFile(path.join(assetDirectory, name), 'utf8')))).join('\n');
+}
+
 function parseHeaderRules(source) {
   const rules = new Map();
   let activePath;
@@ -160,11 +166,54 @@ test('review artifacts render the unapproved clinical-use boundary', async () =>
         directory
       );
     }
+
+    await page.goto(`http://127.0.0.1:${address.port}/AIRWAY-SCENARIOS/`, {
+      waitUntil: 'networkidle'
+    });
+    assert.equal(
+      (await page.getByLabel('Clinical review status').locator('strong').innerText()).toLowerCase(),
+      'clinical review'
+    );
+    assert.match(
+      (await page.getByLabel('Clinical review status').innerText()).toLowerCase(),
+      /not approved for clinical use/
+    );
+    await page.getByLabel('Exact age').fill('2');
+    await page.getByLabel('Age unit').selectOption('months');
+    await page.getByRole('radio', { name: /Status Epilepticus/ }).check();
+    await page.getByRole('checkbox', { name: /Known or suspected hyperkalemia/ }).check();
+    assert.equal(await page.locator('#scenario-reference-title').innerText(), 'Status Epilepticus');
+    assert.match(await page.getByLabel('Current weight 10.0 kilograms').innerText(), /10\.0 kg/);
+    assert.match(await page.locator('.scenario-protect-grid').innerText(), /Continue seizure treatment/);
+    assert.match(await page.locator('.scenario-warning-list').innerText(), /Young-infant airway considerations/);
+    assert.match(await page.locator('.scenario-warning-list').innerText(), /Succinylcholine safety warning/);
+    assert.equal(
+      await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth),
+      0
+    );
+    await page.getByRole('button', { name: 'Reset local tool' }).click();
+    assert.equal(await page.getByLabel('Exact age').inputValue(), '8');
+    assert.equal(await page.getByLabel('Age unit').inputValue(), 'years');
+    assert.equal(await page.locator('#scenario-reference-title').innerText(), 'Sepsis / Septic Shock');
+    assert.equal(await page.getByRole('checkbox', { checked: true }).count(), 0);
   } finally {
     await browser.close();
     await new Promise((resolve, reject) => {
       server.httpServer.close((error) => (error ? reject(error) : resolve()));
     });
+  }
+});
+
+test('airway scenario artifact contains only the selected build-mode workflow', async () => {
+  const scripts = await readApplicationScripts('AIRWAY-SCENARIOS');
+  if (buildMode === 'review') {
+    assert.match(scripts, /Not approved for clinical use/);
+    assert.match(scripts, /Describe this child/);
+    assert.doesNotMatch(scripts, /Patient-Specific Contraindications Triage/);
+  } else {
+    assert.match(scripts, /Patient-Specific Contraindications Triage/);
+    assert.doesNotMatch(scripts, /Not approved for clinical use/);
+    assert.doesNotMatch(scripts, /Describe this child/);
   }
 });
 

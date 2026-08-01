@@ -18,12 +18,13 @@ const manifest = await readClinicalReleaseManifest();
 const workspaceScripts = getBuildWorkspaceScripts(mode, manifest);
 
 function runNpm(script) {
-  const reviewWorkspace = {
+  const modeAwareWorkspace = {
+    'build:airway-scenarios': '@closedose-md/airway-scenarios',
     'build:device': '@closedose-md/device',
     'build:sedation': '@closedose-md/sedation'
   }[script];
-  const args = reviewWorkspace
-    ? ['run', 'build', '--workspace', reviewWorkspace, '--', '--mode', mode]
+  const args = modeAwareWorkspace
+    ? ['run', 'build', '--workspace', modeAwareWorkspace, '--', '--mode', mode]
     : ['run', script];
   const result = spawnSync(npmCommand, args, {
     cwd: mdRoot,
