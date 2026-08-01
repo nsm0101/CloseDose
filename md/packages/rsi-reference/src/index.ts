@@ -30,7 +30,7 @@ export const RSI_STANDALONE_TOOLS = {
     id: 'airway-scenarios',
     route: '/AIRWAY-SCENARIOS/',
     title: 'Pediatric Airway Scenario Guide',
-    purpose: 'Review the imported scenario and contraindication prompts with one verified weight.',
+    purpose: 'Combine exact age, verified weight, scenario, patient factors, cautions, and imported medication considerations.',
     requiresWeight: true
   },
   'post-intubation': {

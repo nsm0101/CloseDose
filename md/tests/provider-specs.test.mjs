@@ -77,9 +77,8 @@ test('airway scenario V2 has a bounded clinical-review specification', async () 
   ]) assert.match(implementation, new RegExp(heading));
 
   assert.match(`${clinical}\n${implementation}`, /Clinical review \/ not approved for clinical use/);
-  assert.match(implementation, /`production` renders the byte-pinned/);
-  assert.match(implementation, /`review` renders `IntegratedScenarioGuide`/);
+  assert.match(implementation, /Both `production` and `review` render `IntegratedScenarioGuide`/);
   assert.match(clinical, /named reviewer/i);
   assert.match(clinical, /regulatory review/i);
-  assert.match(clinical, /current public route retains the byte-pinned/i);
+  assert.match(clinical, /canonical public route renders the integrated flow/i);
 });
