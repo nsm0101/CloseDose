@@ -1,8 +1,8 @@
 # Pediatric Airway Scenario Guide V2 Clinical Specification
 
-Status: **Clinical review / not approved for clinical use**
+Status: **Public clinical-review reference / not approved for clinical use**
 
-The current public `/AIRWAY-SCENARIOS/` application is an imported, byte-pinned CC-RSI reference. This specification covers a candidate patient-first presentation that combines exact age, verified weight, clinical scenario, patient factors, source-mapped cautions, medication considerations, pearls, pitfalls, and exceptional cases in one flow. The candidate does not replace the public presentation until every release requirement below is complete.
+The public `/AIRWAY-SCENARIOS/` application presents a patient-first flow that combines exact age, verified weight, clinical scenario, patient factors, source-mapped cautions, medication considerations, pearls, pitfalls, and exceptional cases. The imported medication values remain byte-pinned. Public availability does not represent completion of the named clinical or regulatory reviews below, so the application retains a prominent `Clinical review / not approved for clinical use` boundary.
 
 ## Intended population
 
@@ -53,7 +53,7 @@ Patient factors never remove or promote an option. They add qualitative review p
 
 1. Are the nine imported scenario classifications still acceptable, including the distinction between stable and unstable trauma or elevated intracranial pressure?
 2. Are all imported induction-agent rankings, rationales, and calculated doses current for US emergency practice?
-3. Should the imported neonatal scenario list propofol as preferred, ketamine as alternative, etomidate as avoided, and succinylcholine as avoided? Neonatology, pediatric anesthesia, PEM, and pharmacy must resolve this before release.
+3. Should the imported neonatal scenario list propofol as preferred, ketamine as alternative, etomidate as avoided, and succinylcholine as avoided? Neonatology, pediatric anesthesia, PEM, and pharmacy must resolve this before the clinical-review warning can be removed.
 4. The imported component applies procedural-sedation language about ketamine in infants younger than 3 months to crash intubation. Should that language be removed, rewritten, or explicitly separated from RSI?
 5. Does the imported mitochondrial-disease statement about propofol have an appropriate primary source and scope for a single emergency induction dose, or should it remain a specialist-review prompt only?
 6. Is the 2026 SCCM conditional suggestion against etomidate presented with sufficient evidence-strength context and without converting a conditional guideline statement into an absolute contraindication?
@@ -66,7 +66,7 @@ Patient factors never remove or promote an option. They add qualitative review p
 
 ## Required named reviewers
 
-Public replacement requires all of these recorded approvals:
+Removal of the clinical-review warning or representation as clinically approved requires all of these recorded approvals:
 
 1. Pediatric Emergency Medicine physician.
 2. Pediatric anesthesiology or pediatric airway specialist.
@@ -97,6 +97,6 @@ Public replacement requires all of these recorded approvals:
 
 ## Release boundary
 
-The current public route retains the byte-pinned clinical component and receives only a contrast correction. The integrated candidate is compiled only in `review` mode and is visibly marked `Clinical review / not approved for clinical use`.
+By explicit product-owner direction on 2026-08-01, the canonical public route renders the integrated flow and keeps it visibly marked `Clinical review / not approved for clinical use`. The older imported component remains byte-pinned in source for provenance but is not shipped in the route artifact.
 
-Passing software tests does not authorize clinical release. The integrated flow may replace the public pinned view only after every open question is dispositioned, named reviewers approve the exact commit and source matrix, community-ED and PEM simulations pass, regulatory review authorizes the intended use, and the production/review artifact contract is updated atomically.
+Passing software tests and public availability do not constitute clinical approval. The warning may be removed only after every open question is dispositioned, named reviewers approve the exact commit and source matrix, community-ED and PEM simulations pass, and regulatory review authorizes the intended use.

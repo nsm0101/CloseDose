@@ -178,3 +178,7 @@ Confirm `/AIRWAY-SCENARIOS` redirects to `/AIRWAY-SCENARIOS/`, the canonical rou
 - The old component and shared clinical data remain byte-pinned in production.
 - Exact age does not infer weight, and weight does not infer age.
 - Tests cover the visually reported defect plus every new age boundary and review-build release boundary.
+
+## Production-promotion addendum
+
+On 2026-08-01, after the safe-subset release and separate review deployment were verified, the product owner explicitly directed that the integrated workflow be pushed live. The canonical production route now renders the same patient-first workflow as the review artifact. Its `Clinical review / not approved for clinical use` warning remains visible because the named specialty and regulatory approvals have not been recorded. Public availability must not be described as clinical approval.

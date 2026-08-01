@@ -1,15 +1,12 @@
 # Pediatric Airway Scenario Guide V2 Implementation Specification
 
-Status: **Clinical review / not approved for clinical use**
+Status: **Public clinical-review reference / not approved for clinical use**
 
 ## Proposed route and runtime
 
-The canonical route remains `/AIRWAY-SCENARIOS/`. Vite receives an explicit compile-time build mode.
+The canonical route remains `/AIRWAY-SCENARIOS/`. Both `production` and `review` render `IntegratedScenarioGuide` with the same visible clinical-review boundary. The route has no runtime feature flag or query parameter that can switch workflows.
 
-- `production` renders the byte-pinned `ScenarioGuide` inside `.airway-scenario-legacy` and applies only the scoped contrast correction.
-- `review` renders `IntegratedScenarioGuide` with a visible clinical-review boundary.
-
-Both builds remain static, client-only, identifier-free, and nonpersistent. No runtime feature flag or query parameter can expose the candidate in production.
+Both builds remain static, client-only, identifier-free, and nonpersistent. The older byte-pinned `ScenarioGuide` remains in the shared source package for provenance but is excluded from the airway-scenario JavaScript artifact.
 
 ## Identifier-free inputs
 
@@ -35,11 +32,11 @@ Exact age is normalized with fixed constants only for deterministic boundary dis
 
 Patient-factor warnings are additive. They do not diagnose, select a best agent, hide an option, change a dose, or change the imported scenario classification. Every warning carries a stable source identifier.
 
-Medication names, classifications, dose bases, advantages, disadvantages, and contraindications come from byte-pinned `rsiData.ts`. The review component may calculate and display the same imported milligram result by multiplying the unchanged milligram-per-kilogram value by verified weight. It must not alter a formula, cap, or rounding rule.
+Medication names, classifications, dose bases, advantages, disadvantages, and contraindications come from byte-pinned `rsiData.ts`. The public component may calculate and display the same imported milligram result by multiplying the unchanged milligram-per-kilogram value by verified weight. It must not alter a formula, cap, or rounding rule.
 
 ## Interaction and accessibility
 
-The review workflow follows one vertical reading order:
+The public workflow follows one vertical reading order:
 
 1. Clinical-review gate.
 2. Exact patient context.
@@ -66,7 +63,7 @@ CSS uses app-scoped semantic tokens for surface, text, muted text, line, accent,
 - Privacy scan: no identifiers, storage, analytics, network transport, external URL, or environment/API-key plumbing.
 - Production browser tests: light and dark contrast, one workflow, interaction continuity, reset, no overflow, and clean runtime audit.
 - Review browser tests: visible unapproved status, exact age/scenario/factor integration, deterministic result update, invalid-age handling, reset, keyboard order, 320 px layout, and no runtime violations.
-- Distribution tests: production and review artifacts share the canonical route, but only review mode contains candidate status and patient-first copy.
+- Distribution tests: production and review artifacts both contain the integrated workflow and exclude the older contraindication-triage component.
 
 ## Release gates
 
@@ -76,6 +73,6 @@ CSS uses app-scoped semantic tokens for surface, text, muted text, line, accent,
 4. Community-ED and PEM simulation cases pass the three-interaction and 20-second urgent-information target.
 5. Privacy and security review confirms client-only, identifier-free, nonpersistent behavior.
 6. Regulatory review authorizes the patient-specific intended use and release controls.
-7. The production switch is an explicit reviewed code change. No runtime flag can expose the review view.
+7. Removal or alteration of the clinical-review boundary is an explicit reviewed code change; no runtime flag can bypass it.
 8. Full typecheck, unit, privacy, rules, review build, production build, distribution contract, and browser smoke suites pass.
 9. Production is deployed only from merged `main`, followed by exact-case route, redirect, interaction, contrast, CSP, privacy, and Pages-status verification.

@@ -137,9 +137,7 @@ test('assembled artifact contains all canonical applications and control files',
   }
 });
 
-test('review artifacts render the unapproved clinical-use boundary', async () => {
-  if (buildMode !== 'review') return;
-
+test('review boundaries render and the integrated airway workflow ships in every build', async () => {
   const server = await preview({
     root: mdRoot,
     build: { outDir: 'dist' },
@@ -151,20 +149,22 @@ test('review artifacts render the unapproved clinical-use boundary', async () =>
 
   try {
     const page = await browser.newPage({ viewport: { width: 320, height: 800 } });
-    for (const { directory } of reviewApplications) {
-      await page.goto(`http://127.0.0.1:${address.port}/${directory}/`, {
-        waitUntil: 'networkidle'
-      });
-      assert.equal(
-        (await page.locator('.review-badge strong').innerText()).toLowerCase(),
-        'clinical review',
-        directory
-      );
-      assert.equal(
-        (await page.locator('.review-badge small').innerText()).toLowerCase(),
-        'not approved for clinical use',
-        directory
-      );
+    if (buildMode === 'review') {
+      for (const { directory } of reviewApplications) {
+        await page.goto(`http://127.0.0.1:${address.port}/${directory}/`, {
+          waitUntil: 'networkidle'
+        });
+        assert.equal(
+          (await page.locator('.review-badge strong').innerText()).toLowerCase(),
+          'clinical review',
+          directory
+        );
+        assert.equal(
+          (await page.locator('.review-badge small').innerText()).toLowerCase(),
+          'not approved for clinical use',
+          directory
+        );
+      }
     }
 
     await page.goto(`http://127.0.0.1:${address.port}/AIRWAY-SCENARIOS/`, {
@@ -204,17 +204,11 @@ test('review artifacts render the unapproved clinical-use boundary', async () =>
   }
 });
 
-test('airway scenario artifact contains only the selected build-mode workflow', async () => {
+test('airway scenario artifact contains the integrated workflow in every build mode', async () => {
   const scripts = await readApplicationScripts('AIRWAY-SCENARIOS');
-  if (buildMode === 'review') {
-    assert.match(scripts, /Not approved for clinical use/);
-    assert.match(scripts, /Describe this child/);
-    assert.doesNotMatch(scripts, /Patient-Specific Contraindications Triage/);
-  } else {
-    assert.match(scripts, /Patient-Specific Contraindications Triage/);
-    assert.doesNotMatch(scripts, /Not approved for clinical use/);
-    assert.doesNotMatch(scripts, /Describe this child/);
-  }
+  assert.match(scripts, /Not approved for clinical use/);
+  assert.match(scripts, /Describe this child/);
+  assert.doesNotMatch(scripts, /Patient-Specific Contraindications Triage/);
 });
 
 test('hashed application assets remain rooted at their canonical route', async () => {

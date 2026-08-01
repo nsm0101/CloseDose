@@ -440,9 +440,14 @@ test('standalone RSI tools keep independent state and expose one workflow per ro
   await page.goto('/AIRWAY-SCENARIOS/');
   await expect(page.locator('[data-workflow]')).toHaveAttribute('data-workflow', 'airway-scenarios');
   await expect(page.getByLabel('Verified weight')).toHaveValue('10');
-  await expect(page.getByText('Patient-Specific Contraindications Triage')).toBeVisible();
-  await page.getByRole('button', { name: /Hyperkalemia/ }).click();
-  await expect(page.getByText('CRITICAL CONTRAINDICATION ALERT:')).toBeVisible();
+  await expect(page.getByLabel('Clinical review status')).toContainText('Not approved for clinical use');
+  await page.getByLabel('Exact age').fill('2');
+  await page.getByLabel('Age unit').selectOption('months');
+  await page.getByRole('radio', { name: /Status Epilepticus/ }).check();
+  await page.getByRole('checkbox', { name: /Known or suspected hyperkalemia/ }).check();
+  await expect(page.locator('#scenario-reference-title')).toHaveText('Status Epilepticus');
+  await expect(page.locator('.scenario-warning-list')).toContainText('Young-infant airway considerations');
+  await expect(page.locator('.scenario-warning-list')).toContainText('Succinylcholine safety warning');
 
   await page.goto('/POST-INTUBATION/');
   await expect(page.locator('[data-workflow]')).toHaveAttribute('data-workflow', 'post-intubation');
@@ -478,14 +483,14 @@ test('airway scenario guide remains readable in dark mode at phone width', async
   await page.goto('/AIRWAY-SCENARIOS/');
   await page.waitForLoadState('networkidle');
 
-  await page.locator('#contra-hyperkalemia').click();
+  await page.getByRole('checkbox', { name: /Known or suspected hyperkalemia/ }).check();
   const contrastTargets = [
-    page.locator('#scenario-btn-sepsis'),
-    page.getByText('First Line', { exact: true }),
-    page.getByText('Alternative', { exact: true }),
-    page.getByText('Avoid / Warning', { exact: true }),
-    page.getByText('CRITICAL CONTRAINDICATION ALERT:', { exact: true }),
-    page.getByText('Rocuronium', { exact: true })
+    page.getByLabel('Clinical review status').locator('strong'),
+    page.locator('.scenario-choice[data-selected="true"] > span'),
+    page.getByText('Succinylcholine safety warning', { exact: true }),
+    page.getByText('Preferred in imported scenario', { exact: true }),
+    page.getByText('Alternative in imported scenario', { exact: true }),
+    page.getByText('Avoid or warning in imported scenario', { exact: true })
   ];
 
   for (const target of contrastTargets) {

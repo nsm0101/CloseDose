@@ -84,11 +84,11 @@ export const toolCatalog: readonly ToolCatalogEntry[] = [
     id: 'airway-scenarios',
     shortTitle: 'SCENARIOS',
     title: 'Pediatric Airway Scenario Guide',
-    task: 'Review contraindication prompts and scenario-specific airway considerations.',
+    task: 'Combine exact age, scenario, patient factors, cautions, pearls, and exceptional cases.',
     status: 'Available',
     audience: ['Community EM', 'PEM'],
     category: 'Airway and RSI',
-    evidenceVersion: 'CC-RSI a309bda',
+    evidenceVersion: 'CC-RSI a309bda + source matrix 2026',
     clinicalReviewDate: null,
     canonicalRoute: '/AIRWAY-SCENARIOS/',
     publiclyAccessible: true

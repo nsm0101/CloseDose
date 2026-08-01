@@ -3,30 +3,6 @@
 @source "../../../packages/rsi-reference/src";
 @theme { --font-sans: ui-sans-serif, system-ui, sans-serif; --font-mono: ui-monospace, monospace; --font-display: ui-sans-serif, system-ui, sans-serif; }
 
-/* Production-safe contrast correction for the byte-pinned scenario guide. */
-@media (prefers-color-scheme: dark) {
-  .airway-scenario-legacy .bg-blue-50 { background-color: #142b42 !important; }
-  .airway-scenario-legacy .bg-green-50 { background-color: #132a20 !important; }
-  .airway-scenario-legacy .bg-yellow-50 { background-color: #302510 !important; }
-  .airway-scenario-legacy .bg-red-50 { background-color: #33191d !important; }
-  .airway-scenario-legacy .bg-purple-50 { background-color: #281b39 !important; }
-
-  .airway-scenario-legacy .text-blue-900,
-  .airway-scenario-legacy .text-blue-600 { color: #a9caff !important; }
-  .airway-scenario-legacy .text-green-700,
-  .airway-scenario-legacy .text-green-600 { color: #9ae8bb !important; }
-  .airway-scenario-legacy .text-yellow-900,
-  .airway-scenario-legacy .text-yellow-700,
-  .airway-scenario-legacy .text-yellow-600 { color: #ffe09a !important; }
-  .airway-scenario-legacy .text-red-950,
-  .airway-scenario-legacy .text-red-900,
-  .airway-scenario-legacy .text-red-700,
-  .airway-scenario-legacy .text-red-600 { color: #ffb8ba !important; }
-  .airway-scenario-legacy .text-purple-900,
-  .airway-scenario-legacy .text-purple-700,
-  .airway-scenario-legacy .text-purple-600 { color: #dfbcff !important; }
-}
-
 .scenario-review-flow {
   --scenario-surface: #ffffff;
   --scenario-surface-subtle: #edf4f2;
