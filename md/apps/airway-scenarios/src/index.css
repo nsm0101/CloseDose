@@ -1,0 +1,4 @@
+@import "tailwindcss";
+@import "../../../packages/rsi-reference/src/reference.css";
+@source "../../../packages/rsi-reference/src";
+@theme { --font-sans: ui-sans-serif, system-ui, sans-serif; --font-mono: ui-monospace, monospace; --font-display: ui-sans-serif, system-ui, sans-serif; }

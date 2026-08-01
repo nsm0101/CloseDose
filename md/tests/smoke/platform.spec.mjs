@@ -14,12 +14,20 @@ const canonicalDocuments = new Map([
   ['/', 'document'],
   ['/PIG/', 'document'],
   ['/RSI/', 'document'],
+  ['/AIRWAY-SCENARIOS/', 'document'],
+  ['/POST-INTUBATION/', 'document'],
+  ['/RSI-TIMELINE/', 'document'],
+  ['/AIRWAY-TRANSPORT/', 'document'],
   ['/PMD/', 'document']
 ]);
 const physicalEntryDocuments = new Set([
   'index.html',
   'PIG/index.html',
   'RSI/index.html',
+  'AIRWAY-SCENARIOS/index.html',
+  'POST-INTUBATION/index.html',
+  'RSI-TIMELINE/index.html',
+  'AIRWAY-TRANSPORT/index.html',
   'PMD/index.html'
 ]);
 const controlFiles = new Set(['_headers', '_redirects']);
@@ -143,19 +151,67 @@ function auditRuntime(context) {
   };
 }
 
-test('portal fits exactly 320 px and all ordinary tool links navigate', async ({ page, context }) => {
+test('portal fits exactly 320 px and every available tool link navigates', async ({ page, context }) => {
   const runtimeAudit = auditRuntime(context);
   await page.setViewportSize({ width: 320, height: 800 });
   await page.goto('/');
   await page.waitForLoadState('networkidle');
 
   await expect(page.getByRole('heading', { name: 'Clinical tools. Ready when needed.' })).toBeVisible();
-  const pigLink = page.getByRole('link', { name: /Pediatric Airway Reference Calculator/ });
-  const rsiLink = page.getByRole('link', { name: /Pediatric Emergency RSI Reference and Calculator/ });
-  const pmdLink = page.getByRole('link', { name: /PREtendingMD: PEM FlowMaster/ });
-  await expect(pigLink).toHaveAttribute('href', '/PIG/');
-  await expect(rsiLink).toHaveAttribute('href', '/RSI/');
-  await expect(pmdLink).toHaveAttribute('href', '/PMD/');
+  await expect(page.getByText('15 tools shown')).toBeVisible();
+  const availableTools = [
+    {
+      title: 'Pediatric Airway Reference Calculator',
+      route: '/PIG/',
+      heading: /Critical Care Airway Reference/
+    },
+    {
+      title: 'Pediatric RSI Medication Calculator',
+      route: '/RSI/',
+      heading: 'Pediatric RSI Medication Calculator'
+    },
+    {
+      title: 'Pediatric Airway Scenario Guide',
+      route: '/AIRWAY-SCENARIOS/',
+      heading: 'Pediatric Airway Scenario Guide'
+    },
+    {
+      title: 'Post-Intubation Sedation Reference',
+      route: '/POST-INTUBATION/',
+      heading: 'Post-Intubation Sedation Reference'
+    },
+    {
+      title: 'RSI Progression Timeline',
+      route: '/RSI-TIMELINE/',
+      heading: 'RSI Progression Timeline'
+    },
+    {
+      title: 'Pediatric Airway Transport Kit',
+      route: '/AIRWAY-TRANSPORT/',
+      heading: 'Pediatric Airway Transport Kit'
+    },
+    {
+      title: 'PREtendingMD: PEM FlowMaster',
+      route: '/PMD/',
+      heading: 'Authorized clinical team access'
+    }
+  ];
+
+  for (const tool of availableTools) {
+    await expect(page.getByRole('link', { name: new RegExp(tool.title) })).toHaveAttribute(
+      'href',
+      tool.route
+    );
+  }
+  await expect(page.getByLabel('Peds Device Rescue, Clinical review')).toBeVisible();
+  await expect(page.getByLabel('Pediatric Comfort and Sedation Console, Clinical review')).toBeVisible();
+  await expect(page.getByRole('link', { name: /Peds Device Rescue/ })).toHaveCount(0);
+  await expect(page.getByRole('link', { name: /Pediatric Comfort and Sedation Console/ })).toHaveCount(0);
+
+  const firstToolBox = await page
+    .getByRole('link', { name: /Pediatric Airway Reference Calculator/ })
+    .boundingBox();
+  expect(firstToolBox?.y).toBeLessThan(800);
 
   const horizontalMetrics = await page.evaluate(() => ({
     body: document.body.scrollWidth - document.body.clientWidth,
@@ -163,23 +219,78 @@ test('portal fits exactly 320 px and all ordinary tool links navigate', async ({
   }));
   expect(horizontalMetrics).toEqual({ body: 0, document: 0 });
 
-  await pigLink.click();
-  await expect(page).toHaveURL(expectedUrl('/PIG/'));
-  await expect(page.getByRole('heading', { name: /Critical Care Airway Reference/ })).toBeVisible();
+  for (const tool of availableTools) {
+    await page.getByRole('link', { name: new RegExp(tool.title) }).click();
+    await expect(page).toHaveURL(expectedUrl(tool.route));
+    await expect(page.getByRole('heading', { name: tool.heading })).toBeVisible();
+    await page.goto('/');
+    await page.waitForLoadState('networkidle');
+  }
+  runtimeAudit.assertClean();
+});
 
-  await page.goBack();
-  await page.waitForLoadState('networkidle');
-  await page.getByRole('link', { name: /Pediatric Emergency RSI Reference and Calculator/ }).click();
-  await expect(page).toHaveURL(expectedUrl('/RSI/'));
-  await expect(page.getByRole('heading', { name: 'Critical Airway Utility' })).toBeVisible();
+test('provider suite discovery works across phone, tablet, desktop, light, and dark', async ({
+  page,
+  context
+}) => {
+  const runtimeAudit = auditRuntime(context);
+  const viewports = [
+    { width: 320, height: 800 },
+    { width: 768, height: 1024 },
+    { width: 1440, height: 900 }
+  ];
 
-  await page.goBack();
-  await page.waitForLoadState('networkidle');
-  await page.getByRole('link', { name: /PREtendingMD: PEM FlowMaster/ }).click();
-  await expect(page).toHaveURL(expectedUrl('/PMD/'));
-  await expect(
-    page.getByRole('heading', { name: 'Authorized clinical team access' })
-  ).toBeVisible();
+  for (const colorScheme of ['light', 'dark']) {
+    await page.emulateMedia({ colorScheme });
+    for (const viewport of viewports) {
+      await page.setViewportSize(viewport);
+      await page.goto('/');
+      await page.waitForLoadState('networkidle');
+
+      const horizontalMetrics = await page.evaluate(() => ({
+        body: document.body.scrollWidth - document.body.clientWidth,
+        document: document.documentElement.scrollWidth - document.documentElement.clientWidth
+      }));
+      expect(horizontalMetrics).toEqual({ body: 0, document: 0 });
+
+      const search = page.getByRole('searchbox', { name: 'Search provider tools' });
+      await search.fill('newborn');
+      await expect(page.getByText('1 tool shown')).toBeVisible();
+      await expect(page.getByLabel('Sick Newborn: First 15 Minutes, Planned')).toBeVisible();
+
+      if (viewport.width < 768) {
+        await page.getByRole('button', { name: 'Audience and status' }).click();
+        for (const filterName of ['All clinicians', 'Community EM', 'PEM', 'All statuses', 'Available', 'Clinical review', 'Planned']) {
+          const filterBox = await page.getByRole('button', { name: filterName, exact: true }).boundingBox();
+          expect(filterBox?.height, `${filterName} touch target`).toBeGreaterThanOrEqual(44);
+        }
+      }
+      await page.getByRole('button', { name: 'Clinical review' }).click();
+      await expect(page.getByText('No tools match these filters')).toBeVisible();
+      await page.getByRole('button', { name: 'Reset filters' }).click();
+      await expect(page.getByText('15 tools shown')).toBeVisible();
+
+      await page.getByRole('button', { name: 'Community EM' }).click();
+      await expect(page.getByRole('button', { name: 'Community EM' })).toHaveAttribute(
+        'aria-pressed',
+        'true'
+      );
+      await page.getByRole('button', { name: 'Clinical review' }).click();
+      await expect(page.getByText('2 tools shown')).toBeVisible();
+      await expect(page.getByRole('link', { name: /Peds Device Rescue/ })).toHaveCount(0);
+      await page.getByRole('button', { name: 'Reset filters' }).click();
+
+      await search.focus();
+      await expect(search).toBeFocused();
+      await page.keyboard.press('Tab');
+      if (viewport.width < 768) {
+        await expect(page.getByRole('button', { name: 'Audience and status' })).toBeFocused();
+      } else {
+        await expect(page.getByRole('button', { name: 'All clinicians' })).toBeFocused();
+      }
+    }
+  }
+
   runtimeAudit.assertClean();
 });
 
@@ -187,6 +298,10 @@ test('canonical redirects and unknown-route 404 are explicit', async ({ request 
   for (const [route, location] of [
     ['/PIG', '/PIG/'],
     ['/RSI', '/RSI/'],
+    ['/AIRWAY-SCENARIOS', '/AIRWAY-SCENARIOS/'],
+    ['/POST-INTUBATION', '/POST-INTUBATION/'],
+    ['/RSI-TIMELINE', '/RSI-TIMELINE/'],
+    ['/AIRWAY-TRANSPORT', '/AIRWAY-TRANSPORT/'],
     ['/PMD', '/PMD/']
   ]) {
     const response = await request.get(route, { maxRedirects: 0 });
@@ -198,7 +313,13 @@ test('canonical redirects and unknown-route 404 are explicit', async ({ request 
   expect(missing.status()).toBe(404);
   expect(await missing.text()).toContain('That provider page was not found.');
 
-  for (const route of ['/pig', '/pig/', '/rsi', '/rsi/', '/pmd', '/pmd/']) {
+  for (const route of [
+    '/pig', '/pig/', '/rsi', '/rsi/', '/pmd', '/pmd/',
+    '/airway-scenarios', '/airway-scenarios/',
+    '/post-intubation', '/post-intubation/',
+    '/rsi-timeline', '/rsi-timeline/',
+    '/airway-transport', '/airway-transport/'
+  ]) {
     const response = await request.get(route, { maxRedirects: 0 });
     expect(response.status(), route).toBe(404);
     expect(await response.text(), route).toContain('That provider page was not found.');
@@ -270,25 +391,35 @@ test('PIG age selection updates sizing and its procedure timer runs', async ({ p
   runtimeAudit.assertClean();
 });
 
-test('RSI calculates 20 kg rocuronium and exposes its core tabs and timer', async ({ page, context }) => {
+test('standalone RSI tools keep independent state and expose one workflow per route', async ({ page, context }) => {
   const runtimeAudit = auditRuntime(context);
   await page.goto('/RSI/');
   await expect(page).toHaveURL(expectedUrl('/RSI/'));
+  await expect(page.locator('[data-workflow]')).toHaveCount(1);
+  await expect(page.locator('[data-workflow]')).toHaveAttribute('data-workflow', 'rsi-medications');
+  await expect(page.getByRole('link', { name: 'CloseDose MD provider suite' })).toHaveAttribute('href', '/');
 
   const weightInput = page.getByPlaceholder('Enter kg');
   await weightInput.fill('20');
   await expect(weightInput).toHaveValue('20');
   await expect(page.locator('#med-card-rocuronium')).toContainText(/20\.0\s*mg/);
 
-  await page.getByRole('button', { name: /2\. Scenario Guide/ }).click();
+  await page.goto('/AIRWAY-SCENARIOS/');
+  await expect(page.locator('[data-workflow]')).toHaveAttribute('data-workflow', 'airway-scenarios');
+  await expect(page.getByLabel('Verified weight')).toHaveValue('10');
   await expect(page.getByText('Patient-Specific Contraindications Triage')).toBeVisible();
   await page.getByRole('button', { name: /Hyperkalemia/ }).click();
   await expect(page.getByText('CRITICAL CONTRAINDICATION ALERT:')).toBeVisible();
 
-  await page.getByRole('button', { name: /3\. Post-Sedation/ }).click();
+  await page.goto('/POST-INTUBATION/');
+  await expect(page.locator('[data-workflow]')).toHaveAttribute('data-workflow', 'post-intubation');
   await expect(page.getByRole('heading', { name: 'Post-Intubation Sedation & Analgesia' })).toBeVisible();
+  await page.getByLabel('Verified weight').fill('24');
+  await page.getByRole('button', { name: 'Reset local tool' }).click();
+  await expect(page.getByLabel('Verified weight')).toHaveValue('10');
 
-  await page.getByRole('button', { name: /4\. Progression Tracker/ }).click();
+  await page.goto('/RSI-TIMELINE/');
+  await expect(page.locator('[data-workflow]')).toHaveAttribute('data-workflow', 'rsi-timeline');
   await expect(page.getByText('RSI Procedure Stopwatch')).toBeVisible();
   const cprTimer = page.locator('#interval-timer-cpr-loop');
   const progressBar = cprTimer.locator('[style]');
@@ -300,14 +431,15 @@ test('RSI calculates 20 kg rocuronium and exposes its core tabs and timer', asyn
   await expect(page.locator('#progression-tracker')).toContainText(/00:0[1-9]/, { timeout: 3_000 });
   await page.getByRole('button', { name: 'Pause Clock' }).click();
 
-  await page.getByRole('button', { name: /5\. Transport Kit/ }).click();
+  await page.goto('/AIRWAY-TRANSPORT/');
+  await expect(page.locator('[data-workflow]')).toHaveAttribute('data-workflow', 'airway-transport');
   await expect(page.getByText('Critical PICU Transport Reference')).toBeVisible();
   await expect(page.getByRole('button', { name: 'B. Vasopressors' })).toBeVisible();
   runtimeAudit.assertClean();
 });
 
 test('CSP blocks inline style elements while permitting the RSI style attribute mechanism', async ({ page }) => {
-  await page.goto('/RSI/');
+  await page.goto('/RSI-TIMELINE/');
 
   const result = await page.evaluate(async () => {
     const host = document.createElement('div');

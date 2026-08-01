@@ -3,9 +3,32 @@ import { readFile, readdir, stat } from 'node:fs/promises';
 import path from 'node:path';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
+import { chromium } from 'playwright';
+import { preview } from 'vite';
+
+import {
+  isPublicReleaseApproved,
+  readClinicalReleaseManifest
+} from '../scripts/clinical-release-manifest.mjs';
 
 const mdRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const distRoot = path.join(mdRoot, 'dist');
+const buildMode = (await readFile(path.join(mdRoot, '.build-mode'), 'utf8')).trim();
+const releaseManifest = await readClinicalReleaseManifest();
+const reviewApplications = [
+  { tool: 'device', directory: 'DEVICE', assetRoot: '/DEVICE/assets/' },
+  { tool: 'sedation', directory: 'SEDATION', assetRoot: '/SEDATION/assets/' }
+];
+const rsiApplications = [
+  { directory: 'RSI', assetRoot: '/RSI/assets/' },
+  { directory: 'AIRWAY-SCENARIOS', assetRoot: '/AIRWAY-SCENARIOS/assets/' },
+  { directory: 'POST-INTUBATION', assetRoot: '/POST-INTUBATION/assets/' },
+  { directory: 'RSI-TIMELINE', assetRoot: '/RSI-TIMELINE/assets/' },
+  { directory: 'AIRWAY-TRANSPORT', assetRoot: '/AIRWAY-TRANSPORT/assets/' }
+];
+const releasedReviewApplications = reviewApplications.filter(
+  ({ tool }) => buildMode === 'review' || isPublicReleaseApproved(releaseManifest, tool)
+);
 
 const readDist = (relativePath) =>
   readFile(path.join(distRoot, relativePath), 'utf8');
@@ -75,18 +98,73 @@ test('assembled artifact contains all canonical applications and control files',
     '404.html',
     'PIG',
     'PMD',
-    'RSI',
+    ...rsiApplications.map(({ directory }) => directory),
+    ...releasedReviewApplications.map(({ directory }) => directory),
     '_headers',
     '_redirects',
     'assets',
     'index.html'
-  ];
+  ].sort();
   const actualTopLevel = (await readdir(distRoot)).sort();
 
   assert.deepEqual(actualTopLevel, expectedTopLevel);
 
-  for (const relativePath of ['index.html', 'PIG/index.html', 'RSI/index.html', 'PMD/index.html']) {
+  for (const relativePath of [
+    'index.html',
+    'PIG/index.html',
+    ...rsiApplications.map(({ directory }) => `${directory}/index.html`),
+    'PMD/index.html',
+    ...releasedReviewApplications.map(({ directory }) => `${directory}/index.html`)
+  ]) {
     assert.ok((await stat(path.join(distRoot, relativePath))).size > 100, relativePath);
+  }
+
+  for (const application of reviewApplications) {
+    const shouldExist = releasedReviewApplications.includes(application);
+    await assert.doesNotReject(async () => {
+      const exists = await stat(path.join(distRoot, application.directory)).then(
+        () => true,
+        () => false
+      );
+      assert.equal(exists, shouldExist, application.directory);
+    });
+  }
+});
+
+test('review artifacts render the unapproved clinical-use boundary', async () => {
+  if (buildMode !== 'review') return;
+
+  const server = await preview({
+    root: mdRoot,
+    build: { outDir: 'dist' },
+    preview: { host: '127.0.0.1', port: 0 }
+  });
+  const address = server.httpServer.address();
+  assert.ok(address && typeof address !== 'string');
+  const browser = await chromium.launch({ headless: true });
+
+  try {
+    const page = await browser.newPage({ viewport: { width: 320, height: 800 } });
+    for (const { directory } of reviewApplications) {
+      await page.goto(`http://127.0.0.1:${address.port}/${directory}/`, {
+        waitUntil: 'networkidle'
+      });
+      assert.equal(
+        (await page.locator('.review-badge strong').innerText()).toLowerCase(),
+        'clinical review',
+        directory
+      );
+      assert.equal(
+        (await page.locator('.review-badge small').innerText()).toLowerCase(),
+        'not approved for clinical use',
+        directory
+      );
+    }
+  } finally {
+    await browser.close();
+    await new Promise((resolve, reject) => {
+      server.httpServer.close((error) => (error ? reject(error) : resolve()));
+    });
   }
 });
 
@@ -94,7 +172,10 @@ test('hashed application assets remain rooted at their canonical route', async (
   const applications = [
     { html: 'index.html', assetRoot: '/assets/' },
     { html: 'PIG/index.html', assetRoot: '/PIG/assets/' },
-    { html: 'RSI/index.html', assetRoot: '/RSI/assets/' },
+    ...rsiApplications.map(({ directory, assetRoot }) => ({
+      html: `${directory}/index.html`,
+      assetRoot
+    })),
     {
       html: 'PMD/index.html',
       assetRoot: '/PMD/assets/',
@@ -106,7 +187,11 @@ test('hashed application assets remain rooted at their canonical route', async (
         '/PMD/images/wordmark.png',
         '/PMD/manifest.webmanifest'
       ])
-    }
+    },
+    ...releasedReviewApplications.map(({ directory, assetRoot }) => ({
+      html: `${directory}/index.html`,
+      assetRoot
+    }))
   ];
 
   for (const application of applications) {
@@ -149,7 +234,13 @@ test('Cloudflare redirects enforce uppercase trailing-slash canonical routes', a
   assert.deepEqual(redirects, [
     '/PIG /PIG/ 301',
     '/RSI /RSI/ 301',
-    '/PMD /PMD/ 301'
+    '/AIRWAY-SCENARIOS /AIRWAY-SCENARIOS/ 301',
+    '/POST-INTUBATION /POST-INTUBATION/ 301',
+    '/RSI-TIMELINE /RSI-TIMELINE/ 301',
+    '/AIRWAY-TRANSPORT /AIRWAY-TRANSPORT/ 301',
+    '/PMD /PMD/ 301',
+    '/DEVICE /DEVICE/ 301',
+    '/SEDATION /SEDATION/ 301'
   ]);
 });
 
@@ -216,7 +307,20 @@ test('security headers keep runtime capabilities local and HTML revalidated', as
   assert.match(rootHeaders.get('permissions-policy'), /microphone=\(\)/);
   assert.match(rootHeaders.get('permissions-policy'), /geolocation=\(\)/);
 
-  for (const route of ['/', '/PIG/', '/RSI/', '/PMD/', '/404.html', '/404.css']) {
+  for (const route of [
+    '/',
+    '/PIG/',
+    '/RSI/',
+    '/AIRWAY-SCENARIOS/',
+    '/POST-INTUBATION/',
+    '/RSI-TIMELINE/',
+    '/AIRWAY-TRANSPORT/',
+    '/PMD/',
+    '/DEVICE/',
+    '/SEDATION/',
+    '/404.html',
+    '/404.css'
+  ]) {
     assert.equal(
       rules.get(route).get('cache-control'),
       'public, max-age=0, must-revalidate',
@@ -228,8 +332,14 @@ test('security headers keep runtime capabilities local and HTML revalidated', as
     '/assets/*',
     '/PIG/assets/*',
     '/RSI/assets/*',
+    '/AIRWAY-SCENARIOS/assets/*',
+    '/POST-INTUBATION/assets/*',
+    '/RSI-TIMELINE/assets/*',
+    '/AIRWAY-TRANSPORT/assets/*',
     '/PMD/assets/*',
-    '/PMD/images/*'
+    '/PMD/images/*',
+    '/DEVICE/assets/*',
+    '/SEDATION/assets/*'
   ]) {
     assert.equal(
       rules.get(route).get('cache-control'),

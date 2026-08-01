@@ -76,22 +76,86 @@ test('portal package is a typed static React and Vite application', async () => 
   });
 });
 
-test('typed catalog preserves the canonical clinical tool routes', async () => {
+test('typed catalog preserves roadmap metadata, statuses, and canonical routes', async () => {
   const [catalog, app] = await Promise.all([
     read('apps/portal/src/toolCatalog.ts'),
     read('apps/portal/src/App.tsx')
   ]);
 
-  assert.match(
-    catalog,
-    /export type ToolRoute = ['"]\/PIG\/['"] \| ['"]\/RSI\/['"] \| ['"]\/PMD\/['"]/
-  );
+  assert.match(catalog, /export type ToolStatus = 'Planned' \| 'Clinical review' \| 'Available'/);
+  for (const field of [
+    'audience',
+    'category',
+    'evidenceVersion',
+    'clinicalReviewDate',
+    'canonicalRoute',
+    'publiclyAccessible'
+  ]) {
+    assert.match(catalog, new RegExp(`${field}:`), field);
+  }
   assert.match(catalog, /satisfies readonly ToolCatalogEntry\[\]/);
-  assert.equal((catalog.match(/route:\s*['"]\/PIG\/['"]/g) ?? []).length, 1);
-  assert.equal((catalog.match(/route:\s*['"]\/RSI\/['"]/g) ?? []).length, 1);
-  assert.equal((catalog.match(/route:\s*['"]\/PMD\/['"]/g) ?? []).length, 1);
-  assert.match(app, /toolCatalog\.map\(\(tool\) =>/);
-  assert.match(app, /href=\{tool\.route\}/);
+  for (const route of [
+    '/PIG/',
+    '/RSI/',
+    '/AIRWAY-SCENARIOS/',
+    '/POST-INTUBATION/',
+    '/RSI-TIMELINE/',
+    '/AIRWAY-TRANSPORT/',
+    '/PMD/',
+    '/DEVICE/',
+    '/SEDATION/',
+    '/TRANSFER/',
+    '/AGITATION/',
+    '/NEWBORN/',
+    '/CHD/',
+    '/INGESTION/',
+    '/CLOCK/'
+  ]) {
+    const escaped = route.replaceAll('/', '\\/');
+    assert.equal(
+      (catalog.match(new RegExp(`canonicalRoute:\\s*['"]${escaped}['"]`, 'g')) ?? []).length,
+      1,
+      route
+    );
+  }
+  assert.equal((catalog.match(/status:\s*'Available'/g) ?? []).length, 7);
+  assert.match(catalog, /status:\s*releaseManifest\.device\.status/);
+  assert.match(catalog, /status:\s*releaseManifest\.sedation\.status/);
+  assert.equal((catalog.match(/status:\s*'Planned'/g) ?? []).length, 6);
+  assert.match(app, /const actionLabels =/);
+  assert.match(app, /Available:\s*'Open tool'/);
+  assert.match(app, /'Clinical review':\s*'Awaiting approval'/);
+  assert.match(app, /Planned:\s*'Planned module'/);
+  assert.match(app, /groupedTools\.map/);
+  assert.match(app, /href=\{tool\.canonicalRoute\}/);
+  assert.match(app, /tool\.publiclyAccessible/);
+  assert.match(app, /Awaiting approval/);
+  assert.match(app, /Planned module/);
+});
+
+test('provider suite offers searchable audience and status discovery controls', async () => {
+  const app = await read('apps/portal/src/App.tsx');
+
+  for (const requiredControl of [
+    'Search provider tools',
+    'All clinicians',
+    'Community EM',
+    'PEM',
+    'All statuses',
+    'Available',
+    'Clinical review',
+    'Planned',
+    'Reset filters',
+    'No tools match these filters'
+  ]) {
+    assert.match(app, new RegExp(requiredControl));
+  }
+
+  assert.match(app, /aria-pressed=/);
+  assert.match(app, /aria-live="polite"/);
+  assert.match(app, /tool\.title\.toLowerCase\(\)/);
+  assert.match(app, /tool\.audience\.includes\(audienceFilter\)/);
+  assert.match(app, /tool\.status === statusFilter/);
 });
 
 test('portal includes the required provider copy and release boundaries', async () => {

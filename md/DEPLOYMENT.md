@@ -14,9 +14,12 @@ the existing Pages project or `public/` output that serves `closedose.com`.
 | Node version | `22` |
 | Build watch include path | `md/*` |
 
-The build removes only `md/dist/`, builds the portal first, then PIG, RSI, and
-PREtendingMD, and finally copies and validates the Cloudflare controls and
-provider 404.
+The build removes only `md/dist/`, builds the portal first, then PIG, the five
+standalone RSI documents, and PREtendingMD, and finally copies and validates the Cloudflare controls and
+provider 404. Device and Sedation join a production artifact only when the
+checked-in clinical release manifest contains all required named approvals.
+`npm run build:review` assembles both applications for local review while
+retaining their visible not-approved status.
 
 ## Security and caching
 
@@ -105,9 +108,11 @@ member back to a shift.
 
 Canonical HTML, `404.html`, and the stable `/404.css` URL use
 `public, max-age=0, must-revalidate`. Vite content-hashed assets under
-`/assets/`, `/PIG/assets/`, `/RSI/assets/`, and `/PMD/assets/` are immutable
-for one year. PREtendingMD's optimized `/PMD/images/` assets are also
-immutable.
+`/assets/`, `/PIG/assets/`, `/RSI/assets/`, `/AIRWAY-SCENARIOS/assets/`,
+`/POST-INTUBATION/assets/`, `/RSI-TIMELINE/assets/`,
+`/AIRWAY-TRANSPORT/assets/`, `/PMD/assets/`, `/DEVICE/assets/`, and
+`/SEDATION/assets/` are immutable for one year. PREtendingMD's optimized
+`/PMD/images/` assets are also immutable.
 
 ## Local release gate
 
@@ -115,12 +120,13 @@ From `md/` on Node 22, run the exact CI sequence before publishing a preview:
 
 ```sh
 npm ci
+npx playwright install --with-deps chromium
 npm run typecheck
 npm run test:unit
 npm run test:rules
+npm run build:review
 npm run build
 npm run test:contract
-npx playwright install --with-deps chromium
 npm run test:smoke
 ```
 
@@ -137,6 +143,10 @@ the custom domain. Verify the production Pages hostname first:
 curl -fsSIL https://closedose-md.pages.dev/
 curl -fsSIL https://closedose-md.pages.dev/PIG/
 curl -fsSIL https://closedose-md.pages.dev/RSI/
+curl -fsSIL https://closedose-md.pages.dev/AIRWAY-SCENARIOS/
+curl -fsSIL https://closedose-md.pages.dev/POST-INTUBATION/
+curl -fsSIL https://closedose-md.pages.dev/RSI-TIMELINE/
+curl -fsSIL https://closedose-md.pages.dev/AIRWAY-TRANSPORT/
 curl -fsSIL https://closedose-md.pages.dev/PMD/
 CLOSEDOSE_MD_BASE_URL=https://closedose-md.pages.dev npm run test:smoke
 ```
@@ -153,7 +163,7 @@ pull request:
 
 - the exact commit passed the local Node 22 sequence and provider CI;
 - the Pages smoke command passed against `closedose-md.pages.dev`;
-- `/PIG`, `/RSI`, and `/PMD` redirect to the uppercase trailing-slash routes;
+- every available no-slash tool route redirects to its uppercase trailing-slash route;
 - lowercase variants return the provider 404;
 - the browser console, page errors, request failures, unexpected requests, and
   unexpected popup audit are clean during normal flows;
@@ -169,6 +179,17 @@ pull request:
 - a named clinical owner approved the preview formulas, reference values,
   warnings, and representative outputs.
 
+### Device and Sedation public release gate
+
+Do not set `publicReleaseApproved` to `true` without recording the required
+named roles, approval dates, and reviewed scope in
+`clinical-release-manifest.json`. Device requires PEM, pediatric airway
+specialty, institutional, and regulatory approvals. Sedation requires PEM,
+pediatric pharmacy, pediatric sedation or anesthesia, institutional, and
+regulatory approvals. The manifest validator fails the build if a required
+role or record field is missing. Until then, production omits both route
+documents and the portal labels them `Awaiting approval`.
+
 ## Custom domain and production gate
 
 In Cloudflare, open Workers & Pages, select `closedose-md`, add the custom
@@ -183,15 +204,23 @@ dig +short md.closedose.com
 curl -fsSIL https://md.closedose.com/
 curl -fsSIL https://md.closedose.com/PIG/
 curl -fsSIL https://md.closedose.com/RSI/
+curl -fsSIL https://md.closedose.com/AIRWAY-SCENARIOS/
+curl -fsSIL https://md.closedose.com/POST-INTUBATION/
+curl -fsSIL https://md.closedose.com/RSI-TIMELINE/
+curl -fsSIL https://md.closedose.com/AIRWAY-TRANSPORT/
 curl -fsSIL https://md.closedose.com/PMD/
 curl -sSI https://md.closedose.com/PIG | sed -n '1,8p'
 curl -sSI https://md.closedose.com/RSI | sed -n '1,8p'
+curl -sSI https://md.closedose.com/AIRWAY-SCENARIOS | sed -n '1,8p'
+curl -sSI https://md.closedose.com/POST-INTUBATION | sed -n '1,8p'
+curl -sSI https://md.closedose.com/RSI-TIMELINE | sed -n '1,8p'
+curl -sSI https://md.closedose.com/AIRWAY-TRANSPORT | sed -n '1,8p'
 curl -sSI https://md.closedose.com/PMD | sed -n '1,8p'
 CLOSEDOSE_MD_BASE_URL=https://md.closedose.com npm run test:smoke
 ```
 
-Production is accepted only when DNS resolves, TLS is valid, all four
-canonical routes return a final HTTP 200, redirect/casing/header checks pass,
+Production is accepted only when DNS resolves, TLS is valid, the portal and all
+seven public tool routes return a final HTTP 200, redirect/casing/header checks pass,
 representative clinical interactions pass, and the normal-flow runtime audit
 is clean.
 

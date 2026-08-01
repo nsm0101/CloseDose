@@ -1,29 +1,38 @@
 # CloseDose MD Provider Platform Architecture
 
-**Status:** Implemented; extended with PREtendingMD on 2026-07-24
+**Status:** Implemented; provider-suite expansion under clinical review on 2026-07-29
 
 **Production hostname:** `md.closedose.com`
 
 **Initial routes:**
 
-- `https://md.closedose.com/` — provider tool landing page
-- `https://md.closedose.com/PIG/` — Pediatric Airway Reference Calculator
-- `https://md.closedose.com/RSI/` — Pediatric Emergency RSI Reference & Calculator
-- `https://md.closedose.com/PMD/` — PREtendingMD PEM FlowMaster
+- `https://md.closedose.com/` - provider tool landing page
+- `https://md.closedose.com/PIG/` - Pediatric Airway Reference Calculator
+- `https://md.closedose.com/RSI/` - Pediatric RSI Medication Calculator
+- `https://md.closedose.com/AIRWAY-SCENARIOS/` - Pediatric Airway Scenario Guide
+- `https://md.closedose.com/POST-INTUBATION/` - Post-Intubation Sedation Reference
+- `https://md.closedose.com/RSI-TIMELINE/` - RSI Progression Timeline
+- `https://md.closedose.com/AIRWAY-TRANSPORT/` - Pediatric Airway Transport Kit
+- `https://md.closedose.com/PMD/` - PREtendingMD PEM FlowMaster
+- `https://md.closedose.com/DEVICE/` - Peds Device Rescue after approval
+- `https://md.closedose.com/SEDATION/` - Pediatric Comfort and Sedation after approval
 
-Requests to `/PIG`, `/RSI`, and `/PMD` permanently redirect to their
+Requests to every available no-slash application route permanently redirect to its
 trailing-slash canonical routes. Route casing is intentional and must remain
 uppercase.
 
 ## PREtendingMD extension
 
-The original architecture below records the first PIG/RSI release. The
+The original architecture below records the first PIG/RSI release. RSI now
+uses a byte-pinned shared clinical package rendered through five independent
+documents with local state and a common provider shell. The
 PREtendingMD migration extends the same workspace and deployment pattern:
 
 - `md/apps/pmd/` is the fourth isolated application workspace and builds to
   `md/dist/PMD/`.
-- The root build runs portal, PIG, RSI, and PREtendingMD and requires all four
-  entry documents before release.
+- The root production build runs the portal, PIG, five standalone RSI tools,
+  and PREtendingMD. It requires all eight entry documents before release and
+  omits unapproved Device and Sedation review documents.
 - The portal describes data handling per tool. PIG and RSI remain local-only.
   PREtendingMD intentionally uses Firebase Authentication, Firestore real-time
   sync, and browser storage for workflow settings.
@@ -36,6 +45,24 @@ PREtendingMD migration extends the same workspace and deployment pattern:
 
 Where the historical sections below refer to two tools, three entry documents,
 or a fully local-only platform, this extension is the governing architecture.
+
+## Provider-suite clinical release extension
+
+Device Rescue and Pediatric Comfort and Sedation are independent Vite
+workspaces with their own calculation or guidance tests and clinical and
+implementation specifications. A checked-in manifest is the production
+release switch. Production omits an unapproved route document; review mode
+builds the document with an unmistakable not-approved status. The provider
+catalog may describe review and planned work without implying availability.
+
+The manifest cannot approve itself. Device requires named PEM, pediatric
+airway specialty, institutional, and regulatory review. Sedation also requires
+named pediatric pharmacy and pediatric sedation or anesthesia review. Every
+approval record includes a date and reviewed scope.
+
+The later `/TRANSFER/`, `/AGITATION/`, `/NEWBORN/`, `/CHD/`, `/INGESTION/`, and
+`/CLOCK/` routes remain catalog metadata and governance specifications only.
+They do not produce HTML entry documents.
 
 ## Decision
 
