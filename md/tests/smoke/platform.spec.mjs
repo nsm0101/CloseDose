@@ -243,6 +243,7 @@ test('provider suite discovery works across phone, tablet, desktop, light, and d
   for (const colorScheme of ['light', 'dark']) {
     await page.emulateMedia({ colorScheme });
     for (const viewport of viewports) {
+      await page.goto('about:blank');
       await page.setViewportSize(viewport);
       await page.goto('/');
       await page.waitForLoadState('networkidle');
