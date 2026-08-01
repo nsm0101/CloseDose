@@ -260,6 +260,10 @@ test('provider suite discovery works across phone, tablet, desktop, light, and d
 
       if (viewport.width < 768) {
         await page.getByRole('button', { name: 'Audience and status' }).click();
+        for (const filterName of ['All clinicians', 'Community EM', 'PEM', 'All statuses', 'Available', 'Clinical review', 'Planned']) {
+          const filterBox = await page.getByRole('button', { name: filterName, exact: true }).boundingBox();
+          expect(filterBox?.height, `${filterName} touch target`).toBeGreaterThanOrEqual(44);
+        }
       }
       await page.getByRole('button', { name: 'Clinical review' }).click();
       await expect(page.getByText('No tools match these filters')).toBeVisible();

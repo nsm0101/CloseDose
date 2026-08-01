@@ -847,7 +847,7 @@ a {
 
   .filter-row button {
     flex: 0 0 auto;
-    min-height: 2.5rem;
+    min-height: 2.75rem;
     padding: 0.55rem 0.7rem;
     font-size: 0.74rem;
   }
