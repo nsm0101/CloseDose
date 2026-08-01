@@ -51,7 +51,8 @@
     "test:device": "npm run test --workspace @closedose-md/device",
     "test:sedation": "npm run test --workspace @closedose-md/sedation",
     "test:rules": "npx --yes --package=firebase-tools@15.24.0 -- firebase emulators:exec --project demo-closedose-md --only firestore \"node --test tests/firestore-rules.test.mjs\"",
-    "test:unit": "node --test tests/workspace-contract.test.mjs tests/clinical-release-manifest.test.mjs tests/provider-specs.test.mjs tests/portal.test.mjs tests/pig.test.mjs tests/rsi.test.mjs tests/pmd.test.mjs tests/device.test.mjs tests/sedation.test.mjs tests/pmd-migration.test.mjs tests/pmd-shift-access.test.mjs tests/privacy-scanner.test.mjs tests/release-hardening.test.mjs",
+    "test:unit": "node --test tests/workspace-contract.test.mjs tests/clinical-release-manifest.test.mjs tests/provider-specs.test.mjs tests/portal.test.mjs tests/pig.test.mjs tests/rsi.test.mjs tests/airway-scenarios.test.mjs tests/pmd.test.mjs tests/device.test.mjs tests/sedation.test.mjs tests/pmd-migration.test.mjs tests/pmd-shift-access.test.mjs tests/privacy-scanner.test.mjs tests/release-hardening.test.mjs",
+    "test:airway-scenarios": "node --test tests/airway-scenarios.test.mjs",
     "test:contract": "node --test tests/distribution-contract.test.mjs",
     "test:smoke": "playwright test",
     "migrate:pmd": "node scripts/migrate-pmd-legacy-shifts.mjs"

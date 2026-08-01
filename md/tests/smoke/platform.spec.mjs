@@ -151,6 +151,38 @@ function auditRuntime(context) {
   };
 }
 
+async function textContrastRatio(locator) {
+  return locator.evaluate((element) => {
+    const parseRgb = (value) => {
+      const channels = value.match(/[\d.]+/g)?.map(Number) ?? [];
+      return channels.length >= 3 ? channels.slice(0, 3) : null;
+    };
+    const luminance = (channels) => {
+      const linear = channels.map((channel) => {
+        const normalized = channel / 255;
+        return normalized <= 0.04045
+          ? normalized / 12.92
+          : ((normalized + 0.055) / 1.055) ** 2.4;
+      });
+      return 0.2126 * linear[0] + 0.7152 * linear[1] + 0.0722 * linear[2];
+    };
+
+    const foreground = parseRgb(getComputedStyle(element).color);
+    let background = null;
+    let current = element;
+    while (current && !background) {
+      const value = getComputedStyle(current).backgroundColor;
+      if (value !== 'transparent' && !value.endsWith(', 0)')) background = parseRgb(value);
+      current = current.parentElement;
+    }
+    background ??= [255, 255, 255];
+    if (!foreground) throw new Error('Unable to resolve foreground color');
+    const lighter = Math.max(luminance(foreground), luminance(background));
+    const darker = Math.min(luminance(foreground), luminance(background));
+    return (lighter + 0.05) / (darker + 0.05);
+  });
+}
+
 test('portal fits exactly 320 px and every available tool link navigates', async ({ page, context }) => {
   const runtimeAudit = auditRuntime(context);
   await page.setViewportSize({ width: 320, height: 800 });
@@ -436,6 +468,36 @@ test('standalone RSI tools keep independent state and expose one workflow per ro
   await expect(page.locator('[data-workflow]')).toHaveAttribute('data-workflow', 'airway-transport');
   await expect(page.getByText('Critical PICU Transport Reference')).toBeVisible();
   await expect(page.getByRole('button', { name: 'B. Vasopressors' })).toBeVisible();
+  runtimeAudit.assertClean();
+});
+
+test('airway scenario guide remains readable in dark mode at phone width', async ({ page, context }) => {
+  const runtimeAudit = auditRuntime(context);
+  await page.emulateMedia({ colorScheme: 'dark' });
+  await page.setViewportSize({ width: 320, height: 800 });
+  await page.goto('/AIRWAY-SCENARIOS/');
+  await page.waitForLoadState('networkidle');
+
+  await page.locator('#contra-hyperkalemia').click();
+  const contrastTargets = [
+    page.locator('#scenario-btn-sepsis'),
+    page.getByText('First Line', { exact: true }),
+    page.getByText('Alternative', { exact: true }),
+    page.getByText('Avoid / Warning', { exact: true }),
+    page.getByText('CRITICAL CONTRAINDICATION ALERT:', { exact: true }),
+    page.getByText('Rocuronium', { exact: true })
+  ];
+
+  for (const target of contrastTargets) {
+    await expect(target).toBeVisible();
+    expect(await textContrastRatio(target), await target.innerText()).toBeGreaterThanOrEqual(4.5);
+  }
+
+  const horizontalMetrics = await page.evaluate(() => ({
+    body: document.body.scrollWidth - document.body.clientWidth,
+    document: document.documentElement.scrollWidth - document.documentElement.clientWidth
+  }));
+  expect(horizontalMetrics).toEqual({ body: 0, document: 0 });
   runtimeAudit.assertClean();
 });
 

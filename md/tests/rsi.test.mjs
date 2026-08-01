@@ -166,3 +166,20 @@ test('legacy combined tab controller and duplicate clinical files are removed', 
   const appSource = await read('apps/rsi/src/App.tsx');
   assert.doesNotMatch(appSource, /ActiveTab|Main Tab Controller|SYS ONLINE/);
 });
+
+test('airway scenario redesign is explicit, review-mode gated, and keeps the pinned production guide', async () => {
+  const [appSource, styles, buildSource] = await Promise.all([
+    read('apps/airway-scenarios/src/App.tsx'),
+    read('apps/airway-scenarios/src/index.css'),
+    read('scripts/build.mjs')
+  ]);
+
+  assert.match(appSource, /\bScenarioGuide\b/);
+  assert.match(appSource, /\bIntegratedScenarioGuide\b/);
+  assert.match(appSource, /__CLOSEDOSE_MD_BUILD_MODE__\s*===\s*['"]review['"]/);
+  assert.match(appSource, /airway-scenario-legacy/);
+  assert.match(styles, /\.airway-scenario-legacy/);
+  assert.match(styles, /prefers-color-scheme:\s*dark/);
+  assert.match(buildSource, /build:airway-scenarios/);
+  assert.match(buildSource, /--mode/);
+});
