@@ -3,8 +3,9 @@
    A child of the CloseDose family. The vivid CLINICAL SPECTRUM leads the app;
    CloseDose teal stays a quiet family thread. Two registers:
      • CLINICAL  — board, patient cards, workflow. Clean, professional, dense.
-     • PLAYFUL   — launch / login / empty states / settings / footer. Teddy + crayon.
-   The harmonized clinical spectrum is the grown-up sibling of the crayon rainbow
+     • PLAYFUL   — launch / login / empty states / settings / footer. Warmer
+       surfaces and softer radii only; no decorative crayon or chalk marks.
+   The harmonized clinical spectrum is the grown-up sibling of the rainbow
    in the wordmark — same hues, tuned to one lightness/chroma so they read as a set.
    Works in warm-dark navy AND soft pediatric-pastel light.
    All tokens are --pmd-* namespaced; surfaces switch on .pmd[data-pmd-theme].
@@ -12,8 +13,9 @@
 
 :root {
   /* ---------------------------------------------------------------------
-     CRAYON RAINBOW — the playful register (sampled from the wordmark)
-     Used in playful shells, empty states, the launch hero, decorative bits.
+     WORDMARK RAINBOW — reference palette sampled from the wordmark.
+     Kept as the documented source the clinical spectrum below is derived
+     from. Not applied to any surface: app chrome uses --pmd-* tokens.
      --------------------------------------------------------------------- */
   --crayon-red:    #e64a44;
   --crayon-orange: #f18b2b;
@@ -129,7 +131,6 @@
   --pmd-font-clinical: 'Nunito Sans', ui-sans-serif, system-ui, -apple-system, sans-serif;
   --pmd-font-ui:       'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
   --pmd-font-mono:     'DM Mono', ui-monospace, 'SF Mono', Menlo, monospace;
-  --pmd-font-chalk:    'Gochi Hand', 'Baloo 2', cursive;  /* sparing: launch tagline, empty states */
 
   /* ---------------------------------------------------------------------
      Radii — a touch friendlier than CloseDose.
@@ -239,7 +240,6 @@
 .pmd .pmd-brand    { font-family: var(--pmd-font-brand); font-weight: 700; letter-spacing: -0.01em; }
 .pmd .pmd-clinical { font-family: var(--pmd-font-clinical); }
 .pmd .pmd-mono     { font-family: var(--pmd-font-mono); font-feature-settings: "tnum" 1, "zero" 1; }
-.pmd .pmd-chalk    { font-family: var(--pmd-font-chalk); }
 
 /* Eyebrow / section label */
 .pmd .pmd-eyebrow {

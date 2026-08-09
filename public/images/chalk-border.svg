@@ -1,3 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">
-  <path d="M7,15 C15,14 25,16 35,15 C45,14 55,16 65,15 C75,14 85,16 93,15 C97,15 99,18 99,23 C98,33 100,43 99,53 C98,63 100,73 99,83 C99,89 97,92 93,92 C83,93 73,91 63,92 C53,93 43,91 33,92 C23,93 13,91 7,92 C3,92 1,89 1,83 C2,73 1,63 2,53 C1,43 2,33 1,23 C1,18 3,15 7,15 Z" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="8 2 4 3" vector-effect="non-scaling-stroke" opacity="0.85" />
-</svg>

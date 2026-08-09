@@ -207,10 +207,12 @@
     color: var(--pmd-ink-2);
   }
 
+  /* Launch and loading ground. A single calm wash off the theme's own sky
+     token rather than the crayon hues, so the first screen a clinician sees
+     reads as clinical software. */
   .pmd .pmd-playful-shell {
     background:
-      radial-gradient(circle at 20% 0%, color-mix(in oklab, var(--crayon-yellow) 18%, transparent), transparent 22rem),
-      radial-gradient(circle at 80% 8%, color-mix(in oklab, var(--crayon-teal) 20%, transparent), transparent 24rem),
+      radial-gradient(circle at 50% -6%, color-mix(in oklab, var(--pmd-sky) 70%, transparent), transparent 26rem),
       linear-gradient(180deg, var(--pmd-cream), var(--pmd-bg));
   }
 
