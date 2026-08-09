@@ -196,20 +196,20 @@ CloseDose uses **Lucide** as the primary icon set — clean, friendly, 1.75px st
 **The idea:** the vivid **clinical spectrum leads the app**; CloseDose teal stays a quiet **family thread** (the `--pmd-family` token — links, "synced" status, the *part of the CloseDose family* footer). Two registers coexist:
 
 - **Clinical** — board, patient cards, workflow. Clean, professional, dense.
-- **Playful** — launch / login / empty states / settings / footer. Teddy + crayon.
+- **Playful** — launch / login / empty states / settings / footer. Teddy plus warmer surfaces and softer radii; no decorative crayon or chalk marks.
 
-**The clinical spectrum** is one tuned family (single lightness/chroma, varied hue) — the grown-up sibling of the crayon rainbow in the wordmark. States, each with `-on` / `-ink` / `-soft` / `-line` / `-grad` variants:
+**The clinical spectrum** is one tuned family (single lightness/chroma, varied hue) — the grown-up sibling of the rainbow in the wordmark. States, each with `-on` / `-ink` / `-soft` / `-line` / `-grad` variants:
 
-`--pmd-tobeseen` (rose) · `--pmd-workup` (sky) · `--pmd-fellow` (blue) · `--pmd-staffed` (indigo) · `--pmd-attending` (violet) · `--pmd-dispo` (fuchsia) · `--pmd-ready` (emerald). Plus `--pmd-flag` (amber barrier-open) and the `--crayon-*` rainbow for playful shells.
+`--pmd-tobeseen` (rose) · `--pmd-workup` (sky) · `--pmd-fellow` (blue) · `--pmd-staffed` (indigo) · `--pmd-attending` (violet) · `--pmd-dispo` (fuchsia) · `--pmd-ready` (emerald). Plus `--pmd-flag` (amber barrier-open). The `--crayon-*` rainbow remains only as the documented wordmark sample the spectrum was derived from — it is not applied to any surface.
 
 **Surfaces** switch on `.pmd[data-pmd-theme="dark"|"light"]`:
 
 - **Dark** — warm navy board (`--pmd-bg #070e1c`), never pure black; the spectrum glows, active states use signature `-grad` gradients.
 - **Light** — soft pediatric pastel: pale-blue ground + warm cream for playful shells + white cards. Gentle, not clinical-white.
 
-**Type:** `--pmd-font-brand` (Baloo 2, playful display) · `--pmd-font-clinical` (Nunito Sans, board headers + patient names + numerals) · `--pmd-font-ui` (Inter, chrome) · `--pmd-font-mono` (DM Mono, timers/units) · `--pmd-font-chalk` (Gochi Hand, sparing — launch tagline, empty states). Gradients are a **signature on active/selected states only**, flat elsewhere.
+**Type:** `--pmd-font-brand` (Baloo 2, playful display) · `--pmd-font-clinical` (Nunito Sans, board headers + patient names + numerals) · `--pmd-font-ui` (Inter, chrome) · `--pmd-font-mono` (DM Mono, timers/units). Gradients are a **signature on active/selected states only**, flat elsewhere.
 
-**Assets:** `assets/pretendingmd/` — `sticker-head.png` (dashboard mark), `wordmark-tight.png` (crayon wordmark), `teddy-full-tight.png` (welcome hero), `teddy-mark-mono.png` (line icon).
+**Assets:** `assets/pretendingmd/` — `sticker-head.png` (dashboard mark), `wordmark-tight.png` (wordmark), `teddy-full-tight.png` (welcome hero), `teddy-mark-mono.png` (line icon).
 
 **See it:** `PREtendingMD Board.html` (recreated board, dark + light, with playful welcome shell) and the **PREtendingMD** group in the Design System tab (`preview/pmd-*.html`).
 

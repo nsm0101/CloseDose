@@ -39,6 +39,6 @@ If the user invokes this skill without any other guidance, ask them what they wa
 - Vivid **clinical spectrum leads**; teal is a quiet family thread (`--pmd-family`)
 - Spectrum: tobeseen·rose → workup·sky → fellow·blue → staffed·indigo → attending·violet → dispo·fuchsia → ready·emerald (each has `-on/-ink/-soft/-line/-grad`); `--pmd-flag` amber for barriers
 - Dark = warm navy `#070e1c` board; Light = soft pediatric pastel (pale-blue + cream + white cards)
-- Two registers: clinical core = clean/dense; playful shells (launch/login/footer) = teddy + `--crayon-*` rainbow + Gochi Hand chalk
+- Two registers: clinical core = clean/dense; playful shells (launch/login/footer) = teddy + warmer surfaces off the `--pmd-*` tokens. No crayon wash or chalk lettering in app chrome.
 - Fonts: Baloo 2 (brand), Nunito Sans (clinical), Inter (UI), DM Mono (units). Gradients on active states only
 - Examples: `PREtendingMD Board.html`, `preview/pmd-*.html`
