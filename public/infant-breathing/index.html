@@ -1,0 +1,1711 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f8fafc">
+  <meta name="description" content="A calm, parent-facing CloseDose guide to visible signs of breathing difficulty in babies from birth to 12 months.">
+  <meta name="robots" content="index,follow">
+  <meta property="og:site_name" content="CloseDose">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Infant Breathing Guide — Birth to 12 months">
+  <meta property="og:description" content="Compare visible breathing signs, count breaths for one full minute, and know when to seek urgent help.">
+  <meta property="og:url" content="https://closedose.com/infant-breathing/">
+  <meta property="og:image" content="https://closedose.com/images/favicon-192.png">
+  <meta name="twitter:card" content="summary">
+  <link rel="canonical" href="https://closedose.com/infant-breathing/">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%230369a1'/%3E%3Cpath d='M14 35c8-14 13 14 21 0s13 14 18 0' fill='none' stroke='white' stroke-width='6' stroke-linecap='round'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="infant-breathing.css">
+  <title>Infant Breathing Guide — Birth to 12 months | CloseDose</title>
+  <style>
+    :root {
+      --ink: #0f172a;
+      --muted: #64748b;
+      --line: #dbe4ee;
+      --surface: #ffffff;
+      --canvas: #f3f7fa;
+      --emerald: #047857;
+      --emerald-soft: #dff7ed;
+      --sky: #0369a1;
+      --sky-soft: #e0f2fe;
+      --amber: #b45309;
+      --amber-soft: #fff2d8;
+      --orange: #c2410c;
+      --orange-soft: #ffeadf;
+      --crimson: #b91c1c;
+      --crimson-soft: #fee7e7;
+      --breath-duration: 1.5s;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; scroll-padding-top: 8rem; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 12% 0%, rgba(14,165,233,.08), transparent 28rem),
+        radial-gradient(circle at 92% 14%, rgba(16,185,129,.07), transparent 26rem),
+        var(--canvas);
+      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    button, input { font: inherit; }
+    button { touch-action: manipulation; }
+    a { color: inherit; }
+    :focus-visible {
+      outline: 3px solid #0c4a6e;
+      outline-offset: 3px;
+      border-radius: .75rem;
+    }
+
+    .skip-link {
+      position: fixed;
+      left: 1rem;
+      top: .75rem;
+      z-index: 100;
+      transform: translateY(-160%);
+      border-radius: .75rem;
+      background: #fff;
+      padding: .7rem 1rem;
+      font-weight: 800;
+      box-shadow: 0 8px 30px rgba(15,23,42,.2);
+      transition: transform .2s ease;
+    }
+    .skip-link:focus { transform: translateY(0); }
+
+    .guide-site-actions {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: .65rem;
+    }
+    .guide-home-link,
+    .guide-menu-button,
+    .guide-menu-close {
+      display: inline-flex;
+      min-height: 2.75rem;
+      align-items: center;
+      justify-content: center;
+      border-radius: 999px;
+      padding: .65rem 1rem;
+      font-size: .78rem;
+      font-weight: 850;
+      text-decoration: none;
+    }
+    .guide-home-link {
+      color: #075985;
+      background: #f0f9ff;
+    }
+    .guide-menu-button,
+    .guide-menu-close {
+      cursor: pointer;
+      border: 1px solid #cbd5e1;
+      color: #0f172a;
+      background: #fff;
+    }
+    .guide-home-link:hover,
+    .guide-menu-button:hover,
+    .guide-menu-close:hover { background: #e0f2fe; }
+    .guide-menu-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      display: grid;
+      place-items: center;
+      padding: 1rem;
+      background: rgba(15, 23, 42, .62);
+      backdrop-filter: blur(10px);
+      opacity: 0;
+      transition: opacity .18s ease;
+    }
+    .guide-menu-overlay[hidden] { display: none; }
+    .guide-menu-overlay.is-open { opacity: 1; }
+    .guide-menu-panel {
+      width: min(28rem, 100%);
+      max-height: calc(100dvh - 2rem);
+      overflow-y: auto;
+      border: 1px solid #dbe4ee;
+      border-radius: 1.4rem;
+      background: #fff;
+      padding: 1.1rem;
+      box-shadow: 0 24px 70px -28px rgba(15, 23, 42, .55);
+    }
+    .guide-menu-heading {
+      margin: 0 0 .75rem;
+      color: #475569;
+      font-size: .72rem;
+      font-weight: 900;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+    .guide-menu-links {
+      display: grid;
+      gap: .35rem;
+    }
+    .guide-menu-links a {
+      display: flex;
+      min-height: 2.75rem;
+      align-items: center;
+      border-radius: .8rem;
+      padding: .65rem .8rem;
+      color: #0f172a;
+      font-size: .92rem;
+      font-weight: 800;
+      text-decoration: none;
+    }
+    .guide-menu-links a:hover { background: #f1f5f9; }
+    .guide-menu-links a[aria-current="page"] {
+      color: #075985;
+      background: #e0f2fe;
+    }
+    .guide-menu-close {
+      width: 100%;
+      margin-top: 1rem;
+    }
+    body.guide-menu-open { overflow: hidden; }
+
+    .emergency-strip {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      border-bottom: 1px solid #fecaca;
+      background: rgba(255, 247, 247, .97);
+      backdrop-filter: blur(14px);
+    }
+
+    .glass-card {
+      border: 1px solid rgba(203, 213, 225, .86);
+      border-radius: 1.5rem;
+      background: rgba(255,255,255,.92);
+      box-shadow: 0 18px 55px -28px rgba(15,23,42,.28);
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: .45rem;
+      font-size: .72rem;
+      font-weight: 850;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    .brand-mark {
+      display: grid;
+      place-items: center;
+      width: 2.6rem;
+      height: 2.6rem;
+      border: 1px solid #bae6fd;
+      border-radius: .95rem;
+      color: #0369a1;
+      background: linear-gradient(145deg, #fff, #e0f2fe);
+      box-shadow: 0 9px 22px -14px rgba(3,105,161,.65);
+    }
+
+    .age-option input { position: absolute; opacity: 0; pointer-events: none; }
+    .age-option label {
+      display: block;
+      min-height: 100%;
+      cursor: pointer;
+      border: 1px solid #dbe4ee;
+      border-radius: 1rem;
+      background: #fff;
+      padding: .9rem 1rem;
+      transition: border-color .18s ease, box-shadow .18s ease, background .18s ease;
+    }
+    .age-option label:hover { border-color: #7dd3fc; }
+    .age-option input:checked + label {
+      border-color: #0284c7;
+      background: #f0f9ff;
+      box-shadow: 0 0 0 3px rgba(14,165,233,.12);
+    }
+    .age-option input:focus-visible + label {
+      outline: 3px solid #0c4a6e;
+      outline-offset: 3px;
+    }
+
+    .model-shell {
+      position: relative;
+      overflow: hidden;
+      border: 1px solid #dbe4ee;
+      border-radius: 1.35rem;
+      background:
+        radial-gradient(circle at 50% 16%, rgba(255,255,255,.98), rgba(248,250,252,.78) 52%, rgba(224,242,254,.48));
+      min-height: 28rem;
+    }
+
+    .model-shell::after {
+      content: "";
+      position: absolute;
+      inset: auto 10% 1.25rem;
+      height: 2.2rem;
+      border-radius: 50%;
+      background: rgba(15,23,42,.08);
+      filter: blur(18px);
+      pointer-events: none;
+    }
+
+    #infantSvg {
+      position: relative;
+      z-index: 1;
+      display: block;
+      width: 100%;
+      height: auto;
+      max-height: 42rem;
+      margin: 0 auto;
+    }
+
+    #modelZoom {
+      transform-box: view-box;
+      transform-origin: 512px 300px;
+      transition: transform .28s cubic-bezier(.2,.75,.25,1);
+    }
+    #modelZoom.focus-torso { transform: scale(1.02); }
+    #modelZoom.focus-upper { transform: scale(1.025); }
+
+    #babyModel {
+      --breath-duration: 1.5s;
+      --chest-x: 1.022;
+      --chest-y: 1.012;
+      --belly-x: 1.040;
+      --belly-y: 1.026;
+      --belly-shift: .5px;
+      isolation: isolate;
+    }
+    #babyModel.sign-fast {
+      --chest-x: 1.013;
+      --chest-y: 1.007;
+      --belly-x: 1.024;
+      --belly-y: 1.016;
+      --belly-shift: .3px;
+    }
+    #babyModel.sign-belly {
+      --chest-x: 1.004;
+      --chest-y: 1.003;
+      --belly-x: 1.055;
+      --belly-y: 1.030;
+      --belly-shift: 1px;
+    }
+    #babyModel.sign-ribs {
+      --chest-x: 1.001;
+      --chest-y: 1.001;
+    }
+
+    .chest-motion,
+    .belly-motion,
+    .nostril,
+    .alar-shadow,
+    .retraction-shadow,
+    .retraction-rim,
+    .subcostal-shadow,
+    .subcostal-rim,
+    .collar-pocket,
+    .collar-rim,
+    .throat-tug,
+    .throat-highlight,
+    .head-anchor,
+    .head-follow,
+    .grunt-wave,
+    .mouth-crease {
+      animation-duration: var(--breath-duration);
+      animation-iteration-count: infinite;
+      animation-timing-function: cubic-bezier(.45,0,.55,1);
+    }
+
+    .chest-motion,
+    .belly-motion,
+    .head-anchor,
+    .head-follow {
+      transform-box: view-box;
+    }
+    .chest-motion {
+      --region-x: var(--chest-x);
+      --region-y: var(--chest-y);
+      --region-shift: 0px;
+      transform-origin: 512px 930px;
+      animation-name: region-breathe;
+    }
+    .belly-motion {
+      --region-x: var(--belly-x);
+      --region-y: var(--belly-y);
+      --region-shift: var(--belly-shift);
+      transform-origin: 512px 1250px;
+      animation-name: region-breathe;
+    }
+    .head-anchor,
+    .head-follow { transform-origin: 512px 548px; }
+
+    .retraction-shadow,
+    .subcostal-shadow { mix-blend-mode: multiply; }
+
+    .nostril,
+    .alar-shadow,
+    .retraction-shadow,
+    .retraction-rim,
+    .subcostal-shadow,
+    .subcostal-rim,
+    .collar-pocket,
+    .collar-rim,
+    .throat-tug,
+    .throat-highlight,
+    .grunt-wave,
+    .mouth-crease {
+      opacity: 0;
+      transform-box: fill-box;
+    }
+    .nostril,
+    .alar-shadow,
+    .collar-pocket,
+    .collar-rim,
+    .retraction-shadow,
+    .retraction-rim { transform-origin: center; }
+    .subcostal-shadow,
+    .subcostal-rim,
+    .throat-tug,
+    .throat-highlight { transform-origin: center top; }
+
+    #babyModel.sign-nose .nostril-left { animation-name: nostril-left-flare; }
+    #babyModel.sign-nose .nostril-right { animation-name: nostril-right-flare; }
+    #babyModel.sign-nose .alar-left { animation-name: alar-left-open; }
+    #babyModel.sign-nose .alar-right { animation-name: alar-right-open; }
+    #babyModel.sign-ribs .retraction-shadow { animation-name: retraction-shadow-in; }
+    #babyModel.sign-ribs .retraction-rim { animation-name: retraction-rim-in; }
+    #babyModel.sign-ribs .subcostal-shadow { animation-name: subcostal-shadow-in; }
+    #babyModel.sign-ribs .subcostal-rim { animation-name: subcostal-rim-in; }
+    #babyModel.sign-collar .collar-pocket { animation-name: collar-draw; }
+    #babyModel.sign-collar .collar-rim { animation-name: collar-rim-draw; }
+    #babyModel.sign-throat .throat-tug { animation-name: throat-pull; }
+    #babyModel.sign-throat .throat-highlight { animation-name: throat-highlight-in; }
+    #babyModel.sign-grunt .head-anchor { animation-name: head-nod; }
+    #babyModel.sign-grunt .head-follow { animation-name: head-nod; }
+    #babyModel.sign-grunt .grunt-wave { animation-name: grunt-release; }
+    #babyModel.sign-grunt .mouth-crease { animation-name: mouth-release; }
+
+    @keyframes region-breathe {
+      0%,8%,92%,100% { transform: scale(1); }
+      40%,48% { transform: translateY(var(--region-shift)) scale(var(--region-x),var(--region-y)); }
+    }
+    @keyframes nostril-left-flare {
+      0%,8%,76%,100% { opacity: .06; transform: translateX(0) scaleX(.92); }
+      40%,48% { opacity: .54; transform: translateX(-5px) scaleX(1.32); }
+    }
+    @keyframes nostril-right-flare {
+      0%,8%,76%,100% { opacity: .06; transform: translateX(0) scaleX(.92); }
+      40%,48% { opacity: .54; transform: translateX(5px) scaleX(1.32); }
+    }
+    @keyframes alar-left-open {
+      0%,8%,76%,100% { opacity: 0; transform: scaleX(.96); }
+      40%,48% { opacity: .3; transform: translateX(-5.5px) scaleX(1.12); }
+    }
+    @keyframes alar-right-open {
+      0%,8%,76%,100% { opacity: 0; transform: scaleX(.96); }
+      40%,48% { opacity: .3; transform: translateX(5.5px) scaleX(1.12); }
+    }
+    @keyframes retraction-shadow-in {
+      0%,8%,76%,100% { opacity: .02; transform: translateY(0) scaleX(1); }
+      40%,48% { opacity: .29; transform: translateY(1.5px) scaleX(.965); }
+    }
+    @keyframes retraction-rim-in {
+      0%,8%,76%,100% { opacity: 0; transform: translateY(0) scaleX(1); }
+      40%,48% { opacity: .12; transform: translateY(-1.2px) scaleX(.965); }
+    }
+    @keyframes subcostal-shadow-in {
+      0%,8%,76%,100% { opacity: .02; transform: translateY(0) scaleY(1); }
+      40%,48% { opacity: .27; transform: translateY(-4px) scaleY(.88); }
+    }
+    @keyframes subcostal-rim-in {
+      0%,8%,76%,100% { opacity: 0; transform: translateY(0) scaleY(1); }
+      40%,48% { opacity: .14; transform: translateY(-1.7px) scaleY(.91); }
+    }
+    @keyframes collar-draw {
+      0%,8%,76%,100% { opacity: 0; transform: scale(1); }
+      40%,48% { opacity: .22; transform: translateY(3px) scale(1.05,.78); }
+    }
+    @keyframes collar-rim-draw {
+      0%,8%,76%,100% { opacity: 0; transform: scale(1); }
+      40%,48% { opacity: .12; transform: translateY(-1.2px) scaleX(1.02); }
+    }
+    @keyframes throat-pull {
+      0%,8%,76%,100% { opacity: 0; transform: translateY(0) scaleY(.9); }
+      40%,48% { opacity: .27; transform: translateY(5.5px) scaleY(1.14); }
+    }
+    @keyframes throat-highlight-in {
+      0%,8%,76%,100% { opacity: 0; transform: translateY(0); }
+      40%,48% { opacity: .14; transform: translateY(5.5px); }
+    }
+    @keyframes head-nod {
+      0%,100% { transform: translateY(0) rotate(0); }
+      40%,48% { transform: translateY(-2px) rotate(-.5deg); }
+      70% { transform: translateY(5.5px) rotate(.9deg); }
+    }
+    @keyframes grunt-release {
+      0%,54% { opacity: 0; transform: translateX(-2px) scale(.88); }
+      68% { opacity: .44; transform: translateX(2px) scale(1); }
+      84%,100% { opacity: 0; transform: translateX(7px) scale(1.03); }
+    }
+    @keyframes mouth-release {
+      0%,54% { opacity: 0; transform: scaleX(.86); }
+      68% { opacity: .34; transform: scaleX(1); }
+      84%,100% { opacity: 0; transform: scaleX(.9); }
+    }
+
+    #babyModel.motion-reset * { animation: none !important; }
+    #babyModel.motion-paused * { animation: none !important; }
+    #babyModel.motion-paused .chest-motion { transform: scale(var(--chest-x),var(--chest-y)); }
+    #babyModel.motion-paused .belly-motion { transform: translateY(var(--belly-shift)) scale(var(--belly-x),var(--belly-y)); }
+    #babyModel.motion-paused.sign-nose .nostril { opacity: .54; transform: scaleX(1.32); }
+    #babyModel.motion-paused.sign-nose .nostril-left { transform: translateX(-5px) scaleX(1.32); }
+    #babyModel.motion-paused.sign-nose .nostril-right { transform: translateX(5px) scaleX(1.32); }
+    #babyModel.motion-paused.sign-nose .alar-left { opacity: .3; transform: translateX(-5.5px) scaleX(1.12); }
+    #babyModel.motion-paused.sign-nose .alar-right { opacity: .3; transform: translateX(5.5px) scaleX(1.12); }
+    #babyModel.motion-paused.sign-ribs .retraction-shadow { opacity: .29; transform: translateY(1.5px) scaleX(.965); }
+    #babyModel.motion-paused.sign-ribs .retraction-rim { opacity: .12; transform: translateY(-1.2px) scaleX(.965); }
+    #babyModel.motion-paused.sign-ribs .subcostal-shadow { opacity: .27; transform: translateY(-4px) scaleY(.88); }
+    #babyModel.motion-paused.sign-ribs .subcostal-rim { opacity: .14; transform: translateY(-1.7px) scaleY(.91); }
+    #babyModel.motion-paused.sign-collar .collar-pocket { opacity: .22; transform: translateY(3px) scale(1.05,.78); }
+    #babyModel.motion-paused.sign-collar .collar-rim { opacity: .12; transform: translateY(-1.2px) scaleX(1.02); }
+    #babyModel.motion-paused.sign-throat .throat-tug { opacity: .27; transform: translateY(5.5px) scaleY(1.14); }
+    #babyModel.motion-paused.sign-throat .throat-highlight { opacity: .14; transform: translateY(5.5px); }
+    #babyModel.motion-paused.sign-grunt .head-anchor,
+    #babyModel.motion-paused.sign-grunt .head-follow { transform: translateY(5.5px) rotate(.9deg); }
+    #babyModel.motion-paused.sign-grunt .grunt-wave { opacity: .44; transform: translateX(2px); }
+    #babyModel.motion-paused.sign-grunt .mouth-crease { opacity: .34; }
+
+    #motionToggle:disabled {
+      cursor: not-allowed;
+      opacity: .72;
+    }
+
+    .stage-range {
+      width: 100%;
+      height: 1.8rem;
+      margin: 0;
+      appearance: none;
+      background: transparent;
+      cursor: pointer;
+    }
+    .stage-range::-webkit-slider-runnable-track {
+      height: .55rem;
+      border: 1px solid #cbd5e1;
+      border-radius: 999px;
+      background: linear-gradient(to right, #059669 0%, #0ea5e9 28%, #f59e0b 60%, #dc2626 100%);
+    }
+    .stage-range::-moz-range-track {
+      height: .55rem;
+      border: 1px solid #cbd5e1;
+      border-radius: 999px;
+      background: linear-gradient(to right, #059669 0%, #0ea5e9 28%, #f59e0b 60%, #dc2626 100%);
+    }
+    .stage-range::-webkit-slider-thumb {
+      width: 1.65rem;
+      height: 1.65rem;
+      margin-top: -.58rem;
+      appearance: none;
+      border: 4px solid #fff;
+      border-radius: 50%;
+      background: #0f172a;
+      box-shadow: 0 0 0 2px #0f172a, 0 6px 14px rgba(15,23,42,.25);
+    }
+    .stage-range::-moz-range-thumb {
+      width: 1.25rem;
+      height: 1.25rem;
+      border: 4px solid #fff;
+      border-radius: 50%;
+      background: #0f172a;
+      box-shadow: 0 0 0 2px #0f172a, 0 6px 14px rgba(15,23,42,.25);
+    }
+
+    .stage-label-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      width: 100%;
+      min-width: 0;
+    }
+
+    .stage-chip {
+      min-height: 3.2rem;
+      border: 1px solid #dbe4ee;
+      border-radius: .85rem;
+      color: #475569;
+      background: #fff;
+      padding: .48rem .55rem;
+      font-size: .72rem;
+      font-weight: 750;
+      line-height: 1.2;
+      text-align: left;
+      transition: border .18s ease, background .18s ease, color .18s ease, transform .18s ease;
+    }
+    .stage-chip:hover { border-color: #94a3b8; transform: translateY(-1px); }
+    .stage-chip[aria-current="step"] {
+      border-color: #0f172a;
+      color: #0f172a;
+      background: #f1f5f9;
+      box-shadow: inset 0 0 0 1px #0f172a;
+    }
+
+    .sign-toggle {
+      display: flex;
+      align-items: center;
+      gap: .7rem;
+      min-height: 3.5rem;
+      border: 1px solid #dbe4ee;
+      border-radius: 1rem;
+      color: #334155;
+      background: #fff;
+      padding: .7rem .8rem;
+      font-size: .78rem;
+      font-weight: 750;
+      line-height: 1.25;
+      text-align: left;
+      transition: background .18s ease, border-color .18s ease, box-shadow .18s ease;
+    }
+    .sign-toggle::before {
+      content: "";
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+      width: 1rem;
+      height: 1rem;
+      border: 2px solid #94a3b8;
+      border-radius: .35rem;
+      color: transparent;
+      background: #fff;
+      font-size: .68rem;
+      font-weight: 900;
+      line-height: 1;
+    }
+    .sign-toggle[aria-pressed="true"] {
+      border-color: #7dd3fc;
+      color: #0c4a6e;
+      background: #f0f9ff;
+      box-shadow: inset 0 0 0 1px #bae6fd;
+    }
+    .sign-toggle[aria-pressed="true"]::before {
+      border-color: #0369a1;
+      background: #0369a1;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3.2 8.2 6.4 11.3 12.8 4.9' fill='none' stroke='white' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: .78rem .78rem;
+      box-shadow: none;
+    }
+
+    .tap-button {
+      position: relative;
+      overflow: hidden;
+      width: 100%;
+      min-height: 9.5rem;
+      border: 1px solid #bae6fd;
+      border-radius: 1.25rem;
+      color: #0c4a6e;
+      background:
+        radial-gradient(circle at 50% 12%, rgba(255,255,255,.96), transparent 42%),
+        linear-gradient(145deg, #f0f9ff, #e0f2fe);
+      box-shadow: inset 0 1px 0 #fff, 0 14px 30px -22px rgba(3,105,161,.55);
+      transition: transform .12s ease, box-shadow .12s ease;
+    }
+    .tap-button:hover { box-shadow: inset 0 1px 0 #fff, 0 18px 34px -20px rgba(3,105,161,.65); }
+    .tap-button:active { transform: scale(.988); }
+    .tap-button:disabled {
+      cursor: default;
+      opacity: 1;
+      filter: none;
+    }
+    .tap-button::after {
+      content: "";
+      position: absolute;
+      inset: 50% auto auto 50%;
+      width: 8rem;
+      height: 8rem;
+      border: 1px solid rgba(14,165,233,.35);
+      border-radius: 50%;
+      transform: translate(-50%,-50%) scale(.3);
+      opacity: 0;
+      pointer-events: none;
+    }
+    .tap-button.just-tapped::after { animation: tap-ripple .55s ease-out; }
+    @keyframes tap-ripple {
+      0% { opacity: .55; transform: translate(-50%,-50%) scale(.3); }
+      100% { opacity: 0; transform: translate(-50%,-50%) scale(1.25); }
+    }
+
+    .rate-number { transition: opacity .25s ease, color .25s ease; }
+    .rate-number.is-fading { opacity: .25; }
+    .rate-expected { color: var(--emerald); }
+    .rate-fast { color: var(--crimson); }
+
+    .triage-card {
+      --state: var(--emerald);
+      --state-soft: var(--emerald-soft);
+      border-top: .38rem solid var(--state);
+      transition: border-color .25s ease, background .25s ease;
+    }
+    .triage-card[data-level="1"] { --state: var(--sky); --state-soft: var(--sky-soft); }
+    .triage-card[data-level="2"] { --state: var(--amber); --state-soft: var(--amber-soft); }
+    .triage-card[data-level="3"] { --state: var(--orange); --state-soft: var(--orange-soft); }
+    .triage-card[data-level="4"],
+    .triage-card[data-level="5"],
+    .triage-card[data-level="6"] { --state: var(--crimson); --state-soft: var(--crimson-soft); }
+    .state-icon {
+      display: grid;
+      place-items: center;
+      width: 2.8rem;
+      height: 2.8rem;
+      flex: 0 0 auto;
+      border: 1px solid color-mix(in srgb, var(--state), transparent 55%);
+      border-radius: 1rem;
+      color: var(--state);
+      background: var(--state-soft);
+      font-size: 1.05rem;
+      font-weight: 900;
+    }
+    .state-text { color: var(--state); }
+    .action-panel {
+      border: 1px solid color-mix(in srgb, var(--state), transparent 64%);
+      border-radius: 1rem;
+      background: var(--state-soft);
+      padding: 1rem;
+    }
+
+    .summary-block {
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      border: 1px solid #cbd5e1;
+      border-radius: 1rem;
+      color: #e2e8f0;
+      background: #0f172a;
+      padding: 1rem;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: .75rem;
+      line-height: 1.65;
+    }
+
+    .sr-only {
+      position: absolute !important;
+      width: 1px !important;
+      height: 1px !important;
+      padding: 0 !important;
+      margin: -1px !important;
+      overflow: hidden !important;
+      clip: rect(0,0,0,0) !important;
+      white-space: nowrap !important;
+      border: 0 !important;
+    }
+
+    @media (min-width: 1024px) {
+      .result-sticky { position: sticky; top: 7.6rem; }
+    }
+
+    @media (max-width: 639px) {
+      html { scroll-padding-top: 10rem; }
+      .model-shell { min-height: 0; }
+      .stage-label-grid {
+        display: grid;
+        grid-template-columns: repeat(7, 8.2rem);
+        max-width: 100%;
+        overflow-x: auto;
+        padding: .2rem .15rem .65rem;
+        scroll-snap-type: x mandatory;
+      }
+      .stage-chip {
+        scroll-snap-align: start;
+        padding: .48rem .55rem;
+        font-size: .72rem;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after {
+        scroll-behavior: auto !important;
+        transition-duration: .01ms !important;
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+      }
+    }
+
+    @media (forced-colors: active) {
+      .stage-range::-webkit-slider-runnable-track { background: CanvasText; }
+      .sign-toggle[aria-pressed="true"]::before { background: Highlight; }
+      .triage-card { border: 2px solid CanvasText; border-top-width: .5rem; }
+    }
+  </style>
+</head>
+<body>
+  <a href="#assessment" class="skip-link">Skip to breathing guide</a>
+
+  <header class="emergency-strip" aria-label="Emergency breathing warning">
+    <div class="mx-auto flex max-w-5xl items-start gap-3 px-4 py-3 sm:items-center sm:px-6">
+      <span aria-hidden="true" class="mt-0.5 grid h-7 w-7 shrink-0 place-items-center rounded-full bg-red-700 text-sm font-black text-white sm:mt-0">!</span>
+      <p class="text-xs font-semibold leading-5 text-red-950 sm:text-sm">
+        <strong class="font-black">In the U.S., call 911 now; elsewhere call your local emergency number</strong> if your baby has blue or gray lips or face, pauses in breathing, is hard to wake, cannot feed, or is struggling for every breath.
+      </p>
+    </div>
+  </header>
+
+  <main id="assessment" class="mx-auto max-w-5xl px-4 pb-16 pt-8 sm:px-6 sm:pt-12">
+    <section aria-labelledby="page-title" class="mb-8 sm:mb-10">
+      <div class="mb-5 flex flex-wrap items-center justify-between gap-3">
+        <div class="flex items-center gap-3">
+          <div class="brand-mark" aria-hidden="true">
+            <span class="text-xl leading-none">≈</span>
+          </div>
+          <div>
+            <p class="text-sm font-extrabold tracking-tight text-slate-900">Breathing Together</p>
+            <p class="text-xs font-medium text-slate-500">A CloseDose infant breathing guide</p>
+          </div>
+        </div>
+        <div class="guide-site-actions">
+          <a class="guide-home-link" href="/">← CloseDose home</a>
+          <button id="guideMenuButton" class="guide-menu-button" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="siteMenu">Menu</button>
+        </div>
+      </div>
+      <div class="max-w-3xl">
+        <p class="eyebrow mb-3 text-sky-700"><span class="h-2 w-2 rounded-full bg-sky-600"></span>Calm, clear, parent-first</p>
+        <h1 id="page-title" class="text-4xl font-black tracking-tight text-slate-950 sm:text-5xl">See the signs. Know what to do.</h1>
+        <p class="mt-4 max-w-2xl text-base leading-7 text-slate-600 sm:text-lg">
+          Compare visible breathing patterns, mark what you notice, and prepare a clear summary for a healthcare professional. This guide supports observation—it cannot diagnose or rule out illness.
+        </p>
+      </div>
+    </section>
+
+    <div class="grid items-start gap-6 lg:grid-cols-[minmax(0,1.42fr)_minmax(19rem,.88fr)] lg:gap-7">
+      <div class="min-w-0 space-y-6">
+        <section class="glass-card p-5 sm:p-6" aria-labelledby="age-heading">
+          <div class="mb-5 flex items-start gap-3">
+            <span class="grid h-8 w-8 shrink-0 place-items-center rounded-xl bg-sky-100 text-sm font-black text-sky-800" aria-hidden="true">1</span>
+            <div>
+              <h2 id="age-heading" class="text-lg font-black tracking-tight text-slate-950">Choose your baby’s age</h2>
+              <p class="mt-1 text-sm leading-6 text-slate-600">Age changes the WHO fast-breathing screening cutoff used after a full 60-second count.</p>
+            </div>
+          </div>
+          <fieldset>
+            <legend class="sr-only">Baby age group</legend>
+            <div class="grid gap-3 sm:grid-cols-2">
+              <div class="age-option relative">
+                <input id="age-newborn" type="radio" name="age" value="newborn" checked>
+                <label for="age-newborn">
+                  <span class="block text-sm font-extrabold text-slate-950">Newborn</span>
+                  <span class="mt-1 block text-xs font-medium text-slate-600">Birth to under 2 months</span>
+                  <span class="mt-3 block text-xs leading-5 text-slate-700">WHO fast-breathing screening cutoff: 60 or more breaths/min</span>
+                </label>
+              </div>
+              <div class="age-option relative">
+                <input id="age-infant" type="radio" name="age" value="infant">
+                <label for="age-infant">
+                  <span class="block text-sm font-extrabold text-slate-950">Infant</span>
+                  <span class="mt-1 block text-xs font-medium text-slate-600">2 to under 12 months</span>
+                  <span class="mt-3 block text-xs leading-5 text-slate-700">WHO fast-breathing screening cutoff: 50 or more breaths/min</span>
+                </label>
+              </div>
+            </div>
+          </fieldset>
+          <p id="ageReference" class="mt-4 rounded-xl bg-slate-50 px-4 py-3 text-xs leading-5 text-slate-600">
+            WHO fast-breathing screening cutoff for birth to 59 days: 60 or more breaths per minute. Count for a full 60 seconds while calm.
+          </p>
+        </section>
+
+        <section class="glass-card p-5 sm:p-6" aria-labelledby="visual-heading">
+          <div class="mb-5 flex flex-wrap items-start justify-between gap-3">
+            <div class="flex items-start gap-3">
+              <span class="grid h-8 w-8 shrink-0 place-items-center rounded-xl bg-sky-100 text-sm font-black text-sky-800" aria-hidden="true">2</span>
+              <div>
+                <h2 id="visual-heading" class="text-lg font-black tracking-tight text-slate-950">Compare the breathing pattern</h2>
+                <p class="mt-1 max-w-lg text-sm leading-6 text-slate-600">Move through representative examples, then fine-tune the signs. Real babies may show these in different combinations.</p>
+              </div>
+            </div>
+            <button id="motionToggle" type="button" aria-pressed="false" class="min-h-11 rounded-xl border border-slate-300 bg-white px-3.5 py-2 text-xs font-extrabold text-slate-700 shadow-sm hover:bg-slate-50">
+              Pause animation
+            </button>
+          </div>
+
+          <div class="model-shell" aria-hidden="true">
+            <svg id="infantSvg" viewBox="100 45 824 1100" preserveAspectRatio="xMidYMid meet" aria-hidden="true" focusable="false">
+              <defs>
+                <radialGradient id="refinedMat" cx="50%" cy="18%" r="86%">
+                  <stop offset="0" stop-color="#fffefd"/>
+                  <stop offset=".62" stop-color="#fbfaf7"/>
+                  <stop offset="1" stop-color="#eef5f8"/>
+                </radialGradient>
+                <linearGradient id="creaseShadowFade" x1="0" y1="0" x2="1" y2="0">
+                  <stop offset="0" stop-color="#80675e" stop-opacity="0"/>
+                  <stop offset=".16" stop-color="#80675e"/>
+                  <stop offset=".84" stop-color="#80675e"/>
+                  <stop offset="1" stop-color="#80675e" stop-opacity="0"/>
+                </linearGradient>
+                <linearGradient id="creaseRimFade" x1="0" y1="0" x2="1" y2="0">
+                  <stop offset="0" stop-color="#fffaf0" stop-opacity="0"/>
+                  <stop offset=".18" stop-color="#fffaf0"/>
+                  <stop offset=".82" stop-color="#fffaf0"/>
+                  <stop offset="1" stop-color="#fffaf0" stop-opacity="0"/>
+                </linearGradient>
+                <filter id="matShadow" x="-20%" y="-20%" width="140%" height="150%">
+                  <feDropShadow dx="0" dy="16" stdDeviation="18" flood-color="#475569" flood-opacity=".13"/>
+                </filter>
+                <filter id="groundBlur" x="-40%" y="-300%" width="180%" height="700%">
+                  <feGaussianBlur stdDeviation="16"/>
+                </filter>
+                <filter id="creaseSoft" x="-20%" y="-100%" width="140%" height="300%">
+                  <feGaussianBlur stdDeviation="2.6"/>
+                </filter>
+                <filter id="costalSoft" x="-20%" y="-100%" width="140%" height="300%">
+                  <feGaussianBlur stdDeviation="2"/>
+                </filter>
+                <filter id="collarSoft" x="-30%" y="-100%" width="160%" height="300%">
+                  <feGaussianBlur stdDeviation="1.8"/>
+                </filter>
+                <filter id="throatSoft" x="-30%" y="-100%" width="160%" height="300%">
+                  <feGaussianBlur stdDeviation="1.2"/>
+                </filter>
+                <filter id="tinySoft" x="-60%" y="-80%" width="220%" height="260%">
+                  <feGaussianBlur stdDeviation="1.35"/>
+                </filter>
+                <filter id="maskFeather" x="-20%" y="-20%" width="140%" height="140%">
+                  <feGaussianBlur stdDeviation="16"/>
+                </filter>
+                <mask id="chestMask" maskUnits="userSpaceOnUse" x="0" y="0" width="1024" height="1536">
+                  <rect width="1024" height="1536" fill="black"/>
+                  <rect x="258" y="590" width="508" height="380" rx="150" fill="white" filter="url(#maskFeather)"/>
+                </mask>
+                <mask id="bellyMask" maskUnits="userSpaceOnUse" x="0" y="0" width="1024" height="1536">
+                  <rect width="1024" height="1536" fill="black"/>
+                  <ellipse cx="512" cy="1115" rx="220" ry="210" fill="white" filter="url(#maskFeather)"/>
+                </mask>
+                <mask id="staticBodyMask" maskUnits="userSpaceOnUse" x="0" y="0" width="1024" height="1536">
+                  <rect width="1024" height="1536" fill="white"/>
+                  <rect x="258" y="590" width="508" height="380" rx="150" fill="black" filter="url(#maskFeather)"/>
+                  <ellipse cx="512" cy="1115" rx="220" ry="210" fill="black" filter="url(#maskFeather)"/>
+                </mask>
+                <image id="bodyRaster" href="../images/infant-breathing/infant-body.webp" width="1024" height="1536" preserveAspectRatio="xMidYMid meet"/>
+                <image id="headRaster" href="../images/infant-breathing/infant-head.webp" width="1024" height="1536" preserveAspectRatio="xMidYMid meet"/>
+              </defs>
+
+              <rect x="24" y="26" width="976" height="1320" rx="80" fill="url(#refinedMat)" stroke="#dbe6eb" stroke-width="2" filter="url(#matShadow)"/>
+              <ellipse cx="512" cy="1288" rx="276" ry="24" fill="#64748b" opacity=".12" filter="url(#groundBlur)"/>
+
+              <g id="modelZoom">
+              <g id="babyModel">
+                <use href="#bodyRaster" mask="url(#staticBodyMask)"/>
+                <g mask="url(#chestMask)">
+                  <use class="chest-motion" href="#bodyRaster"/>
+                </g>
+                <g mask="url(#bellyMask)">
+                  <use class="belly-motion" href="#bodyRaster"/>
+                </g>
+                <g id="headRig" class="head-anchor">
+                  <use href="#headRaster"/>
+                  <g class="nose-depth">
+                    <path class="alar-shadow alar-left" d="M476 388 Q484 397 491 401" fill="none" stroke="#9a6752" stroke-width="4.5" stroke-linecap="round" filter="url(#tinySoft)"/>
+                    <path class="alar-shadow alar-right" d="M548 388 Q540 397 533 401" fill="none" stroke="#9a6752" stroke-width="4.5" stroke-linecap="round" filter="url(#tinySoft)"/>
+                    <ellipse class="nostril nostril-left" cx="492" cy="397" rx="5.2" ry="2.8" fill="#4e352f"/>
+                    <ellipse class="nostril nostril-right" cx="532" cy="397" rx="5.2" ry="2.8" fill="#4e352f"/>
+                  </g>
+
+                  <g class="grunt-detail" fill="none" stroke-linecap="round">
+                    <path class="mouth-crease" d="M486 455 Q512 466 538 455" stroke="#6d4d44" stroke-width="2"/>
+                    <g class="grunt-wave" stroke="#64748b" stroke-width="2.5">
+                      <path d="M570 445 Q585 457 570 469"/>
+                      <path d="M584 437 Q607 457 584 478"/>
+                    </g>
+                  </g>
+                </g>
+
+                <g class="rib-depth" fill="none" stroke-linecap="round">
+                  <g class="retraction-shadow" fill="url(#creaseShadowFade)" stroke="none" filter="url(#creaseSoft)">
+                    <path d="M304 810 Q374 827 444 818 Q374 839 304 810 Z"/>
+                    <path d="M297 866 Q370 884 444 875 Q370 899 297 866 Z"/>
+                    <path d="M315 922 Q376 939 442 931 Q376 953 315 922 Z"/>
+                    <path d="M580 818 Q650 827 720 810 Q650 839 580 818 Z"/>
+                    <path d="M580 875 Q654 884 727 866 Q654 899 580 875 Z"/>
+                    <path d="M582 931 Q648 939 709 922 Q648 953 582 931 Z"/>
+                  </g>
+                  <g class="retraction-rim" stroke="url(#creaseRimFade)" stroke-width="2">
+                    <path d="M304 806 Q374 823 444 814"/>
+                    <path d="M297 862 Q370 880 444 871"/>
+                    <path d="M315 918 Q376 935 442 927"/>
+                    <path d="M580 814 Q650 823 720 806"/>
+                    <path d="M580 871 Q654 880 727 862"/>
+                    <path d="M582 927 Q648 935 709 918"/>
+                  </g>
+                  <g class="subcostal-shadow" fill="url(#creaseShadowFade)" stroke="none" filter="url(#costalSoft)">
+                    <path d="M310 960 Q390 978 474 954 Q392 990 310 960 Z"/>
+                    <path d="M550 954 Q634 978 714 960 Q632 990 550 954 Z"/>
+                  </g>
+                  <g class="subcostal-rim" stroke="url(#creaseRimFade)" stroke-width="1.8">
+                    <path d="M314 954 Q390 970 470 949"/>
+                    <path d="M554 949 Q634 970 710 954"/>
+                  </g>
+                </g>
+
+                <g class="collar-depth" stroke-linecap="round">
+                  <g class="collar-pocket" fill="#80675e" filter="url(#collarSoft)">
+                    <path d="M405 554 Q438 538 474 550 Q444 561 412 560 Z"/>
+                    <path d="M550 550 Q586 538 619 554 Q612 560 580 561 Z"/>
+                  </g>
+                  <g class="collar-rim" fill="none" stroke="#fffaf0" stroke-width="1.8">
+                    <path d="M412 548 Q440 537 468 546"/>
+                    <path d="M556 546 Q584 537 612 548"/>
+                  </g>
+                </g>
+
+                <g class="head-follow">
+                  <g class="throat-depth" fill="none" stroke-linecap="round">
+                    <path class="throat-tug" d="M494 542 Q512 558 530 542" stroke="#80675e" stroke-width="5" filter="url(#throatSoft)"/>
+                    <path class="throat-highlight" d="M500 538 Q512 548 524 538" stroke="#fffaf0" stroke-width="1.6"/>
+                  </g>
+                </g>
+              </g>
+              </g>
+            </svg>
+          </div>
+
+          <div class="mt-4 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3">
+            <p class="eyebrow text-slate-500">Current example</p>
+            <div class="mt-1 flex flex-wrap items-baseline justify-between gap-2">
+              <h3 id="stageName" class="text-base font-black tracking-tight text-slate-950">Comfortable breathing</h3>
+              <span id="stageCount" class="text-xs font-extrabold text-slate-500">Example 1 of 7</span>
+            </div>
+            <p id="stageDescription" class="mt-1 text-sm leading-6 text-slate-600">Chest and belly move gently together without pulling-in around the ribs, neck, or nose.</p>
+          </div>
+
+          <div class="mt-5">
+            <label for="stageSlider" class="block text-sm font-extrabold text-slate-900">Move through breathing examples</label>
+            <input id="stageSlider" class="stage-range mt-2" type="range" min="1" max="7" step="1" value="1" aria-valuetext="Example 1 of 7: Comfortable breathing">
+            <div class="mt-2 flex items-center justify-between gap-3">
+              <button id="previousStage" type="button" class="min-h-11 rounded-xl border border-slate-300 bg-white px-4 py-2 text-xs font-extrabold text-slate-700 hover:bg-slate-50" disabled>Previous</button>
+              <p class="text-center text-[11px] font-semibold leading-4 text-slate-500">Examples show common patterns—not a guaranteed order.</p>
+              <button id="nextStage" type="button" class="min-h-11 rounded-xl border border-slate-300 bg-white px-4 py-2 text-xs font-extrabold text-slate-700 hover:bg-slate-50">Next</button>
+            </div>
+            <div id="stageButtons" class="stage-label-grid mt-4 gap-1.5" role="group" aria-label="Breathing examples"></div>
+          </div>
+
+          <fieldset class="mt-6 border-t border-slate-200 pt-5">
+            <legend class="text-sm font-extrabold text-slate-900">Fine-tune what you see</legend>
+            <div class="mt-1 flex flex-wrap items-end justify-between gap-3">
+              <div>
+                <p class="mt-1 text-xs leading-5 text-slate-500">Turn individual signs on or off to match your observation.</p>
+              </div>
+              <button id="clearSigns" type="button" class="min-h-10 rounded-lg px-3 py-2 text-xs font-extrabold text-sky-800 underline decoration-sky-300 underline-offset-4 hover:bg-sky-50">Clear all signs</button>
+            </div>
+            <div id="signToggles" class="mt-4 grid gap-2 sm:grid-cols-2"></div>
+          </fieldset>
+
+          <p id="modelSummary" class="mt-4 rounded-xl border border-sky-100 bg-sky-50 px-4 py-3 text-sm leading-6 text-sky-950" aria-live="polite" aria-atomic="true">
+            Model shows comfortable breathing with the chest and belly moving together.
+          </p>
+        </section>
+
+        <section class="glass-card p-5 sm:p-6" aria-labelledby="counter-heading">
+          <div class="mb-5 flex items-start gap-3">
+            <span class="grid h-8 w-8 shrink-0 place-items-center rounded-xl bg-sky-100 text-sm font-black text-sky-800" aria-hidden="true">3</span>
+            <div>
+              <h2 id="counter-heading" class="text-lg font-black tracking-tight text-slate-950">Count breaths for one full minute</h2>
+              <p class="mt-1 text-sm leading-6 text-slate-600">When your baby is calm, tap once each time the chest or belly begins to rise. The first tap starts the 60-second timer.</p>
+            </div>
+          </div>
+
+          <button id="tapButton" type="button" class="tap-button" aria-describedby="tapHelp">
+            <span class="relative z-10 block">
+              <span class="block text-xs font-black uppercase tracking-[.16em] text-sky-700">Tap each rise</span>
+              <span id="rateDisplay" class="rate-number mt-1 block text-5xl font-black tracking-tight text-slate-950">--</span>
+              <span class="block text-sm font-extrabold text-slate-600">breaths per minute</span>
+              <span id="tapProgress" class="mt-2 block text-xs font-semibold text-slate-500">Tap the first rise to start 60 seconds</span>
+            </span>
+          </button>
+          <div class="mt-3 flex flex-wrap items-start justify-between gap-3">
+            <p id="tapHelp" class="max-w-md text-xs leading-5 text-slate-500">Keep tapping for the entire minute. A result appears only after 60 seconds; a number below the screening cutoff does not rule out breathing distress.</p>
+            <button id="resetCounter" type="button" class="min-h-10 rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-extrabold text-slate-700 hover:bg-slate-50">Reset 60-second count</button>
+          </div>
+          <div id="rateInterpretation" class="mt-4 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-semibold leading-6 text-slate-700" aria-live="polite" aria-atomic="true">
+            No rate measured yet.
+          </div>
+        </section>
+      </div>
+
+      <aside aria-labelledby="result-heading" class="result-sticky">
+        <section id="triageCard" class="triage-card glass-card p-5 sm:p-6" data-level="0">
+          <div class="flex items-start gap-3">
+            <span id="stateIcon" class="state-icon" aria-hidden="true">i</span>
+            <div class="min-w-0">
+              <p id="severityLabel" class="eyebrow state-text">Starting example</p>
+              <h2 id="result-heading" class="mt-1 text-2xl font-black tracking-tight text-slate-950">No observations entered—this example does not assess your baby</h2>
+            </div>
+          </div>
+
+          <div class="action-panel mt-5">
+            <p class="text-[11px] font-black uppercase tracking-[.14em] state-text">What to do now</p>
+            <p id="actionTitle" class="mt-1 text-lg font-black leading-6 text-slate-950">Compare the example with what you see</p>
+            <p id="actionBody" class="mt-2 text-sm leading-6 text-slate-700">The starting animation is only a reference. A calm-looking animation cannot show that your baby is safe.</p>
+          </div>
+
+          <div class="mt-5">
+            <h3 class="text-sm font-extrabold text-slate-900">What you marked</h3>
+            <ul id="activeSignsList" class="mt-3 space-y-2 text-sm leading-5 text-slate-600">
+              <li class="flex gap-2"><span aria-hidden="true" class="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-600"></span>No extra-effort signs selected</li>
+            </ul>
+          </div>
+
+          <div class="mt-5 rounded-xl border border-red-200 bg-red-50 px-4 py-3">
+            <p class="text-xs font-black uppercase tracking-[.12em] text-red-800">Do not wait for this tool</p>
+            <p class="mt-1 text-xs leading-5 text-red-950">In the U.S., call 911; elsewhere call your local emergency number for blue or gray lips or face, breathing pauses, severe struggle, choking, limpness, or difficulty waking.</p>
+          </div>
+
+          <div class="mt-6 border-t border-slate-200 pt-5">
+            <div class="flex items-start justify-between gap-3">
+              <div>
+                <h3 class="text-sm font-extrabold text-slate-900">Summary for a clinician</h3>
+                <p class="mt-1 text-xs leading-5 text-slate-500">Copy and read this aloud when you call.</p>
+              </div>
+            </div>
+            <pre id="summaryText" class="summary-block mt-3" tabindex="0"></pre>
+            <button id="copySummary" type="button" class="mt-3 min-h-12 w-full rounded-xl bg-slate-950 px-4 py-3 text-sm font-black text-white shadow-lg shadow-slate-900/10 hover:bg-slate-800">Copy summary for care team</button>
+            <p id="copyStatus" class="mt-2 min-h-5 text-center text-xs font-semibold text-slate-600" aria-live="polite"></p>
+          </div>
+
+          <p class="mt-5 text-xs leading-5 text-slate-500">When in doubt, seek urgent care. A baby can be seriously unwell without showing every sign in this guide.</p>
+        </section>
+      </aside>
+    </div>
+  </main>
+
+  <footer class="border-t border-slate-200 bg-white/75">
+    <div class="mx-auto max-w-5xl px-4 py-8 sm:px-6">
+      <div class="grid gap-5 md:grid-cols-[1.2fr_.8fr]">
+        <div>
+          <h2 class="text-sm font-black text-slate-950">Educational guide—not a diagnosis</h2>
+          <p class="mt-2 max-w-2xl text-xs leading-6 text-slate-600">This tool cannot examine your baby, measure oxygen, hear breath sounds, diagnose or rule out illness, or determine that a baby is safe. Breathing patterns vary with crying, fever, sleep, and illness. Absence of a depicted sign must not delay care.</p>
+          <a class="mt-2 inline-block text-xs font-bold text-sky-800 underline underline-offset-2" href="/legal/disclaimer">Read the CloseDose medical disclaimer</a>
+        </div>
+        <div>
+          <h2 class="text-sm font-black text-slate-950">Clinical references</h2>
+          <p class="mt-2 text-xs leading-6 text-slate-600">
+            Visual and rate guidance informed by
+            <a class="font-bold text-sky-800 underline underline-offset-2" href="https://www.chop.edu/conditions-diseases/signs-respiratory-distress-children" target="_blank" rel="noreferrer">CHOP</a>,
+            <a class="font-bold text-sky-800 underline underline-offset-2" href="https://med.stanford.edu/newborns/professional-education/photo-gallery/lungs-chest.html" target="_blank" rel="noreferrer">Stanford Medicine</a>, and
+            <a class="font-bold text-sky-800 underline underline-offset-2" href="https://www.who.int/publications/i/item/9789241516365" target="_blank" rel="noreferrer">WHO</a>.
+          </p>
+        </div>
+      </div>
+      <p class="mt-6 text-[11px] font-semibold uppercase tracking-[.12em] text-slate-600">Privacy-minded · This page does not intentionally store or submit your observations</p>
+    </div>
+  </footer>
+
+  <div id="siteMenu" class="guide-menu-overlay" hidden>
+    <div class="guide-menu-panel" role="dialog" aria-modal="true" aria-labelledby="guideMenuHeading">
+      <h2 id="guideMenuHeading" class="guide-menu-heading">CloseDose menu</h2>
+      <nav class="guide-menu-links" aria-label="Site">
+        <a href="/">Calculator</a>
+        <a href="/allergy-calculator.html">Allergy Calculator</a>
+        <a href="/medication-guides.html">Medication Guides</a>
+        <a href="/cold-cough-guidance.html">Cough &amp; Cold Guidance</a>
+        <a href="/infant-breathing/" class="nav-breathing" aria-current="page">Infant Breathing Guide</a>
+        <a href="/weighing-guide.html">Weighing Guide</a>
+        <a href="/dosing-guide.html">Dosing Guide</a>
+        <a href="/about.html">About</a>
+        <a href="/about.html#support">Support</a>
+      </nav>
+      <button id="guideMenuClose" class="guide-menu-close" type="button">Close menu</button>
+    </div>
+  </div>
+
+  <div id="emergencyAnnouncer" class="sr-only" role="alert" aria-live="assertive"></div>
+  <div id="triageAnnouncer" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+
+  <script>
+    (() => {
+      const button = document.getElementById('guideMenuButton');
+      const overlay = document.getElementById('siteMenu');
+      const closeButton = document.getElementById('guideMenuClose');
+      const focusableSelector = 'a[href], button:not([disabled])';
+
+      function openMenu() {
+        overlay.hidden = false;
+        document.body.classList.add('guide-menu-open');
+        button.setAttribute('aria-expanded', 'true');
+        window.requestAnimationFrame(() => overlay.classList.add('is-open'));
+        overlay.querySelector(focusableSelector)?.focus();
+      }
+
+      function closeMenu() {
+        overlay.classList.remove('is-open');
+        document.body.classList.remove('guide-menu-open');
+        button.setAttribute('aria-expanded', 'false');
+        window.setTimeout(() => { overlay.hidden = true; }, 180);
+        button.focus();
+      }
+
+      button.addEventListener('click', openMenu);
+      closeButton.addEventListener('click', closeMenu);
+      overlay.addEventListener('click', (event) => {
+        if (event.target === overlay) closeMenu();
+      });
+      document.addEventListener('keydown', (event) => {
+        if (overlay.hidden) return;
+        if (event.key === 'Escape') {
+          event.preventDefault();
+          closeMenu();
+          return;
+        }
+        if (event.key !== 'Tab') return;
+        const focusable = [...overlay.querySelectorAll(focusableSelector)];
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (event.shiftKey && document.activeElement === first) {
+          event.preventDefault();
+          last.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault();
+          first.focus();
+        }
+      });
+    })();
+  </script>
+
+  <script>
+    'use strict';
+
+    const stagePresets = [
+      {
+        name: 'Comfortable breathing',
+        short: 'Comfortable',
+        description: 'Chest and belly move gently together without pulling-in around the ribs, neck, or nose.',
+        signs: []
+      },
+      {
+        name: 'Fast breathing',
+        short: 'Fast breathing',
+        description: 'Breaths are closer together, but the chest and belly still move smoothly.',
+        signs: ['fast']
+      },
+      {
+        name: 'Belly working harder',
+        short: 'Belly working',
+        description: 'The belly pushes outward more noticeably while the upper chest moves less.',
+        signs: ['fast', 'belly']
+      },
+      {
+        name: 'Ribs and lower chest pulling in',
+        short: 'Ribs pulling',
+        description: 'Skin appears to pull inward between the ribs and along the lower edge of the rib cage while breathing in.',
+        signs: ['fast', 'belly', 'ribs']
+      },
+      {
+        name: 'Nose and collarbone pulling',
+        short: 'Nose + collarbone',
+        description: 'Nostrils widen on each breath in and soft areas above the collarbones appear to sink inward.',
+        signs: ['fast', 'belly', 'ribs', 'nose', 'collar']
+      },
+      {
+        name: 'Throat notch tugging',
+        short: 'Throat tugging',
+        description: 'The small hollow at the base of the throat pulls inward and downward with each breath in.',
+        signs: ['fast', 'belly', 'ribs', 'nose', 'collar', 'throat']
+      },
+      {
+        name: 'Grunting or head bobbing',
+        short: 'Grunt + head bob',
+        description: 'A short sound may occur while breathing out, or the head may nod with each breath. These are emergency warning signs.',
+        signs: ['fast', 'belly', 'ribs', 'nose', 'collar', 'throat', 'grunt']
+      }
+    ];
+
+    const breathDurations = {
+      newborn: { comfortable: 1.5, fast: .86 },
+      infant: { comfortable: 1.9, fast: 1.05 }
+    };
+
+    const signDefinitions = [
+      { id: 'fast', label: 'Breathing faster than usual', summary: 'Breathing faster than usual', weight: 1 },
+      { id: 'belly', label: 'Belly working harder', summary: 'Belly pumping more than the chest', weight: 2 },
+      { id: 'ribs', label: 'Skin pulling at or under ribs', summary: 'Skin pulling in between or beneath the ribs', weight: 3 },
+      { id: 'nose', label: 'Nostrils widening', summary: 'Nostrils widening with each breath in', weight: 4 },
+      { id: 'collar', label: 'Pulling above collarbones', summary: 'Soft areas above the collarbones pulling inward', weight: 4 },
+      { id: 'throat', label: 'Throat notch tugging', summary: 'Hollow at the base of the throat tugging inward', weight: 5 },
+      { id: 'grunt', label: 'Grunting or head bobbing', summary: 'Grunting while breathing out or head bobbing', weight: 6 }
+    ];
+
+    const triageLevels = [
+      {
+        label: 'Starting example', icon: 'i', heading: 'No observations entered—this example does not assess your baby',
+        action: 'Compare the example with what you see',
+        body: 'The starting animation is only a reference. A calm-looking animation cannot show that your baby is safe, and absence of one sign does not rule out breathing trouble.'
+      },
+      {
+        label: 'Check the rate', icon: 'i', heading: 'Breathing looks faster',
+        action: 'Pause and count for a full minute',
+        body: 'Count while your baby is calm. If fast breathing continues, call your pediatrician for advice—especially for a young newborn.'
+      },
+      {
+        label: 'Needs attention', icon: '!', heading: 'The belly is working harder',
+        action: 'Call your baby’s clinician now',
+        body: 'Fast breathing or ongoing increased belly movement can mean your baby is working harder to breathe. Ask a healthcare professional what to do next.'
+      },
+      {
+        label: 'Concerning effort', icon: '!', heading: 'Pulling-in around the ribs is concerning',
+        action: 'Go for urgent in-person medical assessment now',
+        body: 'Visible pulling between or beneath the ribs needs prompt assessment in a baby. Go to an emergency department now. In the U.S., call 911—elsewhere call your local emergency number—if breathing is worsening or transport is not safe.'
+      },
+      {
+        label: 'Marked effort', icon: '!', heading: 'Your baby may be working hard to breathe',
+        action: 'Seek urgent in-person medical care now',
+        body: 'Nostril widening or pulling above the collarbones can signal respiratory distress. Do not rely on the animation to judge severity.'
+      },
+      {
+        label: 'Emergency evaluation', icon: '!', heading: 'A serious breathing sign is shown',
+        action: 'Go to the nearest emergency department now',
+        body: 'Tugging at the base of the throat is a serious sign. In the U.S., call 911—elsewhere call your local emergency number—if your baby is struggling for every breath, changing color, pausing, or becoming hard to wake.'
+      },
+      {
+        label: 'Emergency signs', icon: '!', heading: 'Act now',
+        action: 'In the U.S., call 911 now; elsewhere call your local emergency number',
+        body: 'Grunting with each breath or head bobbing can signal severe breathing difficulty. Keep your baby with you and follow the dispatcher’s instructions.'
+      }
+    ];
+
+    const fastRateTriage = {
+      label: 'Fast breathing count', icon: '!', heading: 'The 60-second count reached the fast-breathing screening cutoff',
+      action: 'Contact a healthcare professional promptly',
+      body: 'A full-minute count reached the screening cutoff for this age. This is a screening result, not a diagnosis. Seek emergency help now for blue or gray color, breathing pauses, severe struggle, limpness, or difficulty waking.'
+    };
+
+    const agePresets = {
+      newborn: {
+        label: 'Birth to under 2 months', fastAt: 60,
+        reference: 'WHO fast-breathing screening cutoff for birth to 59 days: 60 or more breaths per minute. Count for a full 60 seconds while calm.'
+      },
+      infant: {
+        label: '2 to under 12 months', fastAt: 50,
+        reference: 'WHO fast-breathing screening cutoff for 2 to 11 months: 50 or more breaths per minute. Count for a full 60 seconds while calm.'
+      }
+    };
+
+    const state = {
+      age: 'newborn',
+      stage: 1,
+      signs: new Set(),
+      custom: false,
+      taps: [],
+      bpm: null,
+      rateCategory: null,
+      countStartedAt: null,
+      countInterval: null,
+      countFinishTimer: null,
+      countComplete: false,
+      rateNote: null,
+      motionPaused: false,
+      reducedMotion: false,
+      emergencyAnnounced: false,
+      lastPoliteKey: 'level-0'
+    };
+
+    const el = {
+      babyModel: document.getElementById('babyModel'),
+      modelZoom: document.getElementById('modelZoom'),
+      stageSlider: document.getElementById('stageSlider'),
+      stageName: document.getElementById('stageName'),
+      stageCount: document.getElementById('stageCount'),
+      stageDescription: document.getElementById('stageDescription'),
+      stageButtons: document.getElementById('stageButtons'),
+      previousStage: document.getElementById('previousStage'),
+      nextStage: document.getElementById('nextStage'),
+      signToggles: document.getElementById('signToggles'),
+      clearSigns: document.getElementById('clearSigns'),
+      modelSummary: document.getElementById('modelSummary'),
+      motionToggle: document.getElementById('motionToggle'),
+      ageReference: document.getElementById('ageReference'),
+      tapButton: document.getElementById('tapButton'),
+      rateDisplay: document.getElementById('rateDisplay'),
+      tapProgress: document.getElementById('tapProgress'),
+      resetCounter: document.getElementById('resetCounter'),
+      rateInterpretation: document.getElementById('rateInterpretation'),
+      triageCard: document.getElementById('triageCard'),
+      stateIcon: document.getElementById('stateIcon'),
+      severityLabel: document.getElementById('severityLabel'),
+      resultHeading: document.getElementById('result-heading'),
+      actionTitle: document.getElementById('actionTitle'),
+      actionBody: document.getElementById('actionBody'),
+      activeSignsList: document.getElementById('activeSignsList'),
+      summaryText: document.getElementById('summaryText'),
+      copySummary: document.getElementById('copySummary'),
+      copyStatus: document.getElementById('copyStatus'),
+      emergencyAnnouncer: document.getElementById('emergencyAnnouncer'),
+      triageAnnouncer: document.getElementById('triageAnnouncer')
+    };
+
+    function initializeControls() {
+      stagePresets.forEach((preset, index) => {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'stage-chip';
+        button.dataset.stage = String(index + 1);
+        button.innerHTML = `<span class="block text-[10px] font-black uppercase tracking-wider text-slate-600">${index + 1}</span><span class="mt-1 block">${preset.short}</span>`;
+        button.addEventListener('click', () => applyStage(index + 1));
+        el.stageButtons.appendChild(button);
+      });
+
+      signDefinitions.forEach((sign) => {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'sign-toggle';
+        button.dataset.sign = sign.id;
+        button.setAttribute('aria-pressed', 'false');
+        button.textContent = sign.label;
+        button.addEventListener('click', () => toggleSign(sign.id));
+        el.signToggles.appendChild(button);
+      });
+
+      document.querySelectorAll('input[name="age"]').forEach((radio) => {
+        radio.addEventListener('change', (event) => {
+          if (!event.target.checked) return;
+          state.age = event.target.value;
+          el.ageReference.textContent = agePresets[state.age].reference;
+          renderStage();
+          resetRate('Age changed. Start a new count when your baby is calm.');
+          restartBreathingCycle();
+        });
+      });
+
+      el.stageSlider.addEventListener('input', (event) => applyStage(Number(event.target.value)));
+      el.previousStage.addEventListener('click', () => applyStage(Math.max(1, state.stage - 1)));
+      el.nextStage.addEventListener('click', () => applyStage(Math.min(7, state.stage + 1)));
+      el.clearSigns.addEventListener('click', () => {
+        state.stage = 1;
+        state.signs.clear();
+        state.custom = false;
+        render();
+        restartBreathingCycle();
+      });
+      el.motionToggle.addEventListener('click', toggleMotion);
+      el.tapButton.addEventListener('click', recordTap);
+      el.resetCounter.addEventListener('click', () => resetRate('Count reset. Start again when your baby is calm.'));
+      el.copySummary.addEventListener('click', copySummary);
+      document.addEventListener('visibilitychange', () => {
+        if (document.hidden && state.countStartedAt && !state.countComplete) {
+          resetRate('Count stopped because the page was hidden. Start again when your baby is calm.');
+        }
+      });
+
+      const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+      if (reduceMotion.matches) {
+        state.motionPaused = true;
+        state.reducedMotion = true;
+        el.babyModel.classList.add('motion-paused');
+      }
+      if (typeof reduceMotion.addEventListener === 'function') {
+        reduceMotion.addEventListener('change', (event) => {
+          state.reducedMotion = event.matches;
+          if (event.matches) {
+            state.motionPaused = true;
+          }
+          renderMotionButton();
+        });
+      }
+    }
+
+    function applyStage(stage) {
+      state.stage = stage;
+      state.custom = false;
+      state.signs = new Set(stagePresets[stage - 1].signs);
+      render();
+      restartBreathingCycle();
+    }
+
+    function toggleSign(signId) {
+      if (state.signs.has(signId)) state.signs.delete(signId);
+      else state.signs.add(signId);
+      state.custom = true;
+
+      const highest = signDefinitions.reduce((max, sign) => state.signs.has(sign.id) ? Math.max(max, sign.weight + 1) : max, 1);
+      state.stage = Math.min(7, highest);
+      render();
+      restartBreathingCycle();
+    }
+
+    function restartBreathingCycle() {
+      if (state.motionPaused || state.reducedMotion) return;
+      el.babyModel.classList.add('motion-reset');
+      void el.babyModel.getBoundingClientRect().width;
+      el.babyModel.classList.remove('motion-reset');
+    }
+
+    function toggleMotion() {
+      if (state.reducedMotion) return;
+      state.motionPaused = !state.motionPaused;
+      renderMotionButton();
+    }
+
+    function renderMotionButton() {
+      el.babyModel.classList.toggle('motion-paused', state.motionPaused);
+      el.motionToggle.setAttribute('aria-pressed', String(state.motionPaused));
+      el.motionToggle.disabled = state.reducedMotion;
+      el.motionToggle.textContent = state.reducedMotion
+        ? 'Animation paused by device setting'
+        : (state.motionPaused ? 'Play animation' : 'Pause animation');
+    }
+
+    function recordTap() {
+      const now = Date.now();
+      if (state.countComplete) return;
+      if (state.countStartedAt && now - state.countStartedAt >= 60000) {
+        finishRateCount();
+        return;
+      }
+      if (state.taps.length && now - state.taps[state.taps.length - 1] < 250) return;
+
+      if (!state.countStartedAt) {
+        state.rateNote = null;
+        state.countStartedAt = now;
+        state.countInterval = window.setInterval(updateCountProgress, 1000);
+        state.countFinishTimer = window.setTimeout(finishRateCount, 60000);
+        el.rateInterpretation.textContent = 'Counting for one full minute. Keep tapping once each time the chest or belly begins to rise.';
+      }
+      state.taps.push(now);
+
+      el.tapButton.classList.remove('just-tapped');
+      void el.tapButton.offsetWidth;
+      el.tapButton.classList.add('just-tapped');
+      updateCountProgress();
+    }
+
+    function classifyRate(bpm) {
+      const preset = agePresets[state.age];
+      if (bpm >= preset.fastAt) return { key: 'fast', label: 'Fast-breathing cutoff reached' };
+      return { key: 'expected', label: 'Below the fast-breathing screening cutoff' };
+    }
+
+    function updateCountProgress() {
+      if (!state.countStartedAt || state.countComplete) return;
+      const elapsed = Math.min(60000, Date.now() - state.countStartedAt);
+      const remaining = Math.max(0, 60 - Math.floor(elapsed / 1000));
+      const breathLabel = state.taps.length === 1 ? 'breath' : 'breaths';
+      el.tapProgress.textContent = `${state.taps.length} ${breathLabel} counted · ${remaining} seconds left`;
+    }
+
+    function finishRateCount() {
+      if (!state.countStartedAt || state.countComplete) return;
+      window.clearInterval(state.countInterval);
+      window.clearTimeout(state.countFinishTimer);
+      state.countInterval = null;
+      state.countFinishTimer = null;
+      state.countComplete = true;
+      state.bpm = state.taps.length;
+      state.rateCategory = classifyRate(state.bpm);
+      renderRate();
+      renderTriage();
+    }
+
+    function clearRateState(note = null) {
+      window.clearInterval(state.countInterval);
+      window.clearTimeout(state.countFinishTimer);
+      state.taps = [];
+      state.bpm = null;
+      state.rateCategory = null;
+      state.countStartedAt = null;
+      state.countInterval = null;
+      state.countFinishTimer = null;
+      state.countComplete = false;
+      state.rateNote = note;
+    }
+
+    function resetRate(message = 'No rate measured yet.') {
+      clearRateState();
+      renderRate(message);
+      renderTriage();
+    }
+
+    function renderRate(message) {
+      el.rateDisplay.className = 'rate-number mt-1 block text-5xl font-black tracking-tight';
+      if (state.bpm === null) {
+        el.tapButton.disabled = false;
+        el.rateDisplay.textContent = '--';
+        el.rateDisplay.classList.add('text-slate-950');
+        if (state.countStartedAt) {
+          updateCountProgress();
+          el.rateInterpretation.textContent = message || 'Counting for one full minute. Keep tapping once for each rise.';
+        } else {
+          el.tapProgress.textContent = 'Tap the first rise to start 60 seconds';
+          el.rateInterpretation.textContent = message || state.rateNote || 'No 60-second count completed yet.';
+        }
+        return;
+      }
+
+      el.tapButton.disabled = true;
+      el.rateDisplay.textContent = String(state.bpm);
+      el.rateDisplay.classList.add(`rate-${state.rateCategory.key}`);
+      el.tapProgress.textContent = `${state.bpm} ${state.bpm === 1 ? 'breath' : 'breaths'} counted over 60 seconds`;
+
+      const cutoff = agePresets[state.age].fastAt;
+      const guidance = {
+        expected: `${state.rateCategory.label} (${cutoff}+ for this age). A number below the cutoff does not rule out distress; use the visible signs and how your baby is acting.`,
+        fast: `${state.rateCategory.label} (${cutoff}+ for this age). Contact a healthcare professional promptly, and seek emergency help for any serious visible signs.`
+      };
+      el.rateInterpretation.textContent = guidance[state.rateCategory.key];
+    }
+
+    function getTriageLevel() {
+      let level = signDefinitions.reduce((max, sign) => state.signs.has(sign.id) ? Math.max(max, sign.weight) : max, 0);
+      if (state.rateCategory?.key === 'fast') level = Math.max(level, 2);
+      return level;
+    }
+
+    function render() {
+      renderStage();
+      renderSigns();
+      renderMotionButton();
+      renderRate();
+      renderTriage();
+    }
+
+    function renderStage() {
+      const preset = stagePresets[state.stage - 1];
+      const cadence = breathDurations[state.age];
+      const duration = state.signs.has('fast') ? cadence.fast : cadence.comfortable;
+      el.babyModel.style.setProperty('--breath-duration', `${duration}s`);
+      el.stageSlider.value = String(state.stage);
+      el.stageSlider.setAttribute('aria-valuetext', `${state.custom ? 'Custom mix near' : 'Example'} ${state.stage} of 7: ${preset.name}`);
+      el.stageName.textContent = state.custom ? 'Custom combination' : preset.name;
+      el.stageCount.textContent = state.custom ? `Closest to example ${state.stage}` : `Example ${state.stage} of 7`;
+      el.stageDescription.textContent = state.custom
+        ? (state.signs.size ? 'The model now reflects the individual signs you selected below.' : 'No extra-effort signs are currently selected.')
+        : preset.description;
+
+      el.modelZoom.classList.toggle('focus-torso', state.stage >= 3 && state.stage <= 4);
+      el.modelZoom.classList.toggle('focus-upper', state.stage >= 5);
+
+      el.previousStage.disabled = state.stage === 1;
+      el.nextStage.disabled = state.stage === 7;
+      [...el.stageButtons.children].forEach((button, index) => {
+        button.setAttribute('aria-current', index + 1 === state.stage && !state.custom ? 'step' : 'false');
+      });
+    }
+
+    function renderSigns() {
+      signDefinitions.forEach((sign) => {
+        const active = state.signs.has(sign.id);
+        el.babyModel.classList.toggle(`sign-${sign.id}`, active);
+        const button = el.signToggles.querySelector(`[data-sign="${sign.id}"]`);
+        button.setAttribute('aria-pressed', String(active));
+      });
+
+      const descriptions = signDefinitions.filter((sign) => state.signs.has(sign.id)).map((sign) => sign.summary);
+      el.modelSummary.textContent = descriptions.length
+        ? `Model shows: ${descriptions.join('; ')}. Signs may appear in different combinations.`
+        : 'Model shows comfortable breathing with the chest and belly moving gently together.';
+    }
+
+    function renderTriage() {
+      const level = getTriageLevel();
+      if (level === 6 && state.countStartedAt && !state.countComplete) {
+        clearRateState('Not measured—counting stopped because emergency signs were selected.');
+        renderRate('Count stopped because emergency signs are selected. Call emergency services now.');
+      }
+
+      const hasEffortSign = signDefinitions.some((sign) => sign.weight >= 2 && state.signs.has(sign.id));
+      const rateOnlyFast = state.rateCategory?.key === 'fast' && !hasEffortSign;
+      const triage = rateOnlyFast ? fastRateTriage : triageLevels[level];
+      const triageKey = rateOnlyFast ? 'rate-fast' : `level-${level}`;
+      el.triageCard.dataset.level = String(level);
+      el.stateIcon.textContent = triage.icon;
+      el.severityLabel.textContent = triage.label;
+      el.resultHeading.textContent = triage.heading;
+      el.actionTitle.textContent = triage.action;
+      el.actionBody.textContent = triage.body;
+      el.tapButton.disabled = level === 6 || state.countComplete;
+      if (level === 6) el.tapProgress.textContent = 'Do not count now — call emergency services';
+
+      const selected = signDefinitions.filter((sign) => state.signs.has(sign.id));
+      el.activeSignsList.replaceChildren();
+      if (!selected.length) {
+        const item = document.createElement('li');
+        item.className = 'flex gap-2';
+        item.innerHTML = '<span aria-hidden="true" class="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-600"></span><span>No extra-effort signs selected</span>';
+        el.activeSignsList.appendChild(item);
+      } else {
+        selected.forEach((sign) => {
+          const item = document.createElement('li');
+          item.className = 'flex gap-2';
+          const dot = document.createElement('span');
+          dot.setAttribute('aria-hidden', 'true');
+          dot.className = 'mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-current';
+          const text = document.createElement('span');
+          text.textContent = sign.summary;
+          item.append(dot, text);
+          el.activeSignsList.appendChild(item);
+        });
+      }
+
+      if (level === 6) {
+        el.triageAnnouncer.textContent = '';
+        if (!state.emergencyAnnounced) {
+          el.emergencyAnnouncer.textContent = 'Emergency signs selected. In the U.S., call 911 now; elsewhere call your local emergency number.';
+          state.emergencyAnnounced = true;
+        }
+      } else {
+        state.emergencyAnnounced = false;
+        el.emergencyAnnouncer.textContent = '';
+        if (state.lastPoliteKey !== triageKey) {
+          el.triageAnnouncer.textContent = `${triage.heading}. ${triage.action}.`;
+        }
+      }
+      state.lastPoliteKey = triageKey;
+
+      renderSummary(triage);
+    }
+
+    function renderSummary(triage) {
+      const stageName = state.custom ? 'Custom combination' : stagePresets[state.stage - 1].name;
+      const signs = signDefinitions.filter((sign) => state.signs.has(sign.id)).map((sign) => sign.summary);
+      const rate = state.bpm === null
+        ? (state.rateNote || 'Not measured')
+        : `${state.bpm} ${state.bpm === 1 ? 'breath' : 'breaths'}/min (counted for 60 seconds; ${state.rateCategory.label.toLowerCase()})`;
+      el.summaryText.textContent = [
+        'INFANT BREATHING OBSERVATION',
+        `• Age: ${agePresets[state.age].label}`,
+        `• Visual example: ${stageName}`,
+        `• Signs marked: ${signs.length ? signs.join('; ') : 'None selected'}`,
+        `• Breathing rate: ${rate}`,
+        `• Suggested action: ${triage.action}`,
+        `• Observed: ${new Date().toLocaleString()}`,
+        '',
+        'Educational observation only — not a diagnosis.'
+      ].join('\n');
+    }
+
+    async function copySummary() {
+      const text = el.summaryText.textContent;
+      let copied = false;
+      try {
+        await navigator.clipboard.writeText(text);
+        copied = true;
+      } catch (error) {
+        const temporary = document.createElement('textarea');
+        temporary.value = text;
+        temporary.setAttribute('readonly', '');
+        temporary.style.position = 'fixed';
+        temporary.style.opacity = '0';
+        document.body.appendChild(temporary);
+        temporary.select();
+        try { copied = document.execCommand('copy'); } catch (fallbackError) { copied = false; }
+        temporary.remove();
+      }
+
+      if (copied) {
+        el.copySummary.textContent = 'Summary copied';
+        el.copyStatus.textContent = 'Copied. You can paste it into a message or notes app.';
+        window.setTimeout(() => { el.copySummary.textContent = 'Copy summary for care team'; }, 2200);
+      } else {
+        const selection = window.getSelection();
+        const range = document.createRange();
+        range.selectNodeContents(el.summaryText);
+        selection.removeAllRanges();
+        selection.addRange(range);
+        el.copyStatus.textContent = 'Copy failed. The summary is selected—press Command+C or Ctrl+C.';
+      }
+    }
+
+    initializeControls();
+    render();
+  </script>
+</body>
+</html>
