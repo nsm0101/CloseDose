@@ -6,7 +6,9 @@ import test from 'node:test';
 import { fileURLToPath } from 'node:url';
 
 import { scanApplicationPrivacy } from './helpers/privacy-scan.mjs';
+import { catalogRoutes, readToolRegistry } from '../scripts/tool-registry.mjs';
 
+const registry = await readToolRegistry();
 const mdRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const portalRoot = path.join(mdRoot, 'apps/portal');
 
@@ -93,35 +95,33 @@ test('typed catalog preserves roadmap metadata, statuses, and canonical routes',
   ]) {
     assert.match(catalog, new RegExp(`${field}:`), field);
   }
-  assert.match(catalog, /satisfies readonly ToolCatalogEntry\[\]/);
-  for (const route of [
-    '/PIG/',
-    '/RSI/',
-    '/AIRWAY-SCENARIOS/',
-    '/POST-INTUBATION/',
-    '/RSI-TIMELINE/',
-    '/AIRWAY-TRANSPORT/',
-    '/PMD/',
-    '/DEVICE/',
-    '/SEDATION/',
-    '/TRANSFER/',
-    '/AGITATION/',
-    '/NEWBORN/',
-    '/CHD/',
-    '/INGESTION/',
-    '/CLOCK/'
-  ]) {
-    const escaped = route.replaceAll('/', '\\/');
+
+  // The catalog is derived from the registry rather than hand-written, so the
+  // contract is that it reads both sources and never hardcodes a route.
+  assert.match(catalog, /from '\.\.\/\.\.\/\.\.\/tools\.registry\.json'/);
+  assert.match(catalog, /from '\.\.\/\.\.\/\.\.\/clinical-release-manifest\.json'/);
+  assert.match(catalog, /registry\.tools\.map/);
+  for (const route of catalogRoutes(registry)) {
     assert.equal(
-      (catalog.match(new RegExp(`canonicalRoute:\\s*['"]${escaped}['"]`, 'g')) ?? []).length,
-      1,
-      route
+      catalog.includes(`'${route}'`),
+      false,
+      `${route} must come from the registry, not a literal in toolCatalog.ts`
     );
   }
-  assert.equal((catalog.match(/status:\s*'Available'/g) ?? []).length, 7);
-  assert.match(catalog, /status:\s*releaseManifest\.device\.status/);
-  assert.match(catalog, /status:\s*releaseManifest\.sedation\.status/);
-  assert.equal((catalog.match(/status:\s*'Planned'/g) ?? []).length, 6);
+
+  // Gated tools must take their status from the release manifest, never from a
+  // literal, so an unapproved tool cannot be published by editing the registry.
+  assert.match(catalog, /release\.kind === 'gated'/);
+  assert.match(catalog, /publiclyAccessible: record\.publicReleaseApproved/);
+  assert.equal(
+    registry.tools.filter((tool) => tool.release.kind === 'available').length,
+    7
+  );
+  assert.equal(registry.tools.filter((tool) => tool.release.kind === 'planned').length, 6);
+  assert.deepEqual(
+    registry.tools.filter((tool) => tool.release.kind === 'gated').map((tool) => tool.id),
+    ['device', 'sedation']
+  );
   assert.match(app, /const actionLabels =/);
   assert.match(app, /Available:\s*'Open tool'/);
   assert.match(app, /'Clinical review':\s*'Awaiting approval'/);

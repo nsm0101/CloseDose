@@ -1,0 +1,52 @@
+name: CloseDose site
+
+on:
+  pull_request:
+    paths:
+      - 'public/**'
+      - 'scripts/**'
+      - 'tests/**'
+      - '.github/workflows/closedose-site.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'public/**'
+      - 'scripts/**'
+      - 'tests/**'
+      - '.github/workflows/closedose-site.yml'
+
+concurrency:
+  group: closedose-site-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+        with:
+          persist-credentials: false
+
+      - name: Use Node.js 22
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 22
+
+      - name: Verify the parent toolkit registry is in sync
+        run: node scripts/sync-parent-tools.mjs --check
+
+      - name: Run parent site tests
+        run: node --test tests/parent-tools.test.mjs
+
+      - name: Check translation key parity
+        run: node tests/i18n.test.mjs
+
+      - name: Check voice module
+        run: node tests/voice.test.mjs

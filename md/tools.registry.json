@@ -1,0 +1,270 @@
+{
+  "schemaVersion": 1,
+  "$comment": "Single source of truth for the CloseDose MD provider hub. Every derived file (package.json scripts, portal tool catalog, _redirects, README and governance tables, contract tests) is generated or validated from this file. Run `npm run sync:tools` after editing, and `npm run sync:tools:check` to verify nothing has drifted. Adding a tool means adding one entry here plus `npm run new:tool -- <id>`.",
+  "platformTests": [
+    "tests/workspace-contract.test.mjs",
+    "tests/tool-registry.test.mjs",
+    "tests/clinical-release-manifest.test.mjs",
+    "tests/provider-specs.test.mjs",
+    "tests/pmd-migration.test.mjs",
+    "tests/pmd-shift-access.test.mjs",
+    "tests/privacy-scanner.test.mjs",
+    "tests/release-hardening.test.mjs"
+  ],
+  "portal": {
+    "workspace": "apps/portal",
+    "packageName": "@closedose-md/portal",
+    "routeBase": "/",
+    "tests": ["tests/portal.test.mjs"]
+  },
+  "packages": [
+    {
+      "workspace": "packages/rsi-reference",
+      "packageName": "@closedose-md/rsi-reference"
+    }
+  ],
+  "tools": [
+    {
+      "id": "pig",
+      "workspace": "apps/pig",
+      "packageName": "@closedose-md/pig",
+      "route": "/PIG/",
+      "shortTitle": "PIG",
+      "title": "Pediatric Airway Reference Calculator",
+      "task": "Size pediatric airway equipment by age.",
+      "category": "Airway and RSI",
+      "audience": ["Community EM", "PEM"],
+      "evidenceVersion": "PIG-CAR ef67724",
+      "release": { "kind": "available" },
+      "tests": ["tests/pig.test.mjs"],
+      "workspaceTestScript": true
+    },
+    {
+      "id": "rsi-medications",
+      "workspace": "apps/rsi",
+      "packageName": "@closedose-md/rsi",
+      "route": "/RSI/",
+      "shortTitle": "RSI MEDS",
+      "title": "Pediatric RSI Medication Calculator",
+      "task": "Calculate induction, paralysis, and rescue medication references.",
+      "category": "Airway and RSI",
+      "audience": ["Community EM", "PEM"],
+      "evidenceVersion": "CC-RSI a309bda",
+      "release": { "kind": "available" },
+      "tests": ["tests/rsi.test.mjs"],
+      "workspaceTestScript": true
+    },
+    {
+      "id": "airway-scenarios",
+      "workspace": "apps/airway-scenarios",
+      "packageName": "@closedose-md/airway-scenarios",
+      "route": "/AIRWAY-SCENARIOS/",
+      "shortTitle": "SCENARIOS",
+      "title": "Pediatric Airway Scenario Guide",
+      "task": "Combine exact age, scenario, patient factors, cautions, pearls, and exceptional cases.",
+      "category": "Airway and RSI",
+      "audience": ["Community EM", "PEM"],
+      "evidenceVersion": "CC-RSI a309bda + source matrix 2026",
+      "release": { "kind": "available" },
+      "tests": ["tests/airway-scenarios.test.mjs"],
+      "workspaceTestScript": false,
+      "modeAwareBuild": true
+    },
+    {
+      "id": "post-intubation",
+      "workspace": "apps/post-intubation",
+      "packageName": "@closedose-md/post-intubation",
+      "route": "/POST-INTUBATION/",
+      "shortTitle": "POST INTUBATION",
+      "title": "Post-Intubation Sedation Reference",
+      "task": "Review analgesia and sedation options after airway placement.",
+      "category": "Airway and RSI",
+      "audience": ["Community EM", "PEM"],
+      "evidenceVersion": "CC-RSI a309bda",
+      "release": { "kind": "available" },
+      "tests": [],
+      "workspaceTestScript": false
+    },
+    {
+      "id": "rsi-timeline",
+      "workspace": "apps/rsi-timeline",
+      "packageName": "@closedose-md/rsi-timeline",
+      "route": "/RSI-TIMELINE/",
+      "shortTitle": "TIMELINE",
+      "title": "RSI Progression Timeline",
+      "task": "Run local airway, CPR, and medication interval timers.",
+      "category": "Airway and RSI",
+      "audience": ["Community EM", "PEM"],
+      "evidenceVersion": "CC-RSI a309bda",
+      "release": { "kind": "available" },
+      "tests": [],
+      "workspaceTestScript": false
+    },
+    {
+      "id": "airway-transport",
+      "workspace": "apps/airway-transport",
+      "packageName": "@closedose-md/airway-transport",
+      "route": "/AIRWAY-TRANSPORT/",
+      "shortTitle": "TRANSPORT KIT",
+      "title": "Pediatric Airway Transport Kit",
+      "task": "Prepare airway equipment, infusions, and transport contingencies.",
+      "category": "Airway and RSI",
+      "audience": ["Community EM", "Rural EM", "PEM"],
+      "evidenceVersion": "CC-RSI a309bda",
+      "release": { "kind": "available" },
+      "tests": [],
+      "workspaceTestScript": false
+    },
+    {
+      "id": "pmd",
+      "workspace": "apps/pmd",
+      "packageName": "@closedose-md/pmd",
+      "route": "/PMD/",
+      "shortTitle": "PMD",
+      "title": "PREtendingMD: PEM FlowMaster",
+      "task": "Coordinate an administrator-approved PEM shift and handoff.",
+      "category": "Transfer and workflow",
+      "audience": ["PEM"],
+      "evidenceVersion": "Production 700958d",
+      "release": { "kind": "available" },
+      "tests": ["tests/pmd.test.mjs"],
+      "workspaceTestScript": true
+    },
+    {
+      "id": "device",
+      "workspace": "apps/device",
+      "packageName": "@closedose-md/device",
+      "route": "/DEVICE/",
+      "shortTitle": "DEVICE",
+      "title": "Peds Device Rescue",
+      "task": "Troubleshoot a pediatric tracheostomy emergency and prepare handoff.",
+      "category": "Specialty emergencies",
+      "audience": ["Community EM", "PEM"],
+      "evidenceVersion": "NTSP pediatric algorithm, review January 2024",
+      "release": {
+        "kind": "gated",
+        "manifestKey": "device",
+        "approvalRoles": [
+          "PEM",
+          "Pediatric airway specialty",
+          "Institutional",
+          "Regulatory"
+        ]
+      },
+      "tests": ["tests/device.test.mjs"],
+      "workspaceTestScript": true,
+      "modeAwareBuild": true
+    },
+    {
+      "id": "sedation",
+      "workspace": "apps/sedation",
+      "packageName": "@closedose-md/sedation",
+      "route": "/SEDATION/",
+      "shortTitle": "SEDATION",
+      "title": "Pediatric Comfort and Sedation Console",
+      "task": "Compare comfort, analgesia, anxiolysis, and sedation reference options.",
+      "category": "Procedures and comfort",
+      "audience": ["Community EM", "PEM"],
+      "evidenceVersion": "AAP/AAPD guideline, reaffirmed December 2025",
+      "release": {
+        "kind": "gated",
+        "manifestKey": "sedation",
+        "approvalRoles": [
+          "PEM",
+          "Pediatric pharmacy",
+          "Pediatric sedation or anesthesia",
+          "Institutional",
+          "Regulatory"
+        ]
+      },
+      "tests": ["tests/sedation.test.mjs"],
+      "workspaceTestScript": true,
+      "modeAwareBuild": true
+    },
+    {
+      "id": "transfer",
+      "workspace": null,
+      "route": "/TRANSFER/",
+      "shortTitle": "TRANSFER",
+      "title": "Peds Transfer Ready",
+      "task": "Prepare stabilization, transport, family, records, and verbal handoff.",
+      "category": "Transfer and workflow",
+      "audience": ["Community EM", "Rural EM"],
+      "evidenceVersion": "EMSC Pediatric Interfacility Transfer Guide, 2026",
+      "release": { "kind": "planned" },
+      "specDirectory": "docs/provider-tools/transfer"
+    },
+    {
+      "id": "clock",
+      "workspace": null,
+      "route": "/CLOCK/",
+      "shortTitle": "CLOCK",
+      "title": "PEM Reassessment Clock",
+      "task": "Track local-only treatments and institution-configurable reassessments.",
+      "category": "Transfer and workflow",
+      "audience": ["PEM"],
+      "evidenceVersion": null,
+      "release": { "kind": "planned" },
+      "specDirectory": "docs/provider-tools/clock"
+    },
+    {
+      "id": "agitation",
+      "workspace": null,
+      "route": "/AGITATION/",
+      "shortTitle": "AGITATION",
+      "title": "Agitation SafeSteps",
+      "task": "Structure neurodiversity-aware de-escalation and reassessment.",
+      "category": "Specialty emergencies",
+      "audience": ["Community EM", "PEM"],
+      "evidenceVersion": "BRACHA-S study, 2025",
+      "release": { "kind": "planned" },
+      "specDirectory": "docs/provider-tools/agitation"
+    },
+    {
+      "id": "newborn",
+      "workspace": null,
+      "route": "/NEWBORN/",
+      "shortTitle": "NEWBORN",
+      "title": "Sick Newborn: First 15 Minutes",
+      "task": "Organize parallel stabilization actions for an undifferentiated neonate.",
+      "category": "Specialty emergencies",
+      "audience": ["Community EM", "PEM"],
+      "evidenceVersion": null,
+      "release": { "kind": "planned" },
+      "specDirectory": "docs/provider-tools/newborn"
+    },
+    {
+      "id": "chd",
+      "workspace": null,
+      "route": "/CHD/",
+      "shortTitle": "CHD",
+      "title": "CHD Emergency Navigator",
+      "task": "Frame known congenital heart physiology and cardiology handoff.",
+      "category": "Specialty emergencies",
+      "audience": ["Community EM", "PEM"],
+      "evidenceVersion": "AAP CHD point-of-care tools",
+      "release": { "kind": "planned" },
+      "specDirectory": "docs/provider-tools/chd"
+    },
+    {
+      "id": "ingestion",
+      "workspace": null,
+      "route": "/INGESTION/",
+      "shortTitle": "INGESTION",
+      "title": "High-Risk Ingestion Navigator",
+      "task": "Prepare imaging, consultation, mitigation, removal, or transfer steps.",
+      "category": "Specialty emergencies",
+      "audience": ["Community EM", "PEM"],
+      "evidenceVersion": "Poison Control button battery guidance",
+      "release": { "kind": "planned" },
+      "specDirectory": "docs/provider-tools/ingestion"
+    }
+  ],
+  "categoryOrder": [
+    "Airway and RSI",
+    "Procedures and comfort",
+    "Transfer and workflow",
+    "Specialty emergencies"
+  ],
+  "audiences": ["Community EM", "Rural EM", "PEM"]
+}

@@ -55,6 +55,9 @@ jobs:
       - name: Typecheck all applications
         run: npm run typecheck
 
+      - name: Verify the tool registry is in sync
+        run: npm run sync:tools:check
+
       - name: Run source and workspace tests
         run: npm run test:unit
 

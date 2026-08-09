@@ -1,5 +1,15 @@
 import releaseManifest from '../../../clinical-release-manifest.json';
+import registry from '../../../tools.registry.json';
 
+/**
+ * The portal catalog is derived from `md/tools.registry.json`, the single source
+ * of truth shared with the build, redirects, docs, and contract tests. Adding a
+ * tool means adding a registry entry; nothing in this file changes.
+ *
+ * Release state for gated tools still comes from `clinical-release-manifest.json`
+ * at runtime, so a tool awaiting named clinical approvals cannot be surfaced as
+ * available by editing the registry alone.
+ */
 export type ToolStatus = 'Planned' | 'Clinical review' | 'Available';
 export type ToolAudience = 'Community EM' | 'Rural EM' | 'PEM';
 export type ToolCategory =
@@ -7,40 +17,9 @@ export type ToolCategory =
   | 'Procedures and comfort'
   | 'Transfer and workflow'
   | 'Specialty emergencies';
-export type ToolRoute =
-  | '/PIG/'
-  | '/RSI/'
-  | '/AIRWAY-SCENARIOS/'
-  | '/POST-INTUBATION/'
-  | '/RSI-TIMELINE/'
-  | '/AIRWAY-TRANSPORT/'
-  | '/PMD/'
-  | '/DEVICE/'
-  | '/SEDATION/'
-  | '/TRANSFER/'
-  | '/AGITATION/'
-  | '/NEWBORN/'
-  | '/CHD/'
-  | '/INGESTION/'
-  | '/CLOCK/';
 
 export interface ToolCatalogEntry {
-  id:
-    | 'pig'
-    | 'rsi-medications'
-    | 'airway-scenarios'
-    | 'post-intubation'
-    | 'rsi-timeline'
-    | 'airway-transport'
-    | 'pmd'
-    | 'device'
-    | 'sedation'
-    | 'transfer'
-    | 'agitation'
-    | 'newborn'
-    | 'chd'
-    | 'ingestion'
-    | 'clock';
+  id: string;
   shortTitle: string;
   title: string;
   task: string;
@@ -49,204 +28,55 @@ export interface ToolCatalogEntry {
   category: ToolCategory;
   evidenceVersion: string | null;
   clinicalReviewDate: string | null;
-  canonicalRoute: ToolRoute;
+  canonicalRoute: string;
   publiclyAccessible: boolean;
 }
 
-export const toolCatalog: readonly ToolCatalogEntry[] = [
-  {
-    id: 'pig',
-    shortTitle: 'PIG',
-    title: 'Pediatric Airway Reference Calculator',
-    task: 'Size pediatric airway equipment by age.',
-    status: 'Available',
-    audience: ['Community EM', 'PEM'],
-    category: 'Airway and RSI',
-    evidenceVersion: 'PIG-CAR ef67724',
-    clinicalReviewDate: null,
-    canonicalRoute: '/PIG/',
-    publiclyAccessible: true
-  },
-  {
-    id: 'rsi-medications',
-    shortTitle: 'RSI MEDS',
-    title: 'Pediatric RSI Medication Calculator',
-    task: 'Calculate induction, paralysis, and rescue medication references.',
-    status: 'Available',
-    audience: ['Community EM', 'PEM'],
-    category: 'Airway and RSI',
-    evidenceVersion: 'CC-RSI a309bda',
-    clinicalReviewDate: null,
-    canonicalRoute: '/RSI/',
-    publiclyAccessible: true
-  },
-  {
-    id: 'airway-scenarios',
-    shortTitle: 'SCENARIOS',
-    title: 'Pediatric Airway Scenario Guide',
-    task: 'Combine exact age, scenario, patient factors, cautions, pearls, and exceptional cases.',
-    status: 'Available',
-    audience: ['Community EM', 'PEM'],
-    category: 'Airway and RSI',
-    evidenceVersion: 'CC-RSI a309bda + source matrix 2026',
-    clinicalReviewDate: null,
-    canonicalRoute: '/AIRWAY-SCENARIOS/',
-    publiclyAccessible: true
-  },
-  {
-    id: 'post-intubation',
-    shortTitle: 'POST INTUBATION',
-    title: 'Post-Intubation Sedation Reference',
-    task: 'Review analgesia and sedation options after airway placement.',
-    status: 'Available',
-    audience: ['Community EM', 'PEM'],
-    category: 'Airway and RSI',
-    evidenceVersion: 'CC-RSI a309bda',
-    clinicalReviewDate: null,
-    canonicalRoute: '/POST-INTUBATION/',
-    publiclyAccessible: true
-  },
-  {
-    id: 'rsi-timeline',
-    shortTitle: 'TIMELINE',
-    title: 'RSI Progression Timeline',
-    task: 'Run local airway, CPR, and medication interval timers.',
-    status: 'Available',
-    audience: ['Community EM', 'PEM'],
-    category: 'Airway and RSI',
-    evidenceVersion: 'CC-RSI a309bda',
-    clinicalReviewDate: null,
-    canonicalRoute: '/RSI-TIMELINE/',
-    publiclyAccessible: true
-  },
-  {
-    id: 'airway-transport',
-    shortTitle: 'TRANSPORT KIT',
-    title: 'Pediatric Airway Transport Kit',
-    task: 'Prepare airway equipment, infusions, and transport contingencies.',
-    status: 'Available',
-    audience: ['Community EM', 'Rural EM', 'PEM'],
-    category: 'Airway and RSI',
-    evidenceVersion: 'CC-RSI a309bda',
-    clinicalReviewDate: null,
-    canonicalRoute: '/AIRWAY-TRANSPORT/',
-    publiclyAccessible: true
-  },
-  {
-    id: 'sedation',
-    shortTitle: 'SEDATION',
-    title: 'Pediatric Comfort and Sedation Console',
-    task: 'Compare comfort, analgesia, anxiolysis, and sedation reference options.',
-    status: releaseManifest.sedation.status as ToolStatus,
-    audience: ['Community EM', 'PEM'],
-    category: 'Procedures and comfort',
-    evidenceVersion: 'AAP/AAPD guideline, reaffirmed December 2025',
-    clinicalReviewDate: releaseManifest.sedation.clinicalReviewDate,
-    canonicalRoute: '/SEDATION/',
-    publiclyAccessible: releaseManifest.sedation.publicReleaseApproved
-  },
-  {
-    id: 'pmd',
-    shortTitle: 'PMD',
-    title: 'PREtendingMD: PEM FlowMaster',
-    task: 'Coordinate an administrator-approved PEM shift and handoff.',
-    status: 'Available',
-    audience: ['PEM'],
-    category: 'Transfer and workflow',
-    evidenceVersion: 'Production 700958d',
-    clinicalReviewDate: null,
-    canonicalRoute: '/PMD/',
-    publiclyAccessible: true
-  },
-  {
-    id: 'transfer',
-    shortTitle: 'TRANSFER',
-    title: 'Peds Transfer Ready',
-    task: 'Prepare stabilization, transport, family, records, and verbal handoff.',
-    status: 'Planned',
-    audience: ['Community EM', 'Rural EM'],
-    category: 'Transfer and workflow',
-    evidenceVersion: 'EMSC Pediatric Interfacility Transfer Guide, 2026',
-    clinicalReviewDate: null,
-    canonicalRoute: '/TRANSFER/',
-    publiclyAccessible: false
-  },
-  {
-    id: 'clock',
-    shortTitle: 'CLOCK',
-    title: 'PEM Reassessment Clock',
-    task: 'Track local-only treatments and institution-configurable reassessments.',
-    status: 'Planned',
-    audience: ['PEM'],
-    category: 'Transfer and workflow',
-    evidenceVersion: null,
-    clinicalReviewDate: null,
-    canonicalRoute: '/CLOCK/',
-    publiclyAccessible: false
-  },
-  {
-    id: 'device',
-    shortTitle: 'DEVICE',
-    title: 'Peds Device Rescue',
-    task: 'Troubleshoot a pediatric tracheostomy emergency and prepare handoff.',
-    status: releaseManifest.device.status as ToolStatus,
-    audience: ['Community EM', 'PEM'],
-    category: 'Specialty emergencies',
-    evidenceVersion: 'NTSP pediatric algorithm, review January 2024',
-    clinicalReviewDate: releaseManifest.device.clinicalReviewDate,
-    canonicalRoute: '/DEVICE/',
-    publiclyAccessible: releaseManifest.device.publicReleaseApproved
-  },
-  {
-    id: 'agitation',
-    shortTitle: 'AGITATION',
-    title: 'Agitation SafeSteps',
-    task: 'Structure neurodiversity-aware de-escalation and reassessment.',
-    status: 'Planned',
-    audience: ['Community EM', 'PEM'],
-    category: 'Specialty emergencies',
-    evidenceVersion: 'BRACHA-S study, 2025',
-    clinicalReviewDate: null,
-    canonicalRoute: '/AGITATION/',
-    publiclyAccessible: false
-  },
-  {
-    id: 'newborn',
-    shortTitle: 'NEWBORN',
-    title: 'Sick Newborn: First 15 Minutes',
-    task: 'Organize parallel stabilization actions for an undifferentiated neonate.',
-    status: 'Planned',
-    audience: ['Community EM', 'PEM'],
-    category: 'Specialty emergencies',
-    evidenceVersion: null,
-    clinicalReviewDate: null,
-    canonicalRoute: '/NEWBORN/',
-    publiclyAccessible: false
-  },
-  {
-    id: 'chd',
-    shortTitle: 'CHD',
-    title: 'CHD Emergency Navigator',
-    task: 'Frame known congenital heart physiology and cardiology handoff.',
-    status: 'Planned',
-    audience: ['Community EM', 'PEM'],
-    category: 'Specialty emergencies',
-    evidenceVersion: 'AAP CHD point-of-care tools',
-    clinicalReviewDate: null,
-    canonicalRoute: '/CHD/',
-    publiclyAccessible: false
-  },
-  {
-    id: 'ingestion',
-    shortTitle: 'INGESTION',
-    title: 'High-Risk Ingestion Navigator',
-    task: 'Prepare imaging, consultation, mitigation, removal, or transfer steps.',
-    status: 'Planned',
-    audience: ['Community EM', 'PEM'],
-    category: 'Specialty emergencies',
-    evidenceVersion: 'Poison Control button battery guidance',
-    clinicalReviewDate: null,
-    canonicalRoute: '/INGESTION/',
-    publiclyAccessible: false
+type GatedReleaseRecord = {
+  status: string;
+  publicReleaseApproved: boolean;
+  clinicalReviewDate: string | null;
+};
+
+const gatedReleases = releaseManifest as unknown as Record<string, GatedReleaseRecord>;
+
+type RegistryTool = (typeof registry.tools)[number];
+
+function releaseStateFor(tool: RegistryTool): Pick<
+  ToolCatalogEntry,
+  'status' | 'clinicalReviewDate' | 'publiclyAccessible'
+> {
+  const release = tool.release as { kind: string; manifestKey?: string };
+
+  if (release.kind === 'gated') {
+    const record = gatedReleases[release.manifestKey as string];
+    if (!record) {
+      throw new Error(`missing clinical release record for gated tool: ${tool.id}`);
+    }
+    return {
+      status: record.status as ToolStatus,
+      clinicalReviewDate: record.clinicalReviewDate,
+      publiclyAccessible: record.publicReleaseApproved
+    };
   }
-] satisfies readonly ToolCatalogEntry[];
+
+  if (release.kind === 'planned') {
+    return { status: 'Planned', clinicalReviewDate: null, publiclyAccessible: false };
+  }
+
+  return { status: 'Available', clinicalReviewDate: null, publiclyAccessible: true };
+}
+
+export const categoryOrder = registry.categoryOrder as readonly ToolCategory[];
+
+export const toolCatalog: readonly ToolCatalogEntry[] = registry.tools.map((tool) => ({
+  id: tool.id,
+  shortTitle: tool.shortTitle,
+  title: tool.title,
+  task: tool.task,
+  audience: tool.audience as readonly ToolAudience[],
+  category: tool.category as ToolCategory,
+  evidenceVersion: tool.evidenceVersion,
+  canonicalRoute: tool.route,
+  ...releaseStateFor(tool)
+}));

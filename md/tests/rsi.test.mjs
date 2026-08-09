@@ -7,6 +7,7 @@ import vm from 'node:vm';
 import { fileURLToPath } from 'node:url';
 
 import { scanApplicationPrivacy } from './helpers/privacy-scan.mjs';
+import { modeAwareBuildWorkspaces, readToolRegistry } from '../scripts/tool-registry.mjs';
 
 const mdRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const read = (relativePath) => readFile(path.join(mdRoot, relativePath), 'utf8');
@@ -179,6 +180,14 @@ test('airway scenario redesign is the public workflow and keeps the imported sou
   assert.doesNotMatch(appSource, /__CLOSEDOSE_MD_BUILD_MODE__|airway-scenario-legacy/);
   assert.match(styles, /\.scenario-review-flow/);
   assert.match(styles, /prefers-color-scheme:\s*dark/);
-  assert.match(buildSource, /build:airway-scenarios/);
+
+  // The build receives the mode flag from the registry rather than a hardcoded
+  // map, so assert the resolved behaviour instead of the literal script name.
+  const registry = await readToolRegistry();
+  assert.equal(
+    modeAwareBuildWorkspaces(registry)['build:airway-scenarios'],
+    '@closedose-md/airway-scenarios'
+  );
+  assert.match(buildSource, /modeAwareBuildWorkspaces/);
   assert.match(buildSource, /--mode/);
 });
