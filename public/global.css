@@ -72,34 +72,43 @@
   --duration-base: 0.25s;
   --duration-slow: 0.4s;
 
-  /* Semantic Theme Variables - Light defaults */
-  --page-bg: #f2f6f5;
-  /* One soft teal glow anchored to the top of the document; the rest is
-     flat --page-bg. Sized in px so it does not stretch on long pages. */
+  /* Semantic Theme Variables - Light defaults
+
+     The ground is a desaturated tint of the brand teal, not near-white, so
+     the page does not glare and the white cards read as sitting on top of
+     it. Card surfaces stay white for text contrast; the separation now
+     comes from the ground being darker rather than from heavy borders. */
+  --page-bg: #d8e7e2;
+  /* A soft light halo behind the masthead, settling into the teal ground.
+     It lifts rather than deepens: the wordmark is itself teal, so tinting
+     the ground under it would cost the brand mark its contrast. Sized in px
+     so it does not stretch on long pages. */
   --page-bg-image:
-    radial-gradient(120% 100% at 50% 0%, rgba(36, 166, 135, 0.14), rgba(36, 166, 135, 0) 70%);
-  --page-bg-size: 100% 760px;
+    radial-gradient(120% 78% at 50% 0%, rgba(255, 255, 255, 0.62), rgba(255, 255, 255, 0) 70%);
+  --page-bg-size: 100% 820px;
   --page-bg-repeat: no-repeat;
   --page-bg-blend: normal;
   --text-shadow-glow: none;
-  --card-border-color: rgba(15, 44, 42, 0.1);
+  --card-border-color: rgba(15, 44, 42, 0.08);
   --card-border: 1px solid var(--card-border-color);
   --drawn-line-color: rgba(31, 143, 123, 0.9);
-  --drawn-line-soft: rgba(15, 44, 42, 0.1);
+  --drawn-line-soft: rgba(15, 44, 42, 0.12);
   --drawn-surface: #ffffff;
   --drawn-surface-strong: #ffffff;
   --drawn-surface-wash: none;
   --drawn-button-fill: linear-gradient(160deg, #24a687, #1f8f7b);
   /* Inset panels that sit inside a card: quieter than the card itself. */
-  --surface-subtle: #f7faf9;
-  --surface-subtle-border: rgba(15, 44, 42, 0.09);
+  --surface-subtle: #f1f7f5;
+  --surface-subtle-border: rgba(15, 44, 42, 0.08);
   --surface-hover: #ffffff;
-  --shadow-card-crisp: 0 1px 2px rgba(15, 44, 42, 0.05), 0 10px 28px rgba(15, 44, 42, 0.07);
+  --shadow-card-crisp: 0 1px 2px rgba(15, 44, 42, 0.06), 0 12px 30px rgba(15, 44, 42, 0.09);
   --hero-color: var(--ink-900);
   --hero-eyebrow-color: rgba(15, 44, 42, 0.72);
   --hero-sub-color: rgba(15, 44, 42, 0.78);
   --hero-shadow: none;
-  --on-bg-muted: rgba(15, 44, 42, 0.65);
+  /* Sits directly on --page-bg, so it carries the ground's contrast budget:
+     0.65 measured 4.32:1 against the deeper teal ground, under AA. */
+  --on-bg-muted: rgba(15, 44, 42, 0.76);
   --on-bg-link: var(--teal-500);
   --menu-overlay-bg: rgba(245, 249, 249, 0.98);
   --menu-link-color: var(--ink-900);
@@ -156,7 +165,7 @@
   --cdcalc-border-color: rgba(15, 44, 42, 0.14);
   --cdcalc-color: var(--ink-900);
   --cdcalc-shadow: var(--shadow-btn);
-  --cdcalc-header-bg: linear-gradient(135deg, #e0faf0 0%, #cdedd8 100%);
+  --cdcalc-header-bg: linear-gradient(135deg, #d3efe4 0%, #bce5d5 100%);
   --cdcalc-header-border-bottom: rgba(15, 44, 42, 0.1);
   --cdcalc-title-color: var(--ink-900);
   --cdcalc-hello-color: var(--text-muted);
@@ -504,7 +513,7 @@ button:active {
 
 /* Calculator header */
 .cdcalc-header {
-  background: var(--cdcalc-header-bg, linear-gradient(135deg, #e8f7f1, #d8efe6)) !important;
+  background: var(--cdcalc-header-bg, linear-gradient(135deg, #d3efe4, #bce5d5)) !important;
   color: var(--cdcalc-title-color, var(--ink-900)) !important;
   border-bottom: 1px solid var(--card-border-color) !important;
   border-radius: calc(var(--card-radius) - 1px) calc(var(--card-radius) - 1px) 0 0 !important;
