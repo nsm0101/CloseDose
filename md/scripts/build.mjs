@@ -7,6 +7,7 @@ import {
   getBuildWorkspaceScripts,
   readClinicalReleaseManifest
 } from './clinical-release-manifest.mjs';
+import { modeAwareBuildWorkspaces, readToolRegistry } from './tool-registry.mjs';
 
 const mdRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const distRoot = path.join(mdRoot, 'dist');
@@ -16,13 +17,10 @@ const npmCommand = process.platform === 'win32' ? 'npm.cmd' : 'npm';
 const mode = process.argv[2];
 const manifest = await readClinicalReleaseManifest();
 const workspaceScripts = getBuildWorkspaceScripts(mode, manifest);
+const modeAwareWorkspaces = modeAwareBuildWorkspaces(await readToolRegistry());
 
 function runNpm(script) {
-  const modeAwareWorkspace = {
-    'build:airway-scenarios': '@closedose-md/airway-scenarios',
-    'build:device': '@closedose-md/device',
-    'build:sedation': '@closedose-md/sedation'
-  }[script];
+  const modeAwareWorkspace = modeAwareWorkspaces[script];
   const args = modeAwareWorkspace
     ? ['run', 'build', '--workspace', modeAwareWorkspace, '--', '--mode', mode]
     : ['run', script];

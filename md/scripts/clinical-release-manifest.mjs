@@ -1,22 +1,23 @@
 import { readFile } from 'node:fs/promises';
 
-export const REQUIRED_APPROVAL_ROLES = Object.freeze({
-  device: Object.freeze([
-    'PEM',
-    'Pediatric airway specialty',
-    'Institutional',
-    'Regulatory'
-  ]),
-  sedation: Object.freeze([
-    'PEM',
-    'Pediatric pharmacy',
-    'Pediatric sedation or anesthesia',
-    'Institutional',
-    'Regulatory'
-  ])
-});
+import {
+  builtTools,
+  gatedManifestKeys,
+  readToolRegistry,
+  requiredApprovalRoles,
+  scriptSuffix
+} from './tool-registry.mjs';
 
-const tools = Object.freeze(['device', 'sedation']);
+const registry = await readToolRegistry();
+
+/**
+ * Approval roles that must all be recorded before a gated tool is publicly
+ * released. Sourced from tools.registry.json so a new gated tool cannot reach
+ * production without declaring who has to sign it off.
+ */
+export const REQUIRED_APPROVAL_ROLES = requiredApprovalRoles(registry);
+
+const tools = Object.freeze(gatedManifestKeys(registry));
 const isoDate = /^\d{4}-\d{2}-\d{2}$/;
 
 function isIsoCalendarDate(value) {
@@ -118,19 +119,13 @@ export function getBuildWorkspaceScripts(mode, manifest) {
     throw new TypeError('build mode must be production or review');
   }
 
-  const scripts = [
-    'build:portal',
-    'build:pig',
-    'build:rsi',
-    'build:airway-scenarios',
-    'build:post-intubation',
-    'build:rsi-timeline',
-    'build:airway-transport',
-    'build:pmd'
-  ];
-  for (const tool of tools) {
-    if (mode === 'review' || isPublicReleaseApproved(manifest, tool)) {
-      scripts.push(`build:${tool}`);
+  const scripts = [`build:${scriptSuffix(registry.portal.workspace)}`];
+  for (const tool of builtTools(registry)) {
+    const script = `build:${scriptSuffix(tool.workspace)}`;
+    if (tool.release.kind !== 'gated') {
+      scripts.push(script);
+    } else if (mode === 'review' || isPublicReleaseApproved(manifest, tool.release.manifestKey)) {
+      scripts.push(script);
     }
   }
   return scripts;

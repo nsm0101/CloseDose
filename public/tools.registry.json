@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "$comment": "Single source of truth for the parent-facing closedose.com toolkit. The site menu on every page and the tool card grid on index.html are generated from this file. Run `node scripts/sync-parent-tools.mjs` after editing, and `--check` to verify nothing has drifted. Adding a parent tool means adding one entry here plus the tool's own page.",
+  "nav": [
+    { "id": "calc", "page": "index.html", "label": "Calculator" },
+    { "id": "allergy", "page": "allergy-calculator.html", "label": "Allergy Calculator" },
+    { "id": "guides", "page": "medication-guides.html", "label": "Medication Guides" },
+    { "id": "cough", "page": "cold-cough-guidance.html", "label": "Cough &amp; Cold Guidance" },
+    { "id": "weighing", "page": "weighing-guide.html", "label": "Weighing Guide" },
+    { "id": "dosing", "page": "dosing-guide.html", "label": "Dosing Guide" },
+    { "id": "about", "page": "about.html", "label": "About" },
+    { "id": "support", "page": "about.html#support", "label": "Support" }
+  ],
+  "navPages": [
+    "index.html",
+    "allergy-calculator.html",
+    "medication-guides.html",
+    "cold-cough-guidance.html",
+    "weighing-guide.html",
+    "dosing-guide.html",
+    "about.html",
+    "login.html",
+    "dashboard.html"
+  ],
+  "cards": [
+    {
+      "id": "allergy",
+      "page": "allergy-calculator.html",
+      "emoji": "🌿",
+      "title": "New: allergy medication calculator",
+      "sub": "Cetirizine, loratadine, fexofenadine, and guarded Benadryl guidance."
+    },
+    {
+      "id": "cough",
+      "page": "cold-cough-guidance.html",
+      "emoji": "🍯",
+      "title": "Cough &amp; cold guidance",
+      "sub": "Why we avoid cold-medicine calculators, plus honey tips for kids over 1 year."
+    }
+  ]
+}

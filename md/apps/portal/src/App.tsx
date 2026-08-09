@@ -5,9 +5,9 @@ import clinicalPreparationRoom640 from './assets/clinical-preparation-room-640.w
 import clinicalPreparationRoom960 from './assets/clinical-preparation-room-960.webp';
 import clinicalPreparationRoom from './assets/clinical-preparation-room.webp';
 import {
+  categoryOrder,
   toolCatalog,
   type ToolCatalogEntry,
-  type ToolCategory,
   type ToolStatus
 } from './toolCatalog.ts';
 
@@ -18,13 +18,6 @@ const actionLabels = {
   'Clinical review': 'Awaiting approval',
   Planned: 'Planned module'
 } as const;
-
-const categoryOrder: readonly ToolCategory[] = [
-  'Airway and RSI',
-  'Procedures and comfort',
-  'Transfer and workflow',
-  'Specialty emergencies'
-];
 
 const audienceFilters = ['All clinicians', 'Community EM', 'PEM'] as const;
 const statusFilters = ['All statuses', 'Available', 'Clinical review', 'Planned'] as const;

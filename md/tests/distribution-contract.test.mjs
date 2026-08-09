@@ -10,7 +10,9 @@ import {
   isPublicReleaseApproved,
   readClinicalReleaseManifest
 } from '../scripts/clinical-release-manifest.mjs';
+import { readToolRegistry, servedRoutes } from '../scripts/tool-registry.mjs';
 
+const registry = await readToolRegistry();
 const mdRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const distRoot = path.join(mdRoot, 'dist');
 const buildMode = (await readFile(path.join(mdRoot, '.build-mode'), 'utf8')).trim();
@@ -350,20 +352,7 @@ test('security headers keep runtime capabilities local and HTML revalidated', as
   assert.match(rootHeaders.get('permissions-policy'), /microphone=\(\)/);
   assert.match(rootHeaders.get('permissions-policy'), /geolocation=\(\)/);
 
-  for (const route of [
-    '/',
-    '/PIG/',
-    '/RSI/',
-    '/AIRWAY-SCENARIOS/',
-    '/POST-INTUBATION/',
-    '/RSI-TIMELINE/',
-    '/AIRWAY-TRANSPORT/',
-    '/PMD/',
-    '/DEVICE/',
-    '/SEDATION/',
-    '/404.html',
-    '/404.css'
-  ]) {
+  for (const route of ['/', ...servedRoutes(registry), '/404.html', '/404.css']) {
     assert.equal(
       rules.get(route).get('cache-control'),
       'public, max-age=0, must-revalidate',
