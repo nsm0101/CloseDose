@@ -52,9 +52,17 @@ test('rejects a registry that would produce a broken menu', () => {
   assert.throws(() => validateParentRegistry(repeatedPage), /must not repeat a page/);
 });
 
+// Resolve a menu link to the file the web server would actually serve: drop
+// any fragment, and read a directory link's index.html rather than the
+// directory itself, which readFile rejects with EISDIR.
+const linkTarget = (link) => {
+  const page = link.split('#')[0];
+  return page.endsWith('/') ? `${page}index.html` : page;
+};
+
 test('every page the menu links to is a page that exists', async () => {
   for (const item of registry.nav) {
-    const page = item.page.split('#')[0];
+    const page = linkTarget(item.page);
     await assert.doesNotReject(
       readFile(path.join(repoRoot, 'public', page), 'utf8'),
       `menu links to missing page: ${page}`
@@ -62,9 +70,10 @@ test('every page the menu links to is a page that exists', async () => {
   }
 
   for (const card of registry.cards) {
+    const page = linkTarget(card.page);
     await assert.doesNotReject(
-      readFile(path.join(repoRoot, 'public', card.page), 'utf8'),
-      `card links to missing page: ${card.page}`
+      readFile(path.join(repoRoot, 'public', page), 'utf8'),
+      `card links to missing page: ${page}`
     );
   }
 });

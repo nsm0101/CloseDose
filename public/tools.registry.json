@@ -6,6 +6,7 @@
     { "id": "allergy", "page": "allergy-calculator.html", "label": "Allergy Calculator" },
     { "id": "guides", "page": "medication-guides.html", "label": "Medication Guides" },
     { "id": "cough", "page": "cold-cough-guidance.html", "label": "Cough &amp; Cold Guidance" },
+    { "id": "breathing", "page": "infant-breathing/", "label": "Infant Breathing Guide" },
     { "id": "weighing", "page": "weighing-guide.html", "label": "Weighing Guide" },
     { "id": "dosing", "page": "dosing-guide.html", "label": "Dosing Guide" },
     { "id": "about", "page": "about.html", "label": "About" },
