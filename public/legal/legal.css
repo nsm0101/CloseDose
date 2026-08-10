@@ -4,7 +4,9 @@
   --muted:#4A5A55;
   --surface:#ffffff;
   --border:#dfeee9;
-  --bg:#f6fbf8;
+  /* Matches the muted teal ground the rest of the site uses in light mode,
+     so following a footer link does not flash back to near-white. */
+  --bg:#d7e7e3;
   --max-width:880px;
   color-scheme: only light;
 }
