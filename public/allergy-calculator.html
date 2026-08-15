@@ -12,6 +12,10 @@
   <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16.png">
   <link rel="apple-touch-icon" href="images/favicon-192.png">
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="CloseDose" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <link rel="stylesheet" href="global.css" />
   <script>(function(){var t=localStorage.getItem("cd-theme");if(t)document.documentElement.setAttribute("data-theme",t);})();</script>
 </head>
@@ -76,6 +80,7 @@
   </div>
   <script src="allergy-calculator.js"></script>
   <script>window.addEventListener('DOMContentLoaded',function(){window.CloseDoseAllergyCalculator.mount(document.getElementById('allergy-calculator-root'));});</script>
+  <script src="/pwa.js" defer></script>
   <script src="global.js" defer></script>
 </body>
 </html>

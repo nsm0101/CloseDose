@@ -21,6 +21,10 @@
   <link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16.png">
   <link rel="apple-touch-icon" href="images/favicon-192.png">
   <link rel="manifest" href="manifest.json">
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="CloseDose" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <link rel="stylesheet" href="global.css" />
   <script>(function(){var t=localStorage.getItem("cd-theme");if(t)document.documentElement.setAttribute("data-theme",t);})();</script>
 </head>
@@ -210,6 +214,7 @@
   </div>
 
   <script src="widget/close-dose-calculator.js"></script>
+  <script src="widget/label-scanner.js" defer></script>
   <script>
     window.addEventListener('DOMContentLoaded', function () {
       var host = document.querySelector('[data-calculator-root]');
@@ -220,6 +225,7 @@
   </script>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
   <script async src="https://widgets.givebutter.com/latest.umd.cjs?acct=r8SGiZ0RhFRoIkXu&p=other"></script>
+  <script src="/pwa.js" defer></script>
   <script src="global.js" defer></script>
 </body>
 </html>
