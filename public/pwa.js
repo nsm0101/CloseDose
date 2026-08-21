@@ -49,7 +49,27 @@
     /iPad|iPhone|iPod/.test(ua) ||
     // iPadOS 13+ reports as Mac; the touch-point check separates them.
     (/Macintosh/.test(ua) && global.navigator.maxTouchPoints > 1);
-  var isSafari = isIOS && !/CriOS|FxiOS|EdgiOS|OPiOS/.test(ua);
+
+  var isIPad = /iPad/.test(ua) || (/Macintosh/.test(ua) && global.navigator.maxTouchPoints > 1);
+
+  /*
+   * Other iOS browsers announce themselves (CriOS, FxiOS...), but an in-app
+   * WKWebView — the browser you get tapping a link inside Facebook, Instagram,
+   * Gmail, LinkedIn — impersonates Safari almost exactly. The reliable tell is
+   * that real Safari carries a "Version/" token and embedded web views do not.
+   * This matters because Add to Home Screen exists ONLY in real Safari; showing
+   * its instructions anywhere else sends a caregiver looking for a button that
+   * is not there.
+   */
+  var IN_APP_MARKERS =
+    /FBAN|FBAV|FB_IAB|Instagram|LinkedInApp|Line\/|Twitter|Snapchat|Pinterest|TikTok|MicroMessenger|WhatsApp|GSA\//;
+  var OTHER_IOS_BROWSERS = /CriOS|FxiOS|EdgiOS|OPiOS|DuckDuckGo/;
+
+  var isInAppBrowser = isIOS && (IN_APP_MARKERS.test(ua) || !/Version\//.test(ua));
+  var isSafari =
+    isIOS && !OTHER_IOS_BROWSERS.test(ua) && !isInAppBrowser && /Version\//.test(ua);
+  /* iOS, but somewhere Add to Home Screen cannot be reached. */
+  var isIOSElsewhere = isIOS && !isSafari;
 
   function track(name, params) {
     try {
@@ -123,6 +143,13 @@
     '.cdpwa-steps b{display:inline-flex;align-items:center;justify-content:center;',
     'flex:0 0 auto;width:24px;height:24px;border-radius:50%;background:rgba(36,166,135,.16);',
     'font-size:.75rem;font-weight:900;}',
+    '.cdpwa-manual{margin-top:14px;padding-top:12px;',
+    'border-top:1px dashed var(--card-border-color,rgba(15,44,42,.18));}',
+    '.cdpwa-manual[hidden]{display:none;}',
+    '.cdpwa-manual__lead{margin:0;font-size:.85rem;font-weight:800;}',
+    '.cdpwa-linkcopy{appearance:none;border:0;background:transparent;cursor:pointer;font:inherit;',
+    'font-weight:800;font-size:.85rem;color:inherit;text-decoration:underline;',
+    'text-underline-offset:3px;padding:10px 0 2px;min-height:44px;}',
     '.cdpwa-ios-glyph{display:inline-flex;vertical-align:-4px;margin:0 2px;}',
     '.cdpwa-ios-glyph svg{width:16px;height:18px;}',
   ].join('');
@@ -310,22 +337,87 @@
     }, 400);
   }
 
+  /*
+   * Hand off to real Safari.
+   *
+   * `x-safari-https://` is undocumented but is the only thing that reliably
+   * escapes an in-app WKWebView, and it is what the ecosystem has settled on.
+   * Being undocumented, it can silently do nothing — so we watch for the page
+   * being backgrounded, and if we are still here a moment later we reveal the
+   * manual route rather than leaving a dead button. Only meaningful over
+   * https; on plain http there is nothing sensible to hand off.
+   */
+  function openInSafari(bannerEl) {
+    var manual = bannerEl && bannerEl.querySelector('[data-cdpwa-manual]');
+
+    function revealManual() {
+      if (manual) manual.hidden = false;
+      track('a2hs_safari_handoff_failed');
+    }
+
+    if (global.location.protocol !== 'https:') {
+      revealManual();
+      return;
+    }
+
+    var target =
+      'x-safari-https://' +
+      global.location.host +
+      global.location.pathname +
+      global.location.search +
+      global.location.hash;
+
+    var timer = setTimeout(revealManual, 1400);
+    function onHide() {
+      if (doc.hidden) {
+        clearTimeout(timer);
+        doc.removeEventListener('visibilitychange', onHide);
+      }
+    }
+    doc.addEventListener('visibilitychange', onHide);
+
+    try {
+      global.location.href = target;
+    } catch (e) {
+      clearTimeout(timer);
+      revealManual();
+    }
+  }
+
   function buildBanner(mode) {
     var el = doc.createElement('div');
     el.className = 'cdpwa-banner';
     el.setAttribute('role', 'dialog');
     el.setAttribute('aria-label', 'Add CloseDose to your home screen');
 
+    var shareWhere = isIPad
+      ? 'in the top-right corner of Safari'
+      : 'at the bottom of Safari';
+
     var body =
       mode === 'ios'
         ? [
             '<ol class="cdpwa-steps">',
-            '<li><b>1</b><span>Tap the Share button ' + IOS_SHARE_GLYPH + ' at the bottom of Safari.</span></li>',
+            '<li><b>1</b><span>Tap the Share button ' + IOS_SHARE_GLYPH + ' ' + shareWhere + '.</span></li>',
             '<li><b>2</b><span>Scroll down and tap <strong>Add to Home Screen</strong>.</span></li>',
             '<li><b>3</b><span>Tap <strong>Add</strong>. CloseDose opens like an app.</span></li>',
             '</ol>',
             '<div class="cdpwa-banner__actions">',
             '<button type="button" class="cdpwa-banner__cta" data-cdpwa-done>Got it</button>',
+            '</div>',
+          ].join('')
+        : mode === 'ios-elsewhere'
+        ? [
+            '<div class="cdpwa-banner__actions">',
+            '<button type="button" class="cdpwa-banner__cta" data-cdpwa-safari>Open in Safari</button>',
+            '</div>',
+            '<div class="cdpwa-manual" data-cdpwa-manual hidden>',
+            '<p class="cdpwa-manual__lead">If nothing opened, do it by hand:</p>',
+            '<ol class="cdpwa-steps">',
+            '<li><b>1</b><span>Tap the <strong>&hellip;</strong> or share icon in this app\u2019s toolbar.</span></li>',
+            '<li><b>2</b><span>Choose <strong>Open in Safari</strong> (or <strong>Open in browser</strong>).</span></li>',
+            '</ol>',
+            '<button type="button" class="cdpwa-linkcopy" data-cdpwa-copy>Copy the link instead</button>',
             '</div>',
           ].join('')
         : [
@@ -334,12 +426,21 @@
             '</div>',
           ].join('');
 
+    var title =
+      mode === 'ios-elsewhere'
+        ? 'Open CloseDose in Safari'
+        : 'Keep CloseDose one tap away';
+    var sub =
+      mode === 'ios-elsewhere'
+        ? 'Adding CloseDose to your home screen only works from Safari — this browser can’t do it.'
+        : 'Add it to your home screen so it’s there at 2am without hunting for a browser tab.';
+
     el.innerHTML = [
       '<div class="cdpwa-banner__row">',
       '<img class="cdpwa-banner__icon" src="/images/favicon-192.png" alt="" aria-hidden="true" width="44" height="44" />',
       '<div style="flex:1">',
-      '<p class="cdpwa-banner__title">Keep CloseDose one tap away</p>',
-      '<p class="cdpwa-banner__sub">Add it to your home screen so it’s there at 2am without hunting for a browser tab.</p>',
+      '<p class="cdpwa-banner__title">' + title + '</p>',
+      '<p class="cdpwa-banner__sub">' + sub + '</p>',
       '</div>',
       '<button type="button" class="cdpwa-banner__close" data-cdpwa-close aria-label="Not now">&times;</button>',
       '</div>',
@@ -347,8 +448,20 @@
     ].join('');
 
     el.addEventListener('click', function (ev) {
-      var t = ev.target.closest('[data-cdpwa-close],[data-cdpwa-done],[data-cdpwa-install]');
+      var t = ev.target.closest(
+        '[data-cdpwa-close],[data-cdpwa-done],[data-cdpwa-install],[data-cdpwa-safari],[data-cdpwa-copy]'
+      );
       if (!t) return;
+
+      if (t.hasAttribute('data-cdpwa-safari')) {
+        track('a2hs_open_in_safari');
+        openInSafari(el);
+        return;
+      }
+      if (t.hasAttribute('data-cdpwa-copy')) {
+        copyLink();
+        return;
+      }
 
       if (t.hasAttribute('data-cdpwa-install')) {
         track('a2hs_prompt_accept');
@@ -409,9 +522,23 @@
     });
 
     // iOS Safari has no install event, so offer the manual route.
-    if (isIOS && isSafari) {
+    if (isSafari) {
       setTimeout(function () {
         showBanner('ios');
+      }, A2HS_DELAY_MS);
+      return;
+    }
+
+    /*
+     * Everywhere else on iOS — Chrome, Firefox, or the in-app browser someone
+     * lands in from a text or a Facebook group — Add to Home Screen does not
+     * exist. Previously these visitors saw nothing at all, which is the worst
+     * outcome for a product meant to spread parent to parent. Send them to
+     * Safari instead.
+     */
+    if (isIOSElsewhere) {
+      setTimeout(function () {
+        showBanner('ios-elsewhere');
       }, A2HS_DELAY_MS);
     }
   }
@@ -455,6 +582,28 @@
     copyLink: copyLink,
     showInstallBanner: showBanner,
     isStandalone: isStandalone,
+    /*
+     * What this browser was detected as, and which invitation it will get.
+     * Exposed so the branch can be asserted in tests and read off a real
+     * device when a caregiver reports the wrong prompt.
+     */
+    environment: function () {
+      return {
+        isIOS: isIOS,
+        isIPad: isIPad,
+        isSafari: isSafari,
+        isInAppBrowser: isInAppBrowser,
+        isIOSElsewhere: isIOSElsewhere,
+        standalone: isStandalone(),
+        mode: isStandalone()
+          ? 'none'
+          : isSafari
+          ? 'ios'
+          : isIOSElsewhere
+          ? 'ios-elsewhere'
+          : 'native',
+      };
+    },
     /* exposed for the "Add to home screen" link some pages may want inline */
     resetSnooze: function () {
       try { global.localStorage.removeItem(A2HS_KEY); } catch (e) {}
