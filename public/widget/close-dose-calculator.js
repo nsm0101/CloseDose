@@ -730,7 +730,11 @@
 
     .cdcalc-dose-ml {
       display: inline-block;
-      font-size: clamp(1.8rem, 5vw, 2.4rem);
+      /* Sized and padded to read as a distinct chip rather than a tight band
+         behind the glyph. The volume to measure is the one number a caregiver
+         has to find at a glance, so it gets real breathing room inside its
+         ground and a defined edge to separate it from the sentence around it. */
+      font-size: clamp(2rem, 6vw, 2.6rem);
       font-weight: 900;
       letter-spacing: 0.01em;
       /* The pill keeps its gold ground in both themes, so its ink must not
@@ -739,16 +743,17 @@
          own token so a theme can never wash it out. */
       color: var(--cdcalc-dose-ml-color, var(--cdcalc-result-title-color, #0f2c2a));
       background: var(--cdcalc-dose-ml-bg, var(--cdcalc-gold, #ffe8a8));
-      padding: 2px 12px;
-      border-radius: 12px;
-      margin: 0 6px 0 2px;
-      line-height: 1.15;
+      padding: 10px 18px;
+      border-radius: 14px;
+      margin: 6px 8px 6px 0;
+      line-height: 1.05;
       vertical-align: middle;
+      box-shadow: inset 0 0 0 2px var(--cdcalc-dose-ml-edge, rgba(15, 44, 42, 0.22));
     }
 
     .cdcalc-dose-mg {
       display: inline-block;
-      font-size: 0.95rem;
+      font-size: 1rem;
       font-weight: 700;
       color: var(--cdcalc-dose-mg-color, #124643);
       margin-right: 6px;
