@@ -386,6 +386,7 @@ html[data-theme="dark"] {
   --cdcalc-result-card-p-color: #e2e8f0;
   --cdcalc-result-card-p-strong-color: #ffffff;
   --cdcalc-dose-mg-color: #cbd5e1;
+  --cdcalc-dose-ml-color: #0f2c2a;
   --cdcalc-result-weight-span-color: #9ca3af;
   --cdcalc-result-weight-strong-color: #ffffff;
   --cdcalc-result-disabled-bg: rgba(255, 255, 255, 0.03);
@@ -725,6 +726,7 @@ html[data-theme="dark"] .cdcalc-title {
     --cdcalc-result-card-p-color: #e2e8f0;
     --cdcalc-result-card-p-strong-color: #ffffff;
     --cdcalc-dose-mg-color: #cbd5e1;
+    --cdcalc-dose-ml-color: #0f2c2a;
     --cdcalc-result-weight-span-color: #9ca3af;
     --cdcalc-result-weight-strong-color: #ffffff;
     --cdcalc-result-disabled-bg: rgba(255, 255, 255, 0.03);

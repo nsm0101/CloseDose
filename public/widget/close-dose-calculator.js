@@ -89,8 +89,11 @@
       acetaminophenOlderBody:
         'Give <span class="cdcalc-dose-ml">{{ml}} mL</span><span class="cdcalc-dose-mg">({{mg}} mg)</span> every 6 hours as needed for fever/pain.',
       ibuprofenTitle: 'Ibuprofen (oral)',
-      ibuprofenChildrenSummary: "Children's 100 mg / 5 mL (recommended)",
-      ibuprofenInfantSummary: "Infant's 50 mg / 1.25 mL (concentrated drops)",
+      ibuprofenConcIf: 'If your bottle says',
+      ibuprofenConc100: '100 mg / 5 mL',
+      ibuprofenConc50: '50 mg / 1.25 mL',
+      ibuprofenChildrenSummary: "Children's suspension \u2014 the most common bottle",
+      ibuprofenInfantSummary: "Infants' concentrated drops",
       ibuprofenBody100:
         'Give <span class="cdcalc-dose-ml">{{ml}} mL</span><span class="cdcalc-dose-mg">({{mg}} mg)</span> every 6 hours as needed for fever/pain.',
       ibuprofenBody50:
@@ -727,21 +730,30 @@
 
     .cdcalc-dose-ml {
       display: inline-block;
-      font-size: clamp(1.8rem, 5vw, 2.4rem);
+      /* Sized and padded to read as a distinct chip rather than a tight band
+         behind the glyph. The volume to measure is the one number a caregiver
+         has to find at a glance, so it gets real breathing room inside its
+         ground and a defined edge to separate it from the sentence around it. */
+      font-size: clamp(2rem, 6vw, 2.6rem);
       font-weight: 900;
       letter-spacing: 0.01em;
-      color: var(--cdcalc-result-title-color, #0f2c2a);
+      /* The pill keeps its gold ground in both themes, so its ink must not
+         follow --cdcalc-result-title-color (white in dark mode -> 1.2:1 on
+         gold). This is the number a caregiver actually measures; it gets its
+         own token so a theme can never wash it out. */
+      color: var(--cdcalc-dose-ml-color, var(--cdcalc-result-title-color, #0f2c2a));
       background: var(--cdcalc-dose-ml-bg, var(--cdcalc-gold, #ffe8a8));
-      padding: 2px 12px;
-      border-radius: 12px;
-      margin: 0 6px 0 2px;
-      line-height: 1.15;
+      padding: 10px 18px;
+      border-radius: 14px;
+      margin: 6px 8px 6px 0;
+      line-height: 1.05;
       vertical-align: middle;
+      box-shadow: inset 0 0 0 2px var(--cdcalc-dose-ml-edge, rgba(15, 44, 42, 0.22));
     }
 
     .cdcalc-dose-mg {
       display: inline-block;
-      font-size: 0.95rem;
+      font-size: 1rem;
       font-weight: 700;
       color: var(--cdcalc-dose-mg-color, #124643);
       margin-right: 6px;
@@ -763,6 +775,61 @@
       text-decoration: underline;
       text-decoration-thickness: 2px;
       text-underline-offset: 2px;
+    }
+
+    /* Concentration check — ibuprofen ships in two strengths and the volume
+       differs between them. Both options stay visible and equally weighted;
+       the concentration printed on the bottle is the entry condition, so a
+       caregiver matches their bottle first and reads the dose second. Never
+       collapse one of these or pre-select a "default" strength: the hidden
+       option is the one that causes the overdose. */
+    .cdcalc-conc-check {
+      display: grid;
+      gap: 10px;
+    }
+
+    .cdcalc-conc-option {
+      border-radius: 14px;
+      border: 2px solid var(--cdcalc-accordion-border-color, #0f2c2a);
+      background: var(--cdcalc-accordion-bg, #ffffff);
+      padding: 14px;
+      display: grid;
+      gap: 2px;
+    }
+
+    .cdcalc-conc-option__if {
+      margin: 0;
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      opacity: 0.72;
+    }
+
+    .cdcalc-conc-option__conc {
+      margin: 0;
+      font-size: 1.25rem;
+      font-weight: 900;
+      line-height: 1.15;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .cdcalc-conc-option__meta {
+      margin: 0 0 6px;
+      font-size: 0.82rem;
+      opacity: 0.78;
+    }
+
+    .cdcalc-conc-option__dose {
+      margin: 0;
+      padding-top: 8px;
+      border-top: 1px dashed var(--cdcalc-accordion-border-color, rgba(15, 44, 42, 0.35));
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    @media (max-width: 640px) {
+      .cdcalc-conc-option__conc { font-size: 1.15rem; }
     }
 
     .cdcalc-accordion {
@@ -1619,24 +1686,26 @@
         <article class="cdcalc-result-card">
           <h3>${strings.results.ibuprofenTitle}</h3>
           <div class="cdcalc-info-banner">${strings.warnings.ibuprofenStrengthInfo}</div>
-          <details class="cdcalc-accordion" open>
-            <summary>${strings.results.ibuprofenChildrenSummary}</summary>
-            <div class="cdcalc-accordion-body">
-              <p>${formatString(strings.results.ibuprofenBody100, {
+          <div class="cdcalc-conc-check">
+            <div class="cdcalc-conc-option">
+              <p class="cdcalc-conc-option__if">${strings.results.ibuprofenConcIf}</p>
+              <p class="cdcalc-conc-option__conc">${strings.results.ibuprofenConc100}</p>
+              <p class="cdcalc-conc-option__meta">${strings.results.ibuprofenChildrenSummary}</p>
+              <p class="cdcalc-conc-option__dose">${formatString(strings.results.ibuprofenBody100, {
                 ml: ibuMl100.toFixed(1),
                 mg: ibuMg.toFixed(0),
               })}</p>
             </div>
-          </details>
-          <details class="cdcalc-accordion">
-            <summary>${strings.results.ibuprofenInfantSummary}</summary>
-            <div class="cdcalc-accordion-body">
-              <p>${formatString(strings.results.ibuprofenBody50, {
+            <div class="cdcalc-conc-option">
+              <p class="cdcalc-conc-option__if">${strings.results.ibuprofenConcIf}</p>
+              <p class="cdcalc-conc-option__conc">${strings.results.ibuprofenConc50}</p>
+              <p class="cdcalc-conc-option__meta">${strings.results.ibuprofenInfantSummary}</p>
+              <p class="cdcalc-conc-option__dose">${formatString(strings.results.ibuprofenBody50, {
                 ml: ibuMl50.toFixed(1),
                 mg: ibuMg.toFixed(0),
               })}</p>
             </div>
-          </details>
+          </div>
           ${
             ibuCapped
               ? renderWarning(strings, {
